@@ -1,14 +1,16 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.jetbrains.kotlin.serialization)
-    alias(libs.plugins.google.devtools.ksp)
-    alias(libs.plugins.hilt.android)
-    alias(libs.plugins.google.services)
-    alias(libs.plugins.firebase.crashlytics)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.serialization")
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 
-    // ✅ COMPOSE COMPILER PLUGIN - Kotlin 2.0+ Zorunlu
-    alias(libs.plugins.compose.compiler)
+    // ❌ Firebase plugins geçici olarak devre dışı (google-services.json eksik)
+    // id("com.google.gms.google-services")
+    // id("com.google.firebase.crashlytics")
+
+    // ✅ COMPOSE COMPILER PLUGIN - Direct application
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -64,8 +66,6 @@ android {
         buildConfig = true
     }
 
-    // ❌ composeOptions KALDIRILDI - Artık composeCompiler kullanılıyor
-
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -73,85 +73,80 @@ android {
     }
 }
 
-// ✅ COMPOSE COMPILER CONFIGURATION - Kotlin 2.0+ yeni yöntem
+// ✅ COMPOSE COMPILER CONFIGURATION
 composeCompiler {
-    // Enable strong skipping mode for performance
     enableStrongSkippingMode = true
-
-    // Optional: Stability configuration file
-    // stabilityConfigurationFile = layout.projectDirectory.file("stability_config.conf")
-
-    // Optional: Compiler reports
-    // reportsDestination = layout.buildDirectory.dir("compose_compiler")
-    // metricsDestination = layout.buildDirectory.dir("compose_compiler")
 }
 
-// ✅ KSP configuration doğru yerde (android block'unun dışında)
+// ✅ KSP configuration
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
     // Android Core
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.activity.compose)
+    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.3")
+    implementation("androidx.activity:activity-compose:1.10.1")
 
-    // Compose
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+    // ✅ SPLASH SCREEN - Missing dependency
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
+    // Compose BOM
+    implementation(platform("androidx.compose:compose-bom:2024.12.01"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material3:material3")
 
     // Navigation
-    implementation(libs.androidx.navigation.compose)
+    implementation("androidx.navigation:navigation-compose:2.8.5")
 
     // Dependency Injection
-    implementation(libs.hilt.android)
-    implementation(libs.androidx.hilt.navigation.compose)
-    ksp(libs.hilt.compiler)
+    implementation("com.google.dagger:hilt-android:2.53.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    ksp("com.google.dagger:hilt-compiler:2.53.1")
 
     // Database
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
 
     // Network
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.kotlin.serialization)
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging)
-    implementation(libs.kotlinx.serialization.json)
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.storage)
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.config)
+    // ❌ Firebase dependencies geçici olarak devre dışı
+    // implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    // implementation("com.google.firebase:firebase-auth")
+    // implementation("com.google.firebase:firebase-firestore")
+    // implementation("com.google.firebase:firebase-storage")
+    // implementation("com.google.firebase:firebase-analytics")
+    // implementation("com.google.firebase:firebase-crashlytics")
+    // implementation("com.google.firebase:firebase-config")
 
-    // Monetization
-    implementation(libs.revenuecat)
-    implementation(libs.play.services.ads)
+    // ❌ Monetization geçici olarak devre dışı (Firebase bağımlılığı)
+    // implementation("com.revenuecat.purchases:purchases:8.10.0")
+    // implementation("com.google.android.gms:play-services-ads:23.8.0")
 
-    // Image Loading
-    implementation(libs.coil.compose)
+    // Image Loading - Daha stabil version kullan
+    implementation("io.coil-kt:coil-compose:2.7.0")
 
     // Testing
-    testImplementation(libs.junit)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.mockk)
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
+    testImplementation("io.mockk:mockk:1.13.14")
 
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(libs.hilt.android.testing)
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.12.01"))
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.53.1")
 
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
