@@ -5,10 +5,9 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 
-    // ❌ Firebase plugins geçici olarak devre dışı (google-services.json eksik)
-    // id("com.google.gms.google-services")
-    // id("com.google.firebase.crashlytics")
-
+    id("com.google.gms.google-services") version "4.4.3" apply false
+    //id("com.google.firebase.crashlytics")
+    //id("com.google.gms.google-services")
     // ✅ COMPOSE COMPILER PLUGIN - Direct application
     id("org.jetbrains.kotlin.plugin.compose")
 }
@@ -120,14 +119,14 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
-    // ❌ Firebase dependencies geçici olarak devre dışı
-    // implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
-    // implementation("com.google.firebase:firebase-auth")
-    // implementation("com.google.firebase:firebase-firestore")
-    // implementation("com.google.firebase:firebase-storage")
-    // implementation("com.google.firebase:firebase-analytics")
-    // implementation("com.google.firebase:firebase-crashlytics")
-    // implementation("com.google.firebase:firebase-config")
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-config")
 
     // ❌ Monetization geçici olarak devre dışı (Firebase bağımlılığı)
     // implementation("com.revenuecat.purchases:purchases:8.10.0")

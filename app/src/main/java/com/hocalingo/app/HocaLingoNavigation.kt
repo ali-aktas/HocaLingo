@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.hocalingo.app.feature.auth.presentation.AuthScreen
 import com.hocalingo.app.feature.splash.SplashScreen
 
 /**
@@ -72,12 +73,14 @@ fun HocaLingoNavigation(
 
         // Authentication
         composable(route = HocaRoutes.AUTH) {
-            PlaceholderScreen(
-                title = "🔐 Authentication Screen",
-                subtitle = "Login with Google or Facebook",
-                buttonText = "Continue to Onboarding",
-                onNavigate = {
+            AuthScreen(
+                onNavigateToOnboarding = {
                     navController.navigate(HocaRoutes.ONBOARDING_LANGUAGE) {
+                        popUpTo(HocaRoutes.AUTH) { inclusive = true }
+                    }
+                },
+                onNavigateToHome = {
+                    navController.navigate(HocaRoutes.STUDY) {
                         popUpTo(HocaRoutes.AUTH) { inclusive = true }
                     }
                 }

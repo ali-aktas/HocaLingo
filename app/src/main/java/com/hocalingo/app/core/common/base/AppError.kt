@@ -7,8 +7,8 @@ sealed class AppError(
 
     object Network : AppError("Network connection error")
     object Timeout : AppError("Request timeout")
-    data class Http(val code: Int, val message: String = "") : AppError("HTTP $code: $message")
-    data class Database(val message: String = "") : AppError("Database error: $message")
+    data class Http(val code: Int, override val message: String = "") : AppError("HTTP $code: $message")
+    data class Database(override val message: String = "") : AppError("Database error: $message")
     data class Unknown(val throwable: Throwable) : AppError("Unknown error", throwable)
     object ValidationError : AppError("Validation failed")
     object NotFound : AppError("Resource not found")
