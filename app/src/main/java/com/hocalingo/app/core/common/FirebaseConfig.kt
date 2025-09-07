@@ -17,7 +17,7 @@ package com.hocalingo.app.core.common
  */
 object FirebaseConfig {
     // Bu değeri Firebase Console'dan veya google-services.json'dan al
-    const val WEB_CLIENT_ID = "YOUR_ACTUAL_WEB_CLIENT_ID_HERE"
+    const val WEB_CLIENT_ID = "848715976492-3ims9qo19oo24046n6bamvkpssrk4c0l.apps.googleusercontent.com"
 
     // Örnek format:
     // const val WEB_CLIENT_ID = "123456789-abcdefghijk.apps.googleusercontent.com"

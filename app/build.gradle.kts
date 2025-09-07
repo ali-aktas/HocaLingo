@@ -5,10 +5,11 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 
-    id("com.google.gms.google-services") version "4.4.3" apply false
-    //id("com.google.firebase.crashlytics")
-    //id("com.google.gms.google-services")
-    // ✅ COMPOSE COMPILER PLUGIN - Direct application
+    // ✅ Firebase plugins
+    id("com.google.gms.google-services")
+    // id("com.google.firebase.crashlytics") // Crashlytics'i sonra aktifleştireceğiz
+
+    // ✅ COMPOSE COMPILER PLUGIN
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
@@ -32,8 +33,8 @@ android {
     buildTypes {
         debug {
             isDebuggable = true
-            applicationIdSuffix = ".debug"
-            versionNameSuffix = "-debug"
+            // applicationIdSuffix = ".debug"
+            // versionNameSuffix = "-debug"
         }
 
         release {
@@ -74,7 +75,7 @@ android {
 
 // ✅ COMPOSE COMPILER CONFIGURATION
 composeCompiler {
-    enableStrongSkippingMode = true
+    enableStrongSkippingMode = true // Bu deprecated ama şimdilik dursun
 }
 
 // ✅ KSP configuration
@@ -89,7 +90,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.3")
     implementation("androidx.activity:activity-compose:1.10.1")
 
-    // ✅ SPLASH SCREEN - Missing dependency
+    // ✅ SPLASH SCREEN
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     // Compose BOM
@@ -119,21 +120,30 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
-    // Firebase
+    // ✅ Firebase dependencies
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-crashlytics")
+    // implementation("com.google.firebase:firebase-crashlytics") // Sonra
     implementation("com.google.firebase:firebase-config")
 
-    // ❌ Monetization geçici olarak devre dışı (Firebase bağımlılığı)
+    // ✅ Google Sign In - BU EKSİKTİ!
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
+
+    // ✅ Google Sign In
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
+
+    // ❌ Monetization şimdilik devre dışı
     // implementation("com.revenuecat.purchases:purchases:8.10.0")
     // implementation("com.google.android.gms:play-services-ads:23.8.0")
 
-    // Image Loading - Daha stabil version kullan
+    // Image Loading
     implementation("io.coil-kt:coil-compose:2.7.0")
+
+    // DataStore for preferences
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     // Testing
     testImplementation("junit:junit:4.13.2")
