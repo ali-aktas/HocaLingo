@@ -2,7 +2,7 @@ package com.hocalingo.app.core.common.base
 
 sealed class Result<out T> {
     data class Success<T>(val data: T) : Result<T>()
-    data class Error(val exception: AppError) : Result<Nothing>()
+    data class Error(val error: AppError) : Result<Nothing>()
 
     val isSuccess: Boolean get() = this is Success
     val isError: Boolean get() = this is Error
@@ -14,7 +14,7 @@ sealed class Result<out T> {
 
     fun getOrThrow(): T = when (this) {
         is Success -> data
-        is Error -> throw exception
+        is Error -> throw error
     }
 
     inline fun <R> map(transform: (T) -> R): Result<R> = when (this) {
@@ -28,7 +28,7 @@ sealed class Result<out T> {
     ) {
         when (this) {
             is Success -> onSuccess(data)
-            is Error -> onError(exception)
+            is Error -> onError(error)
         }
     }
 }

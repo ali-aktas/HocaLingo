@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.hocalingo.app.core.common.base.AppError
 import com.hocalingo.app.core.common.base.Result
+import com.hocalingo.app.core.common.base.toAppError
 import com.hocalingo.app.core.database.HocaLingoDatabase
 import com.hocalingo.app.core.database.entities.UserPreferencesEntity
 import kotlinx.coroutines.flow.Flow
@@ -320,15 +321,4 @@ class UserRepository @Inject constructor(
             .set(preferencesMap)
             .await()
     }
-}
-
-/**
- * Extension function to convert exceptions to AppError
- */
-private fun Exception.toAppError(): AppError = when (this) {
-    is java.net.UnknownHostException -> AppError.Network
-    is java.net.SocketTimeoutException -> AppError.Timeout
-    is java.io.IOException -> AppError.Network
-    is IllegalArgumentException -> AppError.ValidationError
-    else -> AppError.Unknown(this)
 }

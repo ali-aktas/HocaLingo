@@ -81,6 +81,8 @@ fun AuthScreen(
                 is AuthEffect.ShowError -> {
                     snackbarHostState.showSnackbar(effect.message)
                 }
+
+                AuthEffect.NavigateToWordSelection -> TODO()
             }
         }
     }

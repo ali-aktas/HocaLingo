@@ -3,8 +3,6 @@ package com.hocalingo.app.core.database
 import com.hocalingo.app.core.common.UserPreferencesManager
 import com.hocalingo.app.core.common.base.AppError
 import com.hocalingo.app.core.common.base.Result
-import com.hocalingo.app.core.database.HocaLingoDatabase
-import com.hocalingo.app.core.database.entities.UserPreferencesEntity
 import com.hocalingo.app.feature.auth.data.UserRepository
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -16,7 +14,7 @@ import javax.inject.Singleton
  * Coordinates JsonLoader, UserRepository, and UserPreferencesManager
  */
 @Singleton
-class DatabaseSeeder @Inject constructor(
+class MainDatabaseSeeder @Inject constructor(
     private val database: HocaLingoDatabase,
     private val jsonLoader: JsonLoader,
     private val userRepository: UserRepository,
@@ -40,28 +38,28 @@ class DatabaseSeeder @Inject constructor(
             // 1. Set up user preferences in DataStore
             preferencesManager.setCurrentUserId(userId).fold(
                 onSuccess = { result.userPreferencesSet = true },
-                onError = { return Result.Error(it.exception) }
+                onError = { return Result.Error(it) }
             )
 
             preferencesManager.setAnonymousUser(isAnonymous).fold(
                 onSuccess = { result.anonymousStatusSet = true },
-                onError = { return Result.Error(it.exception) }
+                onError = { return Result.Error(it) }
             )
 
             preferencesManager.setLanguages(nativeLanguage, targetLanguage).fold(
                 onSuccess = { result.languagesSet = true },
-                onError = { return Result.Error(it.exception) }
+                onError = { return Result.Error(it) }
             )
 
             preferencesManager.setCurrentLevel(selectedLevel).fold(
                 onSuccess = { result.levelSet = true },
-                onError = { return Result.Error(it.exception) }
+                onError = { return Result.Error(it) }
             )
 
             // 2. Create user profile in Repository (Room + Firestore)
             userRepository.createUserProfile(nativeLanguage, targetLanguage, selectedLevel).fold(
                 onSuccess = { result.userProfileCreated = true },
-                onError = { return Result.Error(it.exception) }
+                onError = { return Result.Error(it) }
             )
 
             // 3. Load test word data if not already loaded
@@ -73,14 +71,14 @@ class DatabaseSeeder @Inject constructor(
                                 result.wordsLoaded = true
                                 result.wordsCount = wordsCount
                             },
-                            onError = { return Result.Error(it.exception) }
+                            onError = { return Result.Error(it) }
                         )
                     } else {
                         result.wordsLoaded = true
                         result.wordsCount = database.conceptDao().getConceptCount()
                     }
                 },
-                onError = { return Result.Error(it.exception) }
+                onError = { return Result.Error(it) }
             )
 
             // 4. Update last login
@@ -198,7 +196,7 @@ class DatabaseSeeder @Inject constructor(
                                             result.wordsLoaded = testCount
                                             result.availableWords = testCount
                                         },
-                                        onError = { return Result.Error(it.exception) }
+                                        onError = { error -> return Result.Error(error) }
                                     )
                                 }
                             )
@@ -209,11 +207,11 @@ class DatabaseSeeder @Inject constructor(
                                     result.wordsLoaded = testCount
                                     result.availableWords = testCount
                                 },
-                                onError = { return Result.Error(it.exception) }
+                                onError = { error -> return Result.Error(error) }
                             )
                         }
                     },
-                    onError = { return Result.Error(it.exception) }
+                    onError = { error -> return Result.Error(error) }
                 )
             }
 

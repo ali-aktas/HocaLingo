@@ -5,11 +5,6 @@ sealed class AppError(
     override val cause: Throwable? = null
 ) : Exception(message, cause) {
 
-    val exception: AppError
-        get() {
-            TODO()
-        }
-
     object Network : AppError("Network connection error")
     object Timeout : AppError("Request timeout")
     data class Http(val code: Int, override val message: String = "") : AppError("HTTP $code: $message")
