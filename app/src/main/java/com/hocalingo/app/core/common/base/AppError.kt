@@ -1,9 +1,14 @@
 package com.hocalingo.app.core.common.base
 
 sealed class AppError(
-    message: String = "",
-    cause: Throwable? = null
+    override val message: String = "",
+    override val cause: Throwable? = null
 ) : Exception(message, cause) {
+
+    val exception: AppError
+        get() {
+            TODO()
+        }
 
     object Network : AppError("Network connection error")
     object Timeout : AppError("Request timeout")

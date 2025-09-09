@@ -161,6 +161,7 @@ sealed interface AuthEvent {
  */
 sealed interface AuthEffect {
     data object NavigateToOnboarding : AuthEffect
+    data object NavigateToWordSelection : AuthEffect
     data object NavigateToHome : AuthEffect
     data class ShowError(val message: String) : AuthEffect
 }

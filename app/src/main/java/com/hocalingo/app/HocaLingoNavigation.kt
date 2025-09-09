@@ -71,7 +71,7 @@ fun HocaLingoNavigation(
             )
         }
 
-        // Authentication
+        // Authentication - Mevcut AuthScreen parametreleriyle uyumlu
         composable(route = HocaRoutes.AUTH) {
             AuthScreen(
                 onNavigateToOnboarding = {
@@ -80,6 +80,7 @@ fun HocaLingoNavigation(
                     }
                 },
                 onNavigateToHome = {
+                    // Direkt study'ye git - çünkü AuthViewModel'de NavigateToWordSelection henüz implement değil
                     navController.navigate(HocaRoutes.STUDY) {
                         popUpTo(HocaRoutes.AUTH) { inclusive = true }
                     }
@@ -90,9 +91,9 @@ fun HocaLingoNavigation(
         // Onboarding Flow
         composable(route = HocaRoutes.ONBOARDING_LANGUAGE) {
             PlaceholderScreen(
-                title = "🌍 Language Selection",
-                subtitle = "Choose your native and target language",
-                buttonText = "Select Level",
+                title = "🌍 Dil Seçimi",
+                subtitle = "Ana dilinizi ve öğrenmek istediğiniz dili seçin\nTürkçe → İngilizce",
+                buttonText = "Seviye Seç",
                 onNavigate = {
                     navController.navigate(HocaRoutes.ONBOARDING_LEVEL)
                 }
@@ -101,9 +102,9 @@ fun HocaLingoNavigation(
 
         composable(route = HocaRoutes.ONBOARDING_LEVEL) {
             PlaceholderScreen(
-                title = "📊 Level Selection",
-                subtitle = "A1, A2, B1, B2, C1, C2",
-                buttonText = "Download Package",
+                title = "📊 Seviye Seçimi",
+                subtitle = "A1 (Başlangıç) - A2 (Temel) - B1 (Orta)\nB2 (Orta-İleri) - C1 (İleri) - C2 (Uzman)",
+                buttonText = "Paket İndir",
                 onNavigate = {
                     navController.navigate(HocaRoutes.ONBOARDING_DOWNLOAD)
                 }
@@ -112,9 +113,9 @@ fun HocaLingoNavigation(
 
         composable(route = HocaRoutes.ONBOARDING_DOWNLOAD) {
             PlaceholderScreen(
-                title = "📥 Package Download",
-                subtitle = "Downloading B1 English words...",
-                buttonText = "Select Words",
+                title = "📥 Paket İndiriliyor",
+                subtitle = "A1 İngilizce kelime paketi indiriliyor...\n50 kelime yükleniyor",
+                buttonText = "Kelime Seç",
                 onNavigate = {
                     navController.navigate(HocaRoutes.WORD_SELECTION)
                 }
@@ -123,9 +124,9 @@ fun HocaLingoNavigation(
 
         composable(route = HocaRoutes.WORD_SELECTION) {
             PlaceholderScreen(
-                title = "✨ Word Selection",
-                subtitle = "Swipe to choose words you want to learn",
-                buttonText = "Start Learning",
+                title = "✨ Kelime Seçimi",
+                subtitle = "Öğrenmek istediğiniz kelimeleri seçin\nSağa kaydır = Öğren, Sola kaydır = Geç",
+                buttonText = "Çalışmaya Başla",
                 onNavigate = {
                     navController.navigate(HocaRoutes.STUDY) {
                         popUpTo(HocaRoutes.WORD_SELECTION) { inclusive = true }
@@ -137,9 +138,9 @@ fun HocaLingoNavigation(
         // Main App Screens
         composable(route = HocaRoutes.STUDY) {
             PlaceholderScreen(
-                title = "🎯 Study Screen",
-                subtitle = "Learn words with spaced repetition",
-                buttonText = "View Profile",
+                title = "🎯 Çalışma Ekranı",
+                subtitle = "Akıllı tekrar sistemi ile kelime öğrenin\nSM-2 algoritması",
+                buttonText = "Profil",
                 onNavigate = {
                     navController.navigate(HocaRoutes.PROFILE)
                 }
@@ -148,9 +149,9 @@ fun HocaLingoNavigation(
 
         composable(route = HocaRoutes.PROFILE) {
             PlaceholderScreen(
-                title = "👤 Profile Screen",
-                subtitle = "Your stats and progress",
-                buttonText = "Settings",
+                title = "👤 Profil",
+                subtitle = "İstatistikleriniz ve ilerlemeniz\nÖğrenilen kelimeler, streak, başarı oranı",
+                buttonText = "Ayarlar",
                 onNavigate = {
                     navController.navigate(HocaRoutes.SETTINGS)
                 }
@@ -159,9 +160,9 @@ fun HocaLingoNavigation(
 
         composable(route = HocaRoutes.SETTINGS) {
             PlaceholderScreen(
-                title = "⚙️ Settings Screen",
-                subtitle = "App preferences and options",
-                buttonText = "Back",
+                title = "⚙️ Ayarlar",
+                subtitle = "Uygulama tercihleri ve seçenekleri\nBildirimler, sesler, tema",
+                buttonText = "Geri",
                 onNavigate = {
                     navController.popBackStack()
                 }
@@ -170,9 +171,9 @@ fun HocaLingoNavigation(
 
         composable(route = HocaRoutes.ADD_WORD) {
             PlaceholderScreen(
-                title = "➕ Add Word Screen",
-                subtitle = "Add your own words to learn",
-                buttonText = "Back",
+                title = "➕ Kelime Ekle",
+                subtitle = "Kendi kelimelerinizi ekleyin\nİngilizce - Türkçe - Örnek cümle",
+                buttonText = "Geri",
                 onNavigate = {
                     navController.popBackStack()
                 }
@@ -189,7 +190,7 @@ fun HocaLingoNavigation(
 private fun PlaceholderScreen(
     title: String,
     subtitle: String = "",
-    buttonText: String = "Next Screen",
+    buttonText: String = "Sonraki Ekran",
     onNavigate: () -> Unit
 ) {
     Column(
@@ -206,11 +207,12 @@ private fun PlaceholderScreen(
         )
 
         if (subtitle.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                lineHeight = MaterialTheme.typography.bodyLarge.lineHeight
             )
         }
 
@@ -226,7 +228,7 @@ private fun PlaceholderScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "🚧 Placeholder Screen - Will be implemented",
+            text = "🚧 Geçici Ekran - Yakında implement edilecek",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.outline
         )
