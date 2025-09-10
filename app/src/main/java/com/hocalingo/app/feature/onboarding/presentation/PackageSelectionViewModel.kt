@@ -80,16 +80,19 @@ class PackageSelectionViewModel @Inject constructor(
         }
     }
 
-    private fun createPackageList(): List<PackageInfo> {
+    private fun createPackageList(): List<PackageInfo> {// A1 paketinin indirilip indirilmediğini burada,
+        // listenin oluşturulduğu anda kontrol et.
+        val isA1Downloaded = _uiState.value.packages.any { it.id.contains("a1") && it.isDownloaded }
+
         return listOf(
             PackageInfo(
-                id = "a1_en_tr_v1",
+                id = "a1_en_tr_v1",  // JsonLoader'daki packageId ile aynı olmalı
                 level = "A1",
                 name = "Başlangıç",
                 description = "Temel kelimeler ve günlük ifadeler",
                 wordCount = 50, // Test için 50 kelime
-                isDownloaded = true, // A1 her zaman yüklü (test data)
-                downloadProgress = 100,
+                isDownloaded = isA1Downloaded, // Dinamik olarak belirleniyor
+                downloadProgress = if (isA1Downloaded) 100 else 0,
                 color = "#4CAF50" // Green
             ),
             PackageInfo(
@@ -98,17 +101,26 @@ class PackageSelectionViewModel @Inject constructor(
                 name = "Temel",
                 description = "Basit iletişim ve yaygın kelimeler",
                 wordCount = 400,
-                isDownloaded = false,
-                downloadProgress = 0,
+                // Diğer paketler için isDownloaded durumunu şimdilik false veya
+                // _uiState.value.packages içinden kontrol ederek ayarlayabilirsiniz.
+                // Örnek: _uiState.value.packages.any { it.id == "a2_en_tr_v1" && it.isDownloaded }
+                isDownloaded = false, // VEYA _uiState.value.packages.any { it.id == "a2_en_tr_v1" && it.isDownloaded }
+                downloadProgress = 0, // VEYA if (_uiState.value.packages.any { it.id == "a2_en_tr_v1" && it.isDownloaded }) 100 else 0
                 color = "#8BC34A" // Light Green
             ),
+            // ... Diğer paket tanımları aynı şekilde ...
+            // Emin olmak için diğer paketlerin isDownloaded ve downloadProgress
+            // değerlerini de benzer şekilde _uiState.value.packages içinden kontrol ederek
+            // veya şimdilik sabit bir değerle ayarlamanız gerekebilir.
+            // Aksi takdirde, A1 dışındaki paketler için `isA1Downloaded` değişkenini
+            // kullanmak mantıksal bir hataya yol açar.
             PackageInfo(
                 id = "b1_en_tr_v1",
                 level = "B1",
                 name = "Orta",
                 description = "Günlük konuşma ve seyahat kelimeleri",
                 wordCount = 600,
-                isDownloaded = false,
+                isDownloaded = false, // Örnek olarak false bırakıldı, gerekirse dinamik yapın
                 downloadProgress = 0,
                 color = "#FF9800" // Orange
             ),
@@ -144,6 +156,7 @@ class PackageSelectionViewModel @Inject constructor(
             )
         )
     }
+
 
     private fun selectPackage(packageId: String) {
         viewModelScope.launch {

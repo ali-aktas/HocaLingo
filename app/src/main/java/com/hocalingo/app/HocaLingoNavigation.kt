@@ -105,7 +105,8 @@ fun HocaLingoNavigation(
         composable(route = HocaRoutes.ONBOARDING_LEVEL) {
             PackageSelectionScreen(
                 onNavigateToWordSelection = { packageId ->
-                    // PackageId'yi ileride argument olarak geçebiliriz
+                    // PackageId'yi SavedStateHandle ile geçiyoruz
+                    navController.currentBackStackEntry?.savedStateHandle?.set("packageId", packageId)
                     navController.navigate(HocaRoutes.WORD_SELECTION)
                 }
             )

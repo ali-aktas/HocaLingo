@@ -34,8 +34,25 @@ class JsonLoader @Inject constructor(
      */
     suspend fun loadTestWords(): Result<Int> = withContext(Dispatchers.IO) {
         try {
-            val jsonString = context.assets.open("test_words.json").bufferedReader().use { it.readText() }
+            println("HocaLingo: Test kelimeler yükleniyor...")
+
+            // Check if already loaded
+            val existingPackage = database.wordPackageDao().getPackageById("a1_en_tr_test_v1")
+            if (existingPackage != null) {
+                println("HocaLingo: Test paketi zaten yüklü")
+                val conceptCount = database.conceptDao().getConceptsByPackage("a1_en_tr_test_v1").size
+                return@withContext Result.Success(conceptCount)
+            }
+
+            val jsonString = context.assets.open("test_words.json")
+                .bufferedReader()
+                .use { it.readText() }
+
+            println("HocaLingo: JSON okundu, parse ediliyor...")
+
             val wordPackage = json.decodeFromString<WordPackageJson>(jsonString)
+
+            println("HocaLingo: ${wordPackage.words.size} kelime parse edildi")
 
             // Convert JSON to entities
             val concepts = wordPackage.words.map { word ->
@@ -69,8 +86,12 @@ class JsonLoader @Inject constructor(
             database.wordPackageDao().insertPackage(packageEntity)
             database.conceptDao().insertConcepts(concepts)
 
+            println("HocaLingo: ${concepts.size} kelime database'e kaydedildi")
+
             Result.Success(concepts.size)
         } catch (e: Exception) {
+            println("HocaLingo: Test kelime yükleme hatası: ${e.message}")
+            e.printStackTrace()
             Result.Error(AppError.Unknown(e))
         }
     }

@@ -130,22 +130,24 @@ fun WordSelectionScreen(
                         )
 
                         // Swipeable card
-                        SwipeableCard(
-                            word = uiState.currentWord!!.english,
-                            translation = uiState.currentWord!!.turkish,
-                            example = uiState.currentWord!!.exampleEn,
-                            onSwipeLeft = {
-                                uiState.currentWord?.let { word ->
-                                    viewModel.onEvent(WordSelectionEvent.SwipeLeft(word.id))
-                                }
-                            },
-                            onSwipeRight = {
-                                uiState.currentWord?.let { word ->
-                                    viewModel.onEvent(WordSelectionEvent.SwipeRight(word.id))
-                                }
-                            },
-                            modifier = Modifier.weight(1f)
-                        )
+                        Box(modifier = Modifier.weight(1f)) {
+                            SwipeableCard(
+                                word = uiState.currentWord!!.english,
+                                translation = uiState.currentWord!!.turkish,
+                                example = uiState.currentWord!!.exampleEn,
+                                onSwipeLeft = {
+                                    uiState.currentWord?.let { word ->
+                                        viewModel.onEvent(WordSelectionEvent.SwipeLeft(word.id))
+                                    }
+                                },
+                                onSwipeRight = {
+                                    uiState.currentWord?.let { word ->
+                                        viewModel.onEvent(WordSelectionEvent.SwipeRight(word.id))
+                                    }
+                                },
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
 
                         // Action buttons (alternatif kontrol)
                         ActionButtons(

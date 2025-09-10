@@ -19,25 +19,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SplashScreen(
     onNavigateToAuth: () -> Unit = {},
     onNavigateToOnboarding: () -> Unit = {},
-    onNavigateToMain: () -> Unit = {}
+    onNavigateToMain: () -> Unit = {},
+    viewModel: SplashViewModel = hiltViewModel()
 ) {
-    // Simulate loading and navigation decision
+    // Handle navigation events from ViewModel
     LaunchedEffect(Unit) {
-        delay(2000) // 2 second splash duration
-
-        // For now, always navigate to auth
-        // Later, this will check:
-        // - If user is logged in
-        // - If onboarding is completed
-        // - If words are selected
-        onNavigateToAuth()
+        viewModel.navigationEvent.collectLatest { event ->
+            when (event) {
+                SplashNavigationEvent.NavigateToAuth -> onNavigateToAuth()
+                SplashNavigationEvent.NavigateToOnboarding -> onNavigateToOnboarding()
+                SplashNavigationEvent.NavigateToMain -> onNavigateToMain()
+            }
+        }
     }
 
     Box(

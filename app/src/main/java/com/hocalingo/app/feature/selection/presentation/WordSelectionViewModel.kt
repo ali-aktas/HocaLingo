@@ -25,8 +25,8 @@ class WordSelectionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    // Package ID from navigation args
-    private val packageId: String = savedStateHandle.get<String>("packageId") ?: "a1_en_tr_v1"
+    // Package ID from navigation args or default
+    private val packageId: String = savedStateHandle.get<String>("packageId") ?: "a1_en_tr_test_v1"
 
     private val _uiState = MutableStateFlow(WordSelectionUiState())
     val uiState: StateFlow<WordSelectionUiState> = _uiState.asStateFlow()
