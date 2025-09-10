@@ -17,6 +17,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.hocalingo.app.feature.auth.presentation.AuthScreen
+import com.hocalingo.app.feature.onboarding.presentation.PackageSelectionScreen
+import com.hocalingo.app.feature.selection.presentation.WordSelectionScreen
 import com.hocalingo.app.feature.splash.SplashScreen
 
 /**
@@ -59,7 +61,7 @@ fun HocaLingoNavigation(
                     }
                 },
                 onNavigateToOnboarding = {
-                    navController.navigate(HocaRoutes.ONBOARDING_LANGUAGE) {
+                    navController.navigate(HocaRoutes.ONBOARDING_LEVEL) {
                         popUpTo(HocaRoutes.SPLASH) { inclusive = true }
                     }
                 },
@@ -71,16 +73,15 @@ fun HocaLingoNavigation(
             )
         }
 
-        // Authentication - Mevcut AuthScreen parametreleriyle uyumlu
+        // Authentication Screen
         composable(route = HocaRoutes.AUTH) {
             AuthScreen(
                 onNavigateToOnboarding = {
-                    navController.navigate(HocaRoutes.ONBOARDING_LANGUAGE) {
+                    navController.navigate(HocaRoutes.ONBOARDING_LEVEL) {
                         popUpTo(HocaRoutes.AUTH) { inclusive = true }
                     }
                 },
                 onNavigateToHome = {
-                    // Direkt study'ye git - çünkü AuthViewModel'de NavigateToWordSelection henüz implement değil
                     navController.navigate(HocaRoutes.STUDY) {
                         popUpTo(HocaRoutes.AUTH) { inclusive = true }
                     }
@@ -88,7 +89,7 @@ fun HocaLingoNavigation(
             )
         }
 
-        // Onboarding Flow
+        // Onboarding - Language Selection (Placeholder for now)
         composable(route = HocaRoutes.ONBOARDING_LANGUAGE) {
             PlaceholderScreen(
                 title = "🌍 Dil Seçimi",
@@ -100,34 +101,32 @@ fun HocaLingoNavigation(
             )
         }
 
+        // Onboarding - Package/Level Selection (REAL SCREEN)
         composable(route = HocaRoutes.ONBOARDING_LEVEL) {
-            PlaceholderScreen(
-                title = "📊 Seviye Seçimi",
-                subtitle = "A1 (Başlangıç) - A2 (Temel) - B1 (Orta)\nB2 (Orta-İleri) - C1 (İleri) - C2 (Uzman)",
-                buttonText = "Paket İndir",
-                onNavigate = {
-                    navController.navigate(HocaRoutes.ONBOARDING_DOWNLOAD)
-                }
-            )
-        }
-
-        composable(route = HocaRoutes.ONBOARDING_DOWNLOAD) {
-            PlaceholderScreen(
-                title = "📥 Paket İndiriliyor",
-                subtitle = "A1 İngilizce kelime paketi indiriliyor...\n50 kelime yükleniyor",
-                buttonText = "Kelime Seç",
-                onNavigate = {
+            PackageSelectionScreen(
+                onNavigateToWordSelection = { packageId ->
+                    // PackageId'yi ileride argument olarak geçebiliriz
                     navController.navigate(HocaRoutes.WORD_SELECTION)
                 }
             )
         }
 
+        // Onboarding - Download (Artık kullanılmıyor ama route duruyor)
+        composable(route = HocaRoutes.ONBOARDING_DOWNLOAD) {
+            // Direkt word selection'a yönlendir
+            WordSelectionScreen(
+                onNavigateToStudy = {
+                    navController.navigate(HocaRoutes.STUDY) {
+                        popUpTo(HocaRoutes.ONBOARDING_DOWNLOAD) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        // Word Selection Screen (REAL SCREEN)
         composable(route = HocaRoutes.WORD_SELECTION) {
-            PlaceholderScreen(
-                title = "✨ Kelime Seçimi",
-                subtitle = "Öğrenmek istediğiniz kelimeleri seçin\nSağa kaydır = Öğren, Sola kaydır = Geç",
-                buttonText = "Çalışmaya Başla",
-                onNavigate = {
+            WordSelectionScreen(
+                onNavigateToStudy = {
                     navController.navigate(HocaRoutes.STUDY) {
                         popUpTo(HocaRoutes.WORD_SELECTION) { inclusive = true }
                     }
@@ -135,7 +134,7 @@ fun HocaLingoNavigation(
             )
         }
 
-        // Main App Screens
+        // Study Screen (Placeholder)
         composable(route = HocaRoutes.STUDY) {
             PlaceholderScreen(
                 title = "🎯 Çalışma Ekranı",
@@ -147,6 +146,7 @@ fun HocaLingoNavigation(
             )
         }
 
+        // Profile Screen (Placeholder)
         composable(route = HocaRoutes.PROFILE) {
             PlaceholderScreen(
                 title = "👤 Profil",
@@ -158,6 +158,7 @@ fun HocaLingoNavigation(
             )
         }
 
+        // Settings Screen (Placeholder)
         composable(route = HocaRoutes.SETTINGS) {
             PlaceholderScreen(
                 title = "⚙️ Ayarlar",
@@ -169,6 +170,7 @@ fun HocaLingoNavigation(
             )
         }
 
+        // Add Word Screen (Placeholder)
         composable(route = HocaRoutes.ADD_WORD) {
             PlaceholderScreen(
                 title = "➕ Kelime Ekle",
