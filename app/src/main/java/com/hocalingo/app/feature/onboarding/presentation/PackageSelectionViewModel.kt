@@ -52,7 +52,8 @@ class PackageSelectionViewModel @Inject constructor(
                 val existingPackages = database.wordPackageDao().getActivePackages()
 
                 // Test için A1 paketinin yüklü olup olmadığını kontrol et
-                val isA1Loaded = existingPackages.any { it.packageId.contains("a1") }
+                // ÖNEMLİ: Package ID'yi doğru yazıyoruz!
+                val isA1Loaded = existingPackages.any { it.packageId == "a1_en_tr_test_v1" }
 
                 if (!isA1Loaded) {
                     // A1 test verisini yükle
@@ -80,18 +81,19 @@ class PackageSelectionViewModel @Inject constructor(
         }
     }
 
-    private fun createPackageList(): List<PackageInfo> {// A1 paketinin indirilip indirilmediğini burada,
-        // listenin oluşturulduğu anda kontrol et.
-        val isA1Downloaded = _uiState.value.packages.any { it.id.contains("a1") && it.isDownloaded }
+    private suspend fun createPackageList(): List<PackageInfo> {
+        // Database'den mevcut paketleri kontrol et
+        val existingPackages = database.wordPackageDao().getActivePackages()
+        val isA1Downloaded = existingPackages.any { it.packageId == "a1_en_tr_test_v1" }
 
         return listOf(
             PackageInfo(
-                id = "a1_en_tr_v1",  // JsonLoader'daki packageId ile aynı olmalı
+                id = "a1_en_tr_test_v1",  // DÜZELTME: test_words.json'daki ID ile eşleşmeli!
                 level = "A1",
                 name = "Başlangıç",
                 description = "Temel kelimeler ve günlük ifadeler",
                 wordCount = 50, // Test için 50 kelime
-                isDownloaded = isA1Downloaded, // Dinamik olarak belirleniyor
+                isDownloaded = isA1Downloaded,
                 downloadProgress = if (isA1Downloaded) 100 else 0,
                 color = "#4CAF50" // Green
             ),
@@ -101,26 +103,17 @@ class PackageSelectionViewModel @Inject constructor(
                 name = "Temel",
                 description = "Basit iletişim ve yaygın kelimeler",
                 wordCount = 400,
-                // Diğer paketler için isDownloaded durumunu şimdilik false veya
-                // _uiState.value.packages içinden kontrol ederek ayarlayabilirsiniz.
-                // Örnek: _uiState.value.packages.any { it.id == "a2_en_tr_v1" && it.isDownloaded }
-                isDownloaded = false, // VEYA _uiState.value.packages.any { it.id == "a2_en_tr_v1" && it.isDownloaded }
-                downloadProgress = 0, // VEYA if (_uiState.value.packages.any { it.id == "a2_en_tr_v1" && it.isDownloaded }) 100 else 0
+                isDownloaded = false,
+                downloadProgress = 0,
                 color = "#8BC34A" // Light Green
             ),
-            // ... Diğer paket tanımları aynı şekilde ...
-            // Emin olmak için diğer paketlerin isDownloaded ve downloadProgress
-            // değerlerini de benzer şekilde _uiState.value.packages içinden kontrol ederek
-            // veya şimdilik sabit bir değerle ayarlamanız gerekebilir.
-            // Aksi takdirde, A1 dışındaki paketler için `isA1Downloaded` değişkenini
-            // kullanmak mantıksal bir hataya yol açar.
             PackageInfo(
                 id = "b1_en_tr_v1",
                 level = "B1",
                 name = "Orta",
                 description = "Günlük konuşma ve seyahat kelimeleri",
                 wordCount = 600,
-                isDownloaded = false, // Örnek olarak false bırakıldı, gerekirse dinamik yapın
+                isDownloaded = false,
                 downloadProgress = 0,
                 color = "#FF9800" // Orange
             ),
@@ -157,7 +150,6 @@ class PackageSelectionViewModel @Inject constructor(
         )
     }
 
-
     private fun selectPackage(packageId: String) {
         viewModelScope.launch {
             val selectedPackage = _uiState.value.packages.find { it.id == packageId }
@@ -176,7 +168,7 @@ class PackageSelectionViewModel @Inject constructor(
     private fun downloadPackage(packageId: String) {
         viewModelScope.launch {
             // Şimdilik sadece A1 paketi var, diğerleri için "Yakında" mesajı
-            if (!packageId.contains("a1")) {
+            if (packageId != "a1_en_tr_test_v1") {
                 _effect.emit(
                     PackageSelectionEffect.ShowMessage(
                         "Bu paket yakında eklenecek! Şimdilik A1 paketi ile devam edebilirsiniz."

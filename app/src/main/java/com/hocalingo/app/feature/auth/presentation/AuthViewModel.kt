@@ -18,6 +18,7 @@ import javax.inject.Inject
 
 /**
  * ViewModel for Authentication Screen
+ * BASİT VERSİYON - AuthStateManager olmadan
  */
 @HiltViewModel
 class AuthViewModel @Inject constructor(
@@ -38,12 +39,15 @@ class AuthViewModel @Inject constructor(
 
     /**
      * Check if user is already authenticated
+     * BASİT: Kullanıcı giriş yaptıysa direkt onboarding'e yönlendir
      */
     private fun checkAuthStatus() {
         val user = authRepository.getCurrentUser()
         if (user != null) {
             viewModelScope.launch {
-                _effect.emit(AuthEffect.NavigateToHome)
+                // Kullanıcı giriş yapmış, direkt onboarding'e gönder
+                // Onboarding ekranı zaten gerekli kontrolleri yapacak
+                _effect.emit(AuthEffect.NavigateToOnboarding)
             }
         }
     }
@@ -61,6 +65,7 @@ class AuthViewModel @Inject constructor(
 
     /**
      * Handle Google Sign-In with ID token
+     * BASİT: Başarılı girişte direkt onboarding'e git
      */
     private fun handleGoogleSignIn(idToken: String) {
         viewModelScope.launch {
@@ -83,6 +88,7 @@ class AuthViewModel @Inject constructor(
                             user = result.data
                         )
                     }
+                    // Basit: Her zaman onboarding'e git
                     _effect.emit(AuthEffect.NavigateToOnboarding)
                 }
                 is Result.Error -> {
@@ -99,6 +105,7 @@ class AuthViewModel @Inject constructor(
 
     /**
      * Sign in anonymously (guest mode)
+     * BASİT: Başarılı girişte direkt onboarding'e git
      */
     private fun signInAnonymously() {
         viewModelScope.launch {
@@ -114,6 +121,7 @@ class AuthViewModel @Inject constructor(
                             isAnonymous = true
                         )
                     }
+                    // Basit: Her zaman onboarding'e git
                     _effect.emit(AuthEffect.NavigateToOnboarding)
                 }
                 is Result.Error -> {
@@ -158,10 +166,9 @@ sealed interface AuthEvent {
 
 /**
  * Side Effects
+ * NOT: NavigateToWordSelection ve NavigateToHome kaldırıldı, sadece Onboarding var
  */
 sealed interface AuthEffect {
     data object NavigateToOnboarding : AuthEffect
-    data object NavigateToWordSelection : AuthEffect
-    data object NavigateToHome : AuthEffect
     data class ShowError(val message: String) : AuthEffect
 }

@@ -52,11 +52,11 @@ import kotlinx.coroutines.flow.collectLatest
 /**
  * Authentication Screen
  * Handles Google Sign-In and Anonymous authentication
+ * BASİT VERSİYON: Tek navigation destination var (Onboarding)
  */
 @Composable
 fun AuthScreen(
     onNavigateToOnboarding: () -> Unit,
-    onNavigateToHome: () -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -77,12 +77,9 @@ fun AuthScreen(
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 AuthEffect.NavigateToOnboarding -> onNavigateToOnboarding()
-                AuthEffect.NavigateToHome -> onNavigateToHome()
                 is AuthEffect.ShowError -> {
                     snackbarHostState.showSnackbar(effect.message)
                 }
-
-                AuthEffect.NavigateToWordSelection -> TODO()
             }
         }
     }
@@ -329,8 +326,7 @@ private fun TermsText() {
 private fun AuthScreenPreview() {
     HocaLingoTheme {
         AuthScreen(
-            onNavigateToOnboarding = {},
-            onNavigateToHome = {}
+            onNavigateToOnboarding = {}
         )
     }
 }

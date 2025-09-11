@@ -3,6 +3,7 @@ package com.hocalingo.app.feature.selection.presentation
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hocalingo.app.core.common.DebugHelper
 import com.hocalingo.app.core.database.HocaLingoDatabase
 import com.hocalingo.app.core.database.entities.ConceptEntity
 import com.hocalingo.app.core.database.entities.SelectionStatus
@@ -26,6 +27,7 @@ class WordSelectionViewModel @Inject constructor(
 ) : ViewModel() {
 
     // Package ID from navigation args or default
+    // DÜZELTME: Package ID doğru alınıyor
     private val packageId: String = savedStateHandle.get<String>("packageId") ?: "a1_en_tr_test_v1"
 
     private val _uiState = MutableStateFlow(WordSelectionUiState())
@@ -43,6 +45,7 @@ class WordSelectionViewModel @Inject constructor(
     private val DAILY_SELECTION_LIMIT_PREMIUM = 100 // Premium için
 
     init {
+        DebugHelper.logWordSelection("WordSelectionViewModel initialized with packageId: $packageId")
         loadWords()
         loadTodaySelectionCount()
     }
@@ -62,10 +65,17 @@ class WordSelectionViewModel @Inject constructor(
     private fun loadWords() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
+            DebugHelper.logWordSelection("Loading words for package: $packageId")
 
             try {
                 // Package'a ait kelimeleri getir
                 val concepts = database.conceptDao().getConceptsByPackage(packageId)
+                DebugHelper.logWordSelection("Found ${concepts.size} concepts for package $packageId")
+
+                // Debug için ilk 3 kelimeyi logla
+                concepts.take(3).forEach { concept ->
+                    DebugHelper.logWordSelection("Sample word: ${concept.english} - ${concept.turkish}")
+                }
 
                 // Daha önce seçilmiş/gizlenmiş kelimeleri filtrele
                 val selections = database.userSelectionDao()
@@ -74,9 +84,11 @@ class WordSelectionViewModel @Inject constructor(
                             .getSelectionsByStatus(SelectionStatus.HIDDEN)
 
                 val selectedIds = selections.map { it.conceptId }.toSet()
+                DebugHelper.logWordSelection("Already selected/hidden: ${selectedIds.size} words")
 
                 // Henüz seçilmemiş kelimeleri al
                 val unseenWords = concepts.filter { it.id !in selectedIds }
+                DebugHelper.logWordSelection("Unseen words: ${unseenWords.size}")
 
                 _uiState.update {
                     it.copy(
@@ -92,12 +104,16 @@ class WordSelectionViewModel @Inject constructor(
                 // İlk kelimeyi göster
                 if (unseenWords.isNotEmpty()) {
                     _uiState.update { it.copy(currentWord = unseenWords.first()) }
+                    DebugHelper.logWordSelection("First word set: ${unseenWords.first().english}")
+                } else {
+                    DebugHelper.logWordSelection("No unseen words available!")
                 }
             } catch (e: Exception) {
+                DebugHelper.logError("Error loading words", e)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Kelimeler yüklenirken hata oluştu"
+                        error = "Kelimeler yüklenirken hata oluştu: ${e.message}"
                     )
                 }
             }
@@ -140,6 +156,8 @@ class WordSelectionViewModel @Inject constructor(
                 )
             }
 
+            DebugHelper.logWordSelection("Word selected: $conceptId")
+
             // Sonraki kelimeye geç
             moveToNextWord()
         }
@@ -158,6 +176,8 @@ class WordSelectionViewModel @Inject constructor(
                 it.copy(hiddenCount = it.hiddenCount + 1)
             }
 
+            DebugHelper.logWordSelection("Word hidden: $conceptId")
+
             // Sonraki kelimeye geç
             moveToNextWord()
         }
@@ -174,6 +194,7 @@ class WordSelectionViewModel @Inject constructor(
                     currentWord = it.remainingWords[nextIndex]
                 )
             }
+            DebugHelper.logWordSelection("Moved to next word: ${currentState.remainingWords[nextIndex].english}")
         } else {
             // Tüm kelimeler işlendi
             _uiState.update {
@@ -186,6 +207,8 @@ class WordSelectionViewModel @Inject constructor(
             viewModelScope.launch {
                 _effect.emit(WordSelectionEffect.ShowCompletionMessage)
             }
+
+            DebugHelper.logWordSelection("All words processed!")
         }
     }
 

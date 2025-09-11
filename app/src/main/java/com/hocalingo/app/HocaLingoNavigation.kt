@@ -14,8 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.hocalingo.app.feature.auth.presentation.AuthScreen
 import com.hocalingo.app.feature.onboarding.presentation.PackageSelectionScreen
 import com.hocalingo.app.feature.selection.presentation.WordSelectionScreen
@@ -41,6 +43,7 @@ object HocaRoutes {
 /**
  * Main Navigation Composable
  * Handles all app navigation flows
+ * DÜZELTME: Package ID parametresi eklendi
  */
 @Composable
 fun HocaLingoNavigation(
@@ -74,15 +77,11 @@ fun HocaLingoNavigation(
         }
 
         // Authentication Screen
+        // BASİT: Sadece onboarding'e navigation var
         composable(route = HocaRoutes.AUTH) {
             AuthScreen(
                 onNavigateToOnboarding = {
                     navController.navigate(HocaRoutes.ONBOARDING_LEVEL) {
-                        popUpTo(HocaRoutes.AUTH) { inclusive = true }
-                    }
-                },
-                onNavigateToHome = {
-                    navController.navigate(HocaRoutes.STUDY) {
                         popUpTo(HocaRoutes.AUTH) { inclusive = true }
                     }
                 }
@@ -102,34 +101,34 @@ fun HocaLingoNavigation(
         }
 
         // Onboarding - Package/Level Selection (REAL SCREEN)
+        // DÜZELTME: Package ID route parametresi ile geçiriliyor
         composable(route = HocaRoutes.ONBOARDING_LEVEL) {
             PackageSelectionScreen(
                 onNavigateToWordSelection = { packageId ->
-                    // PackageId'yi SavedStateHandle ile geçiyoruz
-                    navController.currentBackStackEntry?.savedStateHandle?.set("packageId", packageId)
-                    navController.navigate(HocaRoutes.WORD_SELECTION)
-                }
-            )
-        }
-
-        // Onboarding - Download (Artık kullanılmıyor ama route duruyor)
-        composable(route = HocaRoutes.ONBOARDING_DOWNLOAD) {
-            // Direkt word selection'a yönlendir
-            WordSelectionScreen(
-                onNavigateToStudy = {
-                    navController.navigate(HocaRoutes.STUDY) {
-                        popUpTo(HocaRoutes.ONBOARDING_DOWNLOAD) { inclusive = true }
-                    }
+                    // PackageId'yi route parametresi olarak geçiyoruz
+                    navController.navigate("${HocaRoutes.WORD_SELECTION}/$packageId")
                 }
             )
         }
 
         // Word Selection Screen (REAL SCREEN)
-        composable(route = HocaRoutes.WORD_SELECTION) {
+        // DÜZELTME: Package ID parametresi eklendi
+        composable(
+            route = "${HocaRoutes.WORD_SELECTION}/{packageId}",
+            arguments = listOf(
+                navArgument("packageId") {
+                    type = NavType.StringType
+                    defaultValue = "a1_en_tr_test_v1"
+                }
+            )
+        ) { backStackEntry ->
+            // Package ID'yi navigation argument'ten al
+            val packageId = backStackEntry.arguments?.getString("packageId") ?: "a1_en_tr_test_v1"
+
             WordSelectionScreen(
                 onNavigateToStudy = {
                     navController.navigate(HocaRoutes.STUDY) {
-                        popUpTo(HocaRoutes.WORD_SELECTION) { inclusive = true }
+                        popUpTo("${HocaRoutes.WORD_SELECTION}/{packageId}") { inclusive = true }
                     }
                 }
             )
