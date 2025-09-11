@@ -2,6 +2,7 @@ package com.hocalingo.app.feature.onboarding.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hocalingo.app.core.common.DebugHelper
 import com.hocalingo.app.core.common.base.Result
 import com.hocalingo.app.core.database.JsonLoader
 import com.hocalingo.app.core.database.MainDatabaseSeeder
@@ -18,6 +19,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * PackageSelectionViewModel - FINAL FIX
+ * UI State inconsistency çözüldü, database sync düzeltildi
+ */
 @HiltViewModel
 class PackageSelectionViewModel @Inject constructor(
     private val jsonLoader: JsonLoader,
@@ -32,10 +37,12 @@ class PackageSelectionViewModel @Inject constructor(
     val effect: SharedFlow<PackageSelectionEffect> = _effect.asSharedFlow()
 
     init {
+        DebugHelper.log("=== PackageSelectionViewModel BAŞLATILIYOR ===")
         loadPackages()
     }
 
     fun onEvent(event: PackageSelectionEvent) {
+        DebugHelper.log("Event: $event")
         when (event) {
             is PackageSelectionEvent.SelectPackage -> selectPackage(event.packageId)
             is PackageSelectionEvent.DownloadPackage -> downloadPackage(event.packageId)
@@ -45,57 +52,73 @@ class PackageSelectionViewModel @Inject constructor(
 
     private fun loadPackages() {
         viewModelScope.launch {
+            DebugHelper.log("=== PACKAGES YÜKLENMEYE BAŞLIYOR ===")
             _uiState.update { it.copy(isLoading = true, error = null) }
 
             try {
-                // Önce database'deki mevcut paketleri kontrol et
+                // Database'den aktif paketleri al
                 val existingPackages = database.wordPackageDao().getActivePackages()
+                DebugHelper.log("Database'de ${existingPackages.size} paket bulundu")
 
-                // Test için A1 paketinin yüklü olup olmadığını kontrol et
-                // ÖNEMLİ: Package ID'yi doğru yazıyoruz!
-                val isA1Loaded = existingPackages.any { it.packageId == "a1_en_tr_test_v1" }
-
-                if (!isA1Loaded) {
-                    // A1 test verisini yükle
-                    jsonLoader.loadTestWords()
+                existingPackages.forEach { pkg ->
+                    val conceptCount = database.conceptDao().getConceptsByPackage(pkg.packageId).size
+                    DebugHelper.log("📦 ${pkg.packageId}: ${pkg.totalWords} words, $conceptCount concepts")
                 }
 
-                // Tüm paket listesini oluştur (6 seviye)
-                val packages = createPackageList()
+                // UI paket listesini oluştur
+                val packages = createPackageList(existingPackages)
 
-                _uiState.update { currentState ->
-                    currentState.copy(
+                _uiState.update {
+                    it.copy(
                         isLoading = false,
                         packages = packages,
                         error = null
                     )
                 }
+
+                DebugHelper.log("UI packages oluşturuldu: ${packages.size}")
+                packages.forEach { pkg ->
+                    DebugHelper.log("📱 ${pkg.id}: Downloaded=${pkg.isDownloaded}, Progress=${pkg.downloadProgress}")
+                }
+
             } catch (e: Exception) {
+                DebugHelper.logError("Package loading error", e)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Paketler yüklenirken hata oluştu"
+                        error = "Paketler yüklenirken hata: ${e.message}"
                     )
                 }
             }
+            DebugHelper.log("=== PACKAGES YÜKLEME BİTTİ ===")
         }
     }
 
-    private suspend fun createPackageList(): List<PackageInfo> {
-        // Database'den mevcut paketleri kontrol et
-        val existingPackages = database.wordPackageDao().getActivePackages()
-        val isA1Downloaded = existingPackages.any { it.packageId == "a1_en_tr_test_v1" }
+    private suspend fun createPackageList(existingPackages: List<WordPackageEntity>): List<PackageInfo> {
+        DebugHelper.log("--- createPackageList çağrıldı ---")
+
+        // A1 paketi için kapsamlı kontrol
+        val a1Package = existingPackages.find { it.packageId == "a1_en_tr_test_v1" }
+        val a1ConceptCount = if (a1Package != null) {
+            database.conceptDao().getConceptsByPackage("a1_en_tr_test_v1").size
+        } else {
+            0
+        }
+
+        val isA1Downloaded = a1Package != null && a1ConceptCount > 0
+
+        DebugHelper.log("A1 durumu: Package=${a1Package != null}, Concepts=$a1ConceptCount, Downloaded=$isA1Downloaded")
 
         return listOf(
             PackageInfo(
-                id = "a1_en_tr_test_v1",  // DÜZELTME: test_words.json'daki ID ile eşleşmeli!
+                id = "a1_en_tr_test_v1",
                 level = "A1",
                 name = "Başlangıç",
                 description = "Temel kelimeler ve günlük ifadeler",
-                wordCount = 50, // Test için 50 kelime
+                wordCount = 50,
                 isDownloaded = isA1Downloaded,
                 downloadProgress = if (isA1Downloaded) 100 else 0,
-                color = "#4CAF50" // Green
+                color = "#4CAF50"
             ),
             PackageInfo(
                 id = "a2_en_tr_v1",
@@ -105,7 +128,7 @@ class PackageSelectionViewModel @Inject constructor(
                 wordCount = 400,
                 isDownloaded = false,
                 downloadProgress = 0,
-                color = "#8BC34A" // Light Green
+                color = "#8BC34A"
             ),
             PackageInfo(
                 id = "b1_en_tr_v1",
@@ -115,7 +138,7 @@ class PackageSelectionViewModel @Inject constructor(
                 wordCount = 600,
                 isDownloaded = false,
                 downloadProgress = 0,
-                color = "#FF9800" // Orange
+                color = "#FF9800"
             ),
             PackageInfo(
                 id = "b2_en_tr_v1",
@@ -125,7 +148,7 @@ class PackageSelectionViewModel @Inject constructor(
                 wordCount = 800,
                 isDownloaded = false,
                 downloadProgress = 0,
-                color = "#FF5722" // Deep Orange
+                color = "#FF5722"
             ),
             PackageInfo(
                 id = "c1_en_tr_v1",
@@ -135,7 +158,7 @@ class PackageSelectionViewModel @Inject constructor(
                 wordCount = 500,
                 isDownloaded = false,
                 downloadProgress = 0,
-                color = "#9C27B0" // Purple
+                color = "#9C27B0"
             ),
             PackageInfo(
                 id = "c2_en_tr_v1",
@@ -145,21 +168,24 @@ class PackageSelectionViewModel @Inject constructor(
                 wordCount = 300,
                 isDownloaded = false,
                 downloadProgress = 0,
-                color = "#673AB7" // Deep Purple
+                color = "#673AB7"
             )
         )
     }
 
     private fun selectPackage(packageId: String) {
         viewModelScope.launch {
+            DebugHelper.log("=== PAKET SEÇİLDİ: $packageId ===")
+
             val selectedPackage = _uiState.value.packages.find { it.id == packageId }
+            DebugHelper.log("Seçilen paket: $selectedPackage")
 
             if (selectedPackage?.isDownloaded == true) {
-                // Paket yüklüyse direkt kelime seçimine geç
+                DebugHelper.log("Paket indirilmiş, kelime seçimine geçiliyor")
                 _uiState.update { it.copy(selectedPackageId = packageId) }
                 _effect.emit(PackageSelectionEffect.NavigateToWordSelection(packageId))
             } else {
-                // Paket yüklü değilse önce indir
+                DebugHelper.log("Paket indirilmemiş, download dialog gösteriliyor")
                 _effect.emit(PackageSelectionEffect.ShowDownloadDialog(packageId))
             }
         }
@@ -167,36 +193,77 @@ class PackageSelectionViewModel @Inject constructor(
 
     private fun downloadPackage(packageId: String) {
         viewModelScope.launch {
-            // Şimdilik sadece A1 paketi var, diğerleri için "Yakında" mesajı
+            DebugHelper.log("=== PAKET İNDİRME BAŞLADI: $packageId ===")
+
+            // Sadece A1 paketi mevcut
             if (packageId != "a1_en_tr_test_v1") {
                 _effect.emit(
                     PackageSelectionEffect.ShowMessage(
-                        "Bu paket yakında eklenecek! Şimdilik A1 paketi ile devam edebilirsiniz."
+                        "Bu paket yakında eklenecek! A1 paketi ile devam edebilirsiniz."
                     )
                 )
                 return@launch
             }
 
-            // İndirme simülasyonu
-            val packages = _uiState.value.packages.toMutableList()
-            val index = packages.indexOfFirst { it.id == packageId }
+            try {
+                // Progress animasyonu
+                val packages = _uiState.value.packages.toMutableList()
+                val index = packages.indexOfFirst { it.id == packageId }
 
-            if (index != -1) {
-                // Progress güncellemeleri
-                for (progress in 0..100 step 20) {
-                    packages[index] = packages[index].copy(downloadProgress = progress)
-                    _uiState.update { it.copy(packages = packages.toList()) }
-                    kotlinx.coroutines.delay(200) // Simülasyon için
+                if (index == -1) {
+                    DebugHelper.logError("Package not found in UI list: $packageId")
+                    return@launch
                 }
 
-                packages[index] = packages[index].copy(
-                    isDownloaded = true,
-                    downloadProgress = 100
-                )
-                _uiState.update { it.copy(packages = packages.toList()) }
+                // Progress simulation
+                DebugHelper.log("Progress animasyonu başlatılıyor")
+                for (progress in 25..75 step 25) {
+                    packages[index] = packages[index].copy(downloadProgress = progress)
+                    _uiState.update { it.copy(packages = packages.toList()) }
+                    kotlinx.coroutines.delay(300)
+                }
 
-                _effect.emit(PackageSelectionEffect.ShowMessage("Paket başarıyla indirildi!"))
+                // GERÇEK İNDİRME
+                DebugHelper.log("JsonLoader.loadTestWords() çağrılıyor...")
+                when (val result = jsonLoader.loadTestWords()) {
+                    is Result.Success -> {
+                        DebugHelper.logSuccess("🎉 DOWNLOAD BAŞARILI: ${result.data} kelime!")
+
+                        // ÖNEMLİ: Database'den packages'ları yeniden yükle
+                        DebugHelper.log("Database'den packages yeniden yükleniyor...")
+                        loadPackages() // Bu kritik - UI'ı database ile sync eder
+
+                        _effect.emit(
+                            PackageSelectionEffect.ShowMessage(
+                                "🎉 Paket başarıyla indirildi! ${result.data} kelime eklendi."
+                            )
+                        )
+                    }
+                    is Result.Error -> {
+                        DebugHelper.logError("💥 DOWNLOAD BAŞARISIZ", result.error)
+
+                        // Progress'i sıfırla
+                        packages[index] = packages[index].copy(
+                            isDownloaded = false,
+                            downloadProgress = 0
+                        )
+                        _uiState.update { it.copy(packages = packages.toList()) }
+
+                        _effect.emit(
+                            PackageSelectionEffect.ShowMessage(
+                                "❌ İndirme başarısız: ${result.error.message}"
+                            )
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                DebugHelper.logError("Download exception", e)
+                _effect.emit(
+                    PackageSelectionEffect.ShowMessage("Beklenmeyen hata: ${e.message}")
+                )
             }
+
+            DebugHelper.log("=== PAKET İNDİRME BİTTİ ===")
         }
     }
 }

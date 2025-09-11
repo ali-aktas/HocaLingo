@@ -3,9 +3,8 @@ package com.hocalingo.app.core.common
 import android.util.Log
 
 /**
- * Debug Helper for HocaLingo
+ * Debug Helper for HocaLingo - FULL VERSION
  * Centralized logging for debugging
- * YENİ DOSYA - core/common klasörüne eklenecek
  */
 object DebugHelper {
     private const val TAG = "HocaLingo"
@@ -13,35 +12,43 @@ object DebugHelper {
 
     fun log(message: String, tag: String = TAG) {
         if (DEBUG_MODE) {
-            Log.d(tag, message)
+            Log.d(tag, "🟢 $message")
         }
     }
 
     fun logError(message: String, throwable: Throwable? = null, tag: String = TAG) {
         if (DEBUG_MODE) {
-            Log.e(tag, message, throwable)
+            Log.e(tag, "🔴 ERROR: $message", throwable)
         }
     }
 
     fun logWarning(message: String, tag: String = TAG) {
         if (DEBUG_MODE) {
-            Log.w(tag, message)
+            Log.w(tag, "🟡 WARNING: $message")
         }
     }
 
     fun logDatabase(message: String) {
-        log("DB: $message", "$TAG-DB")
+        log("📊 DB: $message", "$TAG-DB")
     }
 
     fun logAuth(message: String) {
-        log("AUTH: $message", "$TAG-AUTH")
+        log("🔐 AUTH: $message", "$TAG-AUTH")
     }
 
     fun logNavigation(message: String) {
-        log("NAV: $message", "$TAG-NAV")
+        log("🧭 NAV: $message", "$TAG-NAV")
     }
 
     fun logWordSelection(message: String) {
-        log("WORDS: $message", "$TAG-WORDS")
+        log("🎯 WORDS: $message", "$TAG-WORDS")
+    }
+
+    fun logSuccess(message: String) {
+        log("✅ SUCCESS: $message")
+    }
+
+    fun logInfo(message: String) {
+        log("ℹ️ INFO: $message")
     }
 }

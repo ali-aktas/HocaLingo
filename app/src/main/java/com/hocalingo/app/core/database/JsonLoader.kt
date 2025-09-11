@@ -1,6 +1,7 @@
 package com.hocalingo.app.core.database
 
 import android.content.Context
+import com.hocalingo.app.core.common.DebugHelper
 import com.hocalingo.app.core.common.base.AppError
 import com.hocalingo.app.core.common.base.Result
 import com.hocalingo.app.core.database.HocaLingoDatabase
@@ -9,14 +10,15 @@ import com.hocalingo.app.core.database.entities.WordPackageEntity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * JsonLoader
- * Loads word data from JSON files in assets and imports to Room database
+ * JsonLoader - CLEAN VERSION
+ * Serialization tamamen düzeltildi
  */
 @Singleton
 class JsonLoader @Inject constructor(
@@ -30,31 +32,45 @@ class JsonLoader @Inject constructor(
     }
 
     /**
-     * Load test words from assets/test_words.json
+     * Load test words - CLEAN VERSION
      */
     suspend fun loadTestWords(): Result<Int> = withContext(Dispatchers.IO) {
         try {
-            println("HocaLingo: Test kelimeler yükleniyor...")
+            DebugHelper.logDatabase("=== CLEAN TEST KELİME YÜKLEMESI ===")
 
-            // Check if already loaded
+            // Duplicate check
             val existingPackage = database.wordPackageDao().getPackageById("a1_en_tr_test_v1")
             if (existingPackage != null) {
-                println("HocaLingo: Test paketi zaten yüklü")
                 val conceptCount = database.conceptDao().getConceptsByPackage("a1_en_tr_test_v1").size
+                DebugHelper.logDatabase("Paket zaten var: $conceptCount kelime")
                 return@withContext Result.Success(conceptCount)
             }
 
+            // JSON okuma
             val jsonString = context.assets.open("test_words.json")
                 .bufferedReader()
                 .use { it.readText() }
 
-            println("HocaLingo: JSON okundu, parse ediliyor...")
+            DebugHelper.logDatabase("JSON okundu: ${jsonString.length} karakter")
+            DebugHelper.logDatabase("JSON preview: ${jsonString.take(200)}...")
 
-            val wordPackage = json.decodeFromString<WordPackageJson>(jsonString)
+            // Parse etme - DİKKATLİ
+            val wordPackage = json.decodeFromString<TestWordsJson>(jsonString)
+            DebugHelper.logDatabase("Parse başarılı: ${wordPackage.words.size} kelime")
+            DebugHelper.logDatabase("Package ID: ${wordPackage.packageInfo.id}")
 
-            println("HocaLingo: ${wordPackage.words.size} kelime parse edildi")
+            // Database entities
+            val packageEntity = WordPackageEntity(
+                packageId = wordPackage.packageInfo.id,
+                version = wordPackage.packageInfo.version,
+                level = wordPackage.packageInfo.level,
+                languagePair = wordPackage.packageInfo.languagePair,
+                totalWords = wordPackage.packageInfo.totalWords,
+                downloadedAt = System.currentTimeMillis(),
+                isActive = true,
+                description = wordPackage.packageInfo.description
+            )
 
-            // Convert JSON to entities
             val concepts = wordPackage.words.map { word ->
                 ConceptEntity(
                     id = word.id,
@@ -71,40 +87,66 @@ class JsonLoader @Inject constructor(
                 )
             }
 
-            val packageEntity = WordPackageEntity(
-                packageId = wordPackage.packageInfo.id,
-                version = wordPackage.packageInfo.version,
-                level = wordPackage.packageInfo.level,
-                languagePair = wordPackage.packageInfo.languagePair,
-                totalWords = wordPackage.packageInfo.totalWords,
-                downloadedAt = System.currentTimeMillis(),
-                isActive = true,
-                description = wordPackage.packageInfo.description
-            )
-
-            // Insert into database
+            // Database'e kaydetme
+            DebugHelper.logDatabase("Package kaydediliyor...")
             database.wordPackageDao().insertPackage(packageEntity)
+            DebugHelper.logDatabase("Package kaydedildi!")
+
+            DebugHelper.logDatabase("${concepts.size} concept kaydediliyor...")
             database.conceptDao().insertConcepts(concepts)
+            DebugHelper.logDatabase("Concepts kaydedildi!")
 
-            println("HocaLingo: ${concepts.size} kelime database'e kaydedildi")
+            // Validation
+            val savedConceptCount = database.conceptDao().getConceptsByPackage(wordPackage.packageInfo.id).size
+            val savedPackage = database.wordPackageDao().getPackageById(wordPackage.packageInfo.id)
 
-            Result.Success(concepts.size)
+            DebugHelper.logDatabase("DOĞRULAMA:")
+            DebugHelper.logDatabase("- Package: ${savedPackage != null}")
+            DebugHelper.logDatabase("- Concepts: $savedConceptCount")
+
+            if (savedPackage != null && savedConceptCount > 0) {
+                DebugHelper.logSuccess("YÜKLEME BAŞARILI: $savedConceptCount kelime")
+                Result.Success(savedConceptCount)
+            } else {
+                throw Exception("Kaydetme başarısız: Package=${savedPackage != null}, Concepts=$savedConceptCount")
+            }
+
         } catch (e: Exception) {
-            println("HocaLingo: Test kelime yükleme hatası: ${e.message}")
-            e.printStackTrace()
+            DebugHelper.logError("YÜKLEME HATASI", e)
             Result.Error(AppError.Unknown(e))
         }
     }
 
     /**
-     * Load words from a specific JSON file
+     * Check if test data loaded
+     */
+    suspend fun isTestDataLoaded(): Result<Boolean> = withContext(Dispatchers.IO) {
+        try {
+            val packageInfo = database.wordPackageDao().getPackageById("a1_en_tr_test_v1")
+            val conceptCount = if (packageInfo != null) {
+                database.conceptDao().getConceptsByPackage("a1_en_tr_test_v1").size
+            } else {
+                0
+            }
+
+            val isLoaded = packageInfo != null && conceptCount > 0
+            DebugHelper.logDatabase("Test loaded check: Package=${packageInfo != null}, Concepts=$conceptCount, Result=$isLoaded")
+
+            Result.Success(isLoaded)
+        } catch (e: Exception) {
+            Result.Error(AppError.Unknown(e))
+        }
+    }
+
+    /**
+     * Load words from assets file
      */
     suspend fun loadWordsFromAssets(fileName: String): Result<Int> = withContext(Dispatchers.IO) {
         try {
             val jsonString = context.assets.open(fileName).bufferedReader().use { it.readText() }
-            val wordPackage = json.decodeFromString<WordPackageJson>(jsonString)
+            val wordPackage = json.decodeFromString<TestWordsJson>(jsonString)
 
-            // Check if package already exists
+            // Duplicate check
             val existingPackage = database.wordPackageDao().getPackageById(wordPackage.packageInfo.id)
             if (existingPackage != null) {
                 return@withContext Result.Error(AppError.DuplicateWord)
@@ -148,40 +190,7 @@ class JsonLoader @Inject constructor(
     }
 
     /**
-     * Load multiple word packages from assets
-     */
-    suspend fun loadMultiplePackages(fileNames: List<String>): Result<Map<String, Int>> = withContext(Dispatchers.IO) {
-        try {
-            val results = mutableMapOf<String, Int>()
-
-            for (fileName in fileNames) {
-                when (val result = loadWordsFromAssets(fileName)) {
-                    is Result.Success -> results[fileName] = result.data
-                    is Result.Error -> return@withContext result
-                }
-            }
-
-            Result.Success(results)
-        } catch (e: Exception) {
-            Result.Error(AppError.Unknown(e))
-        }
-    }
-
-    /**
-     * Check if test data is already loaded
-     */
-    suspend fun isTestDataLoaded(): Result<Boolean> = withContext(Dispatchers.IO) {
-        try {
-            val packageInfo = database.wordPackageDao().getPackageById("a1_en_tr_test_v1")
-            Result.Success(packageInfo != null)
-        } catch (e: Exception) {
-            Result.Error(AppError.Unknown(e))
-        }
-    }
-
-
-    /**
-     * Get all available JSON files in assets
+     * Get available packages
      */
     suspend fun getAvailableWordPackages(): Result<List<String>> = withContext(Dispatchers.IO) {
         try {
@@ -194,23 +203,15 @@ class JsonLoader @Inject constructor(
     }
 
     /**
-     * Clear all word data (for development/testing)
+     * Clear all words
      */
     suspend fun clearAllWords(): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            // Get all packages
             val packages = database.wordPackageDao().getActivePackages()
-
-            // Delete concepts for each package
             packages.forEach { pkg ->
                 database.conceptDao().deleteConceptsByPackage(pkg.packageId)
-            }
-
-            // Delete packages
-            packages.forEach { pkg ->
                 database.wordPackageDao().deletePackage(pkg)
             }
-
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(AppError.Unknown(e))
@@ -218,36 +219,7 @@ class JsonLoader @Inject constructor(
     }
 
     /**
-     * Validate JSON structure before loading
-     */
-    suspend fun validateJsonFile(fileName: String): Result<WordPackageInfo> = withContext(Dispatchers.IO) {
-        try {
-            val jsonString = context.assets.open(fileName).bufferedReader().use { it.readText() }
-            val wordPackage = json.decodeFromString<WordPackageJson>(jsonString)
-
-            // Basic validation
-            if (wordPackage.words.isEmpty()) {
-                return@withContext Result.Error(AppError.ValidationError)
-            }
-
-            if (wordPackage.packageInfo.totalWords != wordPackage.words.size) {
-                return@withContext Result.Error(AppError.ValidationError)
-            }
-
-            // Check for duplicate IDs
-            val ids = wordPackage.words.map { it.id }
-            if (ids.size != ids.distinct().size) {
-                return@withContext Result.Error(AppError.DuplicateWord)
-            }
-
-            Result.Success(wordPackage.packageInfo)
-        } catch (e: Exception) {
-            Result.Error(AppError.Unknown(e))
-        }
-    }
-
-    /**
-     * Get loading progress callback
+     * Load with progress
      */
     suspend fun loadWordsWithProgress(
         fileName: String,
@@ -255,7 +227,7 @@ class JsonLoader @Inject constructor(
     ): Result<Int> = withContext(Dispatchers.IO) {
         try {
             val jsonString = context.assets.open(fileName).bufferedReader().use { it.readText() }
-            val wordPackage = json.decodeFromString<WordPackageJson>(jsonString)
+            val wordPackage = json.decodeFromString<TestWordsJson>(jsonString)
 
             onProgress(0, wordPackage.words.size)
 
@@ -274,7 +246,6 @@ class JsonLoader @Inject constructor(
                     packageId = wordPackage.packageInfo.id
                 )
 
-                // Report progress every 10 items
                 if (index % 10 == 0) {
                     onProgress(index, wordPackage.words.size)
                 }
@@ -297,7 +268,6 @@ class JsonLoader @Inject constructor(
             database.conceptDao().insertConcepts(concepts)
 
             onProgress(concepts.size, concepts.size)
-
             Result.Success(concepts.size)
         } catch (e: Exception) {
             Result.Error(AppError.Unknown(e))
@@ -306,32 +276,36 @@ class JsonLoader @Inject constructor(
 }
 
 /**
- * JSON Data Classes for serialization
+ * JSON CLASSES - CLEAN VERSION with correct annotations
  */
 @Serializable
-data class WordPackageJson(
-    val packageInfo: WordPackageInfo,
-    val words: List<WordJson>
+data class TestWordsJson(
+    @SerialName("package_info")
+    val packageInfo: TestPackageInfo,
+    val words: List<TestWordJson>
 )
 
 @Serializable
-data class WordPackageInfo(
+data class TestPackageInfo(
     val id: String,
     val version: String,
     val level: String,
+    @SerialName("language_pair")
     val languagePair: String,
+    @SerialName("total_words")
     val totalWords: Int,
+    @SerialName("updated_at")
     val updatedAt: String,
     val description: String? = null,
     val attribution: String? = null
 )
 
 @Serializable
-data class WordJson(
+data class TestWordJson(
     val id: Int,
     val english: String,
     val turkish: String,
-    val example: ExampleJson? = null,
+    val example: TestExampleJson? = null,
     val pronunciation: String? = null,
     val level: String,
     val category: String,
@@ -340,7 +314,7 @@ data class WordJson(
 )
 
 @Serializable
-data class ExampleJson(
+data class TestExampleJson(
     val en: String,
     val tr: String
 )

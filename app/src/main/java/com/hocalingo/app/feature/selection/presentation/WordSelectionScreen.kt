@@ -3,6 +3,7 @@ package com.hocalingo.app.feature.selection.presentation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -78,7 +80,11 @@ fun WordSelectionScreen(
             )
         },
         floatingActionButton = {
-            if (uiState.canUndo) {
+            AnimatedVisibility(
+                visible = uiState.canUndo,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
                 FloatingActionButton(
                     onClick = { viewModel.onEvent(WordSelectionEvent.Undo) },
                     containerColor = MaterialTheme.colorScheme.secondaryContainer
@@ -108,6 +114,7 @@ fun WordSelectionScreen(
                 uiState.error != null -> {
                     HocaErrorState(
                         error = uiState.error!!,
+                        onRetry = { /* Retry logic if needed */ },
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
@@ -131,22 +138,26 @@ fun WordSelectionScreen(
 
                         // Swipeable card
                         Box(modifier = Modifier.weight(1f)) {
-                            SwipeableCard(
-                                word = uiState.currentWord!!.english,
-                                translation = uiState.currentWord!!.turkish,
-                                example = uiState.currentWord!!.exampleEn,
-                                onSwipeLeft = {
-                                    uiState.currentWord?.let { word ->
-                                        viewModel.onEvent(WordSelectionEvent.SwipeLeft(word.id))
-                                    }
-                                },
-                                onSwipeRight = {
-                                    uiState.currentWord?.let { word ->
-                                        viewModel.onEvent(WordSelectionEvent.SwipeRight(word.id))
-                                    }
-                                },
-                                modifier = Modifier.fillMaxSize()
-                            )
+                            this@Column.AnimatedVisibility(
+                                visible = uiState.currentWord != null,
+                                enter = fadeIn(),
+                                exit = fadeOut()
+                            ) {
+                                uiState.currentWord?.let { word ->
+                                    SwipeableCard(
+                                        word = word.english,
+                                        translation = word.turkish,
+                                        example = word.exampleEn,
+                                        onSwipeLeft = {
+                                            viewModel.onEvent(WordSelectionEvent.SwipeLeft(word.id))
+                                        },
+                                        onSwipeRight = {
+                                            viewModel.onEvent(WordSelectionEvent.SwipeRight(word.id))
+                                        },
+                                        modifier = Modifier.fillMaxSize()
+                                    )
+                                }
+                            }
                         }
 
                         // Action buttons (alternatif kontrol)
@@ -165,14 +176,57 @@ fun WordSelectionScreen(
                     }
                 }
                 else -> {
-                    HocaEmptyState(
-                        emoji = "📚",
-                        title = "Kelime bulunamadı",
-                        subtitle = "Bu pakette seçilecek kelime kalmamış",
-                        actionText = "Çalışmaya Başla",
-                        onAction = onNavigateToStudy,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
+                    // DEBUG STATE - Kelime yok ama loading de değil
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "⚠️",
+                            fontSize = 48.sp
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "Kelime bulunamadı",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Bu pakette kelime yok veya tümü seçilmiş",
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Button(onClick = onNavigateToStudy) {
+                            Text("Çalışmaya Başla")
+                        }
+
+                        // DEBUG INFO
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.errorContainer
+                            )
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                Text(
+                                    text = "🔍 Debug Info:",
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text("Total words: ${uiState.totalWords}")
+                                Text("Remaining: ${uiState.remainingWords.size}")
+                                Text("Selected: ${uiState.selectedCount}")
+                                Text("Hidden: ${uiState.hiddenCount}")
+                                Text("Current word: ${uiState.currentWord?.english ?: "null"}")
+                            }
+                        }
+                    }
                 }
             }
 
@@ -193,61 +247,90 @@ private fun SelectionProgress(
     todayCount: Int,
     progress: Float
 ) {
-    Column(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
+        ),
+        shape = RoundedCornerShape(16.dp)
     ) {
-        // Progress bar
-        LinearProgressIndicator(
-            progress = { progress },
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(8.dp),
-            color = MaterialTheme.colorScheme.primary,
-            trackColor = MaterialTheme.colorScheme.primaryContainer,
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Stats row
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(20.dp)
         ) {
-            // Selected count
-            Column {
-                Text(
-                    text = "Seçilen",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = "$selectedCount kelime",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+            // Progress bar with gradient
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(8.dp)
+                    .background(
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+                        RoundedCornerShape(4.dp)
+                    )
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth(progress)
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.primary,
+                                    MaterialTheme.colorScheme.secondary
+                                )
+                            ),
+                            shape = RoundedCornerShape(4.dp)
+                        )
                 )
             }
 
-            // Today's limit
-            Column(
-                horizontalAlignment = Alignment.End
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Stats row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = "Günlük Limit",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = "$todayCount / 25",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = if (todayCount >= 25)
-                        MaterialTheme.colorScheme.error
-                    else
-                        MaterialTheme.colorScheme.secondary
-                )
+                // Selected count
+                Column {
+                    Text(
+                        text = "Seçilen",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        text = "$selectedCount kelime",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                // Today's limit
+                Column(
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Text(
+                        text = "Günlük Limit",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        text = "$todayCount / 25",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = if (todayCount >= 25)
+                            MaterialTheme.colorScheme.error
+                        else
+                            MaterialTheme.colorScheme.secondary
+                    )
+                }
             }
         }
     }
