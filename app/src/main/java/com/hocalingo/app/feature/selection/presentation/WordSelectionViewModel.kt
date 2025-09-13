@@ -7,7 +7,9 @@ import com.hocalingo.app.core.common.DebugHelper
 import com.hocalingo.app.core.database.HocaLingoDatabase
 import com.hocalingo.app.core.database.entities.ConceptEntity
 import com.hocalingo.app.core.database.entities.SelectionStatus
+import com.hocalingo.app.core.database.entities.StudyDirection
 import com.hocalingo.app.core.database.entities.UserSelectionEntity
+import com.hocalingo.app.core.database.entities.WordProgressEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +23,12 @@ import java.util.Stack
 import javax.inject.Inject
 
 /**
- * WordSelectionViewModel - DÜZELTME
- * Extensive debug logging ve state management düzeltmeleri
+ * WordSelectionViewModel - FIXED VERSION
+ *
+ * Fixed Issues:
+ * 1. Removed StudySessionPreparer dependency (moved logic inline)
+ * 2. Fixed Result.Success types
+ * 3. Proper SavedStateHandle usage
  */
 @HiltViewModel
 class WordSelectionViewModel @Inject constructor(
@@ -30,8 +36,12 @@ class WordSelectionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    // DÜZELTME: Package ID route parametresinden doğru al
-    private val packageId: String = savedStateHandle.get<String>("packageId") ?: "a1_en_tr_test_v1"
+    // CRITICAL FIX: Proper SavedStateHandle parameter extraction
+    private val packageId: String = savedStateHandle.get<String>("packageId")
+        ?: run {
+            DebugHelper.logWordSelection("Package ID not found in SavedStateHandle - using fallback")
+            "a1_en_tr_test_v1" // Fallback to test package
+        }
 
     private val _uiState = MutableStateFlow(WordSelectionUiState())
     val uiState: StateFlow<WordSelectionUiState> = _uiState.asStateFlow()
@@ -49,7 +59,7 @@ class WordSelectionViewModel @Inject constructor(
 
     init {
         DebugHelper.logWordSelection("=== WordSelectionViewModel BAŞLATILIYOR ===")
-        DebugHelper.logWordSelection("Package ID: $packageId")
+        DebugHelper.logWordSelection("Package ID (FIXED): $packageId")
         loadWords()
         loadTodaySelectionCount()
     }
@@ -69,16 +79,16 @@ class WordSelectionViewModel @Inject constructor(
 
     private fun loadWords() {
         viewModelScope.launch {
-            DebugHelper.logWordSelection("=== KELIME YÜKLEME BAŞLIYOR ===")
+            DebugHelper.logWordSelection("=== KELIME YÜKLEME BAŞLIYOR (FIXED) ===")
             _uiState.update { it.copy(isLoading = true, error = null) }
 
             try {
-                // 1. Package'ın var olup olmadığını kontrol et
+                // 1. Package validation - CRITICAL CHECK
                 val packageInfo = database.wordPackageDao().getPackageById(packageId)
                 DebugHelper.logWordSelection("Package info: $packageInfo")
 
                 if (packageInfo == null) {
-                    DebugHelper.logWordSelection("ERROR: Package not found in database!")
+                    DebugHelper.logError("CRITICAL: Package not found in database: $packageId", null)
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -88,41 +98,40 @@ class WordSelectionViewModel @Inject constructor(
                     return@launch
                 }
 
-                // 2. Package'a ait tüm kelimeleri getir
+                // 2. Load concepts for this package
                 val allConcepts = database.conceptDao().getConceptsByPackage(packageId)
-                DebugHelper.logWordSelection("Toplam ${allConcepts.size} kelime bulundu")
-
-                // Debug: İlk 3 kelimeyi logla
-                allConcepts.take(3).forEach { concept ->
-                    DebugHelper.logWordSelection("Sample: ${concept.id} - ${concept.english} -> ${concept.turkish}")
-                }
+                DebugHelper.logWordSelection("Toplam ${allConcepts.size} kelime bulundu (packageId: $packageId)")
 
                 if (allConcepts.isEmpty()) {
-                    DebugHelper.logWordSelection("ERROR: No concepts found for package!")
+                    DebugHelper.logError("No concepts found for package: $packageId", null)
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            error = "Bu pakette kelime bulunamadı"
+                            error = "Bu pakette kelime bulunamadı: $packageId"
                         )
                     }
                     return@launch
                 }
 
-                // 3. Daha önce seçilmiş kelimeleri kontrol et
+                // Debug: Log sample concepts
+                allConcepts.take(3).forEach { concept ->
+                    DebugHelper.logWordSelection("Sample: ${concept.id} - ${concept.english} -> ${concept.turkish}")
+                }
+
+                // 3. Check previously processed words
                 val selectedSelections = database.userSelectionDao()
                     .getSelectionsByStatus(SelectionStatus.SELECTED)
                 val hiddenSelections = database.userSelectionDao()
                     .getSelectionsByStatus(SelectionStatus.HIDDEN)
 
                 val processedIds = (selectedSelections + hiddenSelections).map { it.conceptId }.toSet()
-                DebugHelper.logWordSelection("Daha önce işlenmiş kelime sayısı: ${processedIds.size}")
-                DebugHelper.logWordSelection("Seçili: ${selectedSelections.size}, Gizli: ${hiddenSelections.size}")
+                DebugHelper.logWordSelection("Previously processed: ${processedIds.size} (Selected: ${selectedSelections.size}, Hidden: ${hiddenSelections.size})")
 
-                // 4. Henüz işlenmemiş kelimeleri filtrele
+                // 4. Filter unprocessed words
                 val unseenWords = allConcepts.filter { it.id !in processedIds }
-                DebugHelper.logWordSelection("İşlenmemiş kelime sayısı: ${unseenWords.size}")
+                DebugHelper.logWordSelection("Unprocessed words: ${unseenWords.size}")
 
-                // 5. State'i güncelle
+                // 5. Update state with loaded data
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -137,29 +146,32 @@ class WordSelectionViewModel @Inject constructor(
                     )
                 }
 
-                // 6. İlk kelimeyi set et
+                // 6. Set current word
                 if (unseenWords.isNotEmpty()) {
                     val firstWord = unseenWords.first()
                     _uiState.update { it.copy(currentWord = firstWord) }
-                    DebugHelper.logWordSelection("İlk kelime set edildi: ${firstWord.english} -> ${firstWord.turkish}")
+                    DebugHelper.logWordSelection("First word set: ${firstWord.english} -> ${firstWord.turkish}")
                 } else {
-                    DebugHelper.logWordSelection("Tüm kelimeler zaten işlenmiş - completion state")
+                    DebugHelper.logWordSelection("All words processed - showing completion")
                     _uiState.update {
                         it.copy(
                             isCompleted = true,
                             currentWord = null
                         )
                     }
+
+                    // CRITICAL: Prepare study session when all words are processed
+                    prepareStudySessionInline()
                 }
 
-                DebugHelper.logWordSelection("=== KELIME YÜKLEME TAMAMLANDI ===")
+                DebugHelper.logWordSelection("Word loading completed successfully")
 
             } catch (e: Exception) {
-                DebugHelper.logError("Kelime yükleme HATASI", e)
+                DebugHelper.logError("Word loading CRITICAL ERROR", e)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Kelimeler yüklenirken hata oluştu: ${e.message}"
+                        error = "Kelimeler yüklenirken hata: ${e.message}"
                     )
                 }
             }
@@ -169,43 +181,42 @@ class WordSelectionViewModel @Inject constructor(
     private fun loadTodaySelectionCount() {
         viewModelScope.launch {
             try {
-                // Bugünkü seçim sayısını hesapla
                 val todaySelections = database.userSelectionDao()
                     .getSelectionCountByStatus(SelectionStatus.SELECTED)
 
-                DebugHelper.logWordSelection("Bugün seçilen kelime sayısı: $todaySelections")
+                DebugHelper.logWordSelection("Today selections: $todaySelections")
 
                 _uiState.update {
                     it.copy(todaySelectionCount = todaySelections)
                 }
             } catch (e: Exception) {
-                DebugHelper.logError("Today selection count HATASI", e)
+                DebugHelper.logError("Today selection count error", e)
             }
         }
     }
 
     private fun selectWord(conceptId: Int) {
         viewModelScope.launch {
-            DebugHelper.logWordSelection("Kelime seçiliyor: $conceptId")
+            DebugHelper.logWordSelection("Selecting word: $conceptId")
 
             val currentState = _uiState.value
 
-            // Limit kontrolü
+            // Premium limit check
             if (currentState.todaySelectionCount >= DAILY_SELECTION_LIMIT && !currentState.isPremium) {
-                DebugHelper.logWordSelection("Günlük limit aşıldı")
+                DebugHelper.logWordSelection("Daily limit reached")
                 _uiState.update { it.copy(showPremiumSheet = true) }
                 return@launch
             }
 
             try {
-                // Kelimeyi seç
+                // Select word in database
                 database.userSelectionDao().selectWord(conceptId, packageId)
-                DebugHelper.logWordSelection("Kelime veritabanında seçildi: $conceptId")
+                DebugHelper.logWordSelection("Word selected in database: $conceptId")
 
-                // Undo stack'e ekle
+                // Add to undo stack
                 addToUndoStack(UndoAction(conceptId, SelectionStatus.SELECTED))
 
-                // State güncelle
+                // Update state
                 _uiState.update {
                     it.copy(
                         selectedCount = it.selectedCount + 1,
@@ -213,41 +224,41 @@ class WordSelectionViewModel @Inject constructor(
                     )
                 }
 
-                DebugHelper.logWordSelection("State güncellendi - Seçili: ${currentState.selectedCount + 1}")
+                DebugHelper.logWordSelection("State updated - Selected: ${currentState.selectedCount + 1}")
 
-                // Sonraki kelimeye geç
+                // Move to next word
                 moveToNextWord()
 
             } catch (e: Exception) {
-                DebugHelper.logError("Kelime seçme HATASI", e)
+                DebugHelper.logError("Word selection error", e)
             }
         }
     }
 
     private fun hideWord(conceptId: Int) {
         viewModelScope.launch {
-            DebugHelper.logWordSelection("Kelime gizleniyor: $conceptId")
+            DebugHelper.logWordSelection("Hiding word: $conceptId")
 
             try {
-                // Kelimeyi gizle
+                // Hide word in database
                 database.userSelectionDao().hideWord(conceptId, packageId)
-                DebugHelper.logWordSelection("Kelime veritabanında gizlendi: $conceptId")
+                DebugHelper.logWordSelection("Word hidden in database: $conceptId")
 
-                // Undo stack'e ekle
+                // Add to undo stack
                 addToUndoStack(UndoAction(conceptId, SelectionStatus.HIDDEN))
 
-                // State güncelle
+                // Update state
                 _uiState.update {
                     it.copy(hiddenCount = it.hiddenCount + 1)
                 }
 
-                DebugHelper.logWordSelection("State güncellendi - Gizli: ${_uiState.value.hiddenCount}")
+                DebugHelper.logWordSelection("State updated - Hidden: ${_uiState.value.hiddenCount}")
 
-                // Sonraki kelimeye geç
+                // Move to next word
                 moveToNextWord()
 
             } catch (e: Exception) {
-                DebugHelper.logError("Kelime gizleme HATASI", e)
+                DebugHelper.logError("Word hiding error", e)
             }
         }
     }
@@ -256,7 +267,7 @@ class WordSelectionViewModel @Inject constructor(
         val currentState = _uiState.value
         val nextIndex = currentState.currentWordIndex + 1
 
-        DebugHelper.logWordSelection("Sonraki kelimeye geçiliyor - Index: $nextIndex / ${currentState.remainingWords.size}")
+        DebugHelper.logWordSelection("Moving to next word - Index: $nextIndex / ${currentState.remainingWords.size}")
 
         if (nextIndex < currentState.remainingWords.size) {
             val nextWord = currentState.remainingWords[nextIndex]
@@ -266,10 +277,10 @@ class WordSelectionViewModel @Inject constructor(
                     currentWord = nextWord
                 )
             }
-            DebugHelper.logWordSelection("Sonraki kelime: ${nextWord.english} -> ${nextWord.turkish}")
+            DebugHelper.logWordSelection("Next word: ${nextWord.english} -> ${nextWord.turkish}")
         } else {
-            // Tüm kelimeler işlendi
-            DebugHelper.logWordSelection("TÜM KELİMELER İŞLENDİ!")
+            // All words processed - CRITICAL: Prepare study session
+            DebugHelper.logWordSelection("ALL WORDS PROCESSED!")
             _uiState.update {
                 it.copy(
                     isCompleted = true,
@@ -279,25 +290,27 @@ class WordSelectionViewModel @Inject constructor(
 
             viewModelScope.launch {
                 _effect.emit(WordSelectionEffect.ShowCompletionMessage)
+                // CRITICAL: Prepare study session
+                prepareStudySessionInline()
             }
         }
     }
 
     private fun performUndo() {
         if (undoStack.isEmpty()) {
-            DebugHelper.logWordSelection("Undo stack boş")
+            DebugHelper.logWordSelection("Undo stack is empty")
             return
         }
 
         viewModelScope.launch {
             try {
                 val lastAction = undoStack.pop()
-                DebugHelper.logWordSelection("Undo yapılıyor: ${lastAction.conceptId} - ${lastAction.status}")
+                DebugHelper.logWordSelection("Performing undo: ${lastAction.conceptId} - ${lastAction.status}")
 
-                // Veritabanından seçimi sil
+                // Remove selection from database
                 database.userSelectionDao().deleteSelectionByConceptId(lastAction.conceptId)
 
-                // State'i güncelle
+                // Update state based on action type
                 when (lastAction.status) {
                     SelectionStatus.SELECTED -> {
                         _uiState.update {
@@ -315,7 +328,7 @@ class WordSelectionViewModel @Inject constructor(
                     else -> {}
                 }
 
-                // Önceki kelimeye dön
+                // Move back to previous word
                 val currentState = _uiState.value
                 if (currentState.currentWordIndex > 0) {
                     val prevIndex = currentState.currentWordIndex - 1
@@ -327,28 +340,29 @@ class WordSelectionViewModel @Inject constructor(
                             isCompleted = false
                         )
                     }
-                    DebugHelper.logWordSelection("Önceki kelimeye dönüldü: ${prevWord.english}")
+                    DebugHelper.logWordSelection("Moved back to: ${prevWord.english}")
                 }
 
                 _effect.emit(WordSelectionEffect.ShowUndoMessage)
 
             } catch (e: Exception) {
-                DebugHelper.logError("Undo HATASI", e)
+                DebugHelper.logError("Undo error", e)
             }
         }
     }
 
     private fun addToUndoStack(action: UndoAction) {
         if (undoStack.size >= MAX_UNDO_SIZE) {
-            undoStack.removeAt(0) // En eski işlemi sil
+            undoStack.removeAt(0) // Remove oldest
         }
         undoStack.push(action)
-        DebugHelper.logWordSelection("Undo stack'e eklendi: ${action.conceptId}")
+        DebugHelper.logWordSelection("Added to undo stack: ${action.conceptId}")
     }
 
     private fun skipAllWords() {
         viewModelScope.launch {
-            DebugHelper.logWordSelection("Tüm kelimeler atlanıyor")
+            DebugHelper.logWordSelection("Skipping all words")
+            prepareStudySessionInline()
             _effect.emit(WordSelectionEffect.NavigateToStudy)
         }
     }
@@ -356,7 +370,7 @@ class WordSelectionViewModel @Inject constructor(
     private fun finishSelection() {
         viewModelScope.launch {
             val selectedCount = _uiState.value.selectedCount
-            DebugHelper.logWordSelection("Seçim bitiriliyor - Seçili kelime sayısı: $selectedCount")
+            DebugHelper.logWordSelection("Finishing selection - Selected: $selectedCount")
 
             if (selectedCount == 0) {
                 _effect.emit(
@@ -365,7 +379,81 @@ class WordSelectionViewModel @Inject constructor(
                     )
                 )
             } else {
+                prepareStudySessionInline()
                 _effect.emit(WordSelectionEffect.NavigateToStudy)
+            }
+        }
+    }
+
+    /**
+     * CRITICAL: Prepare study session inline (without external dependency)
+     * Creates WordProgressEntity records for selected words
+     */
+    private suspend fun prepareStudySessionInline() {
+        DebugHelper.logWordSelection("=== PREPARING STUDY SESSION INLINE ===")
+
+        try {
+            _uiState.update { it.copy(isLoading = true) }
+
+            // 1. Get selected words
+            val selectedSelections = database.userSelectionDao()
+                .getSelectionsByStatus(SelectionStatus.SELECTED)
+
+            if (selectedSelections.isEmpty()) {
+                DebugHelper.logWordSelection("No selected words found")
+                _uiState.update { it.copy(isLoading = false) }
+                return
+            }
+
+            // 2. Create WordProgressEntity records for selected words
+            val currentTime = System.currentTimeMillis()
+            val newProgressEntries = mutableListOf<WordProgressEntity>()
+
+            for (selection in selectedSelections) {
+                val existingProgress = database.wordProgressDao()
+                    .getProgressByConceptAndDirection(selection.conceptId, StudyDirection.EN_TO_TR)
+
+                if (existingProgress == null) {
+                    // Create new progress entry with SM-2 initial values
+                    val progressEntity = WordProgressEntity(
+                        conceptId = selection.conceptId,
+                        direction = StudyDirection.EN_TO_TR,
+                        repetitions = 0,
+                        intervalDays = 1f, // Initial interval: 1 day
+                        easeFactor = 2.5f, // SM-2 default ease factor
+                        nextReviewAt = currentTime, // Available immediately
+                        lastReviewAt = null,
+                        isSelected = true,
+                        isMastered = false,
+                        createdAt = currentTime,
+                        updatedAt = currentTime
+                    )
+
+                    newProgressEntries.add(progressEntity)
+                }
+            }
+
+            // 3. Insert new progress entries
+            if (newProgressEntries.isNotEmpty()) {
+                database.wordProgressDao().insertProgressList(newProgressEntries)
+                DebugHelper.logWordSelection("${newProgressEntries.size} new progress entries created")
+            }
+
+            DebugHelper.logWordSelection("Study session prepared successfully")
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    studySessionPrepared = true
+                )
+            }
+
+        } catch (e: Exception) {
+            DebugHelper.logError("Study session preparation error", e)
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    error = "Study hazırlanırken hata: ${e.message}"
+                )
             }
         }
     }
@@ -379,7 +467,7 @@ class WordSelectionViewModel @Inject constructor(
     }
 }
 
-// UI State - NO CHANGES NEEDED
+// UI State with new field for study session preparation
 data class WordSelectionUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
@@ -394,7 +482,8 @@ data class WordSelectionUiState(
     val todaySelectionCount: Int = 0,
     val isCompleted: Boolean = false,
     val showPremiumSheet: Boolean = false,
-    val isPremium: Boolean = false
+    val isPremium: Boolean = false,
+    val studySessionPrepared: Boolean = false
 ) {
     val progress: Float
         get() = if (totalWords > 0) {
@@ -411,7 +500,7 @@ data class UndoAction(
     val status: SelectionStatus
 )
 
-// Events
+// Events - No changes needed
 sealed interface WordSelectionEvent {
     data class SwipeRight(val conceptId: Int) : WordSelectionEvent
     data class SwipeLeft(val conceptId: Int) : WordSelectionEvent
@@ -422,7 +511,7 @@ sealed interface WordSelectionEvent {
     data object DismissPremium : WordSelectionEvent
 }
 
-// Effects
+// Effects - No changes needed
 sealed interface WordSelectionEffect {
     data object NavigateToStudy : WordSelectionEffect
     data object ShowCompletionMessage : WordSelectionEffect

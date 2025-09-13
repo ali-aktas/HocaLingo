@@ -2,11 +2,11 @@ package com.hocalingo.app.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Light Theme Colors
-val Primary = Color(0xFF1976D2)           // Blue - Learning & Trust
+// Enhanced Light Theme Colors - Modern Material 3 Palette
+val Primary = Color(0xFF6750A4)           // Purple - Modern, Friendly Learning
 val OnPrimary = Color(0xFFFFFFFF)
-val PrimaryContainer = Color(0xFFE3F2FD)
-val OnPrimaryContainer = Color(0xFF0D47A1)
+val PrimaryContainer = Color(0xFFE9DDFF)
+val OnPrimaryContainer = Color(0xFF21005D)
 
 val Secondary = Color(0xFF4CAF50)         // Green - Success & Progress
 val OnSecondary = Color(0xFFFFFFFF)

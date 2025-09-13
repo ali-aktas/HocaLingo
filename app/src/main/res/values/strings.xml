@@ -1,3 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App Name -->
     <string name="app_name">HocaLingo</string>
+    <string name="app_tagline">Kelime öğrenmenin akıllı yolu</string>
+
+    <!-- Common -->
+    <string name="loading">Yükleniyor…</string>
+    <string name="error">Hata</string>
+    <string name="retry">Tekrar Dene</string>
+    <string name="continue_btn">Devam Et</string>
+    <string name="cancel">İptal</string>
+    <string name="save">Kaydet</string>
+    <string name="delete">Sil</string>
+    <string name="edit">Düzenle</string>
+    <string name="finish">Bitir</string>
+    <string name="skip">Geç</string>
+    <string name="next">Sonraki</string>
+    <string name="previous">Önceki</string>
+    <string name="close">Kapat</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Ana Sayfa</string>
+    <string name="nav_study">Çalışma</string>
+    <string name="nav_add_word">Kelime Ekle</string>
+    <string name="nav_ai_assistant">AI Asistan</string>
+    <string name="nav_profile">Profil</string>
+
+    <!-- Authentication -->
+    <string name="auth_title">Başlamak için giriş yapın</string>
+    <string name="auth_google_signin">Google ile Giriş Yap</string>
+    <string name="auth_guest_signin">Misafir Olarak Devam Et</string>
+    <string name="auth_or">VEYA</string>
+    <string name="auth_guest_info">Misafir modunda ilerlemeniz geçici olarak kaydedilir</string>
+    <string name="auth_terms">Devam ederek Kullanım Koşullarını ve\nGizlilik Politikasını kabul etmiş olursunuz</string>
+
+    <!-- Package Selection -->
+    <string name="package_selection_title">Seviye Seçimi</string>
+    <string name="package_selection_subtitle">İngilizce seviyenizi seçin</string>
+    <string name="package_selection_description">Öğrenmek istediğiniz kelime paketini indirin</string>
+    <string name="package_downloaded">İndirildi</string>
+    <string name="package_download">İndir</string>
+    <string name="package_downloading">İndiriliyor… %%%1$d</string>
+    <string name="package_words_count">%1$d kelime</string>
+
+    <!-- Word Selection -->
+    <string name="word_selection_title">Kelime Seçimi</string>
+    <string name="word_selection_selected">Seçilen</string>
+    <string name="word_selection_daily_limit">Günlük Limit</string>
+    <string name="word_selection_daily_limit_format">%1$d / %2$d</string>
+    <string name="word_selection_swipe_hint">← Geç   |   Öğren →</string>
+    <string name="word_selection_completion_title">Tebrikler!</string>
+    <string name="word_selection_completion_subtitle">Kelime seçimini tamamladınız</string>
+    <string name="word_selection_learned">Öğrenilecek</string>
+    <string name="word_selection_skipped">Pas Geçilen</string>
+    <string name="word_selection_undo">Geri Al</string>
+    <string name="word_selection_undo_message">İşlem geri alındı</string>
+    <string name="word_selection_completion_message">Tebrikler! Tüm kelimeler işlendi.</string>
+    <string name="word_selection_min_required">Çalışmak için en az 1 kelime seçmelisiniz</string>
+    <string name="word_selection_start_studying">Çalışmaya Başla</string>
+
+    <!-- Premium -->
+    <string name="premium_limit_title">Günlük Limitinize Ulaştınız!</string>
+    <string name="premium_limit_subtitle">Ücretsiz kullanıcılar günde 25 kelime seçebilir</string>
+    <string name="premium_features_title">Premium ile:</string>
+    <string name="premium_feature_unlimited">Sınırsız kelime seçimi</string>
+    <string name="premium_feature_no_ads">Reklamsız deneyim</string>
+    <string name="premium_feature_ai">AI Asistan desteği</string>
+    <string name="premium_feature_themes">Özel temalar</string>
+    <string name="premium_feature_stats">Detaylı istatistikler</string>
+    <string name="premium_upgrade">Premium\'a Geç - ₺19.99/ay</string>
+    <string name="premium_continue_free">Seçtiğim kelimelerle devam et</string>
+
+    <!-- Study -->
+    <string name="study_title">Çalışma</string>
+    <string name="study_daily_goal">Günlük Hedef</string>
+    <string name="study_easy">Kolay</string>
+    <string name="study_medium">Orta</string>
+    <string name="study_hard">Zor</string>
+    <string name="study_easy_next">%1$s gün sonra</string>
+    <string name="study_medium_next">Yarın</string>
+    <string name="study_hard_next">%1$d dakika sonra</string>
+
+    <!-- Profile & Stats -->
+    <string name="profile_title">Profil</string>
+    <string name="profile_words_learned">Öğrenilen Kelimeler</string>
+    <string name="profile_words_mastered">Ezber Kelimeler</string>
+    <string name="profile_study_streak">Çalışma Serisi</string>
+    <string name="profile_total_sessions">Toplam Oturum</string>
+    <string name="profile_accuracy">Doğruluk Oranı</string>
+    <string name="profile_this_week">Bu hafta +%1$d</string>
+
+    <!-- Add Word -->
+    <string name="add_word_title">Kelime Ekle</string>
+    <string name="add_word_english">İngilizce</string>
+    <string name="add_word_turkish">Türkçe</string>
+    <string name="add_word_example">Örnek Cümle (opsiyonel)</string>
+    <string name="add_word_category">Kategori</string>
+    <string name="add_word_level">Seviye</string>
+    <string name="add_word_save">Kaydet</string>
+    <string name="add_word_success">Kelime başarıyla eklendi!</string>
+    <string name="add_word_error">Kelime eklenirken hata oluştu</string>
+
+    <!-- AI Assistant -->
+    <string name="ai_title">AI Asistan</string>
+    <string name="ai_subtitle">Öğrendiğiniz kelimelerle hikayeler</string>
+    <string name="ai_premium_required">Bu özellik Premium üyelik gerektirir</string>
+    <string name="ai_generate_story">Hikaye Oluştur</string>
+    <string name="ai_story_difficulty">Hikaye Seviyesi</string>
+    <string name="ai_story_easy">Kolay</string>
+    <string name="ai_story_medium">Orta</string>
+    <string name="ai_story_hard">Zor</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ayarlar</string>
+    <string name="settings_account">Hesap</string>
+    <string name="settings_study">Çalışma</string>
+    <string name="settings_notifications">Bildirimler</string>
+    <string name="settings_about">Hakkında</string>
+    <string name="settings_daily_goal">Günlük Hedef</string>
+    <string name="settings_reminder">Hatırlatıcı</string>
+    <string name="settings_sound">Ses Efektleri</string>
+    <string name="settings_haptic">Dokunsal Geri Bildirim</string>
+    <string name="settings_dark_mode">Karanlık Tema</string>
+
+    <!-- Errors -->
+    <string name="error_network">İnternet bağlantınızı kontrol edin</string>
+    <string name="error_timeout">İstek zaman aşımına uğradı</string>
+    <string name="error_server">Sunucu hatası</string>
+    <string name="error_unknown">Beklenmeyen bir hata oluştu</string>
+    <string name="error_package_not_found">Kelime paketi bulunamadı</string>
+    <string name="error_no_words">Çalışılacak kelime yok</string>
+    <string name="error_duplicate_word">Bu kelime zaten mevcut</string>
+
+    <!-- Empty States -->
+    <string name="empty_words_title">Henüz kelime yok</string>
+    <string name="empty_words_subtitle">Kelime paketi indirin veya kendi kelimelerinizi ekleyin</string>
+    <string name="empty_study_title">Çalışılacak kelime yok</string>
+    <string name="empty_study_subtitle">Yeni kelimeler seçin veya mevcut kelimeleri gözden geçirin</string>
+    <string name="empty_stats_title">Henüz istatistik yok</string>
+    <string name="empty_stats_subtitle">Çalışmaya başladığınızda burada ilerlemenizi görebilirsiniz</string>
+
+    <!-- Success Messages -->
+    <string name="success_word_added">Kelime başarıyla eklendi!</string>
+    <string name="success_package_downloaded">Paket başarıyla indirildi! %1$d kelime eklendi.</string>
+    <string name="success_study_completed">Harika! Bugünkü hedefini tamamladın!</string>
+    <string name="success_level_up">Tebrikler! Yeni seviyeye ulaştın!</string>
+
+    <!-- Level Names -->
+    <string name="level_a1">A1 - Başlangıç</string>
+    <string name="level_a2">A2 - Temel</string>
+    <string name="level_b1">B1 - Orta</string>
+    <string name="level_b2">B2 - Orta-İleri</string>
+    <string name="level_c1">C1 - İleri</string>
+    <string name="level_c2">C2 - Uzman</string>
+
+    <!-- Descriptions -->
+    <string name="level_a1_desc">Temel kelimeler ve günlük ifadeler</string>
+    <string name="level_a2_desc">Basit iletişim ve yaygın kelimeler</string>
+    <string name="level_b1_desc">Günlük konuşma ve seyahat kelimeleri</string>
+    <string name="level_b2_desc">İş ve akademik kelimeler</string>
+    <string name="level_c1_desc">Karmaşık konular ve deyimler</string>
+    <string name="level_c2_desc">Ana dil seviyesi kelime hazinesi</string>
+
+    <!-- Plurals -->
+    <plurals name="words_count">
+        <item quantity="one">%d kelime</item>
+        <item quantity="other">%d kelime</item>
+    </plurals>
+
+    <plurals name="days_count">
+        <item quantity="one">%d gün</item>
+        <item quantity="other">%d gün</item>
+    </plurals>
+
+    <plurals name="minutes_count">
+        <item quantity="one">%d dakika</item>
+        <item quantity="other">%d dakika</item>
+    </plurals>
 </resources>

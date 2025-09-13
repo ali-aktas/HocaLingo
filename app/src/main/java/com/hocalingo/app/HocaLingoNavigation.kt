@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -24,26 +25,31 @@ import com.hocalingo.app.feature.selection.presentation.WordSelectionScreen
 import com.hocalingo.app.feature.splash.SplashScreen
 
 /**
- * HocaLingo Navigation Routes
- * Centralized navigation management for the app
+ * Enhanced HocaLingo Navigation Routes
+ * Updated with bottom navigation support and new routes
  */
 object HocaRoutes {
+    // Onboarding Flow
     const val SPLASH = "splash"
     const val AUTH = "auth"
     const val ONBOARDING_LANGUAGE = "onboarding_language"
     const val ONBOARDING_LEVEL = "onboarding_level"
-    const val ONBOARDING_DOWNLOAD = "onboarding_download"
     const val WORD_SELECTION = "word_selection"
+
+    // Main App Flow (with bottom navigation)
+    const val HOME = "home"
     const val STUDY = "study"
-    const val PROFILE = "profile"
-    const val SETTINGS = "settings"
     const val ADD_WORD = "add_word"
+    const val AI_ASSISTANT = "ai_assistant"
+    const val PROFILE = "profile"
+
+    // Settings and other screens
+    const val SETTINGS = "settings"
 }
 
 /**
- * Main Navigation Composable
- * Handles all app navigation flows
- * DÜZELTME: Package ID parametresi eklendi
+ * Main Navigation Composable with Bottom Navigation Support
+ * Enhanced with proper route management and parameter handling
  */
 @Composable
 fun HocaLingoNavigation(
@@ -55,6 +61,8 @@ fun HocaLingoNavigation(
         startDestination = HocaRoutes.SPLASH,
         modifier = modifier
     ) {
+        // ===== ONBOARDING FLOW =====
+
         // Splash Screen
         composable(route = HocaRoutes.SPLASH) {
             SplashScreen(
@@ -69,7 +77,7 @@ fun HocaLingoNavigation(
                     }
                 },
                 onNavigateToMain = {
-                    navController.navigate(HocaRoutes.STUDY) {
+                    navController.navigate(HocaRoutes.HOME) {
                         popUpTo(HocaRoutes.SPLASH) { inclusive = true }
                     }
                 }
@@ -77,7 +85,6 @@ fun HocaLingoNavigation(
         }
 
         // Authentication Screen
-        // BASİT: Sadece onboarding'e navigation var
         composable(route = HocaRoutes.AUTH) {
             AuthScreen(
                 onNavigateToOnboarding = {
@@ -88,31 +95,28 @@ fun HocaLingoNavigation(
             )
         }
 
-        // Onboarding - Language Selection (Placeholder for now)
+        // Language Selection (Future Feature)
         composable(route = HocaRoutes.ONBOARDING_LANGUAGE) {
             PlaceholderScreen(
-                title = "🌍 Dil Seçimi",
+                title = "🌍 ${stringResource(R.string.settings_title)}",
                 subtitle = "Ana dilinizi ve öğrenmek istediğiniz dili seçin\nTürkçe → İngilizce",
-                buttonText = "Seviye Seç",
+                buttonText = stringResource(R.string.next),
                 onNavigate = {
                     navController.navigate(HocaRoutes.ONBOARDING_LEVEL)
                 }
             )
         }
 
-        // Onboarding - Package/Level Selection (REAL SCREEN)
-        // DÜZELTME: Package ID route parametresi ile geçiriliyor
+        // Package/Level Selection - REAL IMPLEMENTATION
         composable(route = HocaRoutes.ONBOARDING_LEVEL) {
             PackageSelectionScreen(
                 onNavigateToWordSelection = { packageId ->
-                    // PackageId'yi route parametresi olarak geçiyoruz
                     navController.navigate("${HocaRoutes.WORD_SELECTION}/$packageId")
                 }
             )
         }
 
-        // Word Selection Screen (REAL SCREEN)
-        // DÜZELTME: Package ID parametresi eklendi
+        // Word Selection Screen - REAL IMPLEMENTATION with FIXED PARAMETER
         composable(
             route = "${HocaRoutes.WORD_SELECTION}/{packageId}",
             arguments = listOf(
@@ -122,61 +126,64 @@ fun HocaLingoNavigation(
                 }
             )
         ) { backStackEntry ->
-            // Package ID'yi navigation argument'ten al
-            val packageId = backStackEntry.arguments?.getString("packageId") ?: "a1_en_tr_test_v1"
-
             WordSelectionScreen(
                 onNavigateToStudy = {
-                    navController.navigate(HocaRoutes.STUDY) {
+                    navController.navigate(HocaRoutes.HOME) {
                         popUpTo("${HocaRoutes.WORD_SELECTION}/{packageId}") { inclusive = true }
                     }
                 }
             )
         }
 
-        // Study Screen (Placeholder)
+        // ===== MAIN APP FLOW (with Bottom Navigation) =====
+
+        // Home Screen - Main Dashboard
+        composable(route = HocaRoutes.HOME) {
+            HomeDashboardScreen(
+                onNavigateToStudy = {
+                    navController.navigate(HocaRoutes.STUDY)
+                }
+            )
+        }
+
+        // Study Screen - Active Learning Session
         composable(route = HocaRoutes.STUDY) {
-            PlaceholderScreen(
-                title = "🎯 Çalışma Ekranı",
-                subtitle = "Akıllı tekrar sistemi ile kelime öğrenin\nSM-2 algoritması",
-                buttonText = "Profil",
-                onNavigate = {
-                    navController.navigate(HocaRoutes.PROFILE)
+            StudyScreen(
+                onNavigateBack = {
+                    navController.navigate(HocaRoutes.HOME) {
+                        popUpTo(HocaRoutes.HOME) { inclusive = false }
+                    }
                 }
             )
         }
 
-        // Profile Screen (Placeholder)
-        composable(route = HocaRoutes.PROFILE) {
-            PlaceholderScreen(
-                title = "👤 Profil",
-                subtitle = "İstatistikleriniz ve ilerlemeniz\nÖğrenilen kelimeler, streak, başarı oranı",
-                buttonText = "Ayarlar",
-                onNavigate = {
-                    navController.navigate(HocaRoutes.SETTINGS)
-                }
-            )
-        }
-
-        // Settings Screen (Placeholder)
-        composable(route = HocaRoutes.SETTINGS) {
-            PlaceholderScreen(
-                title = "⚙️ Ayarlar",
-                subtitle = "Uygulama tercihleri ve seçenekleri\nBildirimler, sesler, tema",
-                buttonText = "Geri",
-                onNavigate = {
+        // Add Word Screen - Custom Word Entry
+        composable(route = HocaRoutes.ADD_WORD) {
+            AddWordScreen(
+                onNavigateBack = {
                     navController.popBackStack()
                 }
             )
         }
 
-        // Add Word Screen (Placeholder)
-        composable(route = HocaRoutes.ADD_WORD) {
-            PlaceholderScreen(
-                title = "➕ Kelime Ekle",
-                subtitle = "Kendi kelimelerinizi ekleyin\nİngilizce - Türkçe - Örnek cümle",
-                buttonText = "Geri",
-                onNavigate = {
+        // AI Assistant Screen - Premium Feature
+        composable(route = HocaRoutes.AI_ASSISTANT) {
+            AIAssistantScreen()
+        }
+
+        // Profile Screen - Statistics and User Info
+        composable(route = HocaRoutes.PROFILE) {
+            ProfileScreen(
+                onNavigateToSettings = {
+                    navController.navigate(HocaRoutes.SETTINGS)
+                }
+            )
+        }
+
+        // Settings Screen
+        composable(route = HocaRoutes.SETTINGS) {
+            SettingsScreen(
+                onNavigateBack = {
                     navController.popBackStack()
                 }
             )
@@ -184,16 +191,89 @@ fun HocaLingoNavigation(
     }
 }
 
+// ===== PLACEHOLDER SCREENS =====
+// These will be replaced with actual implementations
+
+@Composable
+private fun HomeDashboardScreen(
+    onNavigateToStudy: () -> Unit
+) {
+    PlaceholderScreen(
+        title = "🏠 ${stringResource(R.string.nav_home)}",
+        subtitle = "Günlük kelimeler ve çalışma özeti\nÖğrenilecek kelimeler, streak, günlük hedef",
+        buttonText = stringResource(R.string.nav_study),
+        onNavigate = onNavigateToStudy
+    )
+}
+
+@Composable
+private fun StudyScreen(
+    onNavigateBack: () -> Unit
+) {
+    PlaceholderScreen(
+        title = "🎯 ${stringResource(R.string.nav_study)}",
+        subtitle = "Akıllı tekrar sistemi ile kelime öğrenin\nSM-2 algoritması, flip cards, progress tracking",
+        buttonText = stringResource(R.string.nav_home),
+        onNavigate = onNavigateBack
+    )
+}
+
+@Composable
+private fun AddWordScreen(
+    onNavigateBack: () -> Unit
+) {
+    PlaceholderScreen(
+        title = "➕ ${stringResource(R.string.nav_add_word)}",
+        subtitle = "Kendi kelimelerinizi ekleyin\nİngilizce - Türkçe - Örnek cümle - Kategori",
+        buttonText = stringResource(R.string.close),
+        onNavigate = onNavigateBack
+    )
+}
+
+@Composable
+private fun AIAssistantScreen() {
+    PlaceholderScreen(
+        title = "🤖 ${stringResource(R.string.nav_ai_assistant)}",
+        subtitle = "Öğrendiğiniz kelimelerle hikayeler oluşturun\nPremium özellik - OpenAI entegrasyonu",
+        buttonText = stringResource(R.string.premium_upgrade)
+    ) {
+        // Premium upgrade action
+    }
+}
+
+@Composable
+private fun ProfileScreen(
+    onNavigateToSettings: () -> Unit
+) {
+    PlaceholderScreen(
+        title = "👤 ${stringResource(R.string.nav_profile)}",
+        subtitle = "İstatistikleriniz ve ilerlemeniz\nÖğrenilen kelimeler, streak, başarı oranı, haftalık/aylık grafikler",
+        buttonText = stringResource(R.string.settings_title),
+        onNavigate = onNavigateToSettings
+    )
+}
+
+@Composable
+private fun SettingsScreen(
+    onNavigateBack: () -> Unit
+) {
+    PlaceholderScreen(
+        title = "⚙️ ${stringResource(R.string.settings_title)}",
+        subtitle = "Uygulama tercihleri ve seçenekleri\nBildirimler, sesler, tema, hesap yönetimi, dil değiştirme",
+        buttonText = stringResource(R.string.close),
+        onNavigate = onNavigateBack
+    )
+}
+
 /**
- * Temporary placeholder screen for development
- * Will be replaced with actual screens
+ * Enhanced placeholder screen with better design
  */
 @Composable
 private fun PlaceholderScreen(
     title: String,
     subtitle: String = "",
-    buttonText: String = "Sonraki Ekran",
-    onNavigate: () -> Unit
+    buttonText: String = stringResource(R.string.next),
+    onNavigate: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
