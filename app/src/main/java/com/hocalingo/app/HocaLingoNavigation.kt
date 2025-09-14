@@ -23,6 +23,7 @@ import com.hocalingo.app.feature.auth.presentation.AuthScreen
 import com.hocalingo.app.feature.onboarding.presentation.PackageSelectionScreen
 import com.hocalingo.app.feature.selection.presentation.WordSelectionScreen
 import com.hocalingo.app.feature.splash.SplashScreen
+import com.hocalingo.app.feature.study.presentation.StudyScreen
 
 /**
  * Enhanced HocaLingo Navigation Routes
@@ -146,12 +147,18 @@ fun HocaLingoNavigation(
             )
         }
 
-        // Study Screen - Active Learning Session
+        // Study Screen - Active Learning Session - REAL IMPLEMENTATION
         composable(route = HocaRoutes.STUDY) {
             StudyScreen(
                 onNavigateBack = {
                     navController.navigate(HocaRoutes.HOME) {
                         popUpTo(HocaRoutes.HOME) { inclusive = false }
+                    }
+                },
+                onNavigateToWordSelection = {
+                    navController.navigate(HocaRoutes.ONBOARDING_LEVEL) {
+                        // Keep study in back stack for return
+                        popUpTo(HocaRoutes.STUDY) { inclusive = false }
                     }
                 }
             )
@@ -203,18 +210,6 @@ private fun HomeDashboardScreen(
         subtitle = "Günlük kelimeler ve çalışma özeti\nÖğrenilecek kelimeler, streak, günlük hedef",
         buttonText = stringResource(R.string.nav_study),
         onNavigate = onNavigateToStudy
-    )
-}
-
-@Composable
-private fun StudyScreen(
-    onNavigateBack: () -> Unit
-) {
-    PlaceholderScreen(
-        title = "🎯 ${stringResource(R.string.nav_study)}",
-        subtitle = "Akıllı tekrar sistemi ile kelime öğrenin\nSM-2 algoritması, flip cards, progress tracking",
-        buttonText = stringResource(R.string.nav_home),
-        onNavigate = onNavigateBack
     )
 }
 
