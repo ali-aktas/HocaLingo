@@ -113,6 +113,9 @@ fun HocaLingoNavigation(
             PackageSelectionScreen(
                 onNavigateToWordSelection = { packageId ->
                     navController.navigate("${HocaRoutes.WORD_SELECTION}/$packageId")
+                },
+                onNavigateBack = {
+                    navController.popBackStack()
                 }
             )
         }
@@ -129,6 +132,11 @@ fun HocaLingoNavigation(
         ) { backStackEntry ->
             WordSelectionScreen(
                 onNavigateToStudy = {
+                    navController.navigate(HocaRoutes.HOME) {
+                        popUpTo("${HocaRoutes.WORD_SELECTION}/{packageId}") { inclusive = true }
+                    }
+                },
+                onNavigateToHome = {
                     navController.navigate(HocaRoutes.HOME) {
                         popUpTo("${HocaRoutes.WORD_SELECTION}/{packageId}") { inclusive = true }
                     }

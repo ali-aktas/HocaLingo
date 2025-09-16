@@ -5,17 +5,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +29,14 @@ import com.hocalingo.app.R
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
 import kotlinx.coroutines.flow.collectLatest
 
+// Poppins font family
+private val PoppinsFontFamily = FontFamily(
+    Font(R.font.poppins_regular, FontWeight.Normal),
+    Font(R.font.poppins_medium, FontWeight.Medium),
+    Font(R.font.poppins_bold, FontWeight.Bold),
+    Font(R.font.poppins_black, FontWeight.Black)
+)
+
 @Composable
 fun SplashScreen(
     onNavigateToAuth: () -> Unit = {},
@@ -33,39 +44,6 @@ fun SplashScreen(
     onNavigateToMain: () -> Unit = {},
     viewModel: SplashViewModel = hiltViewModel()
 ) {
-    // Enhanced animations
-    val infiniteTransition = rememberInfiniteTransition(label = "splash_animation")
-
-    val scale by infiniteTransition.animateFloat(
-        initialValue = 0.8f,
-        targetValue = 1.2f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = EaseInOutCubic),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "icon_scale"
-    )
-
-    val rotation by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(8000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "icon_rotation"
-    )
-
-    val pulseAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.3f,
-        targetValue = 0.8f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1500, easing = EaseInOutSine),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "pulse_alpha"
-    )
-
     // Handle navigation events
     LaunchedEffect(Unit) {
         viewModel.navigationEvent.collectLatest { event ->
@@ -77,228 +55,220 @@ fun SplashScreen(
         }
     }
 
+    // Animation states
+    val infiniteTransition = rememberInfiniteTransition(label = "splash_animation")
+
+    // Logo animations
+    val logoScale by animateFloatAsState(
+        targetValue = 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "logo_scale"
+    )
+
+    val logoAlpha by animateFloatAsState(
+        targetValue = 1f,
+        animationSpec = tween(1000, delayMillis = 200),
+        label = "logo_alpha"
+    )
+
+    // Text animations
+    val titleAlpha by animateFloatAsState(
+        targetValue = 1f,
+        animationSpec = tween(800, delayMillis = 600),
+        label = "title_alpha"
+    )
+
+    val taglineAlpha by animateFloatAsState(
+        targetValue = 1f,
+        animationSpec = tween(800, delayMillis = 1000),
+        label = "tagline_alpha"
+    )
+
+    // Shimmer effect for background
+    val shimmerOffset by infiniteTransition.animateFloat(
+        initialValue = -1f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "shimmer"
+    )
+
+    // Pulse effect for logo
+    val logoPulse by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.05f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000, easing = EaseInOutSine),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "logo_pulse"
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                brush = Brush.radialGradient(
+                brush = Brush.verticalGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
-                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f),
-                        MaterialTheme.colorScheme.background
-                    ),
-                    radius = 800f
+                        Color(0xFF00D4FF), // Açık turkuaz
+                        Color(0xFF1E88E5)  // Koyu mavi
+                    )
                 )
             ),
         contentAlignment = Alignment.Center
     ) {
-        // Enhanced background decorations
-        SplashBackgroundDecorations(pulseAlpha = pulseAlpha)
+        // Animated background elements
+        AnimatedBackgroundElements(shimmerOffset)
 
         // Main content
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Enhanced app icon with animations
-            EnhancedAppIcon(
-                scale = scale,
-                rotation = rotation
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Enhanced app name and tagline
-            EnhancedAppBranding()
+            // Logo
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .scale(logoScale * logoPulse)
+                    .alpha(logoAlpha)
+            ) {
+                // Logo background circle
+                Card(
+                    modifier = Modifier.size(120.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White.copy(alpha = 0.15f)
+                    ),
+                    shape = CircleShape,
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        // Main logo circle
+                        Card(
+                            modifier = Modifier.size(80.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.White
+                            ),
+                            shape = CircleShape,
+                            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                // Simple logo icon
+                                Icon(
+                                    imageVector = Icons.Default.Language,
+                                    contentDescription = "Hocalingo Logo",
+                                    tint = Color(0xFF2196F3),
+                                    modifier = Modifier.size(40.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Enhanced loading indicator
-            EnhancedLoadingIndicator()
-        }
+            // App Name
+            Text(
+                text = "Hocalingo",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Black,
+                fontSize = 42.sp,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.alpha(titleAlpha)
+            )
 
-        // Version info at bottom
-        VersionInfo(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(24.dp)
-        )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Tagline
+            Text(
+                text = "Learn words, stay fluent.",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 18.sp,
+                color = Color.White.copy(alpha = 0.9f),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.alpha(taglineAlpha)
+            )
+        }
     }
 }
 
 @Composable
-private fun SplashBackgroundDecorations(pulseAlpha: Float) {
+private fun AnimatedBackgroundElements(shimmerOffset: Float) {
     val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
-    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp
+    val screenHeight = configuration.screenHeightDp
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Floating circles with pulse effect
-        repeat(5) { index ->
-            val size = (80 + index * 40).dp
-            val xOffset = screenWidth * (0.1f + index * 0.2f)
-            val yOffset = screenHeight * (0.1f + index * 0.2f)
+        // Floating geometric shapes
+        repeat(8) { index ->
+            val size = (40 + index * 15).dp
+            val xPos = (screenWidth * (0.1f + (index * 0.13f) % 1.0f)).dp
+            val yPos = (screenHeight * (0.15f + (index * 0.17f) % 1.0f)).dp
 
-            Box(
+            val animatedAlpha by rememberInfiniteTransition(label = "shape_$index").animateFloat(
+                initialValue = 0.05f,
+                targetValue = 0.15f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(
+                        durationMillis = 1500 + index * 200,
+                        easing = EaseInOutSine
+                    ),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                label = "shape_alpha_$index"
+            )
+
+            Card(
                 modifier = Modifier
                     .size(size)
-                    .offset(x = xOffset, y = yOffset)
-                    .scale(1f + pulseAlpha * 0.3f)
-                    .background(
-                        Color.White.copy(alpha = pulseAlpha * 0.1f),
-                        CircleShape
-                    )
-                    .blur((20 + index * 10).dp)
-            )
-        }
-    }
-}
-
-@Composable
-private fun EnhancedAppIcon(
-    scale: Float,
-    rotation: Float
-) {
-    Box(
-        contentAlignment = Alignment.Center
-    ) {
-        // Outer glow effect
-        repeat(3) { index ->
-            Box(
-                modifier = Modifier
-                    .size((160 + index * 20).dp)
-                    .scale(scale * (0.8f + index * 0.1f))
-                    .background(
-                        Color.White.copy(alpha = 0.1f - index * 0.03f),
-                        CircleShape
-                    )
-                    .blur((15 + index * 5).dp)
-            )
+                    .offset(x = xPos, y = yPos)
+                    .graphicsLayer {
+                        rotationZ = shimmerOffset * 45f + index * 30f
+                        alpha = animatedAlpha
+                    },
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                ),
+                shape = if (index % 2 == 0) CircleShape else RoundedCornerShape(8.dp)
+            ) {}
         }
 
-        // Main icon container
-        Card(
-            modifier = Modifier
-                .size(140.dp)
-                .scale(scale),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
-            shape = CircleShape
-        ) {
+        // Shimmer waves
+        repeat(3) { waveIndex ->
+            val waveHeight = screenHeight * (0.3f + waveIndex * 0.2f)
+            val waveWidth = screenWidth * 1.5f
+
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .size(waveWidth.dp, 2.dp)
+                    .offset(
+                        x = (shimmerOffset * screenWidth * 0.5f).dp,
+                        y = waveHeight.dp
+                    )
                     .background(
-                        brush = Brush.radialGradient(
+                        brush = Brush.horizontalGradient(
                             colors = listOf(
-                                MaterialTheme.colorScheme.primaryContainer,
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                                Color.Transparent,
+                                Color.White.copy(alpha = 0.1f),
+                                Color.Transparent
                             )
                         )
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                // Rotating graduation cap
-                Text(
-                    text = "🎓",
-                    fontSize = 64.sp,
-                    modifier = Modifier
-                        .graphicsLayer {
-                            rotationY = rotation * 0.5f
-                        }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun EnhancedAppBranding() {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White.copy(alpha = 0.9f)
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        shape = RoundedCornerShape(20.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // App name with enhanced typography
-            Text(
-                text = stringResource(R.string.app_name),
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                letterSpacing = (-0.8).sp
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Tagline with better styling
-            Text(
-                text = stringResource(R.string.app_tagline),
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                letterSpacing = 0.5.sp,
-                fontWeight = FontWeight.Medium
+                    )
             )
         }
-    }
-}
-
-@Composable
-private fun EnhancedLoadingIndicator() {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White.copy(alpha = 0.8f)
-        ),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(20.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(20.dp),
-                color = MaterialTheme.colorScheme.primary,
-                strokeWidth = 3.dp
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Text(
-                text = stringResource(R.string.loading),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Medium
-            )
-        }
-    }
-}
-
-@Composable
-private fun VersionInfo(modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier,
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White.copy(alpha = 0.7f)
-        ),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Text(
-            text = "Version 1.0.0 MVP",
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
-            fontWeight = FontWeight.Medium
-        )
     }
 }
 

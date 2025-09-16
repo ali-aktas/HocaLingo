@@ -1,6 +1,5 @@
 package com.hocalingo.app.feature.selection.components
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -18,28 +17,36 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hocalingo.app.R
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
+// Poppins font family
+private val PoppinsFontFamily = FontFamily(
+    Font(R.font.poppins_regular, FontWeight.Normal),
+    Font(R.font.poppins_medium, FontWeight.Medium),
+    Font(R.font.poppins_bold, FontWeight.Bold),
+    Font(R.font.poppins_black, FontWeight.Black)
+)
+
 /**
- * SwipeableCard - PREMIUM VERSION
- * Natural movement, next card preview, emojis, glow effects
+ * Premium SwipeableCard with Tinder-style animations
+ * Features: Natural movement, background card preview, visual feedback
  */
-@SuppressLint("UnrememberedMutableState")
 @Composable
 fun SwipeableCard(
     word: String,
@@ -48,8 +55,8 @@ fun SwipeableCard(
     onSwipeLeft: () -> Unit,
     onSwipeRight: () -> Unit,
     modifier: Modifier = Modifier,
-    nextWord: String? = null, // Arkadaki kartın kelimesi
-    nextTranslation: String? = null // Arkadaki kartın çevirisi
+    nextWord: String? = null, // Background card preview
+    nextTranslation: String? = null // Background card preview
 ) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
@@ -70,26 +77,32 @@ fun SwipeableCard(
     var isDragging by remember(cardKey) { mutableStateOf(false) }
     var hasTriggeredAction by remember(cardKey) { mutableStateOf(false) }
 
-    // Swipe indicators - emojis and alpha (TİP HATASI DÜZELTİLDİ - AÇIK TİP BELİRTİLDİ)
-    val leftIndicatorAlpha by derivedStateOf<Float> {
-        if (offsetX.value < 0) {
-            (abs(offsetX.value) / swipeThreshold).coerceIn(0f, 1f)
-        } else 0f
-    }
-
-    val rightIndicatorAlpha by derivedStateOf<Float> {
-        if (offsetX.value > 0) {
-            (offsetX.value / swipeThreshold).coerceIn(0f, 1f)
-        } else 0f
-    }
-
-    val cardScale by derivedStateOf<Float> {
-        with(density) {
-            1f - (abs(offsetX.value) / (screenWidth.toPx() * 2)) * 0.1f
+    // Swipe indicators - emojis and alpha
+    val leftIndicatorAlpha: Float by remember {
+        derivedStateOf {
+            if (offsetX.value < 0) {
+                (abs(offsetX.value) / swipeThreshold).coerceIn(0f, 1f)
+            } else 0f
         }
     }
 
-    // Reset animation states
+    val rightIndicatorAlpha: Float by remember {
+        derivedStateOf {
+            if (offsetX.value > 0) {
+                (offsetX.value / swipeThreshold).coerceIn(0f, 1f)
+            } else 0f
+        }
+    }
+
+    val cardScale: Float by remember {
+        derivedStateOf {
+            with(density) {
+                1f - (abs(offsetX.value) / (screenWidth.toPx() * 2)) * 0.1f
+            }
+        }
+    }
+
+    // Reset animation states when card changes
     LaunchedEffect(cardKey) {
         offsetX.snapTo(0f)
         offsetY.snapTo(0f)
@@ -113,7 +126,10 @@ fun SwipeableCard(
                     .fillMaxHeight()
                     .padding(horizontal = 28.dp, vertical = 20.dp)
                     .alpha(0.6f)
-                    .scale(0.95f),
+                    .graphicsLayer {
+                        scaleX = 0.95f
+                        scaleY = 0.95f
+                    },
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant
@@ -129,15 +145,18 @@ fun SwipeableCard(
                 ) {
                     Text(
                         text = nextWord,
-                        style = MaterialTheme.typography.headlineMedium,
+                        fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
+                        fontSize = 28.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = nextTranslation,
-                        style = MaterialTheme.typography.titleLarge,
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                         textAlign = TextAlign.Center
                     )
@@ -145,9 +164,9 @@ fun SwipeableCard(
             }
         }
 
-        // MAIN CARD with glow effect
+        // MAIN CARD with enhanced design
         Box {
-            // Purple glow effect behind card
+            // Glow effect behind card
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -180,7 +199,7 @@ fun SwipeableCard(
                     }
                     .shadow(
                         elevation = 16.dp,
-                        shape = RoundedCornerShape(20.dp)
+                        shape = RoundedCornerShape(24.dp)
                     )
                     .pointerInput(cardKey) {
                         detectDragGestures(
@@ -190,226 +209,192 @@ fun SwipeableCard(
                             },
                             onDragEnd = {
                                 scope.launch {
-                                    val threshold = swipeThreshold
+                                    isDragging = false
 
-                                    if (!hasTriggeredAction) {
-                                        when {
-                                            offsetX.value > threshold -> {
-                                                // Swipe right - Accept
-                                                hasTriggeredAction = true
+                                    when {
+                                        offsetX.value > swipeThreshold && !hasTriggeredAction -> {
+                                            // Swipe right - LEARN
+                                            hasTriggeredAction = true
 
-                                                launch {
-                                                    offsetX.animateTo(
-                                                        targetValue = screenWidth.toPx() * 1.5f,
-                                                        animationSpec = tween(400)
-                                                    )
-                                                }
-                                                launch {
-                                                    rotation.animateTo(
-                                                        targetValue = 20f,
-                                                        animationSpec = tween(400)
-                                                    )
-                                                }
-                                                launch {
-                                                    scale.animateTo(
-                                                        targetValue = 0.8f,
-                                                        animationSpec = tween(400)
-                                                    )
-                                                }
-
-                                                kotlinx.coroutines.delay(200)
-                                                onSwipeRight()
+                                            launch {
+                                                offsetX.animateTo(
+                                                    targetValue = size.width.toFloat() + 200f,
+                                                    animationSpec = tween(300)
+                                                )
                                             }
-                                            offsetX.value < -threshold -> {
-                                                // Swipe left - Reject
-                                                hasTriggeredAction = true
-
-                                                launch {
-                                                    offsetX.animateTo(
-                                                        targetValue = -screenWidth.toPx() * 1.5f,
-                                                        animationSpec = tween(400)
-                                                    )
-                                                }
-                                                launch {
-                                                    rotation.animateTo(
-                                                        targetValue = -20f,
-                                                        animationSpec = tween(400)
-                                                    )
-                                                }
-                                                launch {
-                                                    scale.animateTo(
-                                                        targetValue = 0.8f,
-                                                        animationSpec = tween(400)
-                                                    )
-                                                }
-
-                                                kotlinx.coroutines.delay(200)
-                                                onSwipeLeft()
+                                            launch {
+                                                rotation.animateTo(
+                                                    targetValue = 30f,
+                                                    animationSpec = tween(300)
+                                                )
                                             }
-                                            else -> {
-                                                // Spring back to center
-                                                launch {
-                                                    offsetX.animateTo(
-                                                        targetValue = 0f,
-                                                        animationSpec = spring(
-                                                            dampingRatio = Spring.DampingRatioMediumBouncy,
-                                                            stiffness = Spring.StiffnessMedium
-                                                        )
+
+                                            onSwipeRight()
+                                        }
+                                        offsetX.value < -swipeThreshold && !hasTriggeredAction -> {
+                                            // Swipe left - SKIP
+                                            hasTriggeredAction = true
+
+                                            launch {
+                                                offsetX.animateTo(
+                                                    targetValue = -size.width.toFloat() - 200f,
+                                                    animationSpec = tween(300)
+                                                )
+                                            }
+                                            launch {
+                                                rotation.animateTo(
+                                                    targetValue = -30f,
+                                                    animationSpec = tween(300)
+                                                )
+                                            }
+
+                                            onSwipeLeft()
+                                        }
+                                        else -> {
+                                            // Return to center with spring animation
+                                            launch {
+                                                offsetX.animateTo(
+                                                    targetValue = 0f,
+                                                    animationSpec = spring(
+                                                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                                                        stiffness = Spring.StiffnessLow
                                                     )
-                                                }
-                                                launch {
-                                                    offsetY.animateTo(
-                                                        targetValue = 0f,
-                                                        animationSpec = spring()
-                                                    )
-                                                }
-                                                launch {
-                                                    rotation.animateTo(
-                                                        targetValue = 0f,
-                                                        animationSpec = spring()
-                                                    )
-                                                }
+                                                )
+                                            }
+                                            launch {
+                                                offsetY.animateTo(
+                                                    targetValue = 0f,
+                                                    animationSpec = spring()
+                                                )
+                                            }
+                                            launch {
+                                                rotation.animateTo(
+                                                    targetValue = 0f,
+                                                    animationSpec = spring()
+                                                )
                                             }
                                         }
                                     }
-
-                                    isDragging = false
-                                }
-                            },
-                            onDrag = { _, dragAmount ->
-                                // DÜZELTME: Natural movement - elimle attığım yöne git
-                                if (isDragging && !hasTriggeredAction) {
-                                    scope.launch {
-                                        offsetX.snapTo(offsetX.value + dragAmount.x)
-                                        // Y hareketi de doğal olsun
-                                        offsetY.snapTo(offsetY.value + dragAmount.y * 0.6f)
-
-                                        // Rotation based on X offset
-                                        val rotationFraction = (offsetX.value / screenWidth.toPx()).coerceIn(-1f, 1f)
-                                        rotation.snapTo(rotationFraction * 12f)
-                                    }
                                 }
                             }
-                        )
+                        ) { change, dragAmount ->
+                            if (!hasTriggeredAction) {
+                                scope.launch {
+                                    // Update position
+                                    offsetX.snapTo(offsetX.value + dragAmount.x)
+                                    offsetY.snapTo(offsetY.value + dragAmount.y * 0.3f) // Damped Y movement
+
+                                    // Natural rotation based on X movement
+                                    val rotationAmount = (offsetX.value / swipeThreshold * 15f).coerceIn(-15f, 15f)
+                                    rotation.snapTo(rotationAmount)
+                                }
+                            }
+                        }
                     },
-                elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = if (isDragging) 20.dp else 12.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
+                    containerColor = Color.White
                 ),
-                shape = RoundedCornerShape(20.dp)
+                shape = RoundedCornerShape(24.dp)
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    // EMOJI OVERLAYS
-                    if (rightIndicatorAlpha > 0.3f) {
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .alpha(rightIndicatorAlpha)
-                                .background(
-                                    Color.Green.copy(alpha = 0.2f),
-                                    RoundedCornerShape(50.dp)
-                                )
-                                .padding(16.dp)
-                        ) {
-                            Text(
-                                text = "✅",
-                                fontSize = 48.sp
-                            )
-                        }
-                    }
-
-                    if (leftIndicatorAlpha > 0.3f) {
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .alpha(leftIndicatorAlpha)
-                                .background(
-                                    Color.Red.copy(alpha = 0.2f),
-                                    RoundedCornerShape(50.dp)
-                                )
-                                .padding(16.dp)
-                        ) {
-                            Text(
-                                text = "❌",
-                                fontSize = 48.sp
-                            )
-                        }
-                    }
-
                     // Card content
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(28.dp),
+                            .padding(32.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // English word
+                        // Main word
                         Text(
                             text = word,
-                            style = MaterialTheme.typography.headlineLarge,
+                            fontFamily = PoppinsFontFamily,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary,
-                            textAlign = TextAlign.Center
+                            fontSize = 36.sp,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center,
+                            lineHeight = 40.sp
                         )
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
 
-                        // Turkish translation
+                        // Translation
                         Text(
                             text = translation,
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            textAlign = TextAlign.Center
+                            fontFamily = PoppinsFontFamily,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 18.sp,
+                            color = Color(0xFF666666),
+                            textAlign = TextAlign.Center,
+                            lineHeight = 24.sp
                         )
 
-                        // Example sentence
-                        example?.let {
-                            Spacer(modifier = Modifier.height(32.dp))
-
-                            Card(
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f)
-                                ),
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(16.dp)
-                            ) {
-                                Text(
-                                    text = it,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(20.dp),
-                                    lineHeight = 24.sp
-                                )
-                            }
+                        // Example sentence (if provided)
+                        example?.let { exampleText ->
+                            Spacer(modifier = Modifier.height(24.dp))
+                            Text(
+                                text = "\"$exampleText\"",
+                                fontFamily = PoppinsFontFamily,
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 14.sp,
+                                color = Color(0xFF888888),
+                                textAlign = TextAlign.Center,
+                                lineHeight = 18.sp,
+                                modifier = Modifier
+                                    .background(
+                                        color = Color(0xFFF5F5F5),
+                                        shape = RoundedCornerShape(12.dp)
+                                    )
+                                    .padding(16.dp)
+                            )
                         }
                     }
 
-                    // Bottom hint with gradient
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .fillMaxWidth()
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.Transparent,
-                                        MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
-                                    )
+                    // LEFT SWIPE INDICATOR (❌ SKIP)
+                    if (leftIndicatorAlpha > 0.1f) {
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .padding(24.dp)
+                                .background(
+                                    color = Color(0xFFFF4444).copy(alpha = leftIndicatorAlpha * 0.9f),
+                                    shape = RoundedCornerShape(12.dp)
                                 )
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = "❌ SKIP",
+                                color = Color.White,
+                                fontFamily = PoppinsFontFamily,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp
                             )
-                            .padding(vertical = 16.dp)
-                    ) {
-                        Text(
-                            text = "← Geç   |   Öğren →",
-                            modifier = Modifier.align(Alignment.Center),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                            fontWeight = FontWeight.Medium
-                        )
+                        }
+                    }
+
+                    // RIGHT SWIPE INDICATOR (⭐ LEARN)
+                    if (rightIndicatorAlpha > 0.1f) {
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(24.dp)
+                                .background(
+                                    color = Color(0xFF4CAF50).copy(alpha = rightIndicatorAlpha * 0.9f),
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = "⭐ LEARN",
+                                color = Color.White,
+                                fontFamily = PoppinsFontFamily,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp
+                            )
+                        }
                     }
                 }
             }

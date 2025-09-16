@@ -1,45 +1,59 @@
 package com.hocalingo.app.feature.onboarding.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hocalingo.app.R
-import com.hocalingo.app.core.ui.components.HocaErrorState
-import com.hocalingo.app.core.ui.components.HocaLoadingIndicator
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
+// Poppins font family tanımlaması
+private val PoppinsFontFamily = FontFamily(
+    Font(R.font.poppins_regular, FontWeight.Normal),
+    Font(R.font.poppins_medium, FontWeight.Medium),
+    Font(R.font.poppins_bold, FontWeight.Bold),
+    Font(R.font.poppins_black, FontWeight.Black)
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PackageSelectionScreen(
     onNavigateToWordSelection: (String) -> Unit,
+    onNavigateBack: (() -> Unit)? = null,
     viewModel: PackageSelectionViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope() // ✅ CoroutineScope eklendi
+
+    // Local state for selection
+    var selectedPackageId by remember { mutableStateOf<String?>(null) }
 
     // Handle effects
     LaunchedEffect(Unit) {
@@ -49,7 +63,13 @@ fun PackageSelectionScreen(
                     onNavigateToWordSelection(effect.packageId)
                 }
                 is PackageSelectionEffect.ShowMessage -> {
-                    snackbarHostState.showSnackbar(effect.message)
+                    // A1 indirme başarısı mesajında direkt navigate et
+                    if (effect.message.contains("🎉") && selectedPackageId == "A1") {
+                        // Mesajı gösterme, direkt git
+                        onNavigateToWordSelection("a1_en_tr_test_v1")
+                    } else {
+                        snackbarHostState.showSnackbar(effect.message)
+                    }
                 }
                 is PackageSelectionEffect.ShowDownloadDialog -> {
                     // Auto-download for now
@@ -60,445 +80,276 @@ fun PackageSelectionScreen(
     }
 
     Scaffold(
-        topBar = {
-            EnhancedTopAppBar()
-        },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = {
+            // ✅ SnackbarHost'u daha yukarı taşıdık
+            Box(modifier = Modifier.fillMaxSize()) {
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 100.dp) // Continue butonundan uzak
+                )
+            }
+        }
     ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(paddingValues)
+                .padding(horizontal = 24.dp)
+        ) {
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // "Choose your level" başlığı
+            Text(
+                text = "Choose your level",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 24.sp,
+                color = Color.Black,
+                modifier = Modifier.padding(bottom = 32.dp)
+            )
+
+            // Level kartları grid
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.weight(1f)
+            ) {
+                items(getLevelPackages()) { levelPackage ->
+                    LevelCard(
+                        levelPackage = levelPackage,
+                        isSelected = selectedPackageId == levelPackage.id,
+                        onClick = {
+                            selectedPackageId = levelPackage.id
+                            viewModel.onEvent(PackageSelectionEvent.SelectPackage(levelPackage.id))
+                        }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Continue butonu
+            Button(
+                onClick = {
+                    selectedPackageId?.let { packageId ->
+                        // A1 paketi için doğrudan indirme
+                        if (packageId == "A1") {
+                            val realPackageId = "a1_en_tr_test_v1"
+                            viewModel.onEvent(PackageSelectionEvent.DownloadPackage(realPackageId))
+                        } else {
+                            // Diğer paketler için "yakında" mesajı
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Bu paket yakında eklenecek! A1 paketi ile devam edebilirsiniz.")
+                            }
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF00D4FF)
+                ),
+                enabled = selectedPackageId != null && !uiState.isLoading
+            ) {
+                if (uiState.isLoading) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            modifier = Modifier.size(20.dp),
+                            strokeWidth = 2.dp
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Loading...",
+                            fontFamily = PoppinsFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = Color.White
+                        )
+                    }
+                } else {
+                    Text(
+                        text = "Continue",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color.White
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+}
+
+@Composable
+private fun LevelCard(
+    levelPackage: LevelPackage,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(160.dp)
+            .clickable { onClick() }
+            .then(
+                if (isSelected) {
+                    Modifier.border(
+                        width = 3.dp,
+                        color = Color(0xFF00D4FF),
+                        shape = RoundedCornerShape(20.dp)
+                    )
+                } else Modifier
+            ),
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.08f),
-                            MaterialTheme.colorScheme.background
-                        )
-                    )
+                    brush = levelPackage.gradient,
+                    shape = RoundedCornerShape(20.dp)
                 )
-                .padding(paddingValues)
         ) {
-            // Background decorations
-            BackgroundDecorations()
-
-            when {
-                uiState.isLoading -> {
-                    HocaLoadingIndicator(
-                        modifier = Modifier.align(Alignment.Center),
-                        text = stringResource(R.string.loading)
-                    )
-                }
-                uiState.error != null -> {
-                    HocaErrorState(
-                        error = uiState.error!!,
-                        onRetry = { viewModel.onEvent(PackageSelectionEvent.RetryLoading) },
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                else -> {
-                    EnhancedPackageGrid(
-                        packages = uiState.packages,
-                        onPackageClick = { packageId ->
-                            viewModel.onEvent(PackageSelectionEvent.SelectPackage(packageId))
-                        }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun EnhancedTopAppBar() {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = stringResource(R.string.package_selection_title),
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.headlineSmall
-            )
-        },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = Color.Transparent
-        )
-    )
-}
-
-@Composable
-private fun BackgroundDecorations() {
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        // Floating circles
-        Box(
-            modifier = Modifier
-                .size(120.dp)
-                .offset(x = screenWidth * 0.8f, y = 100.dp)
-                .background(
-                    MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                    CircleShape
-                )
-                .blur(30.dp)
-        )
-
-        Box(
-            modifier = Modifier
-                .size(80.dp)
-                .offset(x = screenWidth * 0.1f, y = 300.dp)
-                .background(
-                    MaterialTheme.colorScheme.tertiary.copy(alpha = 0.08f),
-                    CircleShape
-                )
-                .blur(25.dp)
-        )
-    }
-}
-
-@Composable
-private fun EnhancedPackageGrid(
-    packages: List<PackageInfo>,
-    onPackageClick: (String) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-    ) {
-        // Enhanced header section
-        HeaderSection()
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Package cards grid with enhanced design
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(vertical = 8.dp)
-        ) {
-            items(packages) { packageInfo ->
-                EnhancedPackageCard(
-                    packageInfo = packageInfo,
-                    onClick = { onPackageClick(packageInfo.id) }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun HeaderSection() {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
-        ),
-        shape = RoundedCornerShape(20.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "🎯",
-                fontSize = 40.sp,
-                modifier = Modifier.padding(bottom = 12.dp)
-            )
-
-            Text(
-                text = stringResource(R.string.package_selection_subtitle),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = stringResource(R.string.package_selection_description),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                lineHeight = 20.sp
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun EnhancedPackageCard(
-    packageInfo: PackageInfo,
-    onClick: () -> Unit
-) {
-    val cardColor = Color(android.graphics.Color.parseColor(packageInfo.color))
-
-    Card(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(240.dp),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp,
-            pressedElevation = 12.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            // Gradient header background
+            // Icon
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                cardColor.copy(alpha = 0.9f),
-                                cardColor.copy(alpha = 0.5f)
-                            )
-                        ),
-                        shape = RoundedCornerShape(
-                            topStart = 20.dp,
-                            topEnd = 20.dp,
-                            bottomStart = 0.dp,
-                            bottomEnd = 0.dp
-                        )
-                    )
-            )
+                    .padding(16.dp)
+                    .align(Alignment.TopStart)
+            ) {
+                Icon(
+                    imageVector = levelPackage.icon,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(32.dp)
+                )
+            }
 
+            // Level ve açıklama
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(20.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+                    .align(Alignment.BottomStart)
+                    .padding(16.dp)
             ) {
-                // Header with level
-                Column {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Card(
-                            modifier = Modifier.size(40.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color.White.copy(alpha = 0.9f)
-                            ),
-                            shape = CircleShape
-                        ) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = packageInfo.level,
-                                    style = MaterialTheme.typography.labelLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    color = cardColor
-                                )
-                            }
-                        }
+                Text(
+                    text = levelPackage.level,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Color.White
+                )
+                Text(
+                    text = levelPackage.description,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 12.sp,
+                    color = Color.White.copy(alpha = 0.9f),
+                    lineHeight = 14.sp
+                )
 
-                        Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-                        Column {
-                            Text(
-                                text = packageInfo.level,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                            Text(
-                                text = packageInfo.name,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.White.copy(alpha = 0.9f)
-                            )
-                        }
-                    }
-                }
-
-                // Package info section
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = packageInfo.description,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        lineHeight = 18.sp
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Card(
-                            colors = CardDefaults.cardColors(
-                                containerColor = cardColor.copy(alpha = 0.15f)
-                            ),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.package_words_count, packageInfo.wordCount),
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                                style = MaterialTheme.typography.labelMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = cardColor
-                            )
-                        }
-
-                        // Download status with enhanced design
-                        when {
-                            packageInfo.isDownloaded -> {
-                                DownloadedChip()
-                            }
-                            packageInfo.downloadProgress > 0 -> {
-                                DownloadingProgress(progress = packageInfo.downloadProgress)
-                            }
-                            else -> {
-                                DownloadButton()
-                            }
-                        }
-                    }
-                }
+                Text(
+                    text = when (levelPackage.id) {
+                        "A1" -> "Select words"
+                        else -> "Download package"
+                    },
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 11.sp,
+                    color = Color.White.copy(alpha = 0.8f)
+                )
             }
         }
     }
 }
 
-@Composable
-private fun DownloadedChip() {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                imageVector = Icons.Default.Check,
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = stringResource(R.string.package_downloaded),
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        }
-    }
-}
+// Level paketleri tanımları
+private data class LevelPackage(
+    val id: String,
+    val level: String,
+    val description: String,
+    val gradient: Brush,
+    val icon: ImageVector
+)
 
-@Composable
-private fun DownloadButton() {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
+private fun getLevelPackages(): List<LevelPackage> = listOf(
+    LevelPackage(
+        id = "A1",
+        level = "A1",
+        description = "Beginner - basic\neveryday words",
+        gradient = Brush.linearGradient(
+            colors = listOf(Color(0xFFFF6B35), Color(0xFFF7931E))
         ),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                imageVector = Icons.Default.Send,
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = stringResource(R.string.package_download),
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-        }
-    }
-}
-
-@Composable
-private fun DownloadingProgress(progress: Int) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+        icon = Icons.Outlined.MenuBook
+    ),
+    LevelPackage(
+        id = "A2",
+        level = "A2",
+        description = "Elementary - simple\nsentences",
+        gradient = Brush.linearGradient(
+            colors = listOf(Color(0xFF4ECDC4), Color(0xFF44A08D))
         ),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            LinearProgressIndicator(
-                progress = { progress / 100f },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(6.dp)
-                    .clip(RoundedCornerShape(3.dp)),
-                color = MaterialTheme.colorScheme.tertiary,
-                trackColor = MaterialTheme.colorScheme.tertiaryContainer
-            )
-            Spacer(modifier = Modifier.height(6.dp))
-            Text(
-                text = stringResource(R.string.package_downloading, progress),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onTertiaryContainer,
-                fontWeight = FontWeight.Medium
-            )
-        }
-    }
-}
+        icon = Icons.Filled.Star
+    ),
+    LevelPackage(
+        id = "B1",
+        level = "B1",
+        description = "Intermediate -\neveryday\nconversations",
+        gradient = Brush.linearGradient(
+            colors = listOf(Color(0xFF43E97B), Color(0xFF38F9D7))
+        ),
+        icon = Icons.Outlined.TrendingUp
+    ),
+    LevelPackage(
+        id = "B2",
+        level = "B2",
+        description = "Upper Intermediate -\ncomplex topics",
+        gradient = Brush.linearGradient(
+            colors = listOf(Color(0xFF667eea), Color(0xFF764ba2))
+        ),
+        icon = Icons.Outlined.Psychology
+    ),
+    LevelPackage(
+        id = "C1",
+        level = "C1",
+        description = "Advanced - nuanced\ndiscussions",
+        gradient = Brush.linearGradient(
+            colors = listOf(Color(0xFFf12711), Color(0xFFf5af19))
+        ),
+        icon = Icons.Outlined.EmojiEvents
+    ),
+    LevelPackage(
+        id = "C2",
+        level = "C2",
+        description = "Proficient - mastery of\nthe language",
+        gradient = Brush.linearGradient(
+            colors = listOf(Color(0xFFff9a9e), Color(0xFFfecfef))
+        ),
+        icon = Icons.Outlined.Verified
+    )
+)
 
 @Preview(showBackground = true)
 @Composable
 private fun PackageSelectionScreenPreview() {
     HocaLingoTheme {
-        val mockPackages = listOf(
-            PackageInfo(
-                id = "a1",
-                level = "A1",
-                name = "Başlangıç",
-                description = "Temel kelimeler ve günlük ifadeler",
-                wordCount = 50,
-                isDownloaded = true,
-                downloadProgress = 100,
-                color = "#4CAF50"
-            ),
-            PackageInfo(
-                id = "a2",
-                level = "A2",
-                name = "Temel",
-                description = "Basit iletişim ve yaygın kelimeler",
-                wordCount = 400,
-                isDownloaded = false,
-                downloadProgress = 0,
-                color = "#8BC34A"
-            )
-        )
-
-        EnhancedPackageGrid(
-            packages = mockPackages,
-            onPackageClick = {}
+        // Mock preview without ViewModel
+        PackageSelectionScreen(
+            onNavigateToWordSelection = {},
+            onNavigateBack = {}
         )
     }
 }

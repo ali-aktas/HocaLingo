@@ -142,6 +142,9 @@ dependencies {
     // Image Loading
     implementation("io.coil-kt:coil-compose:2.7.0")
 
+    // Icons
+    implementation(libs.compose.material.icons.extended)
+
     // DataStore for preferences
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
