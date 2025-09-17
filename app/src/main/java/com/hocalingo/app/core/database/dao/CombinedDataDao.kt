@@ -56,6 +56,49 @@ interface CombinedDataDao {
         currentTime: Long,
         limit: Int = 20
     ): List<ConceptWithTimingData>
+
+    // NEW: Count methods for hasWordsToStudy logic
+    @Query("""
+        SELECT COUNT(*)
+        FROM concepts c
+        INNER JOIN user_selections us ON c.id = us.concept_id
+        INNER JOIN word_progress wp ON c.id = wp.concept_id
+        WHERE us.status = 'SELECTED' 
+        AND wp.direction = :direction
+        AND wp.next_review_at <= :currentTime
+        AND wp.is_mastered = 0
+    """)
+    suspend fun getOverdueWordsCount(direction: StudyDirection, currentTime: Long): Int
+
+    @Query("""
+        SELECT COUNT(*)
+        FROM concepts c
+        INNER JOIN user_selections us ON c.id = us.concept_id
+        LEFT JOIN word_progress wp ON c.id = wp.concept_id AND wp.direction = :direction
+        WHERE us.status = 'SELECTED' 
+        AND (wp.concept_id IS NULL OR wp.repetitions = 0)
+    """)
+    suspend fun getNewWordsCount(direction: StudyDirection): Int
+
+    // NEW: Statistics methods
+    @Query("""
+        SELECT COUNT(*)
+        FROM concepts c
+        INNER JOIN user_selections us ON c.id = us.concept_id
+        WHERE us.status = 'SELECTED'
+    """)
+    suspend fun getTotalSelectedWordsCount(): Int
+
+    @Query("""
+        SELECT COUNT(*)
+        FROM concepts c
+        INNER JOIN user_selections us ON c.id = us.concept_id
+        INNER JOIN word_progress wp ON c.id = wp.concept_id
+        WHERE us.status = 'SELECTED' 
+        AND wp.direction = :direction
+        AND wp.is_mastered = 1
+    """)
+    suspend fun getMasteredWordsCount(direction: StudyDirection): Int
 }
 
 data class ConceptWithProgressData(

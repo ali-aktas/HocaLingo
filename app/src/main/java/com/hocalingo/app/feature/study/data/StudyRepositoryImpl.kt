@@ -13,9 +13,11 @@ import com.hocalingo.app.core.database.entities.StudyDirection
 import com.hocalingo.app.core.database.entities.StudySessionEntity
 import com.hocalingo.app.core.database.entities.WordProgressEntity
 import com.hocalingo.app.feature.study.domain.StudyRepository
+import com.hocalingo.app.feature.study.domain.TodayStats
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,6 +25,7 @@ import javax.inject.Singleton
  * Implementation of StudyRepository
  *
  * Handles all study-related data operations using DAO layer
+ * with simplified daily progress tracking
  */
 @Singleton
 class StudyRepositoryImpl @Inject constructor(
@@ -58,15 +61,14 @@ class StudyRepositoryImpl @Inject constructor(
                 SpacedRepetitionAlgorithm.getStudyPriority(mockProgress, currentTime)
             }
 
-            DebugHelper.log("Study queue sorted by priority: ${sortedQueue.size} words")
             emit(sortedQueue)
 
         } catch (e: Exception) {
-            DebugHelper.logError("Study queue loading error", e)
+            DebugHelper.logError("Study queue flow error", e)
             emit(emptyList())
         }
     }.catch { e ->
-        DebugHelper.logError("Flow error in getStudyQueue", e)
+        DebugHelper.logError("Study queue flow catch", e)
         emit(emptyList())
     }
 
@@ -74,9 +76,7 @@ class StudyRepositoryImpl @Inject constructor(
         conceptId: Int,
         direction: StudyDirection
     ): Result<WordProgressEntity?> = try {
-        val progress = database.wordProgressDao()
-            .getProgressByConceptAndDirection(conceptId, direction)
-        DebugHelper.log("Retrieved progress for concept $conceptId: ${progress != null}")
+        val progress = database.wordProgressDao().getProgressByConceptAndDirection(conceptId, direction)
         Result.Success(progress)
     } catch (e: Exception) {
         DebugHelper.logError("Get current progress error", e)
@@ -85,10 +85,9 @@ class StudyRepositoryImpl @Inject constructor(
 
     override suspend fun getConceptById(conceptId: Int): Result<ConceptEntity?> = try {
         val concept = database.conceptDao().getConceptById(conceptId)
-        DebugHelper.log("Retrieved concept $conceptId: ${concept?.english ?: "null"}")
         Result.Success(concept)
     } catch (e: Exception) {
-        DebugHelper.logError("Get concept error", e)
+        DebugHelper.logError("Get concept by id error", e)
         Result.Error(AppError.Unknown(e))
     }
 
@@ -97,21 +96,40 @@ class StudyRepositoryImpl @Inject constructor(
         direction: StudyDirection,
         quality: Int
     ): Result<WordProgressEntity> = try {
-        DebugHelper.log("Updating word progress: concept=$conceptId, direction=$direction, quality=$quality")
 
-        // Get current progress or create new one
-        val currentProgress = database.wordProgressDao()
-            .getProgressByConceptAndDirection(conceptId, direction)
-            ?: SpacedRepetitionAlgorithm.createInitialProgress(conceptId, direction)
+        // Get current progress or create new
+        val currentProgress = database.wordProgressDao().getProgressByConceptAndDirection(conceptId, direction)
+            ?: WordProgressEntity(
+                conceptId = conceptId,
+                direction = direction,
+                repetitions = 0,
+                intervalDays = 0f,
+                easeFactor = 2.5f,
+                nextReviewAt = System.currentTimeMillis(),
+                lastReviewAt = null,
+                isSelected = true,
+                isMastered = false
+            )
 
-        // Calculate new progress using SM-2 algorithm
-        val updatedProgress = SpacedRepetitionAlgorithm.calculateNextReview(currentProgress, quality)
+        // Calculate new progress using SM-2
+        val newProgress = SpacedRepetitionAlgorithm.calculateNextReview(currentProgress, quality)
 
-        // Save to database
-        database.wordProgressDao().insertProgress(updatedProgress)
+        // Update in database
+        database.wordProgressDao().insertProgress(newProgress)
 
-        DebugHelper.log("Progress updated successfully - next review: ${SpacedRepetitionAlgorithm.getTimeUntilReview(updatedProgress.nextReviewAt)}")
-        Result.Success(updatedProgress)
+        // If word is moved to future (successful completion), increment daily progress
+        val now = System.currentTimeMillis()
+        val nextReview = newProgress.nextReviewAt
+        val oneDay = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
+
+        if (nextReview > now + oneDay) {
+            // Word is moved to tomorrow or later = completed for today
+            incrementDailyProgress()
+            DebugHelper.log("Word completed for today, daily progress incremented")
+        }
+
+        DebugHelper.log("Updated progress for concept $conceptId: quality=$quality, nextReview=$nextReview")
+        Result.Success(newProgress)
 
     } catch (e: Exception) {
         DebugHelper.logError("Update word progress error", e)
@@ -121,13 +139,13 @@ class StudyRepositoryImpl @Inject constructor(
     override suspend fun hasWordsToStudy(direction: StudyDirection): Result<Boolean> = try {
         val currentTime = System.currentTimeMillis()
 
-        // Check overdue words
-        val overdueWords = database.wordProgressDao().getWordsForReview(currentTime, 1)
-        val hasOverdue = overdueWords.isNotEmpty()
+        // Check for overdue words
+        val overdueCount = database.combinedDataDao().getOverdueWordsCount(direction, currentTime)
+        val hasOverdue = overdueCount > 0
 
-        // Check new words
-        val newWords = database.wordProgressDao().getNewWordsForStudy(1)
-        val hasNew = newWords.isNotEmpty()
+        // Check for new words (never studied)
+        val newWordsCount = database.combinedDataDao().getNewWordsCount(direction)
+        val hasNew = newWordsCount > 0
 
         val hasWordsToStudy = hasOverdue || hasNew
 
@@ -166,7 +184,7 @@ class StudyRepositoryImpl @Inject constructor(
             wordsStudied = wordsStudied,
             correctAnswers = correctAnswers,
             sessionType = SessionType.MIXED,
-            totalDurationMs = System.currentTimeMillis() // Will be calculated properly in real implementation
+            totalDurationMs = System.currentTimeMillis()
         )
 
         database.studySessionDao().updateSession(session)
@@ -180,9 +198,8 @@ class StudyRepositoryImpl @Inject constructor(
 
     override suspend fun getTodayWordsStudied(): Result<Int> = try {
         val today = System.currentTimeMillis()
-        val startOfDay = today - (today % (24 * 60 * 60 * 1000)) // Start of today
+        val startOfDay = today - (today % (24 * 60 * 60 * 1000))
 
-        // Use correct DAO method name: getSessionsBetweenDates
         val todaySessions = database.studySessionDao().getSessionsBetweenDates(startOfDay, today)
         val wordsStudied = todaySessions.sumOf { it.wordsStudied ?: 0 }
 
@@ -191,6 +208,94 @@ class StudyRepositoryImpl @Inject constructor(
 
     } catch (e: Exception) {
         DebugHelper.logError("Get today words studied error", e)
+        Result.Error(AppError.Unknown(e))
+    }
+
+    override suspend fun getDailyCompletedWords(): Result<Int> = try {
+        val today = System.currentTimeMillis()
+        val startOfDay = today - (today % (24 * 60 * 60 * 1000))
+        val endOfDay = startOfDay + (24 * 60 * 60 * 1000)
+
+        // Count words that were updated today and moved to future dates
+        val completedCount = database.wordProgressDao()
+            .getWordsCompletedToday(startOfDay, endOfDay)
+
+        DebugHelper.log("Daily completed words: $completedCount")
+        Result.Success(completedCount)
+
+    } catch (e: Exception) {
+        DebugHelper.logError("Get daily completed words error", e)
+        Result.Error(AppError.Unknown(e))
+    }
+
+    override suspend fun incrementDailyProgress(): Result<Unit> = try {
+        // This could store daily progress in a separate table
+        // For now, we calculate it dynamically from completed cards
+
+        DebugHelper.log("Daily progress incremented (calculated dynamically)")
+        Result.Success(Unit)
+
+    } catch (e: Exception) {
+        DebugHelper.logError("Increment daily progress error", e)
+        Result.Error(AppError.Unknown(e))
+    }
+
+    override suspend fun getDailyGoal(): Result<Int> = try {
+        val dailyGoal = preferencesManager.getDailyGoal().first()
+        Result.Success(dailyGoal)
+    } catch (e: Exception) {
+        DebugHelper.logError("Get daily goal error", e)
+        Result.Error(AppError.Unknown(e))
+    }
+
+    override suspend fun isDailyGoalReached(): Result<Boolean> = try {
+        val completedWordsResult = getDailyCompletedWords()
+        val dailyGoalResult = getDailyGoal()
+
+        if (completedWordsResult is Result.Success && dailyGoalResult is Result.Success) {
+            val isReached = completedWordsResult.data >= dailyGoalResult.data
+            DebugHelper.log("Daily goal reached: $isReached (${completedWordsResult.data}/${dailyGoalResult.data})")
+            Result.Success(isReached)
+        } else {
+            Result.Success(false)
+        }
+
+    } catch (e: Exception) {
+        DebugHelper.logError("Check daily goal reached error", e)
+        Result.Error(AppError.Unknown(e))
+    }
+
+    override suspend fun getTodaySessionStats(): Result<TodayStats> = try {
+        val wordsStudiedResult = getTodayWordsStudied()
+        val completedWordsResult = getDailyCompletedWords()
+        val dailyGoalResult = getDailyGoal()
+
+        val wordsStudied = if (wordsStudiedResult is Result.Success) wordsStudiedResult.data else 0
+        val completed = if (completedWordsResult is Result.Success) completedWordsResult.data else 0
+        val goal = if (dailyGoalResult is Result.Success) dailyGoalResult.data else 20
+
+        val progressPercentage = if (goal > 0) {
+            (completed.toFloat() / goal.toFloat() * 100f).coerceAtMost(100f)
+        } else 0f
+
+        // Count today's sessions
+        val today = System.currentTimeMillis()
+        val startOfDay = today - (today % (24 * 60 * 60 * 1000))
+        val sessions = database.studySessionDao().getSessionsBetweenDates(startOfDay, today)
+
+        val stats = TodayStats(
+            wordsStudied = wordsStudied,
+            cardsCompleted = completed,
+            dailyGoal = goal,
+            progressPercentage = progressPercentage,
+            sessionCount = sessions.size
+        )
+
+        DebugHelper.log("Today stats: $stats")
+        Result.Success(stats)
+
+    } catch (e: Exception) {
+        DebugHelper.logError("Get today session stats error", e)
         Result.Error(AppError.Unknown(e))
     }
 }

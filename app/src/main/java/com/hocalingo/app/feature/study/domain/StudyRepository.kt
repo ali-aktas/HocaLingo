@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.Flow
  *
  * Handles:
  * - Study queue management with SM-2 algorithm
- * - Word progress updates
+ * - Word progress updates and daily tracking
  * - Study session tracking
- * - Basic statistics
+ * - Simplified statistics (daily goal focused)
  */
 interface StudyRepository {
 
@@ -43,6 +43,8 @@ interface StudyRepository {
 
     /**
      * Update word progress after user response
+     * This will move cards to future dates based on SM-2 algorithm
+     * And increment daily progress when a card is completed
      */
     suspend fun updateWordProgress(
         conceptId: Int,
@@ -71,6 +73,51 @@ interface StudyRepository {
 
     /**
      * Get today's words studied count
+     * This is the main metric for daily progress tracking
      */
     suspend fun getTodayWordsStudied(): Result<Int>
+
+    /**
+     * Get daily completed words count
+     * Words that have been moved to future dates (completed for today)
+     */
+    suspend fun getDailyCompletedWords(): Result<Int>
+
+    /**
+     * Update daily progress when a card is completed
+     * Called when a word is moved to next review date
+     */
+    suspend fun incrementDailyProgress(): Result<Unit>
+
+    /**
+     * Get user's daily goal
+     */
+    suspend fun getDailyGoal(): Result<Int>
+
+    /**
+     * Check if daily goal is reached
+     */
+    suspend fun isDailyGoalReached(): Result<Boolean>
+
+    /**
+     * Get study session statistics for today
+     */
+    suspend fun getTodaySessionStats(): Result<TodayStats>
+}
+
+/**
+ * Today's study statistics - simplified
+ */
+data class TodayStats(
+    val wordsStudied: Int,
+    val cardsCompleted: Int,
+    val dailyGoal: Int,
+    val progressPercentage: Float,
+    val sessionCount: Int
+) {
+    val isGoalReached: Boolean
+        get() = cardsCompleted >= dailyGoal
+
+    val remainingWords: Int
+        get() = (dailyGoal - cardsCompleted).coerceAtLeast(0)
 }

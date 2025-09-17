@@ -209,14 +209,17 @@ class WordSelectionViewModel @Inject constructor(
             }
 
             try {
-                // Select word in database
+                // 1. Select word in database (UserSelectionEntity)
                 database.userSelectionDao().selectWord(conceptId, packageId)
                 DebugHelper.logWordSelection("Word selected in database: $conceptId")
 
-                // Add to undo stack
+                // 2. CRITICAL FIX: Create WordProgressEntity for immediate study availability
+                createWordProgressForStudy(conceptId)
+
+                // 3. Add to undo stack
                 addToUndoStack(UndoAction(conceptId, SelectionStatus.SELECTED))
 
-                // Update state
+                // 4. Update state
                 _uiState.update {
                     it.copy(
                         selectedCount = it.selectedCount + 1,
@@ -226,12 +229,76 @@ class WordSelectionViewModel @Inject constructor(
 
                 DebugHelper.logWordSelection("State updated - Selected: ${currentState.selectedCount + 1}")
 
-                // Move to next word
+                // 5. Move to next word
                 moveToNextWord()
 
             } catch (e: Exception) {
                 DebugHelper.logError("Word selection error", e)
             }
+        }
+    }
+
+    /**
+     * CRITICAL: Create WordProgressEntity when word is selected
+     * This ensures the word appears in study queue immediately
+     */
+    private suspend fun createWordProgressForStudy(conceptId: Int) {
+        try {
+            // Check if WordProgressEntity already exists for both directions
+            val progressEnToTr = database.wordProgressDao()
+                .getProgressByConceptAndDirection(conceptId, StudyDirection.EN_TO_TR)
+            val progressTrToEn = database.wordProgressDao()
+                .getProgressByConceptAndDirection(conceptId, StudyDirection.TR_TO_EN)
+
+            val currentTime = System.currentTimeMillis()
+            val newProgressEntries = mutableListOf<WordProgressEntity>()
+
+            // Create EN_TO_TR progress if not exists
+            if (progressEnToTr == null) {
+                val enToTrProgress = WordProgressEntity(
+                    conceptId = conceptId,
+                    direction = StudyDirection.EN_TO_TR,
+                    repetitions = 0,
+                    intervalDays = 0f,
+                    easeFactor = 2.5f, // SM-2 default
+                    nextReviewAt = currentTime, // Available immediately for study
+                    lastReviewAt = null,
+                    isSelected = true,
+                    isMastered = false,
+                    createdAt = currentTime,
+                    updatedAt = currentTime
+                )
+                newProgressEntries.add(enToTrProgress)
+            }
+
+            // Create TR_TO_EN progress if not exists
+            if (progressTrToEn == null) {
+                val trToEnProgress = WordProgressEntity(
+                    conceptId = conceptId,
+                    direction = StudyDirection.TR_TO_EN,
+                    repetitions = 0,
+                    intervalDays = 0f,
+                    easeFactor = 2.5f, // SM-2 default
+                    nextReviewAt = currentTime, // Available immediately for study
+                    lastReviewAt = null,
+                    isSelected = true,
+                    isMastered = false,
+                    createdAt = currentTime,
+                    updatedAt = currentTime
+                )
+                newProgressEntries.add(trToEnProgress)
+            }
+
+            // Insert new progress entries
+            if (newProgressEntries.isNotEmpty()) {
+                database.wordProgressDao().insertProgressList(newProgressEntries)
+                DebugHelper.logWordSelection("WordProgressEntity created for concept $conceptId (${newProgressEntries.size} directions)")
+            } else {
+                DebugHelper.logWordSelection("WordProgressEntity already exists for concept $conceptId")
+            }
+
+        } catch (e: Exception) {
+            DebugHelper.logError("WordProgressEntity creation error for concept $conceptId", e)
         }
     }
 

@@ -1,11 +1,6 @@
 package com.hocalingo.app.feature.selection.presentation
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -18,8 +13,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -96,7 +89,7 @@ fun WordSelectionScreen(
                 }
                 uiState.error != null -> {
                     HocaErrorState(
-                        error = uiState.error!!,
+                        message = uiState.error!!, // FIXED: error -> message
                         onRetry = { /* Retry logic if needed */ },
                         modifier = Modifier.align(Alignment.Center)
                     )

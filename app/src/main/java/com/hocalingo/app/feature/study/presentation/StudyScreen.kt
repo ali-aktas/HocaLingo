@@ -1,58 +1,40 @@
 package com.hocalingo.app.feature.study.presentation
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.hocalingo.app.R
 import com.hocalingo.app.core.ui.components.HocaErrorState
 import com.hocalingo.app.core.ui.components.HocaLoadingIndicator
-import com.hocalingo.app.core.ui.components.HocaProgressCard
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
-import com.hocalingo.app.core.ui.theme.easyGreen
-import com.hocalingo.app.core.ui.theme.hardRed
-import com.hocalingo.app.core.ui.theme.mediumYellow
+import com.hocalingo.app.core.database.entities.ConceptEntity
 import kotlinx.coroutines.flow.collectLatest
+import kotlin.math.abs
 
-/**
- * Study Screen - Main Learning Interface
- *
- * Features:
- * - Flip card animation with smooth 3D effects
- * - SM-2 algorithm integration with dynamic button text
- * - TTS pronunciation support
- * - Haptic feedback and sound effects
- * - Progress tracking and session management
- * - Empty state handling
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudyScreen(
@@ -70,30 +52,13 @@ fun StudyScreen(
             when (effect) {
                 StudyEffect.NavigateToHome -> onNavigateBack()
                 StudyEffect.NavigateToWordSelection -> onNavigateToWordSelection()
-
                 is StudyEffect.ShowMessage -> {
                     snackbarHostState.showSnackbar(effect.message)
                 }
-
                 is StudyEffect.HapticFeedback -> {
-                    // Handle haptic feedback based on type
-                    when (effect.type) {
-                        HapticType.LIGHT -> haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                        HapticType.SUCCESS -> haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                        HapticType.ERROR -> haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                        else -> {}
-                    }
+                    haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
                 }
-
-                is StudyEffect.ShowSessionComplete -> {
-                    snackbarHostState.showSnackbar(
-                        "🎉 Oturum tamamlandı! ${effect.stats.wordsStudied} kelime çalışıldı."
-                    )
-                }
-
-                // Note: TTS and sound effects would be handled in actual implementation
-                is StudyEffect.SpeakText -> {}
-                is StudyEffect.PlaySound -> {}
+                else -> {}
             }
         }
     }
@@ -101,46 +66,38 @@ fun StudyScreen(
     Scaffold(
         topBar = {
             StudyTopAppBar(
-                progress = uiState.progressPercentage,
+                progress = uiState.progressPercentage / 100f,
                 currentIndex = uiState.currentWordIndex,
                 totalWords = uiState.totalWordsInQueue,
                 onNavigateBack = { viewModel.onEvent(StudyEvent.NavigateBack) }
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = Color(0xFFF5F5F5)
     ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
-                            MaterialTheme.colorScheme.background
-                        )
-                    )
-                )
                 .padding(paddingValues)
         ) {
             when {
                 uiState.isLoading -> {
                     HocaLoadingIndicator(
-                        modifier = Modifier.align(Alignment.Center),
-                        text = stringResource(R.string.loading)
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
 
                 uiState.error != null -> {
                     HocaErrorState(
-                        error = uiState.error!!,
-                        onRetry = { viewModel.onEvent(event = StudyEvent.RetryLoading) },
+                        message = uiState.error!!,
+                        onRetry = { viewModel.onEvent(StudyEvent.RetryLoading) },
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
 
                 uiState.showEmptyQueueMessage -> {
                     StudyEmptyState(
-                        onNavigateToWordSelection = { viewModel.onEvent(StudyEvent.NavigateToWordSelection) }
+                        onNavigateToWordSelection = onNavigateToWordSelection
                     )
                 }
 
@@ -163,33 +120,60 @@ private fun StudyTopAppBar(
     totalWords: Int,
     onNavigateBack: () -> Unit
 ) {
-    TopAppBar(
-        title = {
-            Column {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFFF5F5F5)) // Background color ekledik
+    ) {
+        TopAppBar(
+            title = {
                 Text(
-                    text = stringResource(R.string.study_title),
-                    style = MaterialTheme.typography.titleLarge,
+                    text = "Word Study",
+                    style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
-                Text(
-                    text = "${currentIndex + 1} / $totalWords",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        },
-        navigationIcon = {
-            IconButton(onClick = onNavigateBack) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back"
-                )
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent
+            },
+            navigationIcon = {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.Transparent
+            )
         )
-    )
+
+        // Progress section
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 16.dp), // Daha fazla bottom padding
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "${currentIndex + 1}/${totalWords}",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            LinearProgressIndicator(
+                progress = progress,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(8.dp)
+                    .clip(RoundedCornerShape(4.dp)),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant
+            )
+        }
+    }
 }
 
 @Composable
@@ -197,383 +181,393 @@ private fun StudyContent(
     uiState: StudyUiState,
     onEvent: (StudyEvent) -> Unit
 ) {
+    val concept = uiState.currentConcept ?: return
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween // SpaceBetween kullanarak düzgün dağıtım
     ) {
-        // Progress section
-        StudyProgressSection(
-            dailyProgress = uiState.dailyProgressPercentage,
-            wordsStudiedToday = uiState.wordsStudiedToday,
-            dailyGoal = uiState.dailyGoal,
-            sessionAccuracy = uiState.accuracyPercentage
-        )
+        // Üst boşluk
+        Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Main study card (flip card)
-        StudyFlipCard(
-            uiState = uiState,
-            onFlipCard = { onEvent(StudyEvent.FlipCard) },
-            onPlayPronunciation = { onEvent(StudyEvent.PlayPronunciation) },
-            modifier = Modifier.weight(1f)
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Response buttons (Easy, Medium, Hard)
-        StudyResponseButtons(
-            easyText = uiState.easyButtonText,
-            easyTimeText = uiState.easyTimeText,
-            mediumText = uiState.mediumButtonText,
-            mediumTimeText = uiState.mediumTimeText,
-            hardText = uiState.hardButtonText,
-            hardTimeText = uiState.hardTimeText,
-            isCardFlipped = uiState.isCardFlipped,
-            onEasyClick = { onEvent(StudyEvent.EasyButtonPressed) },
-            onMediumClick = { onEvent(StudyEvent.MediumButtonPressed) },
-            onHardClick = { onEvent(StudyEvent.HardButtonPressed) }
-        )
-    }
-}
-
-@Composable
-private fun StudyProgressSection(
-    dailyProgress: Float,
-    wordsStudiedToday: Int,
-    dailyGoal: Int,
-    sessionAccuracy: Float
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        // Daily progress card
-        HocaProgressCard(
-            title = "Günlük Hedef",
-            value = "$wordsStudiedToday",
-            subtitle = "/ $dailyGoal kelime",
-            backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            modifier = Modifier.weight(1f)
-        )
-
-        // Session accuracy card
-        if (sessionAccuracy > 0) {
-            HocaProgressCard(
-                title = "Doğruluk",
-                value = "${sessionAccuracy.toInt()}%",
-                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                modifier = Modifier.weight(1f)
+        // Main flip card - Ortada konumlanacak
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f), // Available space'i kullan
+            contentAlignment = Alignment.Center
+        ) {
+            FlipCard(
+                concept = concept,
+                isFlipped = uiState.isCardFlipped,
+                studyDirection = uiState.studyDirection,
+                onFlip = { onEvent(StudyEvent.FlipCard) },
+                onPlayPronunciation = { onEvent(StudyEvent.PlayPronunciation) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 540.dp) // %50 büyütüldü (320dp -> 480dp)
             )
+        }
+
+        // Action buttons - En alta yerleşecek
+        Column {
+            ActionButtonsHorizontal(
+                onEasyClick = { onEvent(StudyEvent.EasyButtonPressed) },
+                onMediumClick = { onEvent(StudyEvent.MediumButtonPressed) },
+                onHardClick = { onEvent(StudyEvent.HardButtonPressed) },
+                easyTimeText = uiState.easyTimeText,
+                mediumTimeText = uiState.mediumTimeText,
+                hardTimeText = uiState.hardTimeText,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            // Bottom navigation için boşluk
+            Spacer(modifier = Modifier.height(10.dp)) // Button spacer 10dp olarak ayarlandı
         }
     }
 }
 
 @Composable
-private fun StudyFlipCard(
-    uiState: StudyUiState,
-    onFlipCard: () -> Unit,
+private fun FlipCard(
+    concept: ConceptEntity,
+    isFlipped: Boolean,
+    studyDirection: com.hocalingo.app.core.database.entities.StudyDirection,
+    onFlip: () -> Unit,
     onPlayPronunciation: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isFlipped = uiState.isCardFlipped
-
-    // Flip animation
-    val rotation by animateFloatAsState(
+    var dragOffset by remember { mutableFloatStateOf(0f) }
+    val flipProgress = animateFloatAsState(
         targetValue = if (isFlipped) 180f else 0f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessMedium
-        ),
-        label = "card_flip"
+        animationSpec = tween(600),
+        label = "flip"
     )
 
+    val actualRotation = flipProgress.value + dragOffset
+
     Box(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .aspectRatio(1f) // Kartı daha uzun yapmak için azaltıldı (1.3f -> 1.1f)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragEnd = {
+                        if (abs(dragOffset) > 30f) {
+                            onFlip()
+                        }
+                        dragOffset = 0f
+                    }
+                ) { _, dragAmount ->
+                    dragOffset += dragAmount.x * 0.5f
+                    dragOffset = dragOffset.coerceIn(-90f, 90f)
+                }
+            }
+            .graphicsLayer {
+                rotationY = actualRotation
+                cameraDistance = 12f * density
+            }
+            .clickable { onFlip() },
         contentAlignment = Alignment.Center
     ) {
-        Card(
+        if (actualRotation <= 90f) {
+            // Front side
+            CardFront(
+                concept = concept,
+                studyDirection = studyDirection,
+                onPlayPronunciation = onPlayPronunciation
+            )
+        } else {
+            // Back side
+            CardBack(
+                concept = concept,
+                studyDirection = studyDirection,
+                modifier = Modifier.graphicsLayer {
+                    rotationY = 180f
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun CardFront(
+    concept: ConceptEntity,
+    studyDirection: com.hocalingo.app.core.database.entities.StudyDirection,
+    onPlayPronunciation: () -> Unit
+) {
+    val frontText = when (studyDirection) {
+        com.hocalingo.app.core.database.entities.StudyDirection.EN_TO_TR -> concept.english
+        com.hocalingo.app.core.database.entities.StudyDirection.TR_TO_EN -> concept.turkish
+    }
+
+    Card(
+        modifier = Modifier.fillMaxSize(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF00D4FF)
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp
+        ),
+        shape = RoundedCornerShape(24.dp)
+    ) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .graphicsLayer {
-                    rotationY = rotation
-                    cameraDistance = 12f * density
-                }
-                .clickable { onFlipCard() },
-            elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            ),
-            shape = RoundedCornerShape(24.dp)
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(24.dp)
-            ) {
-                // Front/Back content based on flip state
-                if (rotation <= 90f) {
-                    // Front side
-                    StudyCardFront(
-                        text = uiState.frontText,
-                        onPlayPronunciation = onPlayPronunciation,
-                        showTtsButton = !uiState.studyDirection.name.startsWith("TR")
+            Text(
+                text = frontText,
+                style = MaterialTheme.typography.headlineMedium, // Biraz küçülttük
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                color = Color.White,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            // Pronunciation
+            if (concept.pronunciation?.isNotEmpty() == true) {
+                Text(
+                    text = "[${concept.pronunciation}]",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White.copy(alpha = 0.9f),
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
+            }
+
+            // TTS Button
+            if (studyDirection == com.hocalingo.app.core.database.entities.StudyDirection.EN_TO_TR) {
+                IconButton(
+                    onClick = onPlayPronunciation,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(
+                            Color.White.copy(alpha = 0.9f),
+                            CircleShape
+                        )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.VolumeUp,
+                        contentDescription = "Play pronunciation",
+                        tint = Color(0xFF00D4FF)
                     )
-                } else {
-                    // Back side (rotated content)
-                    Box(
-                        modifier = Modifier.graphicsLayer { rotationY = 180f }
-                    ) {
-                        StudyCardBack(
-                            text = uiState.backText,
-                            exampleText = uiState.exampleText,
-                            pronunciationText = uiState.pronunciationText
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            // Example sentence
+            concept.exampleEn?.let { exampleEn ->
+                val exampleToShow = when (studyDirection) {
+                    com.hocalingo.app.core.database.entities.StudyDirection.EN_TO_TR -> exampleEn
+                    com.hocalingo.app.core.database.entities.StudyDirection.TR_TO_EN -> concept.exampleTr
+                }
+
+                exampleToShow?.let { example ->
+                    if (example.isNotEmpty()) {
+                        Text(
+                            text = example,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White.copy(alpha = 0.85f),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(bottom = 16.dp)
                         )
                     }
                 }
-
-                // Flip instruction
-                if (!isFlipped) {
-                    Text(
-                        text = "Kartı çevirmek için dokun",
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .alpha(0.6f),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
             }
-        }
-    }
-}
 
-@Composable
-private fun StudyCardFront(
-    text: String,
-    onPlayPronunciation: () -> Unit,
-    showTtsButton: Boolean
-) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.displaySmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
+            Spacer(modifier = Modifier.weight(1f))
 
-        // TTS button
-        if (showTtsButton) {
-            FloatingActionButton(
-                onClick = onPlayPronunciation,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .size(48.dp),
-                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 4.dp)
+            // Tap to flip hint
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
                 Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "Pronunciation",
-                    modifier = Modifier.size(20.dp)
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(16.dp)
+                        .graphicsLayer { rotationZ = 90f },
+                    tint = Color.White.copy(alpha = 0.7f)
                 )
-            }
-        }
-    }
-}
-
-@Composable
-private fun StudyCardBack(
-    text: String,
-    exampleText: String,
-    pronunciationText: String
-) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        // Translation/meaning
-        Text(
-            text = text,
-            style = MaterialTheme.typography.displaySmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.secondary,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
-
-        // Pronunciation guide
-        if (pronunciationText.isNotBlank()) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f)
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "/$pronunciationText/",
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onTertiaryContainer,
-                    fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
+                    text = "Tap to flip",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.7f)
                 )
-            }
-        }
-
-        // Example sentence
-        if (exampleText.isNotBlank()) {
-            Spacer(modifier = Modifier.height(24.dp))
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f)
-                ),
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier.padding(20.dp)
-                ) {
-                    Text(
-                        text = "Örnek:",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f),
-                        fontWeight = FontWeight.Medium
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = exampleText,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        textAlign = TextAlign.Start,
-                        lineHeight = 24.sp
-                    )
-                }
             }
         }
     }
 }
 
 @Composable
-private fun StudyResponseButtons(
-    easyText: String,
-    easyTimeText: String,
-    mediumText: String,
-    mediumTimeText: String,
-    hardText: String,
-    hardTimeText: String,
-    isCardFlipped: Boolean,
+private fun CardBack(
+    concept: ConceptEntity,
+    studyDirection: com.hocalingo.app.core.database.entities.StudyDirection,
+    modifier: Modifier = Modifier
+) {
+    val backText = when (studyDirection) {
+        com.hocalingo.app.core.database.entities.StudyDirection.EN_TO_TR -> concept.turkish
+        com.hocalingo.app.core.database.entities.StudyDirection.TR_TO_EN -> concept.english
+    }
+
+    Card(
+        modifier = modifier.fillMaxSize(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF00D4FF)
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp
+        ),
+        shape = RoundedCornerShape(24.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = backText,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                color = Color.White,
+                modifier = Modifier.padding(bottom = 32.dp)
+            )
+
+            // Tap to flip hint
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(16.dp)
+                        .graphicsLayer { rotationZ = -90f },
+                    tint = Color.White.copy(alpha = 0.7f)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Tap to flip",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.7f)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ActionButtonsHorizontal(
     onEasyClick: () -> Unit,
     onMediumClick: () -> Unit,
-    onHardClick: () -> Unit
+    onHardClick: () -> Unit,
+    easyTimeText: String,
+    mediumTimeText: String,
+    hardTimeText: String,
+    modifier: Modifier = Modifier
 ) {
-    // Show buttons only when card is flipped
-    val buttonsAlpha by animateFloatAsState(
-        targetValue = if (isCardFlipped) 1f else 0.3f,
-        animationSpec = tween(300),
-        label = "buttons_alpha"
-    )
-
-    Column(
-        modifier = Modifier
+    Row(
+        modifier = modifier
             .fillMaxWidth()
-            .alpha(buttonsAlpha)
+            .padding(bottom = 16.dp), // Bottom padding ekledik
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(
-            text = if (isCardFlipped) "Bu kelimeyi ne kadar iyi biliyorsun?" else "Önce kartı çevir",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
-            fontWeight = FontWeight.SemiBold
+        // Don't know - Red
+        ActionButtonSquare(
+            text = "✗",
+            subText = "Don't know",
+            timeText = if (hardTimeText.isNotEmpty()) hardTimeText else "",
+            backgroundColor = Color(0xFFFF3B30),
+            contentColor = Color.White,
+            onClick = onHardClick,
+            modifier = Modifier.weight(1f)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        // Not sure - Orange
+        ActionButtonSquare(
+            text = "?",
+            subText = "Not sure",
+            timeText = if (mediumTimeText.isNotEmpty()) mediumTimeText else "",
+            backgroundColor = Color(0xFFFF9500),
+            contentColor = Color.White,
+            onClick = onMediumClick,
+            modifier = Modifier.weight(1f)
+        )
 
-        // Response buttons
-        Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            // Hard button
-            StudyResponseButton(
-                text = hardText,
-                timeText = hardTimeText,
-                backgroundColor = MaterialTheme.colorScheme.hardRed,
-                contentColor = Color.White,
-                enabled = isCardFlipped,
-                onClick = onHardClick
-            )
-
-            // Medium button
-            StudyResponseButton(
-                text = mediumText,
-                timeText = mediumTimeText,
-                backgroundColor = MaterialTheme.colorScheme.mediumYellow,
-                contentColor = Color.Black,
-                enabled = isCardFlipped,
-                onClick = onMediumClick
-            )
-
-            // Easy button
-            StudyResponseButton(
-                text = easyText,
-                timeText = easyTimeText,
-                backgroundColor = MaterialTheme.colorScheme.easyGreen,
-                contentColor = Color.White,
-                enabled = isCardFlipped,
-                onClick = onEasyClick
-            )
-        }
+        // I know this - Green
+        ActionButtonSquare(
+            text = "✓",
+            subText = "I know this",
+            timeText = if (easyTimeText.isNotEmpty()) easyTimeText else "",
+            backgroundColor = Color(0xFF34C759),
+            contentColor = Color.White,
+            onClick = onEasyClick,
+            modifier = Modifier.weight(1f)
+        )
     }
 }
 
 @Composable
-private fun StudyResponseButton(
+private fun ActionButtonSquare(
     text: String,
+    subText: String,
     timeText: String,
     backgroundColor: Color,
     contentColor: Color,
-    enabled: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onClick,
-        enabled = enabled,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(64.dp),
+        modifier = modifier
+            .aspectRatio(1.2f) // Biraz daha dikdörtgen
+            .heightIn(min = 85.dp, max = 100.dp), // Min/max height
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
-            contentColor = contentColor,
-            disabledContainerColor = backgroundColor.copy(alpha = 0.5f)
+            contentColor = contentColor
         ),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(16.dp),
+        contentPadding = PaddingValues(8.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Text(
                 text = text,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
 
             Text(
-                text = timeText,
-                style = MaterialTheme.typography.bodyMedium,
-                color = contentColor.copy(alpha = 0.9f)
+                text = subText,
+                style = MaterialTheme.typography.labelSmall,
+                textAlign = TextAlign.Center,
+                color = contentColor.copy(alpha = 0.9f),
+                maxLines = 1
             )
+
+            if (timeText.isNotEmpty()) {
+                Text(
+                    text = timeText,
+                    style = MaterialTheme.typography.labelSmall,
+                    textAlign = TextAlign.Center,
+                    color = contentColor.copy(alpha = 0.7f),
+                    fontSize = 10.sp,
+                    maxLines = 1
+                )
+            }
         }
     }
 }
@@ -590,42 +584,26 @@ private fun StudyEmptyState(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "🎯",
-            fontSize = 80.sp,
-            modifier = Modifier.padding(bottom = 24.dp)
+            text = "🎉",
+            fontSize = 64.sp,
+            modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        Card(
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            ),
-            shape = RoundedCornerShape(20.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Çalışılacak Kelime Yok",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    textAlign = TextAlign.Center
-                )
+        Text(
+            text = "Tüm kelimeler öğrenildi!",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Text(
-                    text = "Öğrenmek için yeni kelimeler seç veya daha sonra tekrar dene.",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    textAlign = TextAlign.Center,
-                    lineHeight = 24.sp
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
+        Text(
+            text = "Yeni kelimeler eklemek için kelime seçim sayfasına gidin.",
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = 32.dp)
+        )
 
         Button(
             onClick = onNavigateToWordSelection,
@@ -651,29 +629,5 @@ private fun StudyEmptyState(
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun StudyScreenPreview() {
-    HocaLingoTheme {
-        // Mock data for preview
-        StudyContent(
-            uiState = StudyUiState(
-                currentConcept = null,
-                isCardFlipped = false,
-                totalWordsInQueue = 10,
-                currentWordIndex = 3,
-                wordsStudiedToday = 15,
-                dailyGoal = 20,
-                sessionWordsCount = 5,
-                correctAnswers = 4,
-                easyTimeText = "3 gün sonra",
-                mediumTimeText = "1 gün sonra",
-                hardTimeText = "10 dakika sonra"
-            ),
-            onEvent = {}
-        )
     }
 }

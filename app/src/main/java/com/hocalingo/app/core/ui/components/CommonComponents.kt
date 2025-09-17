@@ -40,9 +40,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
-import com.hocalingo.app.core.ui.theme.easyGreen
-import com.hocalingo.app.core.ui.theme.hardRed
-import com.hocalingo.app.core.ui.theme.mediumYellow
 
 /**
  * Common Loading Indicator
@@ -71,11 +68,11 @@ fun HocaLoadingIndicator(
 }
 
 /**
- * Error State Component
+ * Error State Component - Fixed parameter naming
  */
 @Composable
 fun HocaErrorState(
-    error: String,
+    message: String,
     onRetry: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
@@ -92,15 +89,15 @@ fun HocaErrorState(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = error,
+            text = message,
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        onRetry?.let {
+        onRetry?.let { retryAction ->
             Spacer(modifier = Modifier.height(24.dp))
-            OutlinedButton(onClick = it) {
+            OutlinedButton(onClick = retryAction) {
                 Text("Tekrar Dene")
             }
         }
@@ -134,32 +131,40 @@ fun HocaEmptyState(
         Text(
             text = title,
             style = MaterialTheme.typography.headlineSmall,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
         )
 
         subtitle?.let {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = it,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
-        if (actionText != null && onAction != null) {
-            Spacer(modifier = Modifier.height(24.dp))
-            Button(onClick = onAction) {
-                Text(actionText)
+        actionText?.let { buttonText ->
+            onAction?.let { action ->
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(onClick = action) {
+                    Text(buttonText)
+                }
             }
         }
     }
 }
 
 /**
- * Study Button with Dynamic Date Display
- * Used for Easy/Medium/Hard buttons in study screen
+ * Study Button Types
+ */
+enum class StudyButtonType {
+    Easy, Medium, Hard
+}
+
+/**
+ * Study Response Button
  */
 @Composable
 fun HocaStudyButton(
@@ -167,52 +172,49 @@ fun HocaStudyButton(
     dateText: String,
     buttonType: StudyButtonType,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    modifier: Modifier = Modifier
 ) {
-    val colors = when (buttonType) {
-        StudyButtonType.Easy -> ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.easyGreen
-        )
-        StudyButtonType.Medium -> ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.mediumYellow
-        )
-        StudyButtonType.Hard -> ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.hardRed
-        )
+    val backgroundColor = when (buttonType) {
+        StudyButtonType.Easy -> Color(0xFF34C759)  // Green
+        StudyButtonType.Medium -> Color(0xFFFF9500)  // Orange
+        StudyButtonType.Hard -> Color(0xFFFF3B30)   // Red
     }
 
     Button(
         onClick = onClick,
-        enabled = enabled,
-        colors = colors,
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = backgroundColor,
+            contentColor = Color.White
+        ),
+        shape = RoundedCornerShape(16.dp)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(vertical = 4.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = text,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold
             )
-            Text(
-                text = dateText,
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.White.copy(alpha = 0.9f)
-            )
+
+            if (dateText.isNotEmpty()) {
+                Text(
+                    text = dateText,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.8f)
+                )
+            }
         }
     }
 }
 
-enum class StudyButtonType {
-    Easy, Medium, Hard
-}
-
 /**
- * Progress Card for statistics
+ * Progress Card Component
  */
 @Composable
 fun HocaProgressCard(

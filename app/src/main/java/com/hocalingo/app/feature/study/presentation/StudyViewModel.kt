@@ -25,15 +25,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * StudyViewModel - Main Study Screen Logic
+ * StudyViewModel - Simplified Study Screen Logic
  *
  * Manages:
  * - Study queue and current word
  * - SM-2 spaced repetition algorithm
  * - Card flip animations
- * - Progress tracking
+ * - Daily progress tracking (simplified)
  * - TTS integration
- * - Session statistics
  */
 @HiltViewModel
 class StudyViewModel @Inject constructor(
@@ -60,7 +59,7 @@ class StudyViewModel @Inject constructor(
     }
 
     /**
-     * Handle user events
+     * Handle user events - Simplified
      */
     fun onEvent(event: StudyEvent) {
         DebugHelper.log("StudyEvent: $event")
@@ -83,7 +82,7 @@ class StudyViewModel @Inject constructor(
             StudyEvent.NavigateToWordSelection -> navigateToWordSelection()
             StudyEvent.NavigateBack -> navigateBack()
 
-            is StudyEvent.ToggleStudyDirection -> changeStudyDirection(event.direction)
+            // Settings events removed - moved to profile
         }
     }
 
@@ -110,8 +109,8 @@ class StudyViewModel @Inject constructor(
                     )
                 }
 
-                // Load today's progress
-                loadTodayStats()
+                // Load today's progress - Simplified
+                loadDailyProgress()
 
                 // Load study queue
                 loadStudyQueue()
@@ -206,6 +205,14 @@ class StudyViewModel @Inject constructor(
                             )
                         }
                     }
+
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            totalWordsInQueue = studyQueue.size,
+                            hasWordsToStudy = studyQueue.isNotEmpty()
+                        )
+                    }
                 }
 
             } catch (e: Exception) {
@@ -258,36 +265,27 @@ class StudyViewModel @Inject constructor(
                 val currentProgress = when (progressResult) {
                     is Result.Success -> progressResult.data
                     is Result.Error -> null
-                } ?: SpacedRepetitionAlgorithm.createInitialProgress(currentConcept.id, direction)
+                } ?: createDefaultProgress(currentConcept.id, direction)
 
-                // Calculate button texts with timing
-                val easyTiming = SpacedRepetitionAlgorithm.calculateNextReview(
-                    currentProgress, SpacedRepetitionAlgorithm.QUALITY_EASY
-                )
-                val mediumTiming = SpacedRepetitionAlgorithm.calculateNextReview(
-                    currentProgress, SpacedRepetitionAlgorithm.QUALITY_MEDIUM
-                )
-                val hardTiming = SpacedRepetitionAlgorithm.calculateNextReview(
-                    currentProgress, SpacedRepetitionAlgorithm.QUALITY_HARD
-                )
+                // Calculate SM-2 timing texts
+                val easyProgress = SpacedRepetitionAlgorithm.calculateNextReview(currentProgress, SpacedRepetitionAlgorithm.QUALITY_EASY)
+                val mediumProgress = SpacedRepetitionAlgorithm.calculateNextReview(currentProgress, SpacedRepetitionAlgorithm.QUALITY_MEDIUM)
+                val hardProgress = SpacedRepetitionAlgorithm.calculateNextReview(currentProgress, SpacedRepetitionAlgorithm.QUALITY_HARD)
+
+                val easyTimeText = formatNextReviewTime(easyProgress.nextReviewAt)
+                val mediumTimeText = formatNextReviewTime(mediumProgress.nextReviewAt)
+                val hardTimeText = formatNextReviewTime(hardProgress.nextReviewAt)
 
                 _uiState.update {
                     it.copy(
-                        isLoading = false,
                         currentConcept = currentConcept,
-                        isCardFlipped = false,
                         currentWordIndex = currentQueueIndex,
-                        totalWordsInQueue = studyQueue.size,
-                        isQueueEmpty = false,
-                        showEmptyQueueMessage = false,
-                        error = null,
-                        // Update button texts with timing
-                        easyButtonText = "Kolay",
-                        easyTimeText = SpacedRepetitionAlgorithm.getTimeUntilReview(easyTiming.nextReviewAt),
-                        mediumButtonText = "Orta",
-                        mediumTimeText = SpacedRepetitionAlgorithm.getTimeUntilReview(mediumTiming.nextReviewAt),
-                        hardButtonText = "Zor",
-                        hardTimeText = SpacedRepetitionAlgorithm.getTimeUntilReview(hardTiming.nextReviewAt)
+                        isCardFlipped = false,
+                        easyTimeText = easyTimeText,
+                        mediumTimeText = mediumTimeText,
+                        hardTimeText = hardTimeText,
+                        isLoading = false,
+                        error = null
                     )
                 }
 
@@ -309,71 +307,72 @@ class StudyViewModel @Inject constructor(
     private fun handleUserResponse(quality: Int) {
         viewModelScope.launch {
             try {
-                val currentConcept = _uiState.value.currentConcept ?: return@launch
+                val concept = _uiState.value.currentConcept ?: return@launch
                 val direction = _uiState.value.studyDirection
 
-                DebugHelper.log("Handling response for word ${currentConcept.english}: quality=$quality")
+                DebugHelper.log("User response: quality=$quality for concept=${concept.english}")
 
-                // Update progress in database
-                when (val result = studyRepository.updateWordProgress(currentConcept.id, direction, quality)) {
+                // Update progress in database (this will increment daily progress if word is completed)
+                when (val result = studyRepository.updateWordProgress(concept.id, direction, quality)) {
                     is Result.Success -> {
                         // Update session statistics
-                        val sessionWords = _uiState.value.sessionWordsCount + 1
-                        val correctAnswers = _uiState.value.correctAnswers + if (quality >= SpacedRepetitionAlgorithm.QUALITY_MEDIUM) 1 else 0
+                        val currentState = _uiState.value
+                        val isCorrect = quality >= SpacedRepetitionAlgorithm.QUALITY_MEDIUM
 
                         _uiState.update {
                             it.copy(
-                                sessionWordsCount = sessionWords,
-                                correctAnswers = correctAnswers
+                                sessionWordsCount = currentState.sessionWordsCount + 1,
+                                correctAnswers = if (isCorrect) currentState.correctAnswers + 1 else currentState.correctAnswers
                             )
                         }
 
-                        DebugHelper.log("Response recorded successfully. Session: $correctAnswers/$sessionWords")
+                        // Reload daily progress
+                        loadDailyProgress()
 
-                        // Provide haptic and audio feedback
-                        when (quality) {
-                            SpacedRepetitionAlgorithm.QUALITY_EASY -> {
-                                _effect.emit(StudyEffect.HapticFeedback(HapticType.SUCCESS))
-                                _effect.emit(StudyEffect.PlaySound(StudySoundType.CORRECT))
-                            }
-                            SpacedRepetitionAlgorithm.QUALITY_MEDIUM -> {
-                                _effect.emit(StudyEffect.HapticFeedback(HapticType.LIGHT))
-                            }
-                            SpacedRepetitionAlgorithm.QUALITY_HARD -> {
-                                _effect.emit(StudyEffect.HapticFeedback(HapticType.ERROR))
-                                _effect.emit(StudyEffect.PlaySound(StudySoundType.INCORRECT))
-                            }
+                        // Provide haptic feedback
+                        val hapticType = when (quality) {
+                            SpacedRepetitionAlgorithm.QUALITY_EASY -> HapticType.SUCCESS
+                            SpacedRepetitionAlgorithm.QUALITY_MEDIUM -> HapticType.MEDIUM
+                            else -> HapticType.ERROR
                         }
+                        _effect.emit(StudyEffect.HapticFeedback(hapticType))
 
-                        // Move to next word
-                        currentQueueIndex++
-                        loadNextWord()
+                        // Move to next word after a short delay
+                        kotlinx.coroutines.delay(500)
+                        nextWord()
+
+                        DebugHelper.log("Progress updated successfully, moving to next word")
                     }
                     is Result.Error -> {
-                        DebugHelper.logError("Response handling error", result.error)
-                        _effect.emit(StudyEffect.ShowMessage("Cevap kaydedilirken hata oluştu"))
+                        DebugHelper.logError("Update progress error", result.error)
+                        _effect.emit(StudyEffect.ShowMessage("İlerleme kaydedilemedi"))
                     }
                 }
 
             } catch (e: Exception) {
-                DebugHelper.logError("Response handling exception", e)
-                _effect.emit(StudyEffect.ShowMessage("Cevap kaydedilirken hata oluştu"))
+                DebugHelper.logError("Handle user response error", e)
+                _effect.emit(StudyEffect.ShowMessage("Yanıt işlenirken hata oluştu"))
             }
         }
     }
 
     /**
-     * Flip the study card
+     * Move to next word in queue
+     */
+    private fun nextWord() {
+        currentQueueIndex++
+        loadNextWord()
+    }
+
+    /**
+     * Flip card animation
      */
     private fun flipCard() {
         _uiState.update { it.copy(isCardFlipped = !it.isCardFlipped) }
 
         viewModelScope.launch {
-            _effect.emit(StudyEffect.PlaySound(StudySoundType.CARD_FLIP))
             _effect.emit(StudyEffect.HapticFeedback(HapticType.LIGHT))
         }
-
-        DebugHelper.log("Card flipped: ${_uiState.value.isCardFlipped}")
     }
 
     /**
@@ -387,86 +386,75 @@ class StudyViewModel @Inject constructor(
      * Play pronunciation using TTS
      */
     private fun playPronunciation() {
-        val currentConcept = _uiState.value.currentConcept ?: return
-        val isTtsEnabled = _uiState.value.isTtsEnabled
-
-        if (!isTtsEnabled) {
-            DebugHelper.log("TTS is disabled")
-            return
-        }
-
-        val direction = _uiState.value.studyDirection
-        val textToSpeak = when (direction) {
-            StudyDirection.EN_TO_TR -> currentConcept.english
-            StudyDirection.TR_TO_EN -> currentConcept.turkish
-        }
-
         viewModelScope.launch {
-            _effect.emit(StudyEffect.SpeakText(textToSpeak, if (direction == StudyDirection.EN_TO_TR) "en" else "tr"))
-            _effect.emit(StudyEffect.HapticFeedback(HapticType.LIGHT))
-        }
+            try {
+                val concept = _uiState.value.currentConcept ?: return@launch
+                val direction = _uiState.value.studyDirection
 
-        DebugHelper.log("Playing pronunciation: $textToSpeak")
+                val textToSpeak = when (direction) {
+                    StudyDirection.EN_TO_TR -> concept.english
+                    StudyDirection.TR_TO_EN -> concept.turkish
+                }
+
+                val language = when (direction) {
+                    StudyDirection.EN_TO_TR -> "en"
+                    StudyDirection.TR_TO_EN -> "tr"
+                }
+
+                _effect.emit(StudyEffect.SpeakText(textToSpeak, language))
+                DebugHelper.log("TTS request: '$textToSpeak' in $language")
+
+            } catch (e: Exception) {
+                DebugHelper.logError("Play pronunciation error", e)
+                _effect.emit(StudyEffect.ShowMessage("Sesli okuma başlatılamadı"))
+            }
+        }
     }
 
     /**
      * Stop TTS
      */
     private fun stopTts() {
-        textToSpeechManager.stop()
-        _uiState.update { it.copy(isTtsSpeaking = false) }
+        viewModelScope.launch {
+            textToSpeechManager.stop()
+            _uiState.update { it.copy(isSpeaking = false) }
+        }
     }
 
     /**
-     * Complete current study session
+     * Complete current session
      */
     private fun completeSession() {
         viewModelScope.launch {
             try {
-                val sessionWords = _uiState.value.sessionWordsCount
-                val correctAnswers = _uiState.value.correctAnswers
-
                 currentSessionId?.let { sessionId ->
+                    val currentState = _uiState.value
                     studyRepository.endStudySession(
                         sessionId = sessionId,
-                        wordsStudied = sessionWords,
-                        correctAnswers = correctAnswers
+                        wordsStudied = currentState.sessionWordsCount,
+                        correctAnswers = currentState.correctAnswers
                     )
-
-                    DebugHelper.log("Session completed: $correctAnswers/$sessionWords correct")
                 }
 
-                // Update UI to show completion
-                val sessionStats = SessionStats(
-                    wordsStudied = sessionWords,
-                    correctAnswers = correctAnswers,
-                    accuracy = if (sessionWords > 0) {
-                        (correctAnswers.toFloat() / sessionWords) * 100
-                    } else 0f,
+                val stats = SessionStats(
+                    wordsStudied = _uiState.value.sessionWordsCount,
+                    correctAnswers = _uiState.value.correctAnswers,
                     timeSpentMs = System.currentTimeMillis() - sessionStartTime,
-                    newWordsLearned = sessionWords - correctAnswers, // Simplified
-                    wordsReviewed = correctAnswers
+                    newWordsLearned = 0, // Could be calculated if needed
+                    wordsReviewed = _uiState.value.sessionWordsCount
                 )
 
-                _uiState.update {
-                    it.copy(showCompletionDialog = true)
-                }
-
-                _effect.emit(StudyEffect.ShowSessionComplete(sessionStats))
-                _effect.emit(StudyEffect.HapticFeedback(HapticType.SUCCESS))
-
-                // Reload today's stats
-                loadTodayStats()
+                _effect.emit(StudyEffect.ShowSessionComplete(stats))
+                DebugHelper.log("Session completed: $stats")
 
             } catch (e: Exception) {
                 DebugHelper.logError("Complete session error", e)
-                _effect.emit(StudyEffect.ShowMessage("Oturum tamamlanırken hata oluştu"))
             }
         }
     }
 
     /**
-     * End current session early
+     * End current session manually
      */
     private fun endCurrentSession() {
         completeSession()
@@ -476,7 +464,7 @@ class StudyViewModel @Inject constructor(
      * Retry loading after error
      */
     private fun retryLoading() {
-        loadStudyQueue()
+        loadInitialData()
     }
 
     /**
@@ -498,50 +486,60 @@ class StudyViewModel @Inject constructor(
     }
 
     /**
-     * Change study direction
+     * Load daily progress - Simplified version
      */
-    private fun changeStudyDirection(direction: StudyDirection) {
+    private fun loadDailyProgress() {
         viewModelScope.launch {
             try {
-                // Save to preferences
-                preferencesManager.setStudyDirection(direction.name)
-
-                _uiState.update { it.copy(studyDirection = direction) }
-
-                // Reload study queue with new direction
-                loadStudyQueue()
-
-                DebugHelper.log("Study direction changed to: $direction")
+                // Get today's statistics
+                when (val result = studyRepository.getTodaySessionStats()) {
+                    is Result.Success -> {
+                        val stats = result.data
+                        _uiState.update {
+                            it.copy(
+                                wordsStudiedToday = stats.cardsCompleted,
+                                dailyGoal = stats.dailyGoal,
+                                dailyProgressPercentage = stats.progressPercentage
+                            )
+                        }
+                        DebugHelper.log("Daily progress loaded: ${stats.cardsCompleted}/${stats.dailyGoal}")
+                    }
+                    is Result.Error -> {
+                        DebugHelper.logError("Load daily progress error", result.error)
+                    }
+                }
 
             } catch (e: Exception) {
-                DebugHelper.logError("Change study direction error", e)
-                _effect.emit(StudyEffect.ShowMessage("Yön değiştirilemedi"))
+                DebugHelper.logError("Load daily progress exception", e)
             }
         }
     }
 
     /**
-     * Load today's statistics
+     * Helper functions
      */
-    private fun loadTodayStats() {
-        viewModelScope.launch {
-            try {
-                when (val result = studyRepository.getTodayWordsStudied()) {
-                    is Result.Success -> {
-                        val wordsStudied = result.data
-                        _uiState.update {
-                            it.copy(wordsStudiedToday = wordsStudied)
-                        }
-                        DebugHelper.log("Today's words studied: $wordsStudied")
-                    }
-                    is Result.Error -> {
-                        DebugHelper.logError("Load today stats error", result.error)
-                    }
-                }
+    private fun createDefaultProgress(conceptId: Int, direction: StudyDirection) =
+        com.hocalingo.app.core.database.entities.WordProgressEntity(
+            conceptId = conceptId,
+            direction = direction,
+            repetitions = 0,
+            intervalDays = 0f,
+            easeFactor = 2.5f,
+            nextReviewAt = System.currentTimeMillis(),
+            lastReviewAt = null,
+            isSelected = true,
+            isMastered = false
+        )
 
-            } catch (e: Exception) {
-                DebugHelper.logError("Load today stats exception", e)
-            }
+    private fun formatNextReviewTime(nextReviewAt: Long): String {
+        val now = System.currentTimeMillis()
+        val diffMs = nextReviewAt - now
+
+        return when {
+            diffMs < 60 * 60 * 1000 -> "1 saat içinde"
+            diffMs < 24 * 60 * 60 * 1000 -> "${(diffMs / (60 * 60 * 1000)).toInt()} saat sonra"
+            diffMs < 7 * 24 * 60 * 60 * 1000 -> "${(diffMs / (24 * 60 * 60 * 1000)).toInt()} gün sonra"
+            else -> "${(diffMs / (7 * 24 * 60 * 60 * 1000)).toInt()} hafta sonra"
         }
     }
 }

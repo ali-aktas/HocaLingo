@@ -22,6 +22,10 @@ interface WordProgressDao {
         direction: StudyDirection
     ): WordProgressEntity?
 
+    // Alias for StudyRepositoryImpl compatibility
+    suspend fun getProgress(conceptId: Int, direction: StudyDirection): WordProgressEntity? =
+        getProgressByConceptAndDirection(conceptId, direction)
+
     @Query("""
         SELECT * FROM word_progress 
         WHERE is_selected = 1 AND next_review_at <= :currentTime
@@ -50,8 +54,20 @@ interface WordProgressDao {
     @Query("SELECT COUNT(*) FROM word_progress WHERE is_selected = 1")
     suspend fun getTotalSelectedWordsCount(): Int
 
+    // NEW: Daily progress tracking methods
+    @Query("""
+        SELECT COUNT(*) FROM word_progress 
+        WHERE last_review_at >= :startOfDay 
+        AND last_review_at < :endOfDay
+        AND next_review_at > :endOfDay
+    """)
+    suspend fun getWordsCompletedToday(startOfDay: Long, endOfDay: Long): Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProgress(progress: WordProgressEntity)
+
+    // Alias for StudyRepositoryImpl compatibility
+    suspend fun upsertProgress(progress: WordProgressEntity) = insertProgress(progress)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProgressList(progressList: List<WordProgressEntity>)

@@ -6,83 +6,68 @@ import com.hocalingo.app.core.database.entities.StudyDirection
 /**
  * UI State for Study Screen
  *
- * Manages current study session state including:
- * - Current word being studied
- * - Study queue and progress
- * - Card flip state
- * - Session statistics
+ * Simplified version focused on:
+ * - Card display and flip state
+ * - Daily progress tracking (not accuracy)
+ * - Study queue management
+ * - Error and loading states
  */
 data class StudyUiState(
-    // Loading and Error States
+    // Loading & Error States
     val isLoading: Boolean = false,
     val error: String? = null,
 
-    // Current Study Session
+    // Study Content
     val currentConcept: ConceptEntity? = null,
-    val studyDirection: StudyDirection = StudyDirection.EN_TO_TR,
     val isCardFlipped: Boolean = false,
+    val studyDirection: StudyDirection = StudyDirection.EN_TO_TR,
 
-    // Study Queue Management
+    // Queue Management
     val totalWordsInQueue: Int = 0,
     val currentWordIndex: Int = 0,
-    val remainingWords: Int = 0,
+    val hasWordsToStudy: Boolean = false,
+    val isQueueEmpty: Boolean = false,
+    val showEmptyQueueMessage: Boolean = false,
 
-    // Session Progress
+    // Daily Progress (Simplified - Only Daily Goal)
     val wordsStudiedToday: Int = 0,
     val dailyGoal: Int = 20,
+    val dailyProgressPercentage: Float = 0f,
+
+    // Session Info (Simple)
     val sessionWordsCount: Int = 0,
     val correctAnswers: Int = 0,
 
-    // Button States with Dynamic Times
-    val easyButtonText: String = "Kolay",
-    val mediumButtonText: String = "Orta",
-    val hardButtonText: String = "Zor",
+    // Button Timing Text (SM-2 Algorithm Results)
     val easyTimeText: String = "",
     val mediumTimeText: String = "",
     val hardTimeText: String = "",
 
-    // Empty States
-    val isQueueEmpty: Boolean = false,
-    val showCompletionDialog: Boolean = false,
-    val showEmptyQueueMessage: Boolean = false,
-
     // TTS State
     val isTtsEnabled: Boolean = true,
-    val isTtsSpeaking: Boolean = false,
-
-    // Settings
-    val showPronunciation: Boolean = true,
-    val showExamples: Boolean = true
+    val isSpeaking: Boolean = false
 ) {
+
     /**
-     * Calculated properties for UI
+     * Progress percentage for current study queue
+     * This shows how many words completed in current session
      */
     val progressPercentage: Float
         get() = if (totalWordsInQueue > 0) {
             (currentWordIndex.toFloat() / totalWordsInQueue.toFloat()) * 100f
         } else 0f
 
-    val dailyProgressPercentage: Float
+    /**
+     * Daily progress calculation - only based on daily goal
+     * When a card is moved to next day, this progress increases
+     */
+    val dailyProgressCalculated: Float
         get() = if (dailyGoal > 0) {
-            (wordsStudiedToday.toFloat() / dailyGoal.toFloat()) * 100f
+            (wordsStudiedToday.toFloat() / dailyGoal.toFloat() * 100f).coerceAtMost(100f)
         } else 0f
-
-    val accuracyPercentage: Float
-        get() = if (sessionWordsCount > 0) {
-            (correctAnswers.toFloat() / sessionWordsCount.toFloat()) * 100f
-        } else 0f
-
-    val hasWordsToStudy: Boolean
-        get() = !isQueueEmpty && currentConcept != null
-
-    val showSessionStats: Boolean
-        get() = sessionWordsCount > 0
-
-    val canFlipCard: Boolean
-        get() = currentConcept != null && !isLoading
 
     /**
-     * Get display text based on study direction
+     * Text to show on front of card based on study direction
      */
     val frontText: String
         get() = when (studyDirection) {
@@ -90,31 +75,49 @@ data class StudyUiState(
             StudyDirection.TR_TO_EN -> currentConcept?.turkish ?: ""
         }
 
+    /**
+     * Text to show on back of card based on study direction
+     */
     val backText: String
         get() = when (studyDirection) {
             StudyDirection.EN_TO_TR -> currentConcept?.turkish ?: ""
             StudyDirection.TR_TO_EN -> currentConcept?.english ?: ""
         }
 
+    /**
+     * Example sentence based on study direction
+     */
     val exampleText: String
         get() = when (studyDirection) {
             StudyDirection.EN_TO_TR -> currentConcept?.exampleEn ?: ""
             StudyDirection.TR_TO_EN -> currentConcept?.exampleTr ?: ""
         }
 
+    /**
+     * Pronunciation text for TTS
+     */
     val pronunciationText: String
         get() = currentConcept?.pronunciation ?: ""
+
+    /**
+     * Check if we should show TTS button
+     * Only show for English words (EN_TO_TR direction)
+     */
+    val shouldShowTtsButton: Boolean
+        get() = studyDirection == StudyDirection.EN_TO_TR &&
+                pronunciationText.isNotEmpty() &&
+                isTtsEnabled
 }
 
 /**
- * User Events for Study Screen
+ * User Events for Study Screen - Simplified
  */
 sealed interface StudyEvent {
     // Card Interaction
     data object FlipCard : StudyEvent
     data object ResetCard : StudyEvent
 
-    // Study Response Buttons
+    // Study Response Buttons (SM-2 Algorithm)
     data object EasyButtonPressed : StudyEvent
     data object MediumButtonPressed : StudyEvent
     data object HardButtonPressed : StudyEvent
@@ -132,8 +135,7 @@ sealed interface StudyEvent {
     data object NavigateToWordSelection : StudyEvent
     data object NavigateBack : StudyEvent
 
-    // Settings
-    data class ToggleStudyDirection(val direction: StudyDirection) : StudyEvent
+    // Removed: Settings and direction toggle (moved to profile)
 }
 
 /**
@@ -179,13 +181,20 @@ enum class HapticType {
 }
 
 /**
- * Session completion statistics
+ * Session completion statistics - Simplified
  */
 data class SessionStats(
     val wordsStudied: Int,
     val correctAnswers: Int,
-    val accuracy: Float,
     val timeSpentMs: Long,
     val newWordsLearned: Int,
     val wordsReviewed: Int
-)
+) {
+    /**
+     * Simple accuracy calculation
+     */
+    val accuracy: Float
+        get() = if (wordsStudied > 0) {
+            (correctAnswers.toFloat() / wordsStudied.toFloat()) * 100f
+        } else 0f
+}
