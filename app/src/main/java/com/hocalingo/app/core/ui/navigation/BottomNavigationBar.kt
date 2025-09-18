@@ -109,8 +109,9 @@ fun HocaBottomNavigationBar(
                     item = item,
                     isSelected = isSelected,
                     onClick = {
-                        if (currentDestination != item.route) {
+                        if (!isSelected) {
                             navController.navigate(item.route) {
+                                // Clear back stack to prevent memory issues
                                 popUpTo(navController.graph.startDestinationId) {
                                     saveState = true
                                 }
@@ -131,37 +132,28 @@ private fun ModernBottomNavItem(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    // Smooth animations
+    // Animation for selection state
     val scale by animateFloatAsState(
         targetValue = if (isSelected) 1.1f else 1f,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessMedium
+            stiffness = Spring.StiffnessLow
         ),
-        label = "icon_scale"
+        label = "nav_item_scale"
     )
 
-    val iconColor = if (isSelected) {
-        Color(0xFF2196F3) // Açık mavi
-    } else {
-        Color(0xFF9E9E9E) // Açık gri
-    }
-
-    val backgroundColor = if (isSelected) {
-        Color(0xFF2196F3).copy(alpha = 0.1f) // Çok açık mavi background
-    } else {
-        Color.Transparent
-    }
+    // Colors
+    val iconColor = if (isSelected) Color(0xFF2196F3) else Color(0xFF9E9E9E)
+    val backgroundColor = if (isSelected) Color(0xFF2196F3).copy(alpha = 0.15f) else Color.Transparent
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
-            .clickable { onClick() } // ✅ Material 3 default ripple
-            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .clickable { onClick() }
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Icon container with background
+        // Icon with background
         Box(
             modifier = Modifier
                 .size(40.dp)
@@ -222,7 +214,8 @@ data class BottomNavItem(
 )
 
 /**
- * Helper function to check if route should show bottom navigation
+ * ✅ FIXED: Helper function to check if route should show bottom navigation
+ * Study ekranında bottom nav görünmez
  */
 fun shouldShowBottomNavigation(currentRoute: String?): Boolean {
     return when {
@@ -232,6 +225,7 @@ fun shouldShowBottomNavigation(currentRoute: String?): Boolean {
         currentRoute.startsWith(HocaRoutes.ONBOARDING_LANGUAGE) -> false
         currentRoute.startsWith(HocaRoutes.ONBOARDING_LEVEL) -> false
         currentRoute.startsWith(HocaRoutes.WORD_SELECTION) -> false
+        currentRoute.startsWith(HocaRoutes.STUDY) -> false // ✅ FIXED: Study ekranında bottom nav yok
         else -> true
     }
 }

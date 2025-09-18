@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -29,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hocalingo.app.R
+import com.hocalingo.app.core.ui.components.HocaErrorState
+import com.hocalingo.app.core.ui.components.HocaLoadingIndicator
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -50,10 +53,7 @@ fun PackageSelectionScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope() // ✅ CoroutineScope eklendi
-
-    // Local state for selection
-    var selectedPackageId by remember { mutableStateOf<String?>(null) }
+    val coroutineScope = rememberCoroutineScope()
 
     // Handle effects
     LaunchedEffect(Unit) {
@@ -63,141 +63,174 @@ fun PackageSelectionScreen(
                     onNavigateToWordSelection(effect.packageId)
                 }
                 is PackageSelectionEffect.ShowMessage -> {
-                    // A1 indirme başarısı mesajında direkt navigate et
-                    if (effect.message.contains("🎉") && selectedPackageId == "A1") {
-                        // Mesajı gösterme, direkt git
-                        onNavigateToWordSelection("a1_en_tr_test_v1")
-                    } else {
-                        snackbarHostState.showSnackbar(effect.message)
-                    }
+                    snackbarHostState.showSnackbar(effect.message)
                 }
+                // Removed ShowDownloadDialog handling - not needed anymore
                 is PackageSelectionEffect.ShowDownloadDialog -> {
-                    // Auto-download for now
-                    viewModel.onEvent(PackageSelectionEvent.DownloadPackage(effect.packageId))
+                    // Deprecated - download happens directly from continue button
                 }
             }
         }
     }
 
     Scaffold(
-        snackbarHost = {
-            // ✅ SnackbarHost'u daha yukarı taşıdık
-            Box(modifier = Modifier.fillMaxSize()) {
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(top = 100.dp) // Continue butonundan uzak
-                )
-            }
-        }
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(Color(0xFFF5F5F5))
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp)
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // "Choose your level" başlığı
-            Text(
-                text = "Choose your level",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 24.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(bottom = 32.dp)
-            )
-
-            // Level kartları grid
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.weight(1f)
-            ) {
-                items(getLevelPackages()) { levelPackage ->
-                    LevelCard(
-                        levelPackage = levelPackage,
-                        isSelected = selectedPackageId == levelPackage.id,
-                        onClick = {
-                            selectedPackageId = levelPackage.id
-                            viewModel.onEvent(PackageSelectionEvent.SelectPackage(levelPackage.id))
+            when {
+                uiState.isLoading -> {
+                    HocaLoadingIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        text = "Paketler yükleniyor..."
+                    )
+                }
+                uiState.error != null -> {
+                    HocaErrorState(
+                        message = uiState.error!!,
+                        onRetry = { viewModel.onEvent(PackageSelectionEvent.RetryLoading) },
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+                else -> {
+                    PackageSelectionContent(
+                        packages = uiState.packages,
+                        selectedPackageId = uiState.selectedPackageId,
+                        isLoading = uiState.isLoading,
+                        onPackageSelected = { packageId ->
+                            viewModel.onEvent(PackageSelectionEvent.SelectPackage(packageId))
+                        },
+                        onContinue = { packageId ->
+                            // A1 paketi için doğrudan indirme
+                            if (packageId == "a1_en_tr_test_v1") {
+                                viewModel.onEvent(PackageSelectionEvent.DownloadPackage(packageId))
+                            } else {
+                                // Diğer paketler için mesaj
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar("Bu paket yakında eklenecek! A1 paketi ile devam edebilirsiniz.")
+                                }
+                            }
                         }
                     )
                 }
             }
+        }
+    }
+}
 
-            Spacer(modifier = Modifier.height(24.dp))
+@Composable
+private fun PackageSelectionContent(
+    packages: List<PackageInfo>,
+    selectedPackageId: String?,
+    isLoading: Boolean,
+    onPackageSelected: (String) -> Unit,
+    onContinue: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(10.dp))
 
-            // Continue butonu
-            Button(
-                onClick = {
-                    selectedPackageId?.let { packageId ->
-                        // A1 paketi için doğrudan indirme
-                        if (packageId == "A1") {
-                            val realPackageId = "a1_en_tr_test_v1"
-                            viewModel.onEvent(PackageSelectionEvent.DownloadPackage(realPackageId))
-                        } else {
-                            // Diğer paketler için "yakında" mesajı
-                            coroutineScope.launch {
-                                snackbarHostState.showSnackbar("Bu paket yakında eklenecek! A1 paketi ile devam edebilirsiniz.")
-                            }
-                        }
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF00D4FF)
-                ),
-                enabled = selectedPackageId != null && !uiState.isLoading
-            ) {
-                if (uiState.isLoading) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        CircularProgressIndicator(
-                            color = Color.White,
-                            modifier = Modifier.size(20.dp),
-                            strokeWidth = 2.dp
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Loading...",
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            color = Color.White
-                        )
-                    }
-                } else {
+        // Header
+        Text(
+            text = "Öğrenmek istediğin seviye paketini indir",
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp,
+            color = Color(0xFF2C3E50),
+            textAlign = TextAlign.Center,
+            lineHeight = 30.sp
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Package Grid
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.weight(1f)
+        ) {
+            items(packages) { packageInfo ->
+                PackageCard(
+                    packageInfo = packageInfo,
+                    isSelected = selectedPackageId == packageInfo.id,
+                    onClick = { onPackageSelected(packageInfo.id) }
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // ✅ FIXED: Continue Button - Conditional enabling
+        Button(
+            onClick = {
+                selectedPackageId?.let { packageId ->
+                    onContinue(packageId)
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (selectedPackageId != null) Color(0xFF00D4FF) else Color(0xFFE0E0E0),
+                disabledContainerColor = Color(0xFFE0E0E0)
+            ),
+            enabled = selectedPackageId != null && !isLoading // ✅ Only enabled when package selected
+        ) {
+            if (isLoading) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Continue",
+                        text = "Loading...",
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                         color = Color.White
                     )
                 }
+            } else {
+                Text(
+                    text = if (selectedPackageId != null) "Continue" else "Select a Package",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = if (selectedPackageId != null) Color.White else Color(0xFF999999)
+                )
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
+// ✅ FIXED: Real Package Card with original gradient colors
 @Composable
-private fun LevelCard(
-    levelPackage: LevelPackage,
+private fun PackageCard(
+    packageInfo: PackageInfo,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
+    // ✅ Get original gradient for each level
+    val gradient = getOriginalGradient(packageInfo.level)
+    val icon = getLevelIcon(packageInfo.level)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -219,22 +252,50 @@ private fun LevelCard(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = levelPackage.gradient,
+                    brush = gradient, // ✅ Using original gradients
                     shape = RoundedCornerShape(20.dp)
                 )
         ) {
-            // Icon
+            // Level icon
             Box(
                 modifier = Modifier
                     .padding(16.dp)
                     .align(Alignment.TopStart)
             ) {
                 Icon(
-                    imageVector = levelPackage.icon,
+                    imageVector = icon,
                     contentDescription = null,
                     tint = Color.White,
                     modifier = Modifier.size(32.dp)
                 )
+            }
+
+            // ✅ FIXED: Download status indicator - Simplified
+            Box(
+                modifier = Modifier
+                    .padding(12.dp)
+                    .align(Alignment.TopEnd)
+                    .background(
+                        color = Color.White.copy(alpha = 0.9f),
+                        shape = CircleShape
+                    )
+                    .padding(6.dp)
+            ) {
+                if (packageInfo.isDownloaded) {
+                    Icon(
+                        imageVector = Icons.Filled.CheckCircle,
+                        contentDescription = "Downloaded",
+                        tint = Color(0xFF4CAF50),
+                        modifier = Modifier.size(20.dp)
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Outlined.FileDownload,
+                        contentDescription = "Download",
+                        tint = Color(0xFF757575),
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
 
             // Level ve açıklama
@@ -244,109 +305,77 @@ private fun LevelCard(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = levelPackage.level,
+                    text = packageInfo.level,
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                     color = Color.White
                 )
                 Text(
-                    text = levelPackage.description,
+                    text = packageInfo.name,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    color = Color.White.copy(alpha = 0.9f)
+                )
+                Text(
+                    text = packageInfo.description,
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Medium,
                     fontSize = 12.sp,
-                    color = Color.White.copy(alpha = 0.9f),
-                    lineHeight = 14.sp
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = when (levelPackage.id) {
-                        "A1" -> "Select words"
-                        else -> "Download package"
-                    },
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 11.sp,
-                    color = Color.White.copy(alpha = 0.8f)
+                    color = Color.White.copy(alpha = 0.8f),
+                    lineHeight = 14.sp,
+                    maxLines = 2
                 )
             }
         }
     }
 }
 
-// Level paketleri tanımları
-private data class LevelPackage(
-    val id: String,
-    val level: String,
-    val description: String,
-    val gradient: Brush,
-    val icon: ImageVector
-)
-
-private fun getLevelPackages(): List<LevelPackage> = listOf(
-    LevelPackage(
-        id = "A1",
-        level = "A1",
-        description = "Beginner - basic\neveryday words",
-        gradient = Brush.linearGradient(
+// ✅ Original gradient colors from the old system
+private fun getOriginalGradient(level: String): Brush {
+    return when (level) {
+        "A1" -> Brush.linearGradient(
             colors = listOf(Color(0xFFFF6B35), Color(0xFFF7931E))
-        ),
-        icon = Icons.Outlined.MenuBook
-    ),
-    LevelPackage(
-        id = "A2",
-        level = "A2",
-        description = "Elementary - simple\nsentences",
-        gradient = Brush.linearGradient(
+        )
+        "A2" -> Brush.linearGradient(
             colors = listOf(Color(0xFF4ECDC4), Color(0xFF44A08D))
-        ),
-        icon = Icons.Filled.Star
-    ),
-    LevelPackage(
-        id = "B1",
-        level = "B1",
-        description = "Intermediate -\neveryday\nconversations",
-        gradient = Brush.linearGradient(
+        )
+        "B1" -> Brush.linearGradient(
             colors = listOf(Color(0xFF43E97B), Color(0xFF38F9D7))
-        ),
-        icon = Icons.Outlined.TrendingUp
-    ),
-    LevelPackage(
-        id = "B2",
-        level = "B2",
-        description = "Upper Intermediate -\ncomplex topics",
-        gradient = Brush.linearGradient(
+        )
+        "B2" -> Brush.linearGradient(
             colors = listOf(Color(0xFF667eea), Color(0xFF764ba2))
-        ),
-        icon = Icons.Outlined.Psychology
-    ),
-    LevelPackage(
-        id = "C1",
-        level = "C1",
-        description = "Advanced - nuanced\ndiscussions",
-        gradient = Brush.linearGradient(
+        )
+        "C1" -> Brush.linearGradient(
             colors = listOf(Color(0xFFf12711), Color(0xFFf5af19))
-        ),
-        icon = Icons.Outlined.EmojiEvents
-    ),
-    LevelPackage(
-        id = "C2",
-        level = "C2",
-        description = "Proficient - mastery of\nthe language",
-        gradient = Brush.linearGradient(
+        )
+        "C2" -> Brush.linearGradient(
             colors = listOf(Color(0xFFff9a9e), Color(0xFFfecfef))
-        ),
-        icon = Icons.Outlined.Verified
-    )
-)
+        )
+        else -> Brush.linearGradient(
+            colors = listOf(Color(0xFFFF6B35), Color(0xFFF7931E))
+        )
+    }
+}
+
+// Helper function for level icons
+private fun getLevelIcon(level: String): ImageVector {
+    return when (level) {
+        "A1" -> Icons.Outlined.MenuBook
+        "A2" -> Icons.Filled.Star
+        "B1" -> Icons.Outlined.TrendingUp
+        "B2" -> Icons.Outlined.Psychology
+        "C1" -> Icons.Outlined.EmojiEvents
+        "C2" -> Icons.Outlined.Verified
+        else -> Icons.Outlined.MenuBook
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
 private fun PackageSelectionScreenPreview() {
     HocaLingoTheme {
-        // Mock preview without ViewModel
         PackageSelectionScreen(
             onNavigateToWordSelection = {},
             onNavigateBack = {}

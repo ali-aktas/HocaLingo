@@ -20,8 +20,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * PackageSelectionViewModel - FINAL FIX
- * UI State inconsistency çözüldü, database sync düzeltildi
+ * PackageSelectionViewModel - FIXED
+ * ✅ Gereksiz toast mesajları kaldırıldı
+ * ✅ Sadece error durumlarında toast gösteriliyor
  */
 @HiltViewModel
 class PackageSelectionViewModel @Inject constructor(
@@ -95,47 +96,67 @@ class PackageSelectionViewModel @Inject constructor(
     }
 
     private suspend fun createPackageList(existingPackages: List<WordPackageEntity>): List<PackageInfo> {
-        DebugHelper.log("--- createPackageList çağrıldı ---")
+        DebugHelper.log("--- createPackageList başlıyor ---")
 
-        // A1 paketi için kapsamlı kontrol
-        val a1Package = existingPackages.find { it.packageId == "a1_en_tr_test_v1" }
-        val a1ConceptCount = if (a1Package != null) {
-            database.conceptDao().getConceptsByPackage("a1_en_tr_test_v1").size
-        } else {
-            0
+        // Predefined packages
+        val defaultPackages = getDefaultPackages()
+
+        // Update with database status
+        val updatedPackages = defaultPackages.map { defaultPackage ->
+            val dbPackage = existingPackages.find { it.packageId == defaultPackage.id }
+
+            if (dbPackage != null) {
+                // Package exists in database
+                val conceptCount = database.conceptDao().getConceptsByPackage(dbPackage.packageId).size
+                DebugHelper.log("${defaultPackage.id}: DB'de var, $conceptCount concept")
+
+                defaultPackage.copy(
+                    isDownloaded = conceptCount > 0,
+                    wordCount = if (conceptCount > 0) conceptCount else defaultPackage.wordCount,
+                    downloadProgress = if (conceptCount > 0) 100 else 0
+                )
+            } else {
+                // Package not in database
+                DebugHelper.log("${defaultPackage.id}: DB'de yok")
+                defaultPackage.copy(
+                    isDownloaded = false,
+                    downloadProgress = 0
+                )
+            }
         }
 
-        val isA1Downloaded = a1Package != null && a1ConceptCount > 0
+        DebugHelper.log("--- createPackageList bitti ---")
+        return updatedPackages
+    }
 
-        DebugHelper.log("A1 durumu: Package=${a1Package != null}, Concepts=$a1ConceptCount, Downloaded=$isA1Downloaded")
-
+    private fun getDefaultPackages(): List<PackageInfo> {
         return listOf(
             PackageInfo(
                 id = "a1_en_tr_test_v1",
                 level = "A1",
                 name = "Başlangıç",
                 description = "Temel kelimeler ve günlük ifadeler",
-                wordCount = 50,
-                isDownloaded = isA1Downloaded,
-                downloadProgress = if (isA1Downloaded) 100 else 0,
+                wordCount = 200,
+                isDownloaded = false,
+                downloadProgress = 0,
                 color = "#4CAF50"
             ),
             PackageInfo(
                 id = "a2_en_tr_v1",
                 level = "A2",
                 name = "Temel",
-                description = "Basit iletişim ve yaygın kelimeler",
-                wordCount = 400,
+                description = "Günlük aktiviteler ve basit konuşmalar",
+                wordCount = 300,
                 isDownloaded = false,
                 downloadProgress = 0,
-                color = "#8BC34A"
+                color = "#2196F3"
             ),
             PackageInfo(
                 id = "b1_en_tr_v1",
                 level = "B1",
                 name = "Orta",
-                description = "Günlük konuşma ve seyahat kelimeleri",
-                wordCount = 600,
+                description = "İş, okul ve hobiler hakkında konuşma",
+                wordCount = 400,
                 isDownloaded = false,
                 downloadProgress = 0,
                 color = "#FF9800"
@@ -143,9 +164,9 @@ class PackageSelectionViewModel @Inject constructor(
             PackageInfo(
                 id = "b2_en_tr_v1",
                 level = "B2",
-                name = "Orta-İleri",
-                description = "İş ve akademik kelimeler",
-                wordCount = 800,
+                name = "Orta-Üst",
+                description = "Karmaşık metinler ve tartışmalar",
+                wordCount = 450,
                 isDownloaded = false,
                 downloadProgress = 0,
                 color = "#FF5722"
@@ -173,20 +194,24 @@ class PackageSelectionViewModel @Inject constructor(
         )
     }
 
+    // ✅ FIX: Gereksiz toast mesajı kaldırıldı
     private fun selectPackage(packageId: String) {
         viewModelScope.launch {
             DebugHelper.log("=== PAKET SEÇİLDİ: $packageId ===")
+
+            // State'i güncelle
+            _uiState.update { it.copy(selectedPackageId = packageId) }
 
             val selectedPackage = _uiState.value.packages.find { it.id == packageId }
             DebugHelper.log("Seçilen paket: $selectedPackage")
 
             if (selectedPackage?.isDownloaded == true) {
                 DebugHelper.log("Paket indirilmiş, kelime seçimine geçiliyor")
-                _uiState.update { it.copy(selectedPackageId = packageId) }
                 _effect.emit(PackageSelectionEffect.NavigateToWordSelection(packageId))
             } else {
-                DebugHelper.log("Paket indirilmemiş, download dialog gösteriliyor")
-                _effect.emit(PackageSelectionEffect.ShowDownloadDialog(packageId))
+                DebugHelper.log("Paket indirilmemiş, state sadece güncellendi")
+                // ✅ REMOVED: Gereksiz toast mesajı kaldırıldı
+                // Sadece state güncellemesi yeterli, kullanıcı continue'ye basınca download olacak
             }
         }
     }
@@ -238,23 +263,26 @@ class PackageSelectionViewModel @Inject constructor(
                                 "🎉 Paket başarıyla indirildi! ${result.data} kelime eklendi."
                             )
                         )
-                    }
-                    is Result.Error -> {
-                        DebugHelper.logError("💥 DOWNLOAD BAŞARISIZ", result.error)
 
-                        // Progress'i sıfırla
-                        packages[index] = packages[index].copy(
-                            isDownloaded = false,
-                            downloadProgress = 0
-                        )
-                        _uiState.update { it.copy(packages = packages.toList()) }
+                        // İndirme başarılıysa kelime seçimine yönlendir
+                        _effect.emit(PackageSelectionEffect.NavigateToWordSelection(packageId))
 
-                        _effect.emit(
-                            PackageSelectionEffect.ShowMessage(
-                                "❌ İndirme başarısız: ${result.error.message}"
-                            )
+                    } is Result.Error -> {
+                    DebugHelper.logError("💥 DOWNLOAD BAŞARISIZ", result.error)
+
+                    // Progress'i sıfırla
+                    packages[index] = packages[index].copy(
+                        isDownloaded = false,
+                        downloadProgress = 0
+                    )
+                    _uiState.update { it.copy(packages = packages.toList()) }
+
+                    _effect.emit(
+                        PackageSelectionEffect.ShowMessage(
+                            "❌ İndirme başarısız: ${result.error.message}"
                         )
-                    }
+                    )
+                }
                 }
             } catch (e: Exception) {
                 DebugHelper.logError("Download exception", e)

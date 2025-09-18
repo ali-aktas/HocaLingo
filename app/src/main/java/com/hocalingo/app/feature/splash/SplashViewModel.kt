@@ -16,8 +16,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * SplashViewModel - DÜZELTME
- * Duplicate loading önlendi, debug logs eklendi
+ * SplashViewModel - FIXED
+ * ✅ Ana sayfa navigation logic'i eklendi
+ * ✅ Giriş yapılmışsa ana sayfaya yönlendirme
  */
 @HiltViewModel
 class SplashViewModel @Inject constructor(
@@ -56,7 +57,7 @@ class SplashViewModel @Inject constructor(
                     _navigationEvent.emit(SplashNavigationEvent.NavigateToAuth)
                 } else {
                     DebugHelper.log("Kullanıcı giriş yapmış, onboarding durumu kontrol ediliyor...")
-                    // Kullanıcı giriş yapmış, onboarding durumunu kontrol et
+                    // ✅ FIXED: Kullanıcı giriş yapmış, onboarding durumunu kontrol et
                     val setupStatus = preferencesManager.getAppSetupStatus()
 
                     setupStatus.fold(
@@ -68,7 +69,8 @@ class SplashViewModel @Inject constructor(
                                     _navigationEvent.emit(SplashNavigationEvent.NavigateToOnboarding)
                                 }
                                 else -> {
-                                    DebugHelper.log("Her şey tamam -> Main")
+                                    // ✅ FIXED: Eğer giriş yapılmış ve onboarding tamamlanmışsa ana sayfaya git
+                                    DebugHelper.log("Her şey tamam -> Ana Sayfa")
                                     _navigationEvent.emit(SplashNavigationEvent.NavigateToMain)
                                 }
                             }
@@ -131,7 +133,7 @@ class SplashViewModel @Inject constructor(
 
 // Navigation Events
 sealed interface SplashNavigationEvent {
-    object NavigateToAuth : SplashNavigationEvent
-    object NavigateToOnboarding : SplashNavigationEvent
-    object NavigateToMain : SplashNavigationEvent
+    data object NavigateToAuth : SplashNavigationEvent
+    data object NavigateToOnboarding : SplashNavigationEvent
+    data object NavigateToMain : SplashNavigationEvent // ✅ ADDED: Ana sayfa navigation
 }
