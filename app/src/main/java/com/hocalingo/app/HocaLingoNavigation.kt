@@ -20,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.hocalingo.app.feature.auth.presentation.AuthScreen
+import com.hocalingo.app.feature.home.presentation.HomeScreen
 import com.hocalingo.app.feature.onboarding.presentation.PackageSelectionScreen
 import com.hocalingo.app.feature.selection.presentation.WordSelectionScreen
 import com.hocalingo.app.feature.splash.SplashScreen
@@ -146,11 +147,17 @@ fun HocaLingoNavigation(
 
         // ===== MAIN APP FLOW (with Bottom Navigation) =====
 
-        // Home Screen - Main Dashboard
+        // Home Screen - REAL IMPLEMENTATION ✅
         composable(route = HocaRoutes.HOME) {
-            HomeDashboardScreen(
+            HomeScreen(
                 onNavigateToStudy = {
                     navController.navigate(HocaRoutes.STUDY)
+                },
+                onNavigateToAddWord = {
+                    navController.navigate(HocaRoutes.ADD_WORD)
+                },
+                onNavigateToProfile = {
+                    navController.navigate(HocaRoutes.PROFILE)
                 }
             )
         }
@@ -208,18 +215,6 @@ fun HocaLingoNavigation(
 
 // ===== PLACEHOLDER SCREENS =====
 // These will be replaced with actual implementations
-
-@Composable
-private fun HomeDashboardScreen(
-    onNavigateToStudy: () -> Unit
-) {
-    PlaceholderScreen(
-        title = "🏠 ${stringResource(R.string.nav_home)}",
-        subtitle = "Günlük kelimeler ve çalışma özeti\nÖğrenilecek kelimeler, streak, günlük hedef",
-        buttonText = stringResource(R.string.nav_study),
-        onNavigate = onNavigateToStudy
-    )
-}
 
 @Composable
 private fun AddWordScreen(
