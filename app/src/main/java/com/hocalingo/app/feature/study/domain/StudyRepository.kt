@@ -9,10 +9,16 @@ import com.hocalingo.app.core.database.entities.WordProgressEntity
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Repository interface for Study functionality
+ * Repository interface for Study functionality - HYBRID VERSION
+ *
+ * UPDATED FOR HYBRID LEARNING SYSTEM:
+ * ✅ Session-based learning + time-based review
+ * ✅ Learning cards count method added
+ * ✅ Graduate-based daily progress tracking
  *
  * Handles:
- * - Study queue management with SM-2 algorithm
+ * - Study queue management with hybrid SM-2 algorithm
+ * - Learning/Review phase management
  * - Word progress updates and daily tracking
  * - Study session tracking
  * - Simplified statistics (daily goal focused)
@@ -20,8 +26,8 @@ import kotlinx.coroutines.flow.Flow
 interface StudyRepository {
 
     /**
-     * Get study queue for current session
-     * Returns words that need to be reviewed based on SM-2 timing
+     * Get study queue for current session - HYBRID VERSION
+     * Returns learning cards (always) + due review cards (time-based)
      */
     fun getStudyQueue(
         direction: StudyDirection,
@@ -42,9 +48,8 @@ interface StudyRepository {
     suspend fun getConceptById(conceptId: Int): Result<ConceptEntity?>
 
     /**
-     * Update word progress after user response
-     * This will move cards to future dates based on SM-2 algorithm
-     * And increment daily progress when a card is completed
+     * Update word progress after user response - HYBRID VERSION
+     * Uses learning/review phases and graduation-based daily progress
      */
     suspend fun updateWordProgress(
         conceptId: Int,
@@ -53,9 +58,17 @@ interface StudyRepository {
     ): Result<WordProgressEntity>
 
     /**
-     * Check if there are words available to study
+     * Check if there are words available to study - HYBRID VERSION
+     * Checks both learning cards and due review cards
      */
     suspend fun hasWordsToStudy(direction: StudyDirection): Result<Boolean>
+
+    /**
+     * HYBRID: Get learning cards count for a direction
+     * Used to determine if session should continue or complete
+     * Learning cards always stay in session until graduation
+     */
+    suspend fun getLearningCardsCount(direction: StudyDirection): Result<Int>
 
     /**
      * Start a new study session
@@ -78,14 +91,14 @@ interface StudyRepository {
     suspend fun getTodayWordsStudied(): Result<Int>
 
     /**
-     * Get daily completed words count
-     * Words that have been moved to future dates (completed for today)
+     * Get daily completed words count - HYBRID VERSION
+     * Words that graduated from learning to review phase today
      */
     suspend fun getDailyCompletedWords(): Result<Int>
 
     /**
-     * Update daily progress when a card is completed
-     * Called when a word is moved to next review date
+     * Update daily progress when a card graduates
+     * Called when a word moves from learning to review phase
      */
     suspend fun incrementDailyProgress(): Result<Unit>
 

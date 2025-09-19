@@ -44,8 +44,7 @@ class UserPreferencesManager @Inject constructor(
         private val DAILY_GOAL = intPreferencesKey("daily_goal")
         private val STUDY_REMINDER_ENABLED = booleanPreferencesKey("study_reminder_enabled")
         private val STUDY_REMINDER_HOUR = intPreferencesKey("study_reminder_hour")
-        private val STUDY_DIRECTION =
-            stringPreferencesKey("study_direction") // EN_TO_TR, TR_TO_EN, MIXED
+        private val STUDY_DIRECTION = stringPreferencesKey("study_direction") // EN_TO_TR, TR_TO_EN, MIXED
 
         // App Settings
         private val SOUND_ENABLED = booleanPreferencesKey("sound_enabled")

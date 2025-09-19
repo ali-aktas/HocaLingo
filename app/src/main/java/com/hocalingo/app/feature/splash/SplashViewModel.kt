@@ -16,9 +16,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * SplashViewModel - FIXED
- * ✅ Ana sayfa navigation logic'i eklendi
- * ✅ Giriş yapılmışsa ana sayfaya yönlendirme
+ * SplashViewModel - SIMPLE FIX
+ *
+ * ✅ İlk giriş → Normal flow (Auth → Onboarding → Word Selection → Home)
+ * ✅ Sonraki girişler → Direkt Home
  */
 @HiltViewModel
 class SplashViewModel @Inject constructor(
@@ -57,7 +58,7 @@ class SplashViewModel @Inject constructor(
                     _navigationEvent.emit(SplashNavigationEvent.NavigateToAuth)
                 } else {
                     DebugHelper.log("Kullanıcı giriş yapmış, onboarding durumu kontrol ediliyor...")
-                    // ✅ FIXED: Kullanıcı giriş yapmış, onboarding durumunu kontrol et
+                    // ✅ SIMPLE FIX: Kullanıcı giriş yapmış, setup durumunu kontrol et
                     val setupStatus = preferencesManager.getAppSetupStatus()
 
                     setupStatus.fold(
@@ -69,8 +70,8 @@ class SplashViewModel @Inject constructor(
                                     _navigationEvent.emit(SplashNavigationEvent.NavigateToOnboarding)
                                 }
                                 else -> {
-                                    // ✅ FIXED: Eğer giriş yapılmış ve onboarding tamamlanmışsa ana sayfaya git
-                                    DebugHelper.log("Her şey tamam -> Ana Sayfa")
+                                    // ✅ SIMPLE FIX: Setup tamamlanmış -> DİREKT ANA SAYFA
+                                    DebugHelper.log("Setup tamamlanmış -> DİREKT ANA SAYFA")
                                     _navigationEvent.emit(SplashNavigationEvent.NavigateToMain)
                                 }
                             }
@@ -135,5 +136,5 @@ class SplashViewModel @Inject constructor(
 sealed interface SplashNavigationEvent {
     data object NavigateToAuth : SplashNavigationEvent
     data object NavigateToOnboarding : SplashNavigationEvent
-    data object NavigateToMain : SplashNavigationEvent // ✅ ADDED: Ana sayfa navigation
+    data object NavigateToMain : SplashNavigationEvent // ✅ Ana sayfa navigation
 }

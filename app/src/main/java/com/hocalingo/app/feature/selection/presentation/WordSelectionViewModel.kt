@@ -239,8 +239,8 @@ class WordSelectionViewModel @Inject constructor(
     }
 
     /**
-     * CRITICAL: Create WordProgressEntity when word is selected
-     * This ensures the word appears in study queue immediately
+     * HYBRID: Create WordProgressEntity when word is selected
+     * New words start in learning phase with proper session positioning
      */
     private suspend fun createWordProgressForStudy(conceptId: Int) {
         try {
@@ -252,6 +252,10 @@ class WordSelectionViewModel @Inject constructor(
 
             val currentTime = System.currentTimeMillis()
             val newProgressEntries = mutableListOf<WordProgressEntity>()
+
+            // Get next session positions for both directions
+            val maxPosEnToTr = database.combinedDataDao().getMaxSessionPosition(StudyDirection.EN_TO_TR)
+            val maxPosTrToEn = database.combinedDataDao().getMaxSessionPosition(StudyDirection.TR_TO_EN)
 
             // Create EN_TO_TR progress if not exists
             if (progressEnToTr == null) {
@@ -265,6 +269,8 @@ class WordSelectionViewModel @Inject constructor(
                     lastReviewAt = null,
                     isSelected = true,
                     isMastered = false,
+                    learningPhase = true, // HYBRID: Start in learning phase
+                    sessionPosition = maxPosEnToTr + 1, // HYBRID: Position in session queue
                     createdAt = currentTime,
                     updatedAt = currentTime
                 )
@@ -283,6 +289,8 @@ class WordSelectionViewModel @Inject constructor(
                     lastReviewAt = null,
                     isSelected = true,
                     isMastered = false,
+                    learningPhase = true, // HYBRID: Start in learning phase
+                    sessionPosition = maxPosTrToEn + 1, // HYBRID: Position in session queue
                     createdAt = currentTime,
                     updatedAt = currentTime
                 )
@@ -292,7 +300,7 @@ class WordSelectionViewModel @Inject constructor(
             // Insert new progress entries
             if (newProgressEntries.isNotEmpty()) {
                 database.wordProgressDao().insertProgressList(newProgressEntries)
-                DebugHelper.logWordSelection("WordProgressEntity created for concept $conceptId (${newProgressEntries.size} directions)")
+                DebugHelper.logWordSelection("HYBRID: WordProgressEntity created for concept $conceptId (${newProgressEntries.size} directions) in learning phase")
             } else {
                 DebugHelper.logWordSelection("WordProgressEntity already exists for concept $conceptId")
             }

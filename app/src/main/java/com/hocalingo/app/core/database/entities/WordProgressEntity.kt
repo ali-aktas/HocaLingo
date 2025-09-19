@@ -19,7 +19,9 @@ import androidx.room.Index
     indices = [
         Index(value = ["concept_id"]),
         Index(value = ["next_review_at"]),
-        Index(value = ["is_selected"])
+        Index(value = ["is_selected"]),
+        Index(value = ["learning_phase"]),
+        Index(value = ["session_position"])
     ]
 )
 data class WordProgressEntity(
@@ -50,9 +52,40 @@ data class WordProgressEntity(
     @ColumnInfo(name = "is_mastered")
     val isMastered: Boolean = false,
 
+    /**
+     * NEW: Learning Phase Management
+     *
+     * true = Card is in learning phase (stays in current session)
+     * false = Card is in review phase (time-based scheduling)
+     */
+    @ColumnInfo(name = "learning_phase")
+    val learningPhase: Boolean = true,
+
+    /**
+     * NEW: Session Position for Learning Cards
+     *
+     * Used to order cards within current session
+     * Lower numbers = shown first
+     * null = not in current session (review cards)
+     */
+    @ColumnInfo(name = "session_position")
+    val sessionPosition: Int? = null,
+
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis(),
 
     @ColumnInfo(name = "updated_at")
     val updatedAt: Long = System.currentTimeMillis()
-)
+) {
+    /**
+     * Helper method to check if card should stay in current session
+     */
+    val staysInSession: Boolean
+        get() = learningPhase && sessionPosition != null
+
+    /**
+     * Helper method to check if card is graduated (moved to review phase)
+     */
+    val isGraduated: Boolean
+        get() = !learningPhase && repetitions >= 2
+}

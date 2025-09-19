@@ -25,11 +25,17 @@ import com.hocalingo.app.core.database.entities.WordPackageEntity
 import com.hocalingo.app.core.database.entities.WordProgressEntity
 
 /**
- * HocaLingo Room Database
+ * HocaLingo Room Database - UPDATED TO VERSION 2
+ *
+ * VERSION 2 CHANGES:
+ * ✅ Added learning_phase column to word_progress table
+ * ✅ Added session_position column to word_progress table
+ * ✅ Added indexes for new columns
+ * ✅ Migration from version 1 to 2 included
  *
  * Central database for all app data including:
  * - Word concepts and vocabulary
- * - User progress and spaced repetition data
+ * - User progress and spaced repetition data (HYBRID LEARNING + REVIEW)
  * - Study sessions and statistics
  * - User preferences and settings
  */
@@ -43,7 +49,7 @@ import com.hocalingo.app.core.database.entities.WordProgressEntity
         UserPreferencesEntity::class,
         WordPackageEntity::class
     ],
-    version = 1,
+    version = 2, // 🔥 UPDATED: Version 1 → 2 for hybrid learning system
     exportSchema = true
 )
 @TypeConverters(DatabaseTypeConverters::class)
@@ -66,7 +72,61 @@ abstract class HocaLingoDatabase : RoomDatabase() {
         private var INSTANCE: HocaLingoDatabase? = null
 
         /**
-         * Get database instance with singleton pattern
+         * 🔥 MIGRATION 1 → 2: Add Hybrid Learning System Fields
+         *
+         * Adds learning_phase and session_position columns to word_progress table
+         * for session-based learning + time-based review system
+         */
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                try {
+                    // Add learning_phase column (default: true = learning phase)
+                    database.execSQL("""
+                        ALTER TABLE word_progress 
+                        ADD COLUMN learning_phase INTEGER NOT NULL DEFAULT 1
+                    """)
+
+                    // Add session_position column (nullable for review cards)
+                    database.execSQL("""
+                        ALTER TABLE word_progress 
+                        ADD COLUMN session_position INTEGER
+                    """)
+
+                    // Create indexes for new columns to improve query performance
+                    database.execSQL("""
+                        CREATE INDEX IF NOT EXISTS index_word_progress_learning_phase 
+                        ON word_progress(learning_phase)
+                    """)
+
+                    database.execSQL("""
+                        CREATE INDEX IF NOT EXISTS index_word_progress_session_position 
+                        ON word_progress(session_position)
+                    """)
+
+                    // Set initial session positions for existing cards
+                    // All existing cards start in learning phase with incremental positions
+                    database.execSQL("""
+                        UPDATE word_progress 
+                        SET session_position = (
+                            SELECT COUNT(*) + 1 
+                            FROM word_progress p2 
+                            WHERE p2.direction = word_progress.direction 
+                            AND p2.rowid < word_progress.rowid
+                        )
+                        WHERE learning_phase = 1
+                    """)
+
+                    android.util.Log.d("HocaLingoDatabase", "✅ Migration 1→2 completed successfully")
+
+                } catch (e: Exception) {
+                    android.util.Log.e("HocaLingoDatabase", "❌ Migration 1→2 failed", e)
+                    throw e
+                }
+            }
+        }
+
+        /**
+         * Get database instance with singleton pattern - UPDATED WITH MIGRATION
          */
         fun getDatabase(context: Context): HocaLingoDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -75,189 +135,18 @@ abstract class HocaLingoDatabase : RoomDatabase() {
                     HocaLingoDatabase::class.java,
                     DATABASE_NAME
                 )
-                    .addMigrations() // Add migrations when needed
-                    .addCallback(DatabaseCallback()) // Initial setup
+                    .addMigrations(MIGRATION_1_2) // 🔥 ADD MIGRATION HERE
                     .build()
-
                 INSTANCE = instance
                 instance
             }
         }
 
         /**
-         * Database callback for initial setup
+         * Clear database instance (for testing)
          */
-        private class DatabaseCallback : RoomDatabase.Callback() {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
-                // Database created for the first time
-                // Any initial setup can be done here
-            }
-
-            override fun onOpen(db: SupportSQLiteDatabase) {
-                super.onOpen(db)
-                // Database opened
-                // Can be used for maintenance tasks
-            }
+        fun clearInstance() {
+            INSTANCE = null
         }
-
-        // Future migrations will be added here
-        // Example migration from version 1 to 2:
-        /*
-        private val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE concepts ADD COLUMN new_field TEXT")
-            }
-        }
-        */
-    }
-}
-
-/**
- * Database utility functions
- */
-object DatabaseUtils {
-
-    /**
-     * Get current timestamp in milliseconds
-     */
-    fun getCurrentTimestamp(): Long = System.currentTimeMillis()
-
-    /**
-     * Get date string in YYYY-MM-DD format for daily stats
-     */
-    fun getTodayDateString(): String {
-        val calendar = java.util.Calendar.getInstance()
-        return String.format(
-            "%04d-%02d-%02d",
-            calendar.get(java.util.Calendar.YEAR),
-            calendar.get(java.util.Calendar.MONTH) + 1,
-            calendar.get(java.util.Calendar.DAY_OF_MONTH)
-        )
-    }
-
-    /**
-     * Calculate next review time based on SM-2 algorithm
-     */
-    fun calculateNextReviewTime(
-        currentTime: Long,
-        intervalDays: Float
-    ): Long {
-        val intervalMs = (intervalDays * 24 * 60 * 60 * 1000).toLong()
-        return currentTime + intervalMs
-    }
-
-    /**
-     * Get start of day timestamp
-     */
-    fun getStartOfDayTimestamp(timestamp: Long = getCurrentTimestamp()): Long {
-        val calendar = java.util.Calendar.getInstance()
-        calendar.timeInMillis = timestamp
-        calendar.set(java.util.Calendar.HOUR_OF_DAY, 0)
-        calendar.set(java.util.Calendar.MINUTE, 0)
-        calendar.set(java.util.Calendar.SECOND, 0)
-        calendar.set(java.util.Calendar.MILLISECOND, 0)
-        return calendar.timeInMillis
-    }
-
-    /**
-     * Get end of day timestamp
-     */
-    fun getEndOfDayTimestamp(timestamp: Long = getCurrentTimestamp()): Long {
-        val calendar = java.util.Calendar.getInstance()
-        calendar.timeInMillis = timestamp
-        calendar.set(java.util.Calendar.HOUR_OF_DAY, 23)
-        calendar.set(java.util.Calendar.MINUTE, 59)
-        calendar.set(java.util.Calendar.SECOND, 59)
-        calendar.set(java.util.Calendar.MILLISECOND, 999)
-        return calendar.timeInMillis
-    }
-}
-
-/**
- * Database seeding functions for development
- */
-object DatabaseSeeder {
-
-    /**
-     * Insert test data from JSON file (for development)
-     */
-    suspend fun seedTestData(database: HocaLingoDatabase) {
-        // This will be implemented when we load JSON data
-        // For now, we can insert a few test concepts manually
-
-        val testConcepts = listOf(
-            ConceptEntity(
-                id = 1001,
-                english = "book",
-                turkish = "kitap",
-                exampleEn = "I'm reading a good book",
-                exampleTr = "İyi bir kitap okuyorum",
-                pronunciation = "bʊk",
-                level = "A1",
-                category = "education",
-                packageId = "test_a1_en_tr_v1"
-            ),
-            ConceptEntity(
-                id = 1002,
-                english = "water",
-                turkish = "su",
-                exampleEn = "I drink water every day",
-                exampleTr = "Her gün su içerim",
-                pronunciation = "ˈwɔːtər",
-                level = "A1",
-                category = "basic",
-                packageId = "test_a1_en_tr_v1"
-            ),
-            ConceptEntity(
-                id = 1003,
-                english = "house",
-                turkish = "ev",
-                exampleEn = "My house is big",
-                exampleTr = "Benim evim büyük",
-                pronunciation = "haʊs",
-                level = "A1",
-                category = "home",
-                packageId = "test_a1_en_tr_v1"
-            )
-        )
-
-        // Insert test concepts
-        database.conceptDao().insertConcepts(testConcepts)
-
-        // Insert test package info
-        database.wordPackageDao().insertPackage(
-            WordPackageEntity(
-                packageId = "test_a1_en_tr_v1",
-                version = "1.0.0",
-                level = "A1",
-                languagePair = "en_tr",
-                totalWords = testConcepts.size,
-                downloadedAt = DatabaseUtils.getCurrentTimestamp(),
-                description = "Test A1 package for development"
-            )
-        )
-    }
-
-    /**
-     * Create default user preferences
-     */
-    suspend fun createDefaultUserPreferences(
-        database: HocaLingoDatabase,
-        userId: String
-    ) {
-        val defaultPreferences = UserPreferencesEntity(
-            userId = userId,
-            nativeLanguage = "tr",
-            targetLanguage = "en",
-            currentLevel = "A1",
-            dailyGoal = 20,
-            studyReminderEnabled = true,
-            studyReminderHour = 20,
-            isPremium = false,
-            onboardingCompleted = false
-        )
-
-        database.userPreferencesDao().insertOrUpdatePreferences(defaultPreferences)
     }
 }
