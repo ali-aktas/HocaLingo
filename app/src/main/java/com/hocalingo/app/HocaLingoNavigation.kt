@@ -25,6 +25,7 @@ import com.hocalingo.app.feature.onboarding.presentation.PackageSelectionScreen
 import com.hocalingo.app.feature.selection.presentation.WordSelectionScreen
 import com.hocalingo.app.feature.splash.SplashScreen
 import com.hocalingo.app.feature.study.presentation.StudyScreen
+import com.hocalingo.app.feature.addword.presentation.AddWordScreen
 
 /**
  * Enhanced HocaLingo Navigation Routes - FIXED VERSION
@@ -189,16 +190,16 @@ fun HocaLingoNavigation(
             )
         }
 
-        // Add Word Screen (Future Feature)
+        // Add Word Screen - REAL IMPLEMENTATION ✅
         composable(route = HocaRoutes.ADD_WORD) {
-            PlaceholderScreen(
-                title = "➕ ${stringResource(R.string.nav_add_word)}",
-                subtitle = "Kendi kelimelerinizi ekleyin\nÖzel listeler oluşturun ve çalışın",
-                buttonText = stringResource(R.string.nav_home),
-                onNavigate = {
+            AddWordScreen(
+                onNavigateBack = {
                     navController.navigate(HocaRoutes.HOME) {
                         popUpTo(HocaRoutes.HOME) { inclusive = false }
                     }
+                },
+                onNavigateToStudy = {
+                    navController.navigate(HocaRoutes.STUDY)
                 }
             )
         }
