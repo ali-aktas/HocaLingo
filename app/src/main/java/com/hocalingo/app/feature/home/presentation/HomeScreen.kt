@@ -2,13 +2,11 @@ package com.hocalingo.app.feature.home.presentation
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -26,7 +24,6 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,14 +41,67 @@ private val PoppinsFontFamily = FontFamily(
 )
 
 /**
- * Modern Home Dashboard Screen
- * Central hub for HocaLingo app with clean Material 3 design
+ * Modern Home Dashboard Screen - v2.0
+ * PackageSelection teması ile yeniden tasarlandı
  */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DeckInfoRow(
+    totalCards: Int,
+    masteredCards: Int
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        // Toplam deck kartları
+        DeckInfoItem(
+            label = "Deck'te Toplam",
+            value = totalCards.toString(),
+            color = Color(0xFF44A08D)
+        )
+
+        // Mastered kartlar
+        DeckInfoItem(
+            label = "Tamamlanan",
+            value = masteredCards.toString(),
+            color = Color(0xFF4CAF50)
+        )
+    }
+}
+
+@Composable
+private fun DeckInfoItem(
+    label: String,
+    value: String,
+    color: Color
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = value,
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            color = color
+        )
+        Text(
+            text = label,
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 12.sp,
+            color = Color(0xFF6C7B8A),
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
 @Composable
 fun HomeScreen(
     onNavigateToStudy: () -> Unit,
-    onNavigateToAddWord: () -> Unit = {},
-    onNavigateToProfile: () -> Unit = {},
+    onNavigateToPackageSelection: () -> Unit = {},
+    onNavigateToAIAssistant: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -62,115 +112,89 @@ fun HomeScreen(
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 HomeEffect.NavigateToStudy -> onNavigateToStudy()
-                HomeEffect.NavigateToAddWord -> onNavigateToAddWord()
-                HomeEffect.NavigateToProfile -> onNavigateToProfile()
+                HomeEffect.NavigateToPackageSelection -> onNavigateToPackageSelection()
+                HomeEffect.NavigateToAIAssistant -> onNavigateToAIAssistant()
                 is HomeEffect.ShowMessage -> {
                     snackbarHostState.showSnackbar(effect.message)
+                }
+                is HomeEffect.ShowError -> {
+                    snackbarHostState.showSnackbar(effect.error)
                 }
             }
         }
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = Color(0xFFF8FAFA) // Açık background
     ) { paddingValues ->
-
-        if (uiState.isLoading) {
-            LoadingState(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            )
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Welcome header with streak
-                item {
-                    WelcomeHeader(
-                        userName = uiState.userName,
-                        streakDays = uiState.streakDays,
-                        onRefresh = { viewModel.onEvent(HomeEvent.RefreshData) }
-                    )
-                }
-
-                // Daily goal progress
-                item {
-                    DailyGoalCard(
-                        progress = uiState.dailyGoalProgress,
-                        onStartStudy = { viewModel.onEvent(HomeEvent.StartStudy) }
-                    )
-                }
-
-                // Today's words quick study
-                item {
-                    TodayWordsSection(
-                        words = uiState.todayWords,
-                        onWordClick = { wordId ->
-                            viewModel.onEvent(HomeEvent.QuickWordStudy(wordId))
-                        }
-                    )
-                }
-
-                // Weekly stats overview
-                item {
-                    WeeklyStatsCard(
-                        stats = uiState.weeklyStats,
-                        onViewDetails = { viewModel.onEvent(HomeEvent.ViewProgress) }
-                    )
-                }
-
-                // Quick actions grid
-                item {
-                    QuickActionsGrid(
-                        actions = uiState.quickActions,
-                        onActionClick = { action ->
-                            when (action.action) {
-                                QuickActionType.START_STUDY -> viewModel.onEvent(HomeEvent.StartStudy)
-                                QuickActionType.ADD_WORD -> viewModel.onEvent(HomeEvent.AddWord)
-                                QuickActionType.VIEW_PROGRESS -> viewModel.onEvent(HomeEvent.ViewProgress)
-                                QuickActionType.DAILY_CHALLENGE -> {
-                                    // TODO: Implement daily challenge
-                                }
-                            }
-                        }
-                    )
-                }
-
-                // Bottom spacing for better scrolling
-                item {
-                    Spacer(modifier = Modifier.height(32.dp))
-                }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            if (uiState.isLoading) {
+                LoadingState(modifier = Modifier.fillMaxSize())
+            } else {
+                HomeContent(
+                    uiState = uiState,
+                    onEvent = viewModel::onEvent
+                )
             }
         }
     }
 }
 
 @Composable
-private fun LoadingState(
-    modifier: Modifier = Modifier
+private fun HomeContent(
+    uiState: HomeUiState,
+    onEvent: (HomeEvent) -> Unit
 ) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            CircularProgressIndicator(
-                color = MaterialTheme.colorScheme.primary
+        // Welcome Header with Streak
+        item {
+            WelcomeHeader(
+                userName = uiState.userName,
+                streakDays = uiState.streakDays,
+                onRefresh = { onEvent(HomeEvent.RefreshData) }
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Dashboard yükleniyor...",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+        }
+
+        // Daily Goal Progress
+        item {
+            DailyGoalCard(
+                progress = uiState.dailyGoalProgress,
+                onStartStudy = { onEvent(HomeEvent.StartStudy) }
             )
+        }
+
+        // Package Selection Card (Bugünkü kelimeler yerine)
+        item {
+            PackageSelectionCard(
+                onNavigateToPackageSelection = { onEvent(HomeEvent.NavigateToPackageSelection) }
+            )
+        }
+
+        // Monthly Stats (Bu Hafta → Bu Ay)
+        item {
+            MonthlyStatsCard(
+                stats = uiState.monthlyStats
+            )
+        }
+
+        // AI Assistant Card (Hızlı Eylemler yerine)
+        item {
+            AIAssistantCard(
+                onNavigateToAI = { onEvent(HomeEvent.NavigateToAIAssistant) }
+            )
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
@@ -184,9 +208,10 @@ private fun WelcomeHeader(
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+            containerColor = Color.White
         ),
-        shape = RoundedCornerShape(20.dp)
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
             modifier = Modifier
@@ -203,7 +228,7 @@ private fun WelcomeHeader(
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = Color(0xFF2C3E50)
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -223,7 +248,7 @@ private fun WelcomeHeader(
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        color = Color(0xFF6C7B8A)
                     )
                 }
             }
@@ -232,14 +257,14 @@ private fun WelcomeHeader(
                 onClick = onRefresh,
                 modifier = Modifier
                     .background(
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                        color = Color(0xFF4ECDC4).copy(alpha = 0.1f),
                         shape = CircleShape
                     )
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Refresh,
                     contentDescription = "Yenile",
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = Color(0xFF4ECDC4)
                 )
             }
         }
@@ -253,10 +278,11 @@ private fun DailyGoalCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier.padding(20.dp)
@@ -271,10 +297,10 @@ private fun DailyGoalCard(
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = Color(0xFF2C3E50)
                 )
 
-                if (progress.isCompleted) {
+                if (progress.isDailyGoalComplete) {
                     Icon(
                         imageVector = Icons.Filled.CheckCircle,
                         contentDescription = "Tamamlandı",
@@ -286,46 +312,52 @@ private fun DailyGoalCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Words progress
+            // Günlük kartlar progress (sadece bu progress bar'lı)
             ProgressItem(
-                title = "Kelimeler",
-                current = progress.completedWords,
-                target = progress.targetWords,
-                progress = progress.wordsProgress,
-                icon = Icons.Outlined.MenuBook,
-                color = Color(0xFF2196F3)
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Minutes progress
-            ProgressItem(
-                title = "Dakika",
-                current = progress.completedMinutes,
-                target = progress.targetMinutes,
-                progress = progress.minutesProgress,
-                icon = Icons.Outlined.AccessTime,
-                color = Color(0xFF4CAF50)
+                title = "Günlük Kartlar",
+                current = progress.todayCompletedCards,
+                total = progress.todayAvailableCards,
+                progress = progress.todayProgress,
+                color = Color(0xFF4ECDC4)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Deck bilgisi (sadece sayılar, progress bar yok)
+            DeckInfoRow(
+                totalCards = progress.totalDeckCards,
+                masteredCards = progress.masteredDeckCards
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Start Study Button
             Button(
                 onClick = onStartStudy,
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF00D4FF)
+                )
             ) {
-                Icon(
-                    imageVector = Icons.Filled.PlayArrow,
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Çalışmaya Başla",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.PlayArrow,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Çalışmaya Başla",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color.White
+                    )
+                }
             }
         }
     }
@@ -335,240 +367,170 @@ private fun DailyGoalCard(
 private fun ProgressItem(
     title: String,
     current: Int,
-    target: Int,
+    total: Int,
     progress: Float,
-    icon: ImageVector,
     color: Color
 ) {
-    val animatedProgress by animateFloatAsState(
-        targetValue = progress,
-        animationSpec = spring(),
-        label = "progress_animation"
-    )
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = color,
-            modifier = Modifier.size(20.dp)
-        )
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Column(
-            modifier = Modifier.weight(1f)
+    Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = title,
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    text = "$current/$target",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            LinearProgressIndicator(
-                progress = { animatedProgress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(6.dp)
-                    .clip(RoundedCornerShape(3.dp)),
-                color = color,
-                trackColor = color.copy(alpha = 0.2f)
+            Text(
+                text = title,
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp,
+                color = Color(0xFF6C7B8A)
+            )
+            Text(
+                text = "$current/$total",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                color = color
             )
         }
-    }
-}
 
-@Composable
-private fun TodayWordsSection(
-    words: List<TodayWord>,
-    onWordClick: (String) -> Unit
-) {
-    if (words.isEmpty()) return
+        Spacer(modifier = Modifier.height(8.dp))
 
-    Column {
-        Text(
-            text = "Bugünkü Kelimeler 📚",
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(horizontal = 4.dp)
+        val animatedProgress by animateFloatAsState(
+            targetValue = progress,
+            animationSpec = tween(durationMillis = 800),
+            label = "progress"
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(horizontal = 4.dp)
-        ) {
-            items(words) { word ->
-                WordCard(
-                    word = word,
-                    onClick = { onWordClick(word.id) }
-                )
-            }
-        }
+        LinearProgressIndicator(
+            progress = { animatedProgress },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(8.dp)
+                .clip(RoundedCornerShape(4.dp)),
+            color = color,
+            trackColor = color.copy(alpha = 0.2f)
+        )
     }
 }
 
 @Composable
-private fun WordCard(
-    word: TodayWord,
-    onClick: () -> Unit
+private fun PackageSelectionCard(
+    onNavigateToPackageSelection: () -> Unit
 ) {
     Card(
         modifier = Modifier
-            .width(160.dp)
-            .clickable { onClick() }
-            .animateContentSize(),
-        shape = RoundedCornerShape(12.dp),
+            .fillMaxWidth()
+            .clickable { onNavigateToPackageSelection() },
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (word.isLearned) {
-                Color(0xFF4CAF50).copy(alpha = 0.1f)
-            } else {
-                MaterialTheme.colorScheme.surface
-            }
-        )
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = listOf(Color(0xFF43E97B), Color(0xFF38F9D7))
+                    ),
+                    shape = RoundedCornerShape(20.dp)
+                )
+                .padding(20.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = word.level,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = getLevelColor(word.level),
-                    modifier = Modifier
-                        .background(
-                            color = getLevelColor(word.level).copy(alpha = 0.2f),
-                            shape = RoundedCornerShape(6.dp)
-                        )
-                        .padding(horizontal = 8.dp, vertical = 2.dp)
-                )
-
-                if (word.isLearned) {
-                    Icon(
-                        imageVector = Icons.Filled.CheckCircle,
-                        contentDescription = "Öğrenildi",
-                        tint = Color(0xFF4CAF50),
-                        modifier = Modifier.size(16.dp)
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = "Yeni Paket Seç 📚",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = Color.White
+                    )
+                    Text(
+                        text = "Seviyene uygun paketleri keşfet",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 14.sp,
+                        color = Color.White.copy(alpha = 0.9f)
                     )
                 }
+
+                Icon(
+                    imageVector = Icons.Filled.ChevronRight,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(28.dp)
+                )
             }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = word.english,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = word.turkish,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
         }
     }
 }
 
 @Composable
-private fun WeeklyStatsCard(
-    stats: WeeklyStats,
-    onViewDetails: () -> Unit
+private fun MonthlyStatsCard(
+    stats: MonthlyStats
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-        )
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier.padding(20.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Bu Hafta 📊",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                )
-
-                TextButton(onClick = onViewDetails) {
-                    Text(
-                        text = "Detaylar",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-            }
+            Text(
+                text = "Bu Ay 📊",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                color = Color(0xFF2C3E50)
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Stats Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 StatItem(
-                    title = "Kelime",
-                    value = "${stats.totalWords}",
-                    icon = Icons.Outlined.MenuBook
-                )
-                StatItem(
-                    title = "Dakika",
-                    value = "${stats.totalMinutes}",
-                    icon = Icons.Outlined.AccessTime
-                )
-                StatItem(
-                    title = "Doğruluk",
-                    value = "${(stats.accuracyRate * 100).toInt()}%",
-                    icon = Icons.Outlined.SettingsAccessibility
+                    title = "Süre",
+                    value = stats.studyTimeFormatted,
+                    icon = Icons.Outlined.AccessTime,
+                    color = Color(0xFF4ECDC4)
                 )
                 StatItem(
                     title = "Aktif Gün",
-                    value = "${stats.daysActive}",
-                    icon = Icons.Outlined.CalendarToday
+                    value = "${stats.activeDaysThisMonth}",
+                    icon = Icons.Outlined.CalendarToday,
+                    color = Color(0xFF44A08D)
+                )
+                StatItem(
+                    title = "Disiplin",
+                    value = "${stats.disciplineScore}%",
+                    icon = Icons.Outlined.EmojiEvents,
+                    color = Color(0xFF00D4FF)
+                )
+            }
+
+            if (stats.chartData.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Simple Chart
+                SimpleLineChart(
+                    data = stats.chartData,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp)
                 )
             }
         }
@@ -579,7 +541,8 @@ private fun WeeklyStatsCard(
 private fun StatItem(
     title: String,
     value: String,
-    icon: ImageVector
+    icon: ImageVector,
+    color: Color
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -587,7 +550,7 @@ private fun StatItem(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
+            tint = color,
             modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -595,141 +558,161 @@ private fun StatItem(
             text = value,
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            color = MaterialTheme.colorScheme.onSecondaryContainer
+            fontSize = 16.sp,
+            color = Color(0xFF2C3E50)
         )
         Text(
             text = title,
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f),
-            textAlign = TextAlign.Center
+            color = Color(0xFF6C7B8A)
         )
     }
 }
 
 @Composable
-private fun QuickActionsGrid(
-    actions: List<QuickAction>,
-    onActionClick: (QuickAction) -> Unit
-) {
-    Column {
-        Text(
-            text = "Hızlı Eylemler ⚡",
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(horizontal = 4.dp)
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // 2x2 grid layout
-        Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                actions.take(2).forEach { action ->
-                    QuickActionCard(
-                        action = action,
-                        onClick = { onActionClick(action) },
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                actions.drop(2).take(2).forEach { action ->
-                    QuickActionCard(
-                        action = action,
-                        onClick = { onActionClick(action) },
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun QuickActionCard(
-    action: QuickAction,
-    onClick: () -> Unit,
+private fun SimpleLineChart(
+    data: List<ChartDataPoint>,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier
-            .clickable { onClick() }
-            .height(100.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+    // Simple bar chart using LinearProgressIndicator
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.Bottom
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Icon(
-                imageVector = getActionIcon(action.icon),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(24.dp)
-            )
+        data.take(7).forEach { point ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(1f)
+            ) {
+                // Bar
+                Box(
+                    modifier = Modifier
+                        .width(8.dp)
+                        .height(40.dp)
+                        .background(
+                            color = Color(0xFFE0E0E0),
+                            shape = RoundedCornerShape(4.dp)
+                        )
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(point.value)
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color(0xFF4ECDC4),
+                                        Color(0xFF44A08D)
+                                    )
+                                ),
+                                shape = RoundedCornerShape(4.dp)
+                            )
+                            .align(Alignment.BottomCenter)
+                    )
+                }
 
-            Column {
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // Day label
                 Text(
-                    text = action.title,
+                    text = point.day,
                     fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = action.description,
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 11.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 10.sp,
+                    color = Color(0xFF6C7B8A)
                 )
             }
         }
     }
 }
 
-private fun getActionIcon(iconName: String): ImageVector {
-    return when (iconName) {
-        "study" -> Icons.Filled.School
-        "add" -> Icons.Filled.Add
-        "chart" -> Icons.Filled.BarChart
-        "trophy" -> Icons.Filled.EmojiEvents
-        else -> Icons.Filled.Star
+@Composable
+private fun AIAssistantCard(
+    onNavigateToAI: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onNavigateToAI() },
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = listOf(Color(0xFF667eea), Color(0xFF764ba2))
+                    ),
+                    shape = RoundedCornerShape(20.dp)
+                )
+                .padding(20.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = "AI Asistan 🤖",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = Color.White
+                    )
+                    Text(
+                        text = "Sorularınız için yapay zeka desteği",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 14.sp,
+                        color = Color.White.copy(alpha = 0.9f)
+                    )
+                }
+
+                Icon(
+                    imageVector = Icons.Filled.Psychology,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+        }
     }
 }
 
-private fun getLevelColor(level: String): Color {
-    return when (level) {
-        "A1" -> Color(0xFFFF6B35)
-        "A2" -> Color(0xFF4ECDC4)
-        "B1" -> Color(0xFF43E97B)
-        "B2" -> Color(0xFF667eea)
-        "C1" -> Color(0xFFf12711)
-        "C2" -> Color(0xFFff9a9e)
-        else -> Color(0xFF666666)
+@Composable
+private fun LoadingState(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            CircularProgressIndicator(
+                color = Color(0xFF4ECDC4)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Dashboard yükleniyor...",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp,
+                color = Color(0xFF6C7B8A)
+            )
+        }
     }
 }
 
@@ -737,12 +720,10 @@ private fun getLevelColor(level: String): Color {
 @Composable
 private fun HomeScreenPreview() {
     HocaLingoTheme {
-        // Preview placeholder
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("Home Screen Preview")
-        }
+        HomeScreen(
+            onNavigateToStudy = {},
+            onNavigateToPackageSelection = {},
+            onNavigateToAIAssistant = {}
+        )
     }
 }

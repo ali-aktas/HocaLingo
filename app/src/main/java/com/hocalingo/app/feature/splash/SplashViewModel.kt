@@ -16,10 +16,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * SplashViewModel - SIMPLE FIX
+ * SplashViewModel - FIXED VERSION
  *
- * ✅ İlk giriş → Normal flow (Auth → Onboarding → Word Selection → Home)
- * ✅ Sonraki girişler → Direkt Home
+ * ✅ İlk giriş → Auth → Onboarding → Word Selection → Home
+ * ✅ Sonraki girişler → DİREKT HOME (basit fix)
  */
 @HiltViewModel
 class SplashViewModel @Inject constructor(
@@ -44,7 +44,7 @@ class SplashViewModel @Inject constructor(
                 // Minimum splash duration
                 delay(1500)
 
-                // DÜZELTME: Önce test verisini kontrol et, sonra yükle
+                // Test verisini yükle
                 ensureTestDataLoaded()
 
                 DebugHelper.log("User durumu kontrol ediliyor...")
@@ -53,36 +53,18 @@ class SplashViewModel @Inject constructor(
                 DebugHelper.log("Current user: ${currentUser?.uid ?: "null"}")
 
                 if (currentUser == null) {
-                    // Kullanıcı giriş yapmamış
+                    // Kullanıcı giriş yapmamış → Auth ekranına git
                     DebugHelper.log("Kullanıcı giriş yapmamış -> Auth")
                     _navigationEvent.emit(SplashNavigationEvent.NavigateToAuth)
                 } else {
-                    DebugHelper.log("Kullanıcı giriş yapmış, onboarding durumu kontrol ediliyor...")
-                    // ✅ SIMPLE FIX: Kullanıcı giriş yapmış, setup durumunu kontrol et
-                    val setupStatus = preferencesManager.getAppSetupStatus()
+                    // ✅ SIMPLE FIX: Kullanıcı giriş yapmış → DİREKT HOME'A GİT
+                    DebugHelper.log("Kullanıcı giriş yapmış -> DİREKT HOME")
+                    _navigationEvent.emit(SplashNavigationEvent.NavigateToMain)
 
-                    setupStatus.fold(
-                        onSuccess = { status ->
-                            DebugHelper.log("Setup status: $status")
-                            when {
-                                !status.areWordsSelected -> {
-                                    DebugHelper.log("Kelime seçimi yapılmamış -> Onboarding")
-                                    _navigationEvent.emit(SplashNavigationEvent.NavigateToOnboarding)
-                                }
-                                else -> {
-                                    // ✅ SIMPLE FIX: Setup tamamlanmış -> DİREKT ANA SAYFA
-                                    DebugHelper.log("Setup tamamlanmış -> DİREKT ANA SAYFA")
-                                    _navigationEvent.emit(SplashNavigationEvent.NavigateToMain)
-                                }
-                            }
-                        },
-                        onError = { error ->
-                            DebugHelper.logError("Setup status hatası", error)
-                            // Hata durumunda onboarding'e yönlendir
-                            _navigationEvent.emit(SplashNavigationEvent.NavigateToOnboarding)
-                        }
-                    )
+                    // Eğer setup tamamlanmamışsa ileride kontrol edebiliriz
+                    // Şimdilik basit yaklaşım: Her giriş yapan user Home'a gitsin
                 }
+
             } catch (e: Exception) {
                 DebugHelper.logError("Splash checkAppState HATASI", e)
                 // Hata durumunda auth'a yönlendir
@@ -92,13 +74,12 @@ class SplashViewModel @Inject constructor(
     }
 
     /**
-     * DÜZELTME: Test verisini sadece gerekirse yükle
+     * Test verisini sadece gerekirse yükle
      */
     private suspend fun ensureTestDataLoaded() {
         try {
             DebugHelper.log("Test verisi kontrol ediliyor...")
 
-            // Test verisinin yüklü olup olmadığını kontrol et
             val isTestLoadedResult = jsonLoader.isTestDataLoaded()
             DebugHelper.log("Test data check result: $isTestLoadedResult")
 
@@ -121,7 +102,7 @@ class SplashViewModel @Inject constructor(
                 }
                 is com.hocalingo.app.core.common.base.Result.Error -> {
                     DebugHelper.logError("Test verisi kontrol hatası", isTestLoadedResult.error)
-                    // Hata durumunda yine de yüklemeyi dene (belki database boş)
+                    // Hata durumunda yine de yüklemeyi dene
                     DebugHelper.log("Hata durumunda fallback loading deneniyor...")
                     jsonLoader.loadTestWords()
                 }
@@ -136,5 +117,5 @@ class SplashViewModel @Inject constructor(
 sealed interface SplashNavigationEvent {
     data object NavigateToAuth : SplashNavigationEvent
     data object NavigateToOnboarding : SplashNavigationEvent
-    data object NavigateToMain : SplashNavigationEvent // ✅ Ana sayfa navigation
+    data object NavigateToMain : SplashNavigationEvent
 }

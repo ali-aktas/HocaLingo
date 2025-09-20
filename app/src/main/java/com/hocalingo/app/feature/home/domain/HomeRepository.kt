@@ -1,24 +1,35 @@
 package com.hocalingo.app.feature.home.domain
 
+import com.hocalingo.app.core.common.base.Result
 import com.hocalingo.app.feature.home.presentation.DailyGoalProgress
-import com.hocalingo.app.feature.home.presentation.TodayWord
-import com.hocalingo.app.feature.home.presentation.WeeklyStats
+import com.hocalingo.app.feature.home.presentation.MonthlyStats
 
 /**
- * Repository interface for Home dashboard data
+ * Home Repository Interface - v2.0
+ * Real data tracking için güncellenmiş interface
  */
 interface HomeRepository {
-    suspend fun getDashboardData(): HomeDashboardData
-    suspend fun markWordAsStudied(wordId: String)
-    suspend fun updateDailyGoal(targetWords: Int, targetMinutes: Int)
-}
 
-/**
- * Dashboard data container
- */
-data class HomeDashboardData(
-    val streakDays: Int,
-    val dailyGoalProgress: DailyGoalProgress,
-    val todayWords: List<TodayWord>,
-    val weeklyStats: WeeklyStats
-)
+    /**
+     * Kullanıcı adını getir
+     */
+    suspend fun getUserName(): Result<String>
+
+    /**
+     * Streak günlerini hesapla
+     * Uygulamaya sürekli giriş yapılan gün sayısı
+     */
+    suspend fun getStreakDays(): Result<Int>
+
+    /**
+     * Günlük hedef ilerlemesini getir
+     * Aktif deck kartları vs completed kartlar
+     */
+    suspend fun getDailyGoalProgress(): Result<DailyGoalProgress>
+
+    /**
+     * Aylık istatistikleri getir
+     * Çalışma süresi, aktif günler, disiplin puanı, chart data
+     */
+    suspend fun getMonthlyStats(): Result<MonthlyStats>
+}

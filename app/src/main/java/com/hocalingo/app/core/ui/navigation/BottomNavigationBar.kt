@@ -1,9 +1,8 @@
 package com.hocalingo.app.core.ui.navigation
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -15,8 +14,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -42,8 +43,8 @@ private val PoppinsFontFamily = FontFamily(
 )
 
 /**
- * Modern Light-Themed Bottom Navigation Bar
- * Clean design with proper icons and smooth animations
+ * Premium Bottom Navigation Bar - Enhanced Design
+ * Features: Glassmorphism, smooth animations, modern gradients
  */
 @Composable
 fun HocaBottomNavigationBar(
@@ -53,7 +54,7 @@ fun HocaBottomNavigationBar(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination?.route
 
-    // Define navigation items with CORRECT icons
+    // Define navigation items
     val bottomNavItems = remember {
         listOf(
             BottomNavItem(
@@ -65,7 +66,7 @@ fun HocaBottomNavigationBar(
             ),
             BottomNavItem(
                 route = HocaRoutes.STUDY,
-                selectedIcon = Icons.Filled.School, // ✅ Daha uygun ikon
+                selectedIcon = Icons.Filled.School,
                 unselectedIcon = Icons.Outlined.School,
                 labelRes = R.string.nav_study,
                 label = "Study"
@@ -79,7 +80,7 @@ fun HocaBottomNavigationBar(
             ),
             BottomNavItem(
                 route = HocaRoutes.PROFILE,
-                selectedIcon = Icons.Filled.AccountCircle, // ✅ Profile için doğru ikon
+                selectedIcon = Icons.Filled.AccountCircle,
                 unselectedIcon = Icons.Outlined.AccountCircle,
                 labelRes = R.string.nav_profile,
                 label = "Profile"
@@ -87,31 +88,56 @@ fun HocaBottomNavigationBar(
         )
     }
 
-    // Modern bottom navigation container
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = Color.White,
-        shadowElevation = 8.dp,
-        shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+    // ✅ PREMIUM: Glassmorphism bottom navigation container
+    Box(
+        modifier = modifier.fillMaxWidth()
     ) {
+        // Background blur effect
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFF8FAFA).copy(alpha = 0.95f),
+                            Color.White.copy(alpha = 0.98f),
+                            Color.White
+                        )
+                    ),
+                    shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
+                )
+                .border(
+                    width = 1.dp,
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color.White.copy(alpha = 0.3f),
+                            Color(0xFF4ECDC4).copy(alpha = 0.1f),
+                            Color.White.copy(alpha = 0.3f)
+                        )
+                    ),
+                    shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
+                )
+        )
+
+        // Navigation content
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(80.dp)
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .height(100.dp)
+                .padding(horizontal = 20.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
             bottomNavItems.forEach { item ->
                 val isSelected = currentDestination?.startsWith(item.route) == true
 
-                ModernBottomNavItem(
+                PremiumBottomNavItem(
                     item = item,
                     isSelected = isSelected,
                     onClick = {
                         if (!isSelected) {
                             navController.navigate(item.route) {
-                                // Clear back stack to prevent memory issues
                                 popUpTo(navController.graph.startDestinationId) {
                                     saveState = true
                                 }
@@ -127,75 +153,149 @@ fun HocaBottomNavigationBar(
 }
 
 @Composable
-private fun ModernBottomNavItem(
+private fun PremiumBottomNavItem(
     item: BottomNavItem,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    // Animation for selection state
+    // ✅ PREMIUM: Enhanced animations
     val scale by animateFloatAsState(
         targetValue = if (isSelected) 1.1f else 1f,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessLow
         ),
-        label = "nav_item_scale"
+        label = "scale"
     )
 
-    // Colors
-    val iconColor = if (isSelected) Color(0xFF2196F3) else Color(0xFF9E9E9E)
-    val backgroundColor = if (isSelected) Color(0xFF2196F3).copy(alpha = 0.15f) else Color.Transparent
+    val iconContainerScale by animateFloatAsState(
+        targetValue = if (isSelected) 1.2f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioLowBouncy,
+            stiffness = Spring.StiffnessMedium
+        ),
+        label = "iconContainerScale"
+    )
+
+    val labelAlpha by animateFloatAsState(
+        targetValue = if (isSelected) 1f else 0.7f,
+        animationSpec = tween(300),
+        label = "labelAlpha"
+    )
 
     Column(
-        modifier = Modifier
-            .clip(RoundedCornerShape(16.dp))
-            .clickable { onClick() }
-            .padding(horizontal = 12.dp, vertical = 8.dp),
+        modifier = modifier
+            .clickable(onClick = onClick)
+            .padding(8.dp)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Icon with background
+        // ✅ PREMIUM: Floating icon container with gradient
         Box(
             modifier = Modifier
-                .size(40.dp)
+                .size(50.dp)
+                .graphicsLayer {
+                    scaleX = iconContainerScale
+                    scaleY = iconContainerScale
+                }
                 .background(
-                    color = backgroundColor,
+                    brush = if (isSelected) {
+                        Brush.radialGradient(
+                            colors = listOf(
+                                Color(0xFF4ECDC4).copy(alpha = 0.2f),
+                                Color(0xFF44A08D).copy(alpha = 0.1f),
+                                Color.Transparent
+                            )
+                        )
+                    } else {
+                        Brush.radialGradient(
+                            colors = listOf(Color.Transparent, Color.Transparent)
+                        )
+                    },
                     shape = CircleShape
                 )
-                .graphicsLayer {
-                    scaleX = scale
-                    scaleY = scale
-                },
+                .then(
+                    if (isSelected) {
+                        Modifier.border(
+                            width = 2.dp,
+                            brush = Brush.linearGradient(
+                                colors = listOf(
+                                    Color(0xFF4ECDC4).copy(alpha = 0.6f),
+                                    Color(0xFF44A08D).copy(alpha = 0.4f)
+                                )
+                            ),
+                            shape = CircleShape
+                        )
+                    } else Modifier
+                )
+                .shadow(
+                    elevation = if (isSelected) 8.dp else 0.dp,
+                    shape = CircleShape,
+                    ambientColor = Color(0xFF4ECDC4).copy(alpha = 0.3f),
+                    spotColor = Color(0xFF4ECDC4).copy(alpha = 0.3f)
+                ),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
                 contentDescription = item.label,
-                tint = iconColor,
+                tint = if (isSelected) {
+                    Color(0xFF4ECDC4)
+                } else {
+                    Color(0xFF9E9E9E)
+                },
                 modifier = Modifier.size(24.dp)
             )
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(6.dp))
 
-        // Label
+        // ✅ PREMIUM: Gradient label text
         Text(
             text = item.label,
             fontFamily = PoppinsFontFamily,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
             fontSize = 12.sp,
-            color = iconColor,
+            color = if (isSelected) {
+                Color(0xFF2C3E50)
+            } else {
+                Color(0xFF9E9E9E)
+            },
+            modifier = Modifier.graphicsLayer {
+                alpha = labelAlpha
+            },
             maxLines = 1
         )
 
-        // Selection indicator dot
+        // ✅ PREMIUM: Animated selection indicator
         if (isSelected) {
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(4.dp))
+
+            val indicatorWidth by animateFloatAsState(
+                targetValue = if (isSelected) 20f else 0f,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessMedium
+                ),
+                label = "indicatorWidth"
+            )
+
             Box(
                 modifier = Modifier
-                    .size(4.dp)
+                    .width(indicatorWidth.dp)
+                    .height(3.dp)
                     .background(
-                        color = Color(0xFF2196F3),
-                        shape = CircleShape
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                Color(0xFF4ECDC4),
+                                Color(0xFF44A08D)
+                            )
+                        ),
+                        shape = RoundedCornerShape(2.dp)
                     )
             )
         }
@@ -214,8 +314,7 @@ data class BottomNavItem(
 )
 
 /**
- * ✅ FIXED: Helper function to check if route should show bottom navigation
- * Study ekranında bottom nav görünmez
+ * Helper function to check if route should show bottom navigation
  */
 fun shouldShowBottomNavigation(currentRoute: String?): Boolean {
     return when {
@@ -224,15 +323,16 @@ fun shouldShowBottomNavigation(currentRoute: String?): Boolean {
         currentRoute.startsWith(HocaRoutes.AUTH) -> false
         currentRoute.startsWith(HocaRoutes.ONBOARDING_LANGUAGE) -> false
         currentRoute.startsWith(HocaRoutes.ONBOARDING_LEVEL) -> false
+        currentRoute.startsWith(HocaRoutes.PACKAGE_SELECTION) -> false
         currentRoute.startsWith(HocaRoutes.WORD_SELECTION) -> false
-        currentRoute.startsWith(HocaRoutes.STUDY) -> false // ✅ FIXED: Study ekranında bottom nav yok
+        currentRoute.startsWith(HocaRoutes.STUDY) -> false
         else -> true
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun HocaBottomNavigationBarPreview() {
+private fun PremiumBottomNavigationBarPreview() {
     HocaLingoTheme {
         Column {
             Spacer(modifier = Modifier.weight(1f))

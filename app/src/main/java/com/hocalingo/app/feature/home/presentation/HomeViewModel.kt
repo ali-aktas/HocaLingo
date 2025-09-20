@@ -2,8 +2,8 @@ package com.hocalingo.app.feature.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hocalingo.app.core.common.DebugHelper
-import com.hocalingo.app.feature.auth.data.AuthRepository
+import com.hocalingo.app.core.common.base.Result
+import com.hocalingo.app.core.common.base.toAppError
 import com.hocalingo.app.feature.home.domain.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -12,18 +12,16 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Home Dashboard ViewModel
- * Central hub functionality with modern Android practices
+ * Home ViewModel - v2.0
+ * Real data tracking ile güncellenmiş ViewModel
  */
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val homeRepository: HomeRepository,
-    private val authRepository: AuthRepository
+    private val homeRepository: HomeRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -33,139 +31,130 @@ class HomeViewModel @Inject constructor(
     val effect: SharedFlow<HomeEffect> = _effect.asSharedFlow()
 
     init {
-        DebugHelper.log("HomeViewModel initialized")
         loadDashboardData()
     }
 
     fun onEvent(event: HomeEvent) {
         when (event) {
             HomeEvent.LoadDashboardData -> loadDashboardData()
-            HomeEvent.StartStudy -> startStudy()
-            HomeEvent.AddWord -> addWord()
-            HomeEvent.ViewProgress -> viewProgress()
-            is HomeEvent.QuickWordStudy -> quickWordStudy(event.wordId)
             HomeEvent.RefreshData -> refreshData()
+            HomeEvent.StartStudy -> handleStartStudy()
+            HomeEvent.NavigateToPackageSelection -> handleNavigateToPackageSelection()
+            HomeEvent.NavigateToAIAssistant -> handleNavigateToAIAssistant()
         }
     }
 
     private fun loadDashboardData() {
         viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+
             try {
-                _uiState.update { it.copy(isLoading = true, error = null) }
+                // Paralel olarak tüm data'ları fetch et
+                val userNameResult = homeRepository.getUserName()
+                val streakDaysResult = homeRepository.getStreakDays()
+                val dailyGoalResult = homeRepository.getDailyGoalProgress()
+                val monthlyStatsResult = homeRepository.getMonthlyStats()
 
-                // Get current user info
-                val currentUser = authRepository.getCurrentUser()
-                val userName = currentUser?.displayName ?: "Öğrenci"
+                // Sonuçları kontrol et ve state'i güncelle
+                when {
+                    userNameResult is Result.Success &&
+                            streakDaysResult is Result.Success &&
+                            dailyGoalResult is Result.Success &&
+                            monthlyStatsResult is Result.Success -> {
 
-                // Load dashboard data from repository
-                val dashboardData = homeRepository.getDashboardData()
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            userName = userNameResult.data,
+                            streakDays = streakDaysResult.data,
+                            dailyGoalProgress = dailyGoalResult.data,
+                            monthlyStats = monthlyStatsResult.data,
+                            error = null
+                        )
+                    }
 
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        userName = userName,
-                        streakDays = dashboardData.streakDays,
-                        dailyGoalProgress = dashboardData.dailyGoalProgress,
-                        todayWords = dashboardData.todayWords,
-                        weeklyStats = dashboardData.weeklyStats,
-                        quickActions = getQuickActions()
-                    )
+                    else -> {
+                        // Hata durumunda fallback data
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            userName = "Ali",
+                            streakDays = 0,
+                            dailyGoalProgress = DailyGoalProgress(),
+                            monthlyStats = MonthlyStats(),
+                            error = "Veriler yüklenirken hata oluştu"
+                        )
+
+                        _effect.emit(HomeEffect.ShowError("Dashboard verileri yüklenemedi"))
+                    }
                 }
-
-                DebugHelper.log("Dashboard data loaded for user: $userName")
 
             } catch (e: Exception) {
-                DebugHelper.log("Error loading dashboard data: ${e.message}")
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "Dashboard verileri yüklenirken hata oluştu"
-                    )
-                }
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = e.message ?: "Bilinmeyen hata"
+                )
+                _effect.emit(HomeEffect.ShowError("Beklenmeyen hata oluştu"))
             }
         }
     }
 
     private fun refreshData() {
-        DebugHelper.log("Refreshing dashboard data")
         loadDashboardData()
     }
 
-    private fun startStudy() {
+    private fun handleStartStudy() {
         viewModelScope.launch {
-            DebugHelper.log("Navigating to study")
-            _effect.emit(HomeEffect.NavigateToStudy)
-        }
-    }
+            val progress = _uiState.value.dailyGoalProgress
 
-    private fun addWord() {
-        viewModelScope.launch {
-            DebugHelper.log("Navigating to add word")
-            _effect.emit(HomeEffect.NavigateToAddWord)
-        }
-    }
-
-    private fun viewProgress() {
-        viewModelScope.launch {
-            DebugHelper.log("Navigating to profile/progress")
-            _effect.emit(HomeEffect.NavigateToProfile)
-        }
-    }
-
-    private fun quickWordStudy(wordId: String) {
-        viewModelScope.launch {
-            try {
-                DebugHelper.log("Quick study for word: $wordId")
-                // Mark word as studied quickly
-                homeRepository.markWordAsStudied(wordId)
-
-                // Update daily progress
-                _uiState.update { currentState ->
-                    val updatedProgress = currentState.dailyGoalProgress.copy(
-                        completedWords = currentState.dailyGoalProgress.completedWords + 1
-                    )
-                    currentState.copy(dailyGoalProgress = updatedProgress)
+            if (progress.todayAvailableCards > 0) {
+                _effect.emit(HomeEffect.NavigateToStudy)
+            } else {
+                val message = if (progress.isDailyGoalComplete) {
+                    "🎉 Bugünkü hedefi tamamladın! Yarın yeni kartlar seni bekliyor."
+                } else {
+                    "📚 Çalışacak kart yok. Yeni kartlar seçmek için paket seçimine git."
                 }
-
-                _effect.emit(HomeEffect.ShowMessage("Kelime işaretlendi! 🎉"))
-
-            } catch (e: Exception) {
-                DebugHelper.log("Error in quick word study: ${e.message}")
-                _effect.emit(HomeEffect.ShowMessage("Hata oluştu"))
+                _effect.emit(HomeEffect.ShowMessage(message))
             }
         }
     }
 
-    private fun getQuickActions(): List<QuickAction> {
-        return listOf(
-            QuickAction(
-                id = "study",
-                title = "Çalışmaya Başla",
-                description = "Bugünkü kelimelerini öğren",
-                icon = "study",
-                action = QuickActionType.START_STUDY
-            ),
-            QuickAction(
-                id = "add_word",
-                title = "Kelime Ekle",
-                description = "Kendi kelimelerini ekle",
-                icon = "add",
-                action = QuickActionType.ADD_WORD
-            ),
-            QuickAction(
-                id = "progress",
-                title = "İlerleme",
-                description = "İstatistiklerini görüntüle",
-                icon = "chart",
-                action = QuickActionType.VIEW_PROGRESS
-            ),
-            QuickAction(
-                id = "challenge",
-                title = "Günlük Meydan Okuma",
-                description = "Bugünkü zorluğu tamamla",
-                icon = "trophy",
-                action = QuickActionType.DAILY_CHALLENGE
-            )
-        )
+    private fun handleNavigateToPackageSelection() {
+        viewModelScope.launch {
+            _effect.emit(HomeEffect.NavigateToPackageSelection)
+        }
+    }
+
+    private fun handleNavigateToAIAssistant() {
+        viewModelScope.launch {
+            _effect.emit(HomeEffect.NavigateToAIAssistant)
+        }
+    }
+
+    /**
+     * Public method to refresh specific data without full reload
+     */
+    fun refreshStreakData() {
+        viewModelScope.launch {
+            val streakResult = homeRepository.getStreakDays()
+            if (streakResult is Result.Success) {
+                _uiState.value = _uiState.value.copy(
+                    streakDays = streakResult.data
+                )
+            }
+        }
+    }
+
+    /**
+     * Public method to refresh daily goal progress
+     */
+    fun refreshDailyGoalProgress() {
+        viewModelScope.launch {
+            val progressResult = homeRepository.getDailyGoalProgress()
+            if (progressResult is Result.Success) {
+                _uiState.value = _uiState.value.copy(
+                    dailyGoalProgress = progressResult.data
+                )
+            }
+        }
     }
 }
