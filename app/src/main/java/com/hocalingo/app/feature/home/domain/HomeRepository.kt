@@ -5,8 +5,8 @@ import com.hocalingo.app.feature.home.presentation.DailyGoalProgress
 import com.hocalingo.app.feature.home.presentation.MonthlyStats
 
 /**
- * Home Repository Interface - v2.0
- * Real data tracking için güncellenmiş interface
+ * Home Repository Interface - v2.1
+ * ✅ App launch tracking eklendi (streak için)
  */
 interface HomeRepository {
 
@@ -14,6 +14,12 @@ interface HomeRepository {
      * Kullanıcı adını getir
      */
     suspend fun getUserName(): Result<String>
+
+    /**
+     * Uygulama açılışını track et (streak için)
+     * Bugün ilk kez açılıyorsa DailyStatsEntity oluştur/güncelle
+     */
+    suspend fun trackAppLaunch(): Result<Unit>
 
     /**
      * Streak günlerini hesapla

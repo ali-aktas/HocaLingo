@@ -26,10 +26,11 @@ import com.hocalingo.app.feature.selection.presentation.WordSelectionScreen
 import com.hocalingo.app.feature.splash.SplashScreen
 import com.hocalingo.app.feature.study.presentation.StudyScreen
 import com.hocalingo.app.feature.addword.presentation.AddWordScreen
+import com.hocalingo.app.feature.profile.presentation.ProfileScreen
 
 /**
- * Enhanced HocaLingo Navigation Routes - FIXED VERSION
- * Updated with proper routing and Package Selection access from Home
+ * Enhanced HocaLingo Navigation Routes - With Profile Feature
+ * ✅ Real ProfileScreen implementation added
  */
 object HocaRoutes {
     // Onboarding Flow
@@ -37,7 +38,7 @@ object HocaRoutes {
     const val AUTH = "auth"
     const val ONBOARDING_LANGUAGE = "onboarding_language"
     const val ONBOARDING_LEVEL = "onboarding_level"
-    const val PACKAGE_SELECTION = "package_selection" // ✅ NEW: Home'dan erişim için
+    const val PACKAGE_SELECTION = "package_selection"
     const val WORD_SELECTION = "word_selection"
 
     // Main App Flow (with bottom navigation)
@@ -46,14 +47,14 @@ object HocaRoutes {
     const val ADD_WORD = "add_word"
     const val AI_ASSISTANT = "ai_assistant"
     const val PROFILE = "profile"
+    const val WORDS_LIST = "words_list" // ✅ NEW: For "View All Words"
 
     // Settings and other screens
     const val SETTINGS = "settings"
 }
 
 /**
- * Main Navigation Composable - FIXED VERSION
- * Enhanced with proper routing and Package Selection from Home
+ * Main Navigation Composable - Enhanced with Profile
  */
 @Composable
 fun HocaLingoNavigation(
@@ -204,6 +205,27 @@ fun HocaLingoNavigation(
             )
         }
 
+        // ✅ Profile Screen - REAL IMPLEMENTATION
+        composable(route = HocaRoutes.PROFILE) {
+            ProfileScreen(
+                onNavigateToWordsList = {
+                    navController.navigate(HocaRoutes.WORDS_LIST)
+                }
+            )
+        }
+
+        // ✅ Words List Screen - Future Implementation (placeholder for now)
+        composable(route = HocaRoutes.WORDS_LIST) {
+            PlaceholderScreen(
+                title = "📚 Tüm Kelimeler",
+                subtitle = "Seçili kelimelerinizin tam listesi\n20'şer kelime lazy loading ile yüklenecek",
+                buttonText = "Profil'e Dön",
+                onNavigate = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
         // AI Assistant Screen (Future Feature)
         composable(route = HocaRoutes.AI_ASSISTANT) {
             PlaceholderScreen(
@@ -214,18 +236,6 @@ fun HocaLingoNavigation(
                     navController.navigate(HocaRoutes.HOME) {
                         popUpTo(HocaRoutes.HOME) { inclusive = false }
                     }
-                }
-            )
-        }
-
-        // Profile Screen (Future Feature)
-        composable(route = HocaRoutes.PROFILE) {
-            PlaceholderScreen(
-                title = "👤 ${stringResource(R.string.nav_profile)}",
-                subtitle = "İstatistikleriniz ve ilerlemeniz\nÖğrenilen kelimeler, streak, başarı oranı, haftalık/aylık grafikler",
-                buttonText = stringResource(R.string.settings_title),
-                onNavigate = {
-                    navController.navigate(HocaRoutes.SETTINGS)
                 }
             )
         }

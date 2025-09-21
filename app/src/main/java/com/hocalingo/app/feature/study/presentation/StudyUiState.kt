@@ -85,28 +85,37 @@ data class StudyUiState(
         }
 
     /**
-     * Example sentence based on study direction
+     * FIXED: Front example sentence (ön yüzde gösterilecek)
      */
-    val exampleText: String
+    val frontExampleText: String
         get() = when (studyDirection) {
-            StudyDirection.EN_TO_TR -> currentConcept?.exampleEn ?: ""
-            StudyDirection.TR_TO_EN -> currentConcept?.exampleTr ?: ""
+            StudyDirection.EN_TO_TR -> currentConcept?.exampleEn ?: "" // İngilizce ön yüz → İngilizce örnek
+            StudyDirection.TR_TO_EN -> currentConcept?.exampleTr ?: "" // Türkçe ön yüz → Türkçe örnek
         }
 
     /**
-     * Pronunciation text for TTS
+     * FIXED: Back example sentence (arka yüzde gösterilecek)
      */
-    val pronunciationText: String
-        get() = currentConcept?.pronunciation ?: ""
+    val backExampleText: String
+        get() = when (studyDirection) {
+            StudyDirection.EN_TO_TR -> currentConcept?.exampleTr ?: "" // Türkçe arka yüz → Türkçe örnek
+            StudyDirection.TR_TO_EN -> currentConcept?.exampleEn ?: "" // İngilizce arka yüz → İngilizce örnek
+        }
 
     /**
-     * Check if we should show TTS button
-     * Only show for English words (EN_TO_TR direction)
+     * NEW: TTS için doğru dil ve metin
+     */
+    val pronunciationText: String
+        get() = when (studyDirection) {
+            StudyDirection.EN_TO_TR -> currentConcept?.english ?: "" // İngilizce kelimeyi oku
+            StudyDirection.TR_TO_EN -> currentConcept?.turkish ?: "" // Türkçe kelimeyi oku
+        }
+
+    /**
+     * NEW: TTS butonunu ne zaman göster
      */
     val shouldShowTtsButton: Boolean
-        get() = studyDirection == StudyDirection.EN_TO_TR &&
-                pronunciationText.isNotEmpty() &&
-                isTtsEnabled
+        get() = pronunciationText.isNotEmpty() && isTtsEnabled
 }
 
 /**

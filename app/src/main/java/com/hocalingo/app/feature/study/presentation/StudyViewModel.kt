@@ -357,13 +357,23 @@ class StudyViewModel @Inject constructor(
                 _uiState.update { it.copy(isLoading = true) }
 
                 // Get user preferences
-                val studyDirection = preferencesManager.getStudyDirection().first()
+                val userStudyDirection = preferencesManager.getStudyDirection().first()
                 val dailyGoal = preferencesManager.getDailyGoal().first()
                 val ttsEnabled: Boolean = preferencesManager.isSoundEnabled().first()
 
+                // ✅ Map common enum to entity enum
+                val entityStudyDirection = when(userStudyDirection) {
+                    com.hocalingo.app.core.common.StudyDirection.EN_TO_TR ->
+                        com.hocalingo.app.core.database.entities.StudyDirection.EN_TO_TR
+                    com.hocalingo.app.core.common.StudyDirection.TR_TO_EN ->
+                        com.hocalingo.app.core.database.entities.StudyDirection.TR_TO_EN
+                    com.hocalingo.app.core.common.StudyDirection.MIXED ->
+                        com.hocalingo.app.core.database.entities.StudyDirection.EN_TO_TR // fallback
+                }
+
                 _uiState.update {
                     it.copy(
-                        studyDirection = StudyDirection.valueOf(studyDirection),
+                        studyDirection = entityStudyDirection,
                         dailyGoal = dailyGoal,
                         isTtsEnabled = ttsEnabled
                     )

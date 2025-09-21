@@ -5,6 +5,7 @@ import com.hocalingo.app.core.common.base.toAppError
 import com.hocalingo.app.core.database.dao.DailyStatsDao
 import com.hocalingo.app.core.database.dao.StudySessionDao
 import com.hocalingo.app.core.database.dao.CombinedDataDao
+import com.hocalingo.app.core.database.entities.DailyStatsEntity
 import com.hocalingo.app.core.database.entities.StudyDirection
 import com.hocalingo.app.feature.home.domain.HomeRepository
 import com.hocalingo.app.feature.home.presentation.ChartDataPoint
@@ -19,8 +20,9 @@ import javax.inject.Singleton
 import kotlin.math.*
 
 /**
- * Home Repository Implementation - v2.0
- * Real data integration ile güncellendi
+ * Home Repository Implementation - v2.1
+ * ✅ App launch tracking eklendi (streak için)
+ * ✅ Real daily progress calculation eklendi
  */
 @Singleton
 class HomeRepositoryImpl @Inject constructor(
@@ -40,26 +42,76 @@ class HomeRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * ✅ NEW: App launch tracking için DailyStatsEntity oluştur/güncelle
+     */
+    override suspend fun trackAppLaunch(): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            val today = Calendar.getInstance()
+            val todayString = dateFormat.format(today.time)
+            val userId = "user_1" // TODO: Real user ID
+
+            // Bugünün kaydını kontrol et
+            val existingStats = dailyStatsDao.getStatsByDate(userId, todayString)
+
+            if (existingStats == null) {
+                // Bugün ilk kez açılıyor - yeni kayıt oluştur
+                val newStats = DailyStatsEntity(
+                    date = todayString,
+                    userId = userId,
+                    wordsStudied = 0,
+                    correctAnswers = 0,
+                    totalAnswers = 0,
+                    studyTimeMs = 0,
+                    streakCount = calculateStreakForNewDay(todayString),
+                    goalAchieved = false
+                )
+
+                dailyStatsDao.insertOrUpdateStats(newStats)
+            }
+            // Eğer kayıt varsa, zaten bugün giriş yapılmış - hiçbir şey yapma
+
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e.toAppError())
+        }
+    }
+
+    /**
+     * Yeni gün için streak hesapla
+     */
+    private suspend fun calculateStreakForNewDay(todayString: String): Int {
+        return try {
+            val userId = "user_1"
+            val yesterday = Calendar.getInstance().apply {
+                add(Calendar.DAY_OF_YEAR, -1)
+            }
+            val yesterdayString = dateFormat.format(yesterday.time)
+
+            // Dünün kaydını kontrol et
+            val yesterdayStats = dailyStatsDao.getStatsByDate(userId, yesterdayString)
+
+            if (yesterdayStats != null) {
+                // Dün giriş yapılmış - streak devam ediyor
+                yesterdayStats.streakCount + 1
+            } else {
+                // Dün giriş yapılmamış - streak sıfırlanıyor
+                1 // Bugün yeni streak başlıyor
+            }
+        } catch (e: Exception) {
+            1 // Hata durumunda 1 döndür
+        }
+    }
+
     override suspend fun getStreakDays(): Result<Int> = withContext(Dispatchers.IO) {
         try {
             val today = Calendar.getInstance()
-            var streakCount = 0
+            val todayString = dateFormat.format(today.time)
+            val userId = "user_1"
 
-            // Bugünden geriye doğru kontrol et
-            for (i in 0 until 365) { // Max 365 gün kontrol
-                val checkDate = Calendar.getInstance().apply {
-                    add(Calendar.DAY_OF_YEAR, -i)
-                }
-                val dateString = dateFormat.format(checkDate.time)
-
-                val dailyStats = dailyStatsDao.getStatsByDate("user_1", dateString)
-
-                if (dailyStats != null && dailyStats.wordsStudied > 0) {
-                    streakCount++
-                } else {
-                    break // Streak kırıldı
-                }
-            }
+            // Bugünün kaydından streak al
+            val todayStats = dailyStatsDao.getStatsByDate(userId, todayString)
+            val streakCount = todayStats?.streakCount ?: 0
 
             Result.Success(streakCount)
         } catch (e: Exception) {
@@ -84,11 +136,21 @@ class HomeRepositoryImpl @Inject constructor(
                 0
             }
 
-            // Today available cards - basit hesaplama
-            val todayAvailableCards = maxOf(0, totalDeckCards - masteredDeckCards)
+            // ✅ FIXED: Real today completed cards calculation
+            val todayCompletedCards = try {
+                val today = System.currentTimeMillis()
+                val startOfDay = getStartOfDay(today)
+                val endOfDay = getEndOfDay(today)
 
-            // Today completed cards - şimdilik mock, gerçek implementasyon sonra
-            val todayCompletedCards = 0
+                // Bugün graduated olan kartları say (learning -> review phase)
+                combinedDataDao.getGraduatedWordsToday(StudyDirection.EN_TO_TR, startOfDay, endOfDay) +
+                        combinedDataDao.getGraduatedWordsToday(StudyDirection.TR_TO_EN, startOfDay, endOfDay)
+            } catch (e: Exception) {
+                0
+            }
+
+            // Today available cards - destede kalan öğrenilmemiş kartlar
+            val todayAvailableCards = maxOf(0, totalDeckCards - masteredDeckCards)
 
             val progress = DailyGoalProgress(
                 todayAvailableCards = todayAvailableCards,
@@ -113,7 +175,7 @@ class HomeRepositoryImpl @Inject constructor(
             val totalStudyTimeMs = studySessionDao.getTotalStudyTimeSince(startOfMonth)
             val studyTimeMinutes = (totalStudyTimeMs / (1000 * 60)).toInt()
 
-            // Bu ay aktif günleri hesapla
+            // Bu ay aktif günleri hesapla (DailyStatsEntity'den)
             val activeDaysThisMonth = getActiveDaysInMonth(startOfMonth, currentTime)
 
             // Disiplin puanını hesapla (0-100)
@@ -121,7 +183,7 @@ class HomeRepositoryImpl @Inject constructor(
                 ((activeDaysThisMonth.toFloat() / daysInMonth) * 100).roundToInt()
             } else 0
 
-            // Chart data (son 7 gün için disiplin trend'i)
+            // Chart data (son 7 gün için aktivite trend'i)
             val chartData = getChartData()
 
             val monthlyStats = MonthlyStats(
@@ -180,11 +242,25 @@ class HomeRepositoryImpl @Inject constructor(
 
     private suspend fun getActiveDaysInMonth(startOfMonth: Long, currentTime: Long): Int {
         return try {
-            val dailyStatsList = dailyStatsDao.getRecentStats("user_1", 31)
+            val userId = "user_1"
+            val endOfMonth = Calendar.getInstance().apply {
+                timeInMillis = currentTime
+                set(Calendar.DAY_OF_MONTH, getDaysInCurrentMonth())
+                set(Calendar.HOUR_OF_DAY, 23)
+                set(Calendar.MINUTE, 59)
+                set(Calendar.SECOND, 59)
+            }.timeInMillis
+
+            // Bu ay için tarih aralığı oluştur ve active days say
+            val startDateString = dateFormat.format(Date(startOfMonth))
+            val endDateString = dateFormat.format(Date(minOf(currentTime, endOfMonth)))
+
+            // DailyStatsEntity'den bu ay active günleri say
+            val dailyStatsList = dailyStatsDao.getRecentStats(userId, 31)
 
             dailyStatsList.count { stats ->
                 val statsDate = dateFormat.parse(stats.date)?.time ?: 0L
-                statsDate >= startOfMonth && statsDate <= currentTime && stats.wordsStudied > 0
+                statsDate >= startOfMonth && statsDate <= currentTime
             }
         } catch (e: Exception) {
             0
@@ -194,7 +270,7 @@ class HomeRepositoryImpl @Inject constructor(
     private suspend fun getChartData(): List<ChartDataPoint> {
         return try {
             val chartData = mutableListOf<ChartDataPoint>()
-            val today = Calendar.getInstance()
+            val userId = "user_1"
 
             // Son 7 gün için günlük aktivite verisi
             for (i in 6 downTo 0) {
@@ -204,29 +280,20 @@ class HomeRepositoryImpl @Inject constructor(
                 val dateString = dateFormat.format(targetDate.time)
                 val dayOfMonth = targetDate.get(Calendar.DAY_OF_MONTH)
 
-                val dailyStats = dailyStatsDao.getStatsByDate("user_1", dateString)
-                val hasActivity = dailyStats?.wordsStudied ?: 0 > 0
+                val dailyStats = dailyStatsDao.getStatsByDate(userId, dateString)
+                val hasActivity = dailyStats != null
 
                 chartData.add(
                     ChartDataPoint(
                         day = dayOfMonth.toString(),
-                        value = if (hasActivity) 1f else 0f
+                        value = if (hasActivity) 1.0f else 0.0f
                     )
                 )
             }
 
             chartData
         } catch (e: Exception) {
-            // Fallback mock data
-            listOf(
-                ChartDataPoint("15", 0.8f),
-                ChartDataPoint("16", 0.9f),
-                ChartDataPoint("17", 0.6f),
-                ChartDataPoint("18", 1.0f),
-                ChartDataPoint("19", 0.7f),
-                ChartDataPoint("20", 0.9f),
-                ChartDataPoint("21", 0.8f)
-            )
+            emptyList()
         }
     }
 }

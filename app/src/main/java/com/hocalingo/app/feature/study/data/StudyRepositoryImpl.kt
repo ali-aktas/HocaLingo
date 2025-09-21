@@ -8,6 +8,7 @@ import com.hocalingo.app.core.common.base.Result
 import com.hocalingo.app.core.database.HocaLingoDatabase
 import com.hocalingo.app.core.database.dao.ConceptWithTimingData
 import com.hocalingo.app.core.database.entities.ConceptEntity
+import com.hocalingo.app.core.database.entities.DailyStatsEntity
 import com.hocalingo.app.core.database.entities.SessionType
 import com.hocalingo.app.core.database.entities.StudyDirection
 import com.hocalingo.app.core.database.entities.StudySessionEntity
@@ -18,26 +19,31 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Implementation of StudyRepository - FIXED VERSION
+ * Implementation of StudyRepository - FIXED VERSION v2.1
  *
  * FIXES APPLIED:
  * ✅ Enhanced updateWordProgress() with detailed debug logging
  * ✅ Fixed daily progress logic - only 1+ day intervals count
  * ✅ Added comprehensive error handling
  * ✅ Improved SM-2 algorithm integration
+ * ✅ Real DailyStatsEntity update in incrementDailyProgress()
  *
  * Handles all study-related data operations using DAO layer
- * with simplified daily progress tracking
+ * with real daily progress tracking
  */
 @Singleton
 class StudyRepositoryImpl @Inject constructor(
     private val database: HocaLingoDatabase,
     private val preferencesManager: UserPreferencesManager
 ) : StudyRepository {
+
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     override fun getStudyQueue(
         direction: StudyDirection,
@@ -203,33 +209,8 @@ class StudyRepositoryImpl @Inject constructor(
             lastReviewAt = null,
             isSelected = true,
             isMastered = false,
-            learningPhase = true, // Start in learning phase
-            sessionPosition = sessionPosition, // Position in session queue
-            createdAt = currentTime,
-            updatedAt = currentTime
-        )
-    }
-
-    /**
-     * LEGACY: Create default progress (keeping for compatibility)
-     */
-    private fun createDefaultProgress(
-        conceptId: Int,
-        direction: StudyDirection
-    ): WordProgressEntity {
-        val currentTime = System.currentTimeMillis()
-        return WordProgressEntity(
-            conceptId = conceptId,
-            direction = direction,
-            repetitions = 0,
-            intervalDays = 0f,
-            easeFactor = 2.5f,
-            nextReviewAt = currentTime,
-            lastReviewAt = null,
-            isSelected = true,
-            isMastered = false,
-            learningPhase = true, // Default to learning phase
-            sessionPosition = 1, // Default position
+            learningPhase = true,
+            sessionPosition = sessionPosition,
             createdAt = currentTime,
             updatedAt = currentTime
         )
@@ -237,37 +218,40 @@ class StudyRepositoryImpl @Inject constructor(
 
     override suspend fun hasWordsToStudy(direction: StudyDirection): Result<Boolean> = try {
         val currentTime = System.currentTimeMillis()
-
-        // HYBRID CHECK: Learning cards OR due review cards
         val learningCount = database.combinedDataDao().getLearningCardsCount(direction)
-        val overdueReviewCount = database.combinedDataDao().getOverdueReviewCardsCount(direction, currentTime)
-
-        val hasWords = (learningCount + overdueReviewCount) > 0
-
-        DebugHelper.log("📚 HYBRID words check: learning=$learningCount, overdueReview=$overdueReviewCount, total=${learningCount + overdueReviewCount}, hasWords=$hasWords")
-
+        val overdueCount = database.combinedDataDao().getOverdueWordsCount(direction, currentTime)
+        val hasWords = (learningCount + overdueCount) > 0
+        DebugHelper.log("📚 Has words to study for $direction: $hasWords")
         Result.Success(hasWords)
-
     } catch (e: Exception) {
         DebugHelper.logError("Check words to study error", e)
         Result.Error(AppError.Unknown(e))
     }
 
+    override suspend fun getLearningCardsCount(direction: StudyDirection): Result<Int> = try {
+        val count = database.combinedDataDao().getLearningCardsCount(direction)
+        DebugHelper.log("📊 Learning cards count for $direction: $count")
+        Result.Success(count)
+    } catch (e: Exception) {
+        DebugHelper.logError("Get learning cards count error", e)
+        Result.Error(AppError.Unknown(e))
+    }
+
     override suspend fun startStudySession(sessionType: SessionType): Result<Long> = try {
-        // FIXED: Use correct parameter names for StudySessionEntity
-        val session = StudySessionEntity(
+        val sessionEntity = StudySessionEntity(
+            id = 0,
+            sessionType = sessionType,
             startedAt = System.currentTimeMillis(),
             endedAt = null,
             wordsStudied = 0,
             correctAnswers = 0,
-            sessionType = sessionType,
             totalDurationMs = 0
         )
 
-        val sessionId = database.studySessionDao().insertSession(session)
-        DebugHelper.log("🎯 Study session started: ID=$sessionId, type=$sessionType")
-
+        val sessionId = database.studySessionDao().insertSession(sessionEntity)
+        DebugHelper.log("📚 Study session started: $sessionId")
         Result.Success(sessionId)
+
     } catch (e: Exception) {
         DebugHelper.logError("Start study session error", e)
         Result.Error(AppError.Unknown(e))
@@ -278,26 +262,25 @@ class StudyRepositoryImpl @Inject constructor(
         wordsStudied: Int,
         correctAnswers: Int
     ): Result<Unit> = try {
+        val currentTime = System.currentTimeMillis()
 
-        // FIXED: Since getSessionById() doesn't exist, we'll create a new entity with just the ID
-        // and use update which will only update the fields we specify
-        val endTime = System.currentTimeMillis()
+        // Get session to calculate duration
+        val sessions = database.studySessionDao().getRecentSessions(1)
+        val session = sessions.firstOrNull { it.id == sessionId }
 
-        val updatedSession = StudySessionEntity(
-            id = sessionId,
-            startedAt = 0, // This will be ignored in update since it's not changed
-            endedAt = endTime,
-            wordsStudied = wordsStudied,
-            correctAnswers = correctAnswers,
-            sessionType = SessionType.MIXED, // Default for update
-            totalDurationMs = 0 // Will be calculated if needed
-        )
-
-        database.studySessionDao().updateSession(updatedSession)
-
-        DebugHelper.log("🏁 Study session ended: ID=$sessionId, words=$wordsStudied, correct=$correctAnswers")
+        if (session != null) {
+            val updatedSession = session.copy(
+                endedAt = currentTime,
+                wordsStudied = wordsStudied,
+                correctAnswers = correctAnswers,
+                totalDurationMs = currentTime - session.startedAt
+            )
+            database.studySessionDao().updateSession(updatedSession)
+            DebugHelper.log("📚 Study session ended: $sessionId, words: $wordsStudied")
+        }
 
         Result.Success(Unit)
+
     } catch (e: Exception) {
         DebugHelper.logError("End study session error", e)
         Result.Error(AppError.Unknown(e))
@@ -339,12 +322,42 @@ class StudyRepositoryImpl @Inject constructor(
         Result.Error(AppError.Unknown(e))
     }
 
+    /**
+     * ✅ FIXED: Real DailyStatsEntity update when card graduates
+     */
     override suspend fun incrementDailyProgress(): Result<Unit> = try {
-        // This could store daily progress in a separate table
-        // For now, we calculate it dynamically from completed cards
-        // The actual increment happens when words are moved to 1+ day intervals
+        val today = Calendar.getInstance()
+        val todayString = dateFormat.format(today.time)
+        val userId = "user_1" // TODO: Real user ID
 
-        DebugHelper.log("📈 Daily progress incremented (calculated dynamically from 1+ day intervals)")
+        // Bugünün kaydını al veya oluştur
+        val existingStats = database.dailyStatsDao().getStatsByDate(userId, todayString)
+
+        if (existingStats != null) {
+            // Mevcut kaydı güncelle - wordsStudied +1
+            val updatedStats = existingStats.copy(
+                wordsStudied = existingStats.wordsStudied + 1,
+                // Hedef 20 kart, tamamlanma durumunu kontrol et
+                goalAchieved = (existingStats.wordsStudied + 1) >= 20
+            )
+            database.dailyStatsDao().insertOrUpdateStats(updatedStats)
+            DebugHelper.log("📈 Daily progress updated: ${updatedStats.wordsStudied} words studied today")
+        } else {
+            // Bugün için kayıt yok, yeni oluştur
+            val newStats = DailyStatsEntity(
+                date = todayString,
+                userId = userId,
+                wordsStudied = 1,
+                correctAnswers = 0,
+                totalAnswers = 0,
+                studyTimeMs = 0,
+                streakCount = 1, // Bu değer app launch'ta güncellenir
+                goalAchieved = false // 1 >= 20 değil
+            )
+            database.dailyStatsDao().insertOrUpdateStats(newStats)
+            DebugHelper.log("📈 Daily progress created: 1 word studied today")
+        }
+
         Result.Success(Unit)
 
     } catch (e: Exception) {
@@ -392,7 +405,7 @@ class StudyRepositoryImpl @Inject constructor(
             (cardsCompleted.toFloat() / dailyGoal.toFloat() * 100f).coerceAtMost(100f)
         } else 0f
 
-        val stats = TodayStats(
+        val todayStats = TodayStats(
             wordsStudied = wordsStudied,
             cardsCompleted = cardsCompleted,
             dailyGoal = dailyGoal,
@@ -400,25 +413,11 @@ class StudyRepositoryImpl @Inject constructor(
             sessionCount = 1 // Simplified
         )
 
-        DebugHelper.log("📊 Today stats: studied=$wordsStudied, completed=$cardsCompleted, goal=$dailyGoal, progress=${progressPercentage}%")
-
-        Result.Success(stats)
+        DebugHelper.log("📊 Today stats: $todayStats")
+        Result.Success(todayStats)
 
     } catch (e: Exception) {
         DebugHelper.logError("Get today session stats error", e)
-        Result.Error(AppError.Unknown(e))
-    }
-
-    /**
-     * HYBRID: Get learning cards count for a direction
-     * Used to determine if session should continue or complete
-     */
-    override suspend fun getLearningCardsCount(direction: StudyDirection): Result<Int> = try {
-        val count = database.combinedDataDao().getLearningCardsCount(direction)
-        DebugHelper.log("📚 Learning cards count for $direction: $count")
-        Result.Success(count)
-    } catch (e: Exception) {
-        DebugHelper.logError("Get learning cards count error", e)
         Result.Error(AppError.Unknown(e))
     }
 }

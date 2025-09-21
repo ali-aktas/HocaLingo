@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -33,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.hocalingo.app.R
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
 import kotlinx.coroutines.flow.collectLatest
+import kotlin.math.absoluteValue
 
 // Poppins font family
 private val PoppinsFontFamily = FontFamily(
@@ -40,6 +42,20 @@ private val PoppinsFontFamily = FontFamily(
     Font(R.font.poppins_medium, FontWeight.Medium),
     Font(R.font.poppins_bold, FontWeight.Bold),
     Font(R.font.poppins_black, FontWeight.Black)
+)
+
+// Modern card colors (10 şık renk - beyaz/gri/sarı hariç)
+private val cardColors = listOf(
+    Color(0xFF6366F1), // Indigo
+    Color(0xFF8B5CF6), // Purple
+    Color(0xFFEC4899), // Pink
+    Color(0xFFEF4444), // Red
+    Color(0xFFF97316), // Orange
+    Color(0xFF10B981), // Emerald
+    Color(0xFF06B6D4), // Cyan
+    Color(0xFF3B82F6), // Blue
+    Color(0xFF8B5A2B), // Brown
+    Color(0xFF059669)  // Green
 )
 
 /**
@@ -86,7 +102,7 @@ fun StudyScreen(
                     LoadingState(modifier = Modifier.fillMaxSize())
                 }
                 uiState.showEmptyQueueMessage -> {
-                    // ✅ ENHANCED: Beautiful completion screen
+                    // ENHANCED: Beautiful completion screen
                     StudyCompletionScreen(
                         onNavigateToWordSelection = onNavigateToWordSelection,
                         onNavigateToHome = onNavigateBack
@@ -112,7 +128,7 @@ fun StudyScreen(
 }
 
 /**
- * ✅ ENHANCED: Beautiful Study Completion Screen
+ * ENHANCED: Beautiful Study Completion Screen
  * Motivational design with card-based buttons
  */
 @Composable
@@ -392,9 +408,12 @@ private fun StudyContent(
         StudyCard(
             frontText = uiState.frontText,
             backText = uiState.backText,
-            exampleText = uiState.exampleText,
+            frontExampleText = uiState.frontExampleText,
+            backExampleText = uiState.backExampleText,
             isFlipped = uiState.isCardFlipped,
             onCardClick = { onEvent(StudyEvent.FlipCard) },
+            onPronunciationClick = { onEvent(StudyEvent.PlayPronunciation) },
+            showPronunciationButton = uiState.shouldShowTtsButton,
             modifier = Modifier.weight(1f)
         )
 
@@ -453,11 +472,19 @@ private fun StudyProgressIndicator(
 private fun StudyCard(
     frontText: String,
     backText: String,
-    exampleText: String,
+    frontExampleText: String,
+    backExampleText: String,
     isFlipped: Boolean,
     onCardClick: () -> Unit,
+    onPronunciationClick: () -> Unit,
+    showPronunciationButton: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    // Rastgele renk seçimi (kelime ID'sine göre sabit kalır)
+    val cardColor = remember(frontText, backText) {
+        cardColors[(frontText + backText).hashCode().absoluteValue % cardColors.size]
+    }
+
     val rotationY by animateFloatAsState(
         targetValue = if (isFlipped) 180f else 0f,
         animationSpec = spring(dampingRatio = 0.8f),
@@ -467,14 +494,17 @@ private fun StudyCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onCardClick() }
+            .clickable(
+                indication = null, // Ripple efektini kaldır
+                interactionSource = remember { MutableInteractionSource() }
+            ) { onCardClick() }
             .graphicsLayer {
                 this.rotationY = rotationY
                 cameraDistance = 12f * density
             },
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = cardColor // Dinamik renk
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
@@ -484,43 +514,85 @@ private fun StudyCard(
                 .padding(24.dp),
             contentAlignment = Alignment.Center
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                if (rotationY <= 90f) {
-                    // Front side
+            // FIXED: Conditional rendering to avoid mirror text
+            if (rotationY <= 90f) {
+                // Ön yüz (0° - 90°)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
                     Text(
                         text = frontText,
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 32.sp,
-                        color = Color(0xFF2C3E50),
-                        textAlign = TextAlign.Center
+                        color = Color.White, // Yazı rengi beyaz
+                        textAlign = TextAlign.Center,
+                        lineHeight = 36.sp
                     )
-                } else {
-                    // Back side (mirrored)
+
+                    // Ön yüz örnek cümle
+                    if (frontExampleText.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Text(
+                            text = frontExampleText,
+                            fontFamily = PoppinsFontFamily,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 16.sp,
+                            color = Color.White.copy(alpha = 0.9f), // Hafif transparan beyaz
+                            textAlign = TextAlign.Center,
+                            lineHeight = 20.sp
+                        )
+                    }
+                }
+
+                // Seslendirme butonu (sadece ön yüzde, sağ üst köşe)
+                if (showPronunciationButton) {
+                    IconButton(
+                        onClick = onPronunciationClick,
+                        modifier = Modifier.align(Alignment.TopEnd)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.VolumeUp,
+                            contentDescription = "Seslendirme",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+            } else {
+                // FIXED: Arka yüz (90° - 180°) - ters görüntü düzeltildi
+                Box(
+                    modifier = Modifier.graphicsLayer {
+                        // Arka yüz metnini tekrar ters çevir (ayna etkisini düzelt)
+                        scaleX = -1f
+                    }
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.graphicsLayer { this.rotationY = 180f }
+                        verticalArrangement = Arrangement.Center
                     ) {
                         Text(
                             text = backText,
                             fontFamily = PoppinsFontFamily,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 28.sp,
-                            color = Color(0xFF2C3E50),
-                            textAlign = TextAlign.Center
+                            fontSize = 32.sp,
+                            color = Color.White,
+                            textAlign = TextAlign.Center,
+                            lineHeight = 36.sp
                         )
 
-                        if (exampleText.isNotEmpty()) {
+                        // Arka yüz örnek cümle
+                        if (backExampleText.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(16.dp))
+
                             Text(
-                                text = exampleText,
+                                text = backExampleText,
                                 fontFamily = PoppinsFontFamily,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 16.sp,
-                                color = Color(0xFF6C7B8A),
+                                color = Color.White.copy(alpha = 0.9f),
                                 textAlign = TextAlign.Center,
                                 lineHeight = 20.sp
                             )
@@ -575,42 +647,91 @@ private fun StudyActionButtons(
             }
         }
     } else {
-        // Action buttons
+        // FIXED: Güncellenenen action buttons
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Don't know - Red
-            ActionButtonSquare(
-                text = "✗",
-                subText = "Don't know",
-                timeText = hardTimeText,
+            // Zor - Red
+            ActionButtonUpdated(
+                mainText = "ZOR",
+                timeText = if (hardTimeText.isNotEmpty()) hardTimeText else "1 dk",
                 backgroundColor = Color(0xFFFF3B30),
                 contentColor = Color.White,
                 onClick = onHardClick,
                 modifier = Modifier.weight(1f)
             )
 
-            // Not sure - Orange
-            ActionButtonSquare(
-                text = "?",
-                subText = "Not sure",
-                timeText = mediumTimeText,
+            // Orta - Orange
+            ActionButtonUpdated(
+                mainText = "ORTA",
+                timeText = if (mediumTimeText.isNotEmpty()) mediumTimeText else "10 dk",
                 backgroundColor = Color(0xFFFF9500),
                 contentColor = Color.White,
                 onClick = onMediumClick,
                 modifier = Modifier.weight(1f)
             )
 
-            // I know - Green
-            ActionButtonSquare(
-                text = "✓",
-                subText = "I know",
-                timeText = easyTimeText,
+            // Kolay - Green
+            ActionButtonUpdated(
+                mainText = "KOLAY",
+                timeText = if (easyTimeText.isNotEmpty()) easyTimeText else "1 gün",
                 backgroundColor = Color(0xFF34C759),
                 contentColor = Color.White,
                 onClick = onEasyClick,
                 modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+// Yeni buton tasarımı
+@Composable
+private fun ActionButtonUpdated(
+    mainText: String,
+    timeText: String,
+    backgroundColor: Color,
+    contentColor: Color,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .clickable { onClick() }
+            .height(80.dp), // Biraz daha yüksek
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = backgroundColor
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            // Ana metin - büyük ve kalın
+            Text(
+                text = mainText,
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Medium, // Poppins Medium
+                fontSize = 16.sp, // Büyük
+                color = contentColor,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // Süre metni - küçük ve ince
+            Text(
+                text = timeText,
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Normal, // İnce
+                fontSize = 11.sp, // Küçük
+                color = contentColor.copy(alpha = 0.8f), // Hafif transparan
+                textAlign = TextAlign.Center
             )
         }
     }

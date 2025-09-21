@@ -16,9 +16,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * UserPreferencesManager
- * Manages local app preferences using DataStore
- * For quick access to user settings without database queries
+ * UserPreferencesManager - Enhanced with Profile Settings
+ * ✅ Modern theme system (Light/Dark/System)
+ * ✅ Study direction preferences
+ * ✅ Notification settings
  */
 @Singleton
 class UserPreferencesManager @Inject constructor(
@@ -46,10 +47,11 @@ class UserPreferencesManager @Inject constructor(
         private val STUDY_REMINDER_HOUR = intPreferencesKey("study_reminder_hour")
         private val STUDY_DIRECTION = stringPreferencesKey("study_direction") // EN_TO_TR, TR_TO_EN, MIXED
 
-        // App Settings
+        // App Settings - Enhanced for Profile
+        private val THEME_MODE = stringPreferencesKey("theme_mode") // light, dark, system
         private val SOUND_ENABLED = booleanPreferencesKey("sound_enabled")
         private val HAPTIC_FEEDBACK_ENABLED = booleanPreferencesKey("haptic_feedback_enabled")
-        private val DARK_MODE_ENABLED = booleanPreferencesKey("dark_mode_enabled")
+        private val NOTIFICATIONS_ENABLED = booleanPreferencesKey("notifications_enabled") // For motivational notifications
 
         // Premium & Monetization
         private val IS_PREMIUM = booleanPreferencesKey("is_premium")
@@ -176,15 +178,48 @@ class UserPreferencesManager @Inject constructor(
         }
         .catch { emit(true to 20) }
 
-    suspend fun setStudyDirection(direction: String): Result<Unit> = safeOperation {
+    // ✅ Enhanced Study Direction with enum support
+    suspend fun setStudyDirection(direction: StudyDirection): Result<Unit> = safeOperation {
         dataStore.edit { preferences ->
-            preferences[STUDY_DIRECTION] = direction
+            preferences[STUDY_DIRECTION] = direction.value
         }
     }
 
-    fun getStudyDirection(): Flow<String> = dataStore.data
-        .map { preferences -> preferences[STUDY_DIRECTION] ?: "EN_TO_TR" }
-        .catch { emit("EN_TO_TR") }
+    fun getStudyDirection(): Flow<StudyDirection> = dataStore.data
+        .map { preferences ->
+            val value = preferences[STUDY_DIRECTION] ?: "en_to_tr"
+            StudyDirection.fromString(value)
+        }
+        .catch { emit(StudyDirection.EN_TO_TR) }
+
+    /**
+     * ✅ NEW: Modern Theme System (Light/Dark/System)
+     */
+    suspend fun setThemeMode(themeMode: ThemeMode): Result<Unit> = safeOperation {
+        dataStore.edit { preferences ->
+            preferences[THEME_MODE] = themeMode.value
+        }
+    }
+
+    fun getThemeMode(): Flow<ThemeMode> = dataStore.data
+        .map { preferences ->
+            val value = preferences[THEME_MODE] ?: "system"
+            ThemeMode.fromString(value)
+        }
+        .catch { emit(ThemeMode.SYSTEM) }
+
+    /**
+     * ✅ NEW: Notification Settings (for motivational notifications)
+     */
+    suspend fun setNotificationsEnabled(enabled: Boolean): Result<Unit> = safeOperation {
+        dataStore.edit { preferences ->
+            preferences[NOTIFICATIONS_ENABLED] = enabled
+        }
+    }
+
+    fun areNotificationsEnabled(): Flow<Boolean> = dataStore.data
+        .map { preferences -> preferences[NOTIFICATIONS_ENABLED] ?: true }
+        .catch { emit(true) }
 
     /**
      * App Settings
@@ -208,16 +243,6 @@ class UserPreferencesManager @Inject constructor(
     fun isHapticFeedbackEnabled(): Flow<Boolean> = dataStore.data
         .map { preferences -> preferences[HAPTIC_FEEDBACK_ENABLED] ?: true }
         .catch { emit(true) }
-
-    suspend fun setDarkModeEnabled(enabled: Boolean): Result<Unit> = safeOperation {
-        dataStore.edit { preferences ->
-            preferences[DARK_MODE_ENABLED] = enabled
-        }
-    }
-
-    fun isDarkModeEnabled(): Flow<Boolean> = dataStore.data
-        .map { preferences -> preferences[DARK_MODE_ENABLED] ?: false }
-        .catch { emit(false) }
 
     /**
      * Premium & Monetization

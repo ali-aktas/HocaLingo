@@ -3,7 +3,6 @@ package com.hocalingo.app.feature.home.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hocalingo.app.core.common.base.Result
-import com.hocalingo.app.core.common.base.toAppError
 import com.hocalingo.app.feature.home.domain.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,8 +15,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Home ViewModel - v2.0
- * Real data tracking ile güncellenmiş ViewModel
+ * Home ViewModel - v2.1
+ * ✅ App launch tracking eklendi (streak için)
  */
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -49,13 +48,16 @@ class HomeViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isLoading = true)
 
             try {
-                // Paralel olarak tüm data'ları fetch et
+                // ✅ STEP 1: App launch tracking (streak için)
+                homeRepository.trackAppLaunch()
+
+                // STEP 2: Paralel olarak tüm data'ları fetch et
                 val userNameResult = homeRepository.getUserName()
                 val streakDaysResult = homeRepository.getStreakDays()
                 val dailyGoalResult = homeRepository.getDailyGoalProgress()
                 val monthlyStatsResult = homeRepository.getMonthlyStats()
 
-                // Sonuçları kontrol et ve state'i güncelle
+                // STEP 3: Sonuçları kontrol et ve state'i güncelle
                 when {
                     userNameResult is Result.Success &&
                             streakDaysResult is Result.Success &&

@@ -2,21 +2,20 @@ package com.hocalingo.app.core.database.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import com.hocalingo.app.core.database.entities.SelectionStatus
 import com.hocalingo.app.core.database.entities.StudyDirection
+import com.hocalingo.app.core.database.entities.SelectionStatus
 
+/**
+ * Combined Data DAO - Enhanced for Profile Feature
+ * ✅ Selected words queries for profile
+ * ✅ Pagination support
+ * ✅ User statistics support
+ */
 @Dao
 interface CombinedDataDao {
 
     /**
-     * HYBRID STUDY QUEUE - Learning + Review Cards
-     *
-     * LEARNING CARDS: Always shown (stay in session)
-     * REVIEW CARDS: Only shown when time is due
-     *
-     * Priority Order:
-     * 1. Learning cards by session_position (ASC)
-     * 2. Review cards by next_review_at (ASC)
+     * Study queue management - existing
      */
     @Query("""
         SELECT 
@@ -28,94 +27,108 @@ interface CombinedDataDao {
             c.pronunciation,
             c.level,
             c.category,
-            wp.next_review_at as nextReviewAt,
-            wp.repetitions
+            COALESCE(wp.next_review_at, :currentTime) as nextReviewAt,
+            COALESCE(wp.repetitions, 0) as repetitions
         FROM concepts c
         INNER JOIN user_selections us ON c.id = us.concept_id
-        INNER JOIN word_progress wp ON c.id = wp.concept_id
+        LEFT JOIN word_progress wp ON c.id = wp.concept_id AND wp.direction = :direction
         WHERE us.status = 'SELECTED' 
-        AND wp.direction = :direction
-        AND wp.is_mastered = 0
         AND (
-            (wp.learning_phase = 1) OR                                    -- Learning cards: always include
-            (wp.learning_phase = 0 AND wp.next_review_at <= :currentTime) -- Review cards: only if due
+            wp.learning_phase = 1 
+            OR (wp.learning_phase = 0 AND wp.next_review_at <= :currentTime)
+            OR wp.concept_id IS NULL
         )
         ORDER BY 
-            wp.learning_phase DESC,           -- Learning cards first (1 before 0)
-            wp.session_position ASC,          -- Learning cards by session position
-            wp.next_review_at ASC             -- Review cards by due time
+            CASE WHEN wp.learning_phase = 1 THEN wp.session_position ELSE wp.next_review_at END ASC
         LIMIT :limit
     """)
     suspend fun getStudyQueue(
         direction: StudyDirection,
         currentTime: Long,
-        limit: Int = 20
+        limit: Int = 50
     ): List<ConceptWithTimingData>
 
     /**
-     * Count words available for study - HYBRID VERSION
+     * ✅ NEW: Selected words with progress for Profile - Preview (5 words)
      */
     @Query("""
-        SELECT COUNT(*)
+        SELECT 
+            c.id,
+            c.english,
+            c.turkish,
+            c.example_en as exampleEn,
+            c.example_tr as exampleTr,
+            c.pronunciation,
+            c.level,
+            c.category,
+            c.package_id as packageId,
+            us.status as selectionStatus,
+            MAX(wp.repetitions) as repetitions,
+            MAX(CASE WHEN wp.is_mastered = 1 THEN 1 ELSE 0 END) as isMastered,
+            MAX(wp.next_review_at) as nextReviewAt
         FROM concepts c
         INNER JOIN user_selections us ON c.id = us.concept_id
-        INNER JOIN word_progress wp ON c.id = wp.concept_id
-        WHERE us.status = 'SELECTED' 
-        AND wp.direction = :direction
-        AND wp.is_mastered = 0
-        AND (
-            (wp.learning_phase = 1) OR                                    -- Learning cards
-            (wp.learning_phase = 0 AND wp.next_review_at <= :currentTime) -- Due review cards
-        )
+        LEFT JOIN word_progress wp ON c.id = wp.concept_id
+        WHERE us.status = 'SELECTED'
+        GROUP BY c.id
+        ORDER BY c.id ASC
+        LIMIT :limit
     """)
-    suspend fun getStudyWordsCount(direction: StudyDirection, currentTime: Long): Int
+    suspend fun getSelectedWordsWithProgress(limit: Int = 5): List<ConceptWithProgressData>
 
     /**
-     * Get learning cards count (cards in current session)
+     * ✅ NEW: Selected words with progress for Profile - Paginated
+     */
+    @Query("""
+        SELECT 
+            c.id,
+            c.english,
+            c.turkish,
+            c.example_en as exampleEn,
+            c.example_tr as exampleTr,
+            c.pronunciation,
+            c.level,
+            c.category,
+            c.package_id as packageId,
+            us.status as selectionStatus,
+            MAX(wp.repetitions) as repetitions,
+            MAX(CASE WHEN wp.is_mastered = 1 THEN 1 ELSE 0 END) as isMastered,
+            MAX(wp.next_review_at) as nextReviewAt
+        FROM concepts c
+        INNER JOIN user_selections us ON c.id = us.concept_id
+        LEFT JOIN word_progress wp ON c.id = wp.concept_id
+        WHERE us.status = 'SELECTED'
+        GROUP BY c.id
+        ORDER BY c.id ASC
+        LIMIT :limit OFFSET :offset
+    """)
+    suspend fun getSelectedWordsWithProgressPaginated(
+        offset: Int,
+        limit: Int = 20
+    ): List<ConceptWithProgressData>
+
+    /**
+     * Learning phase management - existing
      */
     @Query("""
         SELECT COUNT(*)
         FROM concepts c
         INNER JOIN user_selections us ON c.id = us.concept_id
-        INNER JOIN word_progress wp ON c.id = wp.concept_id
+        LEFT JOIN word_progress wp ON c.id = wp.concept_id AND wp.direction = :direction
         WHERE us.status = 'SELECTED' 
-        AND wp.direction = :direction
-        AND wp.learning_phase = 1
-        AND wp.is_mastered = 0
+        AND (wp.learning_phase = 1 OR wp.concept_id IS NULL)
     """)
     suspend fun getLearningCardsCount(direction: StudyDirection): Int
 
-    /**
-     * Get review cards count (time-based cards that are due)
-     */
-    @Query("""
-        SELECT COUNT(*)
-        FROM concepts c
-        INNER JOIN user_selections us ON c.id = us.concept_id
-        INNER JOIN word_progress wp ON c.id = wp.concept_id
-        WHERE us.status = 'SELECTED' 
-        AND wp.direction = :direction
-        AND wp.learning_phase = 0
-        AND wp.next_review_at <= :currentTime
-        AND wp.is_mastered = 0
-    """)
-    suspend fun getOverdueReviewCardsCount(direction: StudyDirection, currentTime: Long): Int
-
-    /**
-     * Get max session position for learning cards
-     * Used to add new cards to end of session queue
-     */
     @Query("""
         SELECT COALESCE(MAX(wp.session_position), 0)
         FROM word_progress wp
-        WHERE wp.learning_phase = 1
-        AND wp.direction = :direction
+        WHERE wp.direction = :direction AND wp.learning_phase = 1
     """)
     suspend fun getMaxSessionPosition(direction: StudyDirection): Int
 
     /**
-     * LEGACY: Count methods for compatibility
-     * These now check both learning and review cards
+     * Review phase management - existing
      */
     @Query("""
         SELECT COUNT(*)
@@ -140,7 +153,7 @@ interface CombinedDataDao {
     suspend fun getNewWordsCount(direction: StudyDirection): Int
 
     /**
-     * Statistics methods
+     * Statistics methods - existing
      */
     @Query("""
         SELECT COUNT(*)
@@ -245,7 +258,7 @@ data class ConceptWithTimingData(
 )
 
 /**
- * Data class for concept with progress information - UNCHANGED
+ * Data class for concept with progress information - Enhanced for Profile
  */
 data class ConceptWithProgressData(
     val id: Int,
@@ -256,6 +269,7 @@ data class ConceptWithProgressData(
     val pronunciation: String?,
     val level: String,
     val category: String,
+    val packageId: String? = null, // ✅ Added for profile display
     val selectionStatus: SelectionStatus?,
     val repetitions: Int?,
     val nextReviewAt: Long?,
