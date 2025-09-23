@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.hocalingo.app.core.common.StudyDirection
 import com.hocalingo.app.core.common.ThemeMode
 import com.hocalingo.app.core.common.base.Result
+import com.hocalingo.app.core.notification.HocaLingoNotificationManager
+import com.hocalingo.app.core.notification.NotificationScheduler
 import com.hocalingo.app.feature.profile.domain.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,14 +20,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Profile ViewModel - Modern Profile Management
- * ✅ User stats and selected words
+ * Profile ViewModel - Enhanced with Notification Management
+ * ✅ Modern Profile Management
+ * ✅ Notification toggle with WorkManager integration
  * ✅ Settings management (theme, notifications, study direction)
  * ✅ Performance optimized data loading
  */
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val notificationScheduler: NotificationScheduler,
+    private val notificationManager: HocaLingoNotificationManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -40,12 +45,14 @@ class ProfileViewModel @Inject constructor(
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
-            ProfileEvent.LoadProfile -> loadProfile()
-            ProfileEvent.RefreshData -> refreshData()
+            ProfileEvent.Refresh -> refreshData()
             ProfileEvent.ViewAllWords -> handleViewAllWords()
             is ProfileEvent.UpdateThemeMode -> updateThemeMode(event.themeMode)
             is ProfileEvent.UpdateStudyDirection -> updateStudyDirection(event.direction)
             is ProfileEvent.UpdateNotifications -> updateNotifications(event.enabled)
+            is ProfileEvent.UpdateNotificationTime -> updateNotificationTime(event.hour)
+            is ProfileEvent.UpdateDailyGoal -> updateDailyGoal(event.goal)
+            else -> {}
         }
     }
 
@@ -169,14 +176,34 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    // ✅ NEW: Notification management
     private fun updateNotifications(enabled: Boolean) {
         viewModelScope.launch {
+            // Check permission first if enabling
+            if (enabled && !notificationManager.hasNotificationPermission()) {
+                _effect.emit(ProfileEffect.RequestNotificationPermission)
+                return@launch
+            }
+
             _uiState.update { it.copy(notificationsEnabled = enabled) }
 
             when (val result = profileRepository.updateNotificationsEnabled(enabled)) {
                 is Result.Success -> {
-                    val message = if (enabled) "Bildirimler açıldı" else "Bildirimler kapatıldı"
-                    _effect.emit(ProfileEffect.ShowMessage(message))
+                    // Update WorkManager schedule
+                    if (enabled) {
+                        notificationScheduler.scheduleDailyNotifications()
+                        val nextTime = notificationScheduler.getNextNotificationTime()
+                        if (nextTime != null) {
+                            val timeFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+                            val timeString = timeFormat.format(java.util.Date(nextTime))
+                            _effect.emit(ProfileEffect.ShowNotificationScheduled(timeString))
+                        } else {
+                            _effect.emit(ProfileEffect.ShowMessage("Bildirimler açıldı"))
+                        }
+                    } else {
+                        notificationScheduler.cancelDailyNotifications()
+                        _effect.emit(ProfileEffect.ShowMessage("Bildirimler kapatıldı"))
+                    }
                 }
                 is Result.Error -> {
                     // Revert UI state
@@ -184,6 +211,25 @@ class ProfileViewModel @Inject constructor(
                     _effect.emit(ProfileEffect.ShowError("Bildirim ayarı değiştirilemedi"))
                 }
             }
+        }
+    }
+
+    // ✅ NEW: Notification time management
+    private fun updateNotificationTime(hour: Int) {
+        viewModelScope.launch {
+            // Update schedule with new time
+            notificationScheduler.updateNotificationSchedule()
+
+            val timeFormat = String.format("%02d:00", hour)
+            _effect.emit(ProfileEffect.ShowMessage("Bildirim saati $timeFormat olarak ayarlandı"))
+        }
+    }
+
+    private fun updateDailyGoal(goal: Int) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(dailyGoal = goal) }
+            // Repository method will be added later
+            _effect.emit(ProfileEffect.ShowMessage("Günlük hedef $goal kelime olarak ayarlandı"))
         }
     }
 

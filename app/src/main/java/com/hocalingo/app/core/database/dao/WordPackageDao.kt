@@ -15,7 +15,7 @@ interface WordPackageDao {
     suspend fun getActivePackages(): List<WordPackageEntity>
 
     @Query("SELECT * FROM word_packages WHERE package_id = :packageId")
-    suspend fun getPackageById(packageId: String): WordPackageEntity?
+    suspend fun getPackageById(packageId: String?): WordPackageEntity?
 
     @Query("SELECT * FROM word_packages WHERE level = :level AND is_active = 1")
     suspend fun getPackagesByLevel(level: String): List<WordPackageEntity>

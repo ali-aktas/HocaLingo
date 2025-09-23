@@ -89,6 +89,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.3")
     implementation("androidx.activity:activity-compose:1.10.1")
+    implementation(libs.androidx.hilt.common)
 
     // Testing
     testImplementation("junit:junit:4.13.2")
@@ -115,6 +116,14 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
+
+    // ✅ NEW: WorkManager for daily notifications
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
+
+    // ✅ NEW: Hilt WorkManager integration
+    implementation("androidx.hilt:hilt-work:1.0.0")
+    ksp("androidx.hilt:hilt-compiler:1.0.0")
+
 
     // Network
     implementation("com.squareup.retrofit2:retrofit:2.11.0")

@@ -25,6 +25,10 @@ retrofit = "2.11.0"                 # ✅ Latest stable
 okhttp = "4.12.0"
 kotlinxSerialization = "1.7.3"     # ✅ Kotlin 2.1.0 uyumlu
 
+# Extensins
+work = "2.8.1"
+hilt-work = "1.0.0"
+
 # Firebase
 firebaseBom = "33.7.0"              # ✅ Latest stable
 googleServices = "4.4.2"
@@ -42,7 +46,8 @@ junit = "4.13.2"
 junitVersion = "1.3.0"              # ✅ Latest
 espressoCore = "3.7.0"              # ✅ Latest
 mockk = "1.13.14"                   # ✅ Latest
-coroutinesTest = "1.10.1"           # ✅ Latest
+coroutinesTest = "1.10.1"
+hiltCommon = "1.3.0"           # ✅ Latest
 
 [libraries]
 # Android Core
@@ -60,6 +65,13 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+
+# WorkManager
+androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
+
+# Hilt WorkManager integration
+androidx-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hilt-work" }
+androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hilt-work" }
 
 # Navigation
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
@@ -105,6 +117,7 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
+androidx-hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltCommon" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

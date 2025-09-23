@@ -8,7 +8,6 @@ import com.hocalingo.app.core.database.HocaLingoDatabase
 import com.hocalingo.app.core.database.entities.ConceptEntity
 import com.hocalingo.app.core.database.entities.SelectionStatus
 import com.hocalingo.app.core.database.entities.StudyDirection
-import com.hocalingo.app.core.database.entities.UserSelectionEntity
 import com.hocalingo.app.core.database.entities.WordProgressEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

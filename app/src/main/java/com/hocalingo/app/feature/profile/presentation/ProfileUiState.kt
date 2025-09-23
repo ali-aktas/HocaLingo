@@ -74,26 +74,3 @@ data class ProfileUiState(
         ThemeMode.SYSTEM -> "Sistem Teması"
     }
 }
-
-/**
- * Profile Events - User interactions
- */
-sealed interface ProfileEvent {
-    data object LoadProfile : ProfileEvent
-    data object RefreshData : ProfileEvent
-    data object ViewAllWords : ProfileEvent
-
-    // Settings events
-    data class UpdateThemeMode(val themeMode: ThemeMode) : ProfileEvent
-    data class UpdateStudyDirection(val direction: StudyDirection) : ProfileEvent
-    data class UpdateNotifications(val enabled: Boolean) : ProfileEvent
-}
-
-/**
- * Profile Effects - One-time UI effects
- */
-sealed interface ProfileEffect {
-    data object NavigateToWordsList : ProfileEffect
-    data class ShowMessage(val message: String) : ProfileEffect
-    data class ShowError(val error: String) : ProfileEffect
-}

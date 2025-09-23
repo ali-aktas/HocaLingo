@@ -56,6 +56,64 @@ enum class AIAssistantStyle(val displayName: String) {
  * ✅ Selected words card moved to bottom
  */
 @Composable
+private fun SettingSwitchItem(
+    title: String,
+    subtitle: String,
+    icon: ImageVector,
+    isChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                Color.White.copy(alpha = 0.1f),
+                RoundedCornerShape(12.dp)
+            )
+            .clickable { onCheckedChange(!isChecked) }
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = Color.White,
+            modifier = Modifier.size(20.dp)
+        )
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp,
+                color = Color.White
+            )
+            Text(
+                text = subtitle,
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp,
+                color = Color.White.copy(alpha = 0.8f)
+            )
+        }
+
+        Switch(
+            checked = isChecked,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = Color.White,
+                checkedTrackColor = Color.White.copy(alpha = 0.3f),
+                uncheckedThumbColor = Color.White.copy(alpha = 0.7f),
+                uncheckedTrackColor = Color.White.copy(alpha = 0.1f)
+            )
+        )
+    }
+}
+
+@Composable
 fun ProfileScreen(
     onNavigateToWordsList: () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel()
@@ -77,6 +135,10 @@ fun ProfileScreen(
                 is ProfileEffect.ShowError -> {
                     snackbarHostState.showSnackbar(effect.error)
                 }
+                // ✅ Yeni effect'ler - şimdilik boş implement
+                ProfileEffect.RequestNotificationPermission -> { /* TODO: Handle later */ }
+                ProfileEffect.ShowNotificationPermissionDialog -> { /* TODO: Handle later */ }
+                is ProfileEffect.ShowNotificationScheduled -> { /* TODO: Handle later */ }
             }
         }
     }
@@ -455,14 +517,14 @@ private fun ModernSettingsCard(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Motivation Notifications Toggle - NEW
-                SettingToggleItem(
+                // Motivation Notifications Toggle - ✅ SWITCH VERSION
+                SettingSwitchItem(
                     title = "Motivasyon Bildirimleri",
-                    subtitle = if (uiState.notificationsEnabled) "Açık" else "Kapalı",
-                    icon = if (uiState.notificationsEnabled) Icons.Filled.Notifications else Icons.Filled.NotificationsOff,
-                    onClick = {
-                        // Will be connected to ViewModel later
-                        // onEvent(ProfileEvent.UpdateNotifications(!uiState.notificationsEnabled))
+                    subtitle = "Günlük kelime hatırlatmaları",
+                    icon = Icons.Filled.Notifications,
+                    isChecked = uiState.notificationsEnabled,
+                    onCheckedChange = { enabled ->
+                        onEvent(ProfileEvent.UpdateNotifications(enabled))
                     }
                 )
 
