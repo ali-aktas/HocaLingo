@@ -25,9 +25,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * StudyViewModel - COMPLETION FIXED VERSION
- * ✅ Fixed last card staying on screen issue
- * ✅ Immediate completion state display when session ends
+ * StudyViewModel - Complete Enhanced Version
+ * ✅ Fixed TTS handling
+ * ✅ Fixed completion state management
+ * ✅ Enhanced debugging and error handling
+ * ✅ Proper session management
  */
 @HiltViewModel
 class StudyViewModel @Inject constructor(
@@ -50,138 +52,177 @@ class StudyViewModel @Inject constructor(
 
     init {
         loadInitialData()
+        trackTtsState()
     }
 
+    // ========== INITIALIZATION ==========
+
     /**
-     * ✅ FIXED: Handle user response and immediate completion state
+     * ✅ Enhanced TTS state tracking
      */
-    private fun handleUserResponse(quality: Int) {
-        val concept = _uiState.value.currentConcept ?: return
-        val direction = _uiState.value.studyDirection
-
+    private fun trackTtsState() {
         viewModelScope.launch {
-            try {
-                // Update word progress
-                val result = studyRepository.updateWordProgress(concept.id, direction, quality)
-
-                when (result) {
-                    is Result.Success -> {
-                        DebugHelper.log("Word progress updated: ${concept.english} with quality $quality")
-
-                        // Update session stats
-                        _uiState.update {
-                            it.copy(
-                                sessionWordsCount = it.sessionWordsCount + 1,
-                                correctAnswers = if (quality >= 2) it.correctAnswers + 1 else it.correctAnswers,
-                                isCardFlipped = false
-                            )
-                        }
-
-                        // ✅ CRITICAL FIX: Move to next immediately, check completion afterwards
-                        currentQueueIndex++
-
-                        // ✅ FIXED: Check if this was the last card BEFORE trying to load next
-                        if (currentQueueIndex >= studyQueue.size) {
-                            DebugHelper.log("🏁 Last card completed, checking for more learning cards...")
-
-                            // Check if there are more learning cards
-                            val learningCardsResult = studyRepository.getLearningCardsCount(direction)
-                            when (learningCardsResult) {
-                                is Result.Success -> {
-                                    if (learningCardsResult.data > 0) {
-                                        DebugHelper.log("🔄 Learning cards remain, reloading queue...")
-                                        reloadStudyQueue()
-                                    } else {
-                                        DebugHelper.log("🎉 No more learning cards, showing completion!")
-                                        // ✅ IMMEDIATE: Show completion state right away
-                                        _uiState.update {
-                                            it.copy(
-                                                currentConcept = null,
-                                                showEmptyQueueMessage = true,
-                                                isCardFlipped = false
-                                            )
-                                        }
-                                        completeSession()
-                                    }
-                                }
-                                is Result.Error -> {
-                                    DebugHelper.logError("Error checking learning cards", learningCardsResult.error)
-                                    // ✅ FALLBACK: Show completion on error
-                                    _uiState.update {
-                                        it.copy(
-                                            currentConcept = null,
-                                            showEmptyQueueMessage = true,
-                                            isCardFlipped = false
-                                        )
-                                    }
-                                    completeSession()
-                                }
-                            }
-                        } else {
-                            // Load next word in current queue
-                            loadNextWord()
-                        }
-                    }
-                    is Result.Error -> {
-                        DebugHelper.logError("Word progress update error", result.error)
-                        _effect.tryEmit(StudyEffect.ShowMessage("Kelime güncellenirken hata oluştu"))
-                    }
-                }
-            } catch (e: Exception) {
-                DebugHelper.logError("Handle user response exception", e)
+            textToSpeechManager.isSpeaking.collectLatest { isSpeaking ->
+                _uiState.update { it.copy(isSpeaking = isSpeaking) }
             }
         }
     }
 
-    /**
-     * Load next word from study queue
-     */
-    private fun loadNextWord() {
-        if (currentQueueIndex >= studyQueue.size) {
-            DebugHelper.log("🏁 Queue completed")
-            return
-        }
-
-        val currentConcept = studyQueue[currentQueueIndex]
-        DebugHelper.log("Loading word ${currentQueueIndex + 1}/${studyQueue.size}: ${currentConcept.english}")
-
+    private fun loadInitialData() {
         viewModelScope.launch {
             try {
-                val direction = _uiState.value.studyDirection
+                _uiState.update { it.copy(isLoading = true) }
 
-                // Get current progress for button text calculation
-                val progressResult = studyRepository.getCurrentProgress(currentConcept.id, direction)
-                val currentProgress = when (progressResult) {
-                    is Result.Success -> progressResult.data
-                    is Result.Error -> null
-                } ?: createDefaultProgress(currentConcept.id, direction)
+                // Get user preferences
+                val userStudyDirection = preferencesManager.getStudyDirection().first()
+                val dailyGoal = preferencesManager.getDailyGoal().first()
+                val ttsEnabled: Boolean = preferencesManager.isSoundEnabled().first()
 
-                /// Calculate button timing texts - simplified
-                val easyTimeText = "Kolay"
-                val mediumTimeText = "Orta"
-                val hardTimeText = "Zor"
+                // Map common enum to entity enum
+                val entityStudyDirection = when(userStudyDirection) {
+                    com.hocalingo.app.core.common.StudyDirection.EN_TO_TR ->
+                        com.hocalingo.app.core.database.entities.StudyDirection.EN_TO_TR
+                    com.hocalingo.app.core.common.StudyDirection.TR_TO_EN ->
+                        com.hocalingo.app.core.database.entities.StudyDirection.TR_TO_EN
+                    com.hocalingo.app.core.common.StudyDirection.MIXED ->
+                        com.hocalingo.app.core.database.entities.StudyDirection.EN_TO_TR // fallback
+                }
 
                 _uiState.update {
                     it.copy(
-                        currentConcept = currentConcept,
-                        currentWordIndex = currentQueueIndex,
-                        isCardFlipped = false,
-                        easyTimeText = easyTimeText,
-                        mediumTimeText = mediumTimeText,
-                        hardTimeText = hardTimeText
+                        studyDirection = entityStudyDirection,
+                        dailyGoal = dailyGoal,
+                        isTtsEnabled = ttsEnabled
                     )
                 }
 
-                DebugHelper.log("Word loaded: ${currentConcept.english} -> ${currentConcept.turkish}")
+                // Load today's progress
+                loadDailyProgress()
+
+                // Load study queue
+                loadStudyQueue()
 
             } catch (e: Exception) {
-                DebugHelper.logError("Load word exception", e)
+                DebugHelper.logError("StudyViewModel initialization error", e)
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = "Çalışma verileri yüklenirken hata oluştu: ${e.message}"
+                    )
+                }
+            }
+        }
+    }
+
+    // ========== STUDY QUEUE MANAGEMENT ==========
+
+    private fun loadStudyQueue() {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isLoading = true, error = null) }
+
+                val direction = _uiState.value.studyDirection
+                DebugHelper.log("Loading study queue for direction: $direction")
+
+                when (val hasWordsResult = studyRepository.hasWordsToStudy(direction)) {
+                    is Result.Success -> {
+                        if (!hasWordsResult.data) {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    isQueueEmpty = true,
+                                    showEmptyQueueMessage = true,
+                                    currentConcept = null,
+                                    error = null
+                                )
+                            }
+                            return@launch
+                        }
+
+                        // Start new session
+                        startNewSession()
+
+                        // Get study queue
+                        studyRepository.getStudyQueue(direction, limit = 20).collectLatest { queueData ->
+                            DebugHelper.log("Study queue received: ${queueData.size} words")
+
+                            if (queueData.isEmpty()) {
+                                _uiState.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        isQueueEmpty = true,
+                                        showEmptyQueueMessage = true,
+                                        currentConcept = null
+                                    )
+                                }
+                                return@collectLatest
+                            }
+
+                            // Convert ConceptWithTimingData to ConceptEntity
+                            val concepts = mutableListOf<ConceptEntity>()
+                            for (timingData in queueData) {
+                                when (val result = studyRepository.getConceptById(timingData.id)) {
+                                    is Result.Success -> {
+                                        result.data?.let { concepts.add(it) }
+                                    }
+                                    is Result.Error -> {
+                                        DebugHelper.logError("Failed to get concept ${timingData.id}", result.error)
+                                    }
+                                }
+                            }
+
+                            // Update queue and start with first word
+                            studyQueue = concepts
+                            currentQueueIndex = 0
+
+                            if (studyQueue.isNotEmpty()) {
+                                loadNextWord()
+                            } else {
+                                _uiState.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        isQueueEmpty = true,
+                                        showEmptyQueueMessage = true,
+                                        currentConcept = null,
+                                        error = null
+                                    )
+                                }
+                            }
+
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    totalWordsInQueue = studyQueue.size,
+                                    hasWordsToStudy = studyQueue.isNotEmpty()
+                                )
+                            }
+                        }
+                    }
+                    is Result.Error -> {
+                        DebugHelper.logError("Has words to study check failed", hasWordsResult.error)
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                error = "Çalışma kontrolü sırasında hata: ${hasWordsResult.error.message}"
+                            )
+                        }
+                    }
+                }
+
+            } catch (e: Exception) {
+                DebugHelper.logError("Study queue loading error", e)
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = "Çalışma kuyruğu yüklenirken hata: ${e.message}"
+                    )
+                }
             }
         }
     }
 
     /**
-     * HYBRID: Reload study queue for learning cards
+     * ✅ Enhanced reload queue for learning cards
      */
     private fun reloadStudyQueue() {
         viewModelScope.launch {
@@ -264,6 +305,150 @@ class StudyViewModel @Inject constructor(
         }
     }
 
+    // ========== WORD MANAGEMENT ==========
+
+    /**
+     * Load next word from study queue with enhanced progress calculation
+     */
+    private fun loadNextWord() {
+        if (currentQueueIndex >= studyQueue.size) {
+            DebugHelper.log("🏁 Queue completed")
+            return
+        }
+
+        val currentConcept = studyQueue[currentQueueIndex]
+        DebugHelper.log("Loading word ${currentQueueIndex + 1}/${studyQueue.size}: ${currentConcept.english}")
+
+        viewModelScope.launch {
+            try {
+                val direction = _uiState.value.studyDirection
+
+                // Get current progress for button text calculation
+                val progressResult = studyRepository.getCurrentProgress(currentConcept.id, direction)
+                val currentProgress = when (progressResult) {
+                    is Result.Success -> progressResult.data
+                    is Result.Error -> null
+                } ?: createDefaultProgress(currentConcept.id, direction)
+
+                // Calculate button timing texts using SpacedRepetitionAlgorithm
+                val easyResult = SpacedRepetitionAlgorithm.calculateNextReview(
+                    currentProgress,
+                    SpacedRepetitionAlgorithm.QUALITY_EASY
+                )
+
+                val mediumResult = SpacedRepetitionAlgorithm.calculateNextReview(
+                    currentProgress,
+                    SpacedRepetitionAlgorithm.QUALITY_MEDIUM
+                )
+
+                val hardResult = SpacedRepetitionAlgorithm.calculateNextReview(
+                    currentProgress,
+                    SpacedRepetitionAlgorithm.QUALITY_HARD
+                )
+
+                // Format timing texts using built-in method
+                val (hardTimeText, mediumTimeText, easyTimeText) = SpacedRepetitionAlgorithm.getButtonPreviews(currentProgress)
+
+                _uiState.update {
+                    it.copy(
+                        currentConcept = currentConcept,
+                        currentWordIndex = currentQueueIndex,
+                        isCardFlipped = false,
+                        easyTimeText = easyTimeText,
+                        mediumTimeText = mediumTimeText,
+                        hardTimeText = hardTimeText
+                    )
+                }
+
+                DebugHelper.log("Word loaded: ${currentConcept.english} -> ${currentConcept.turkish}")
+
+            } catch (e: Exception) {
+                DebugHelper.logError("Load word exception", e)
+            }
+        }
+    }
+
+    /**
+     * ✅ Enhanced user response handling with immediate completion
+     */
+    private fun handleUserResponse(quality: Int) {
+        val concept = _uiState.value.currentConcept ?: return
+        val direction = _uiState.value.studyDirection
+
+        viewModelScope.launch {
+            try {
+                // Update word progress
+                val result = studyRepository.updateWordProgress(concept.id, direction, quality)
+
+                when (result) {
+                    is Result.Success -> {
+                        DebugHelper.log("Word progress updated: ${concept.english} with quality $quality")
+
+                        // Update session stats
+                        _uiState.update {
+                            it.copy(
+                                sessionWordsCount = it.sessionWordsCount + 1,
+                                correctAnswers = if (quality >= 2) it.correctAnswers + 1 else it.correctAnswers,
+                                isCardFlipped = false
+                            )
+                        }
+
+                        // ✅ CRITICAL FIX: Move to next immediately, check completion afterwards
+                        currentQueueIndex++
+
+                        // ✅ FIXED: Check if this was the last card BEFORE trying to load next
+                        if (currentQueueIndex >= studyQueue.size) {
+                            DebugHelper.log("🏁 Last card completed, checking for more learning cards...")
+
+                            // Check if there are more learning cards
+                            val learningCardsResult = studyRepository.getLearningCardsCount(direction)
+                            when (learningCardsResult) {
+                                is Result.Success -> {
+                                    if (learningCardsResult.data > 0) {
+                                        DebugHelper.log("🔄 Learning cards remain, reloading queue...")
+                                        reloadStudyQueue()
+                                    } else {
+                                        DebugHelper.log("🎉 No more learning cards, showing completion!")
+                                        // ✅ IMMEDIATE: Show completion state right away
+                                        _uiState.update {
+                                            it.copy(
+                                                currentConcept = null,
+                                                showEmptyQueueMessage = true,
+                                                isCardFlipped = false
+                                            )
+                                        }
+                                        completeSession()
+                                    }
+                                }
+                                is Result.Error -> {
+                                    DebugHelper.logError("Error checking learning cards", learningCardsResult.error)
+                                    // ✅ FALLBACK: Show completion on error
+                                    _uiState.update {
+                                        it.copy(
+                                            currentConcept = null,
+                                            showEmptyQueueMessage = true,
+                                            isCardFlipped = false
+                                        )
+                                    }
+                                    completeSession()
+                                }
+                            }
+                        } else {
+                            // Load next word in current queue
+                            loadNextWord()
+                        }
+                    }
+                    is Result.Error -> {
+                        DebugHelper.logError("Word progress update error", result.error)
+                        _effect.tryEmit(StudyEffect.ShowMessage("Kelime güncellenirken hata oluştu"))
+                    }
+                }
+            } catch (e: Exception) {
+                DebugHelper.logError("Handle user response exception", e)
+            }
+        }
+    }
+
     // ========== CARD ACTIONS ==========
 
     private fun flipCard() {
@@ -274,24 +459,50 @@ class StudyViewModel @Inject constructor(
         _uiState.update { it.copy(isCardFlipped = false) }
     }
 
-    // ========== TTS ACTIONS ==========
+    // ========== TTS ACTIONS (✅ FIXED) ==========
 
+    /**
+     * ✅ Fixed TTS implementation - Direct call instead of effect
+     */
     private fun playPronunciation() {
         val concept = _uiState.value.currentConcept
         if (concept != null && _uiState.value.isTtsEnabled) {
-            val textToSpeak = when (_uiState.value.studyDirection) {
-                StudyDirection.EN_TO_TR -> concept.english
-                StudyDirection.TR_TO_EN -> concept.turkish
+            val (textToSpeak, language) = when (_uiState.value.studyDirection) {
+                StudyDirection.EN_TO_TR -> concept.english to "en" // İngilizce kelimeyi oku
+                StudyDirection.TR_TO_EN -> concept.turkish to "tr" // Türkçe kelimeyi oku
             }
-            _effect.tryEmit(StudyEffect.SpeakText(textToSpeak))
+
+            // ✅ FIX: Direct TTS call instead of effect emission
+            if (textToSpeak.isNotEmpty()) {
+                textToSpeechManager.speak(textToSpeak, language)
+                DebugHelper.log("TTS: Speaking '$textToSpeak' in $language")
+            } else {
+                DebugHelper.log("TTS: Empty text, cannot speak")
+            }
+        } else {
+            DebugHelper.log("TTS: Cannot speak - concept: ${concept != null}, TTS enabled: ${_uiState.value.isTtsEnabled}")
         }
     }
 
     private fun stopTts() {
         textToSpeechManager.stop()
+        DebugHelper.log("TTS: Stopped")
     }
 
     // ========== SESSION MANAGEMENT ==========
+
+    private suspend fun startNewSession() {
+        when (val result = studyRepository.startStudySession(SessionType.MIXED)) {
+            is Result.Success -> {
+                currentSessionId = result.data
+                sessionStartTime = System.currentTimeMillis()
+                DebugHelper.log("Started new study session: $currentSessionId")
+            }
+            is Result.Error -> {
+                DebugHelper.logError("Session start error", result.error)
+            }
+        }
+    }
 
     private fun completeSession() {
         viewModelScope.launch {
@@ -318,6 +529,16 @@ class StudyViewModel @Inject constructor(
     private fun endCurrentSession() {
         completeSession()
         _effect.tryEmit(StudyEffect.NavigateToHome)
+    }
+
+    private fun loadDailyProgress() {
+        // Simplified daily progress loading
+        _uiState.update {
+            it.copy(
+                wordsStudiedToday = 0, // Will be updated as session progresses
+                dailyProgressPercentage = 0f
+            )
+        }
     }
 
     // ========== NAVIGATION ==========
@@ -349,185 +570,11 @@ class StudyViewModel @Inject constructor(
         }
     }
 
-    // ========== INITIALIZATION ==========
+    // ========== HELPER METHODS ==========
 
-    private fun loadInitialData() {
-        viewModelScope.launch {
-            try {
-                _uiState.update { it.copy(isLoading = true) }
-
-                // Get user preferences
-                val userStudyDirection = preferencesManager.getStudyDirection().first()
-                val dailyGoal = preferencesManager.getDailyGoal().first()
-                val ttsEnabled: Boolean = preferencesManager.isSoundEnabled().first()
-
-                // ✅ Map common enum to entity enum
-                val entityStudyDirection = when(userStudyDirection) {
-                    com.hocalingo.app.core.common.StudyDirection.EN_TO_TR ->
-                        com.hocalingo.app.core.database.entities.StudyDirection.EN_TO_TR
-                    com.hocalingo.app.core.common.StudyDirection.TR_TO_EN ->
-                        com.hocalingo.app.core.database.entities.StudyDirection.TR_TO_EN
-                    com.hocalingo.app.core.common.StudyDirection.MIXED ->
-                        com.hocalingo.app.core.database.entities.StudyDirection.EN_TO_TR // fallback
-                }
-
-                _uiState.update {
-                    it.copy(
-                        studyDirection = entityStudyDirection,
-                        dailyGoal = dailyGoal,
-                        isTtsEnabled = ttsEnabled
-                    )
-                }
-
-                // Load today's progress
-                loadDailyProgress()
-
-                // Load study queue
-                loadStudyQueue()
-
-            } catch (e: Exception) {
-                DebugHelper.logError("StudyViewModel initialization error", e)
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "Çalışma verileri yüklenirken hata oluştu: ${e.message}"
-                    )
-                }
-            }
-        }
-    }
-
-    private fun loadStudyQueue() {
-        viewModelScope.launch {
-            try {
-                _uiState.update { it.copy(isLoading = true, error = null) }
-
-                val direction = _uiState.value.studyDirection
-                DebugHelper.log("Loading study queue for direction: $direction")
-
-                when (val hasWordsResult = studyRepository.hasWordsToStudy(direction)) {
-                    is Result.Success -> {
-                        if (!hasWordsResult.data) {
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    isQueueEmpty = true,
-                                    showEmptyQueueMessage = true,
-                                    currentConcept = null,
-                                    error = null
-                                )
-                            }
-                            return@launch
-                        }
-                    }
-                    is Result.Error -> {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                error = "Kelime kontrolü hatası: ${hasWordsResult.error}"
-                            )
-                        }
-                        return@launch
-                    }
-                }
-
-                // Start new session
-                startNewSession()
-
-                // Load study queue
-                studyRepository.getStudyQueue(direction, limit = 20).collectLatest { queueData ->
-                    DebugHelper.log("Study queue received: ${queueData.size} words")
-
-                    if (queueData.isEmpty()) {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                isQueueEmpty = true,
-                                showEmptyQueueMessage = true,
-                                currentConcept = null,
-                                error = null
-                            )
-                        }
-                        return@collectLatest
-                    }
-
-                    // Convert ConceptWithTimingData to ConceptEntity
-                    val concepts = mutableListOf<ConceptEntity>()
-                    for (timingData in queueData) {
-                        when (val result = studyRepository.getConceptById(timingData.id)) {
-                            is Result.Success -> {
-                                result.data?.let { concepts.add(it) }
-                            }
-                            is Result.Error -> {
-                                DebugHelper.logError("Failed to get concept ${timingData.id}", result.error)
-                            }
-                        }
-                    }
-
-                    // Update queue
-                    studyQueue = concepts
-                    currentQueueIndex = 0
-
-                    DebugHelper.log("Queue loaded: ${studyQueue.size} words")
-
-                    if (studyQueue.isNotEmpty()) {
-                        loadNextWord()
-                    } else {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                isQueueEmpty = true,
-                                showEmptyQueueMessage = true,
-                                currentConcept = null,
-                                error = null
-                            )
-                        }
-                    }
-
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            totalWordsInQueue = studyQueue.size,
-                            hasWordsToStudy = studyQueue.isNotEmpty()
-                        )
-                    }
-                }
-
-            } catch (e: Exception) {
-                DebugHelper.logError("Study queue loading error", e)
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "Çalışma kuyruğu yüklenirken hata: ${e.message}"
-                    )
-                }
-            }
-        }
-    }
-
-    private suspend fun startNewSession() {
-        when (val result = studyRepository.startStudySession(SessionType.MIXED)) {
-            is Result.Success -> {
-                currentSessionId = result.data
-                sessionStartTime = System.currentTimeMillis()
-                DebugHelper.log("Started new study session: $currentSessionId")
-            }
-            is Result.Error -> {
-                DebugHelper.logError("Session start error", result.error)
-            }
-        }
-    }
-
-    private fun loadDailyProgress() {
-        // Simplified daily progress loading - no external dependency
-        _uiState.update {
-            it.copy(
-                wordsStudiedToday = 0, // Will be updated as session progresses
-                dailyProgressPercentage = 0f
-            )
-        }
-    }
-
+    /**
+     * Create default progress for new words
+     */
     private fun createDefaultProgress(conceptId: Int, direction: StudyDirection) =
         com.hocalingo.app.core.database.entities.WordProgressEntity(
             conceptId = conceptId,
@@ -542,4 +589,25 @@ class StudyViewModel @Inject constructor(
             learningPhase = true,
             sessionPosition = 1
         )
+
+    /**
+     * Format interval for display
+     */
+    private fun formatIntervalText(intervalDays: Float): String {
+        return when {
+            intervalDays < 1f -> "${(intervalDays * 24 * 60).toInt()} dk"
+            intervalDays < 2f -> "${(intervalDays * 24).toInt()} saat"
+            intervalDays < 30f -> "${intervalDays.toInt()} gün"
+            intervalDays < 365f -> "${(intervalDays / 30).toInt()} ay"
+            else -> "${(intervalDays / 365).toInt()} yıl"
+        }
+    }
+
+    // ========== CLEANUP ==========
+
+    override fun onCleared() {
+        super.onCleared()
+        textToSpeechManager.stop() // Stop TTS when ViewModel is cleared
+        DebugHelper.log("StudyViewModel cleared")
+    }
 }

@@ -56,14 +56,14 @@ private fun DeckInfoRow(
     ) {
         // Toplam deck kartları
         DeckInfoItem(
-            label = "Deck'te Toplam",
+            label = "Destedeki Kelime",
             value = totalCards.toString(),
             color = Color(0xFF44A08D)
         )
 
         // Mastered kartlar
         DeckInfoItem(
-            label = "Tamamlanan",
+            label = "Öğrenilen Kelime",
             value = masteredCards.toString(),
             color = Color(0xFF4CAF50)
         )

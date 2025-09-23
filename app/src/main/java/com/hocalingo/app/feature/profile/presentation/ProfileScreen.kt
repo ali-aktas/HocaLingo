@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -30,20 +31,29 @@ import com.hocalingo.app.core.common.ThemeMode
 import com.hocalingo.app.feature.profile.domain.WordSummary
 import kotlinx.coroutines.flow.collectLatest
 
-// Poppins font family - modern, clean
+// Poppins font family - enhanced with Black weight
 private val PoppinsFontFamily = FontFamily(
     Font(R.font.poppins_regular, FontWeight.Normal),
     Font(R.font.poppins_medium, FontWeight.Medium),
-    Font(R.font.poppins_bold, FontWeight.Bold)
+    Font(R.font.poppins_bold, FontWeight.Bold),
+    Font(R.font.poppins_black, FontWeight.Black)
 )
 
+// AI Assistant Style enum for UI display
+enum class AIAssistantStyle(val displayName: String) {
+    FRIENDLY("Samimi"),
+    MOTIVATIONAL("Motivasyonel"),
+    PROFESSIONAL("Profesyonel")
+}
+
 /**
- * Profile Screen - Modern, Performance Optimized
- * ✅ No top bar - space efficient
- * ✅ Card-based design matching home screen
- * ✅ Small, clean fonts
- * ✅ 5 words preview + "View More"
- * ✅ Settings toggles
+ * Profile Screen - Modern, Gradient Design
+ * ✅ Settings card moved to top
+ * ✅ Motivation notifications toggle added
+ * ✅ Sound setting removed
+ * ✅ AI Assistant Style added
+ * ✅ Settings header with Poppins Black
+ * ✅ Selected words card moved to bottom
  */
 @Composable
 fun ProfileScreen(
@@ -52,6 +62,9 @@ fun ProfileScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    // Local state for AI style selection (temporary - will be connected to ViewModel later)
+    var currentAIStyle by remember { mutableStateOf(AIAssistantStyle.FRIENDLY) }
 
     // Handle effects
     LaunchedEffect(Unit) {
@@ -77,43 +90,49 @@ fun ProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            contentPadding = PaddingValues(20.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
 
-            // Welcome Header
+            // Settings Header - Poppins Black
             item {
-                WelcomeHeader(
-                    userName = uiState.userName,
-                    onRefresh = { viewModel.onEvent(ProfileEvent.RefreshData) }
+                Text(
+                    text = "Ayarlar",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Black,
+                    fontSize = 24.sp,
+                    color = Color(0xFF2C3E50),
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
-            // Quick Stats Row
+            // Modern Settings Card - Now at the top
             item {
-                QuickStatsRow(uiState = uiState)
+                ModernSettingsCard(
+                    uiState = uiState,
+                    currentAIStyle = currentAIStyle,
+                    onEvent = viewModel::onEvent,
+                    onAIStyleChange = { newStyle -> currentAIStyle = newStyle }
+                )
             }
 
-            // Selected Words Card
+            // Quick Stats Row - Gradient Cards
             item {
-                SelectedWordsCard(
-                    words = uiState.selectedWordsPreview,
+                ModernStatsRow(uiState = uiState)
+            }
+
+            // Compact Selected Words Card - Now at the bottom
+            item {
+                CompactSelectedWordsCard(
+                    words = uiState.selectedWordsPreview.take(5), // Max 5 words
                     totalCount = uiState.totalWordsCount,
                     onViewMore = { viewModel.onEvent(ProfileEvent.ViewAllWords) }
                 )
             }
 
-            // Settings Section
-            item {
-                SettingsCard(
-                    uiState = uiState,
-                    onEvent = viewModel::onEvent
-                )
-            }
-
             // Bottom spacing for navigation
             item {
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(20.dp))
             }
         }
 
@@ -132,212 +151,210 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun WelcomeHeader(
-    userName: String,
-    onRefresh: () -> Unit
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Profil 👤",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    color = Color(0xFF2C3E50)
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Merhaba, $userName!",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
-                    color = Color(0xFF6C7B8A)
-                )
-            }
-
-            IconButton(onClick = onRefresh) {
-                Icon(
-                    imageVector = Icons.Filled.Refresh,
-                    contentDescription = "Yenile",
-                    tint = Color(0xFF4ECDC4),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun QuickStatsRow(uiState: ProfileUiState) {
+private fun ModernStatsRow(uiState: ProfileUiState) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Streak
-        StatCard(
+        // Streak - Fire gradient
+        GradientStatCard(
             title = "Streak",
             value = "${uiState.userStats.currentStreak}",
             subtitle = "gün",
             icon = Icons.Filled.LocalFireDepartment,
-            color = Color(0xFFFF5722),
+            gradient = Brush.linearGradient(
+                colors = listOf(
+                    Color(0xFFFF6B35),
+                    Color(0xFFFF8E53)
+                )
+            ),
             modifier = Modifier.weight(1f)
         )
 
-        // Words Studied Today
-        StatCard(
+        // Words Studied Today - Teal gradient (matching bottom nav)
+        GradientStatCard(
             title = "Bugün",
             value = "${uiState.userStats.wordsStudiedToday}",
             subtitle = "kelime",
             icon = Icons.Filled.TrendingUp,
-            color = Color(0xFF4ECDC4),
+            gradient = Brush.linearGradient(
+                colors = listOf(
+                    Color(0xFF4ECDC4),
+                    Color(0xFF44A08D)
+                )
+            ),
             modifier = Modifier.weight(1f)
         )
 
-        // Mastered Words
-        StatCard(
+        // Mastered Words - Gold gradient
+        GradientStatCard(
             title = "Öğrenilen",
             value = "${uiState.userStats.masteredWordsCount}",
             subtitle = "toplam",
             icon = Icons.Filled.EmojiEvents,
-            color = Color(0xFFFFD700),
+            gradient = Brush.linearGradient(
+                colors = listOf(
+                    Color(0xFFFFD700),
+                    Color(0xFFFFA500)
+                )
+            ),
             modifier = Modifier.weight(1f)
         )
     }
 }
 
 @Composable
-private fun StatCard(
+private fun GradientStatCard(
     title: String,
     value: String,
     subtitle: String,
     icon: ImageVector,
-    color: Color,
+    gradient: Brush,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier,
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(gradient)
+                .padding(16.dp)
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = color,
-                modifier = Modifier.size(20.dp)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = value,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                color = Color(0xFF2C3E50)
-            )
-            Text(
-                text = title,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 10.sp,
-                color = Color(0xFF6C7B8A)
-            )
-            Text(
-                text = subtitle,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Normal,
-                fontSize = 9.sp,
-                color = Color(0xFF9E9E9E)
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = value,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Color.White
+                )
+                Text(
+                    text = title,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 11.sp,
+                    color = Color.White.copy(alpha = 0.9f)
+                )
+                Text(
+                    text = subtitle,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 10.sp,
+                    color = Color.White.copy(alpha = 0.8f)
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun SelectedWordsCard(
+private fun CompactSelectedWordsCard(
     words: List<WordSummary>,
     totalCount: Int,
     onViewMore: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(20.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        text = "Seçili Kelimeler 📚",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color(0xFF2C3E50)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color(0xFFF36D25),
+                            Color(0xFF9F6ADB)
+                        )
                     )
-                    Text(
-                        text = "$totalCount kelime seçili",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 12.sp,
-                        color = Color(0xFF6C7B8A)
-                    )
-                }
-
-                TextButton(
-                    onClick = onViewMore,
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = Color(0xFF4ECDC4)
-                    )
-                ) {
-                    Text(
-                        text = "Daha fazla",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 12.sp
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            if (words.isEmpty()) {
-                Text(
-                    text = "Henüz kelime seçmediniz.",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 12.sp,
-                    color = Color(0xFF9E9E9E),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
                 )
-            } else {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(30.dp)
+        ) {
+            Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    words.take(5).forEach { word ->
-                        WordItem(word = word)
+                    Column {
+                        Text(
+                            text = "📚 Seçili Kelimeler",
+                            fontFamily = PoppinsFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = Color.White
+                        )
+                        Text(
+                            text = "$totalCount kelime toplam",
+                            fontFamily = PoppinsFontFamily,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 12.sp,
+                            color = Color.White.copy(alpha = 0.8f)
+                        )
+                    }
+
+                    TextButton(
+                        onClick = onViewMore,
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = "Daha fazla →",
+                            fontFamily = PoppinsFontFamily,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 12.sp
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if (words.isEmpty()) {
+                    Text(
+                        text = "Henüz kelime seçmediniz.\nPaket seçimi yaparak başlayın! 🚀",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 14.sp,
+                        color = Color.White.copy(alpha = 0.9f),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                } else {
+                    // Show first 5 words in compact format
+                    words.forEach { word ->
+                        CompactWordItem(word = word)
+                        if (word != words.last()) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
+                    }
+
+                    if (totalCount > 5) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "ve ${totalCount - 5} kelime daha...",
+                            fontFamily = PoppinsFontFamily,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 11.sp,
+                            color = Color.White.copy(alpha = 0.7f),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     }
                 }
             }
@@ -346,173 +363,148 @@ private fun SelectedWordsCard(
 }
 
 @Composable
-private fun WordItem(word: WordSummary) {
+private fun CompactWordItem(word: WordSummary) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                Color(0xFFF8FAFA),
+                Color.White.copy(alpha = 0.1f),
                 RoundedCornerShape(12.dp)
             )
             .padding(12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = word.english,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 13.sp,
-                color = Color(0xFF2C3E50)
-            )
-            Text(
-                text = word.turkish,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Normal,
-                fontSize = 11.sp,
-                color = Color(0xFF6C7B8A)
-            )
-        }
+        Text(
+            text = word.english,
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 14.sp,
+            color = Color.White,
+            modifier = Modifier.weight(1f)
+        )
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text(
-                text = word.level,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 9.sp,
-                color = Color(0xFF9E9E9E)
-            )
+        Text(
+            text = "→",
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 12.sp,
+            color = Color.White.copy(alpha = 0.6f),
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
 
-            if (word.isMastered) {
-                Icon(
-                    imageVector = Icons.Filled.CheckCircle,
-                    contentDescription = "Öğrenildi",
-                    tint = Color(0xFF4CAF50),
-                    modifier = Modifier.size(14.dp)
-                )
-            }
-        }
+        Text(
+            text = word.turkish,
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 13.sp,
+            color = Color.White.copy(alpha = 0.9f),
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.End
+        )
     }
 }
 
 @Composable
-private fun SettingsCard(
+private fun ModernSettingsCard(
     uiState: ProfileUiState,
-    onEvent: (ProfileEvent) -> Unit
+    currentAIStyle: AIAssistantStyle,
+    onEvent: (ProfileEvent) -> Unit,
+    onAIStyleChange: (AIAssistantStyle) -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(20.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color(0xFF11998e),
+                            Color(0xFF38ef7d)
+                        )
+                    )
+                )
+                .padding(20.dp)
         ) {
-            Text(
-                text = "Ayarlar ⚙️",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                color = Color(0xFF2C3E50)
-            )
+            Column {
+                Text(
+                    text = "⚙️ Ayarlar",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // Theme Setting
-            SettingItem(
-                title = "Tema",
-                subtitle = uiState.themeModeText,
-                icon = Icons.Outlined.Palette,
-                onClick = {
-                    val nextTheme = when (uiState.themeMode) {
-                        ThemeMode.SYSTEM -> ThemeMode.LIGHT
-                        ThemeMode.LIGHT -> ThemeMode.DARK
-                        ThemeMode.DARK -> ThemeMode.SYSTEM
+                // Study Direction Toggle
+                SettingToggleItem(
+                    title = "Çalışma Yönü",
+                    subtitle = if (uiState.studyDirection == StudyDirection.EN_TO_TR) "İngilizce → Türkçe" else "Türkçe → İngilizce",
+                    icon = Icons.Filled.SwapHoriz,
+                    onClick = {
+                        val newDirection = if (uiState.studyDirection == StudyDirection.EN_TO_TR) StudyDirection.TR_TO_EN else StudyDirection.EN_TO_TR
+                        onEvent(ProfileEvent.UpdateStudyDirection(newDirection))
                     }
-                    onEvent(ProfileEvent.UpdateThemeMode(nextTheme))
-                }
-            )
+                )
 
-            // Study Direction Setting
-            SettingItem(
-                title = "Çalışma Yönü",
-                subtitle = uiState.studyDirectionText,
-                icon = Icons.Outlined.SwapHoriz,
-                onClick = {
-                    val nextDirection = when (uiState.studyDirection) {
-                        StudyDirection.EN_TO_TR -> StudyDirection.TR_TO_EN
-                        StudyDirection.TR_TO_EN -> StudyDirection.MIXED
-                        StudyDirection.MIXED -> StudyDirection.EN_TO_TR
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Motivation Notifications Toggle - NEW
+                SettingToggleItem(
+                    title = "Motivasyon Bildirimleri",
+                    subtitle = if (uiState.notificationsEnabled) "Açık" else "Kapalı",
+                    icon = if (uiState.notificationsEnabled) Icons.Filled.Notifications else Icons.Filled.NotificationsOff,
+                    onClick = {
+                        // Will be connected to ViewModel later
+                        // onEvent(ProfileEvent.UpdateNotifications(!uiState.notificationsEnabled))
                     }
-                    onEvent(ProfileEvent.UpdateStudyDirection(nextDirection))
-                }
-            )
+                )
 
-            // Notifications Setting
-            SettingToggleItem(
-                title = "Motivasyon Bildirimleri",
-                subtitle = if (uiState.notificationsEnabled) "Açık" else "Kapalı",
-                icon = Icons.Outlined.Notifications,
-                checked = uiState.notificationsEnabled,
-                onCheckedChange = { enabled ->
-                    onEvent(ProfileEvent.UpdateNotifications(enabled))
-                }
-            )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // AI Assistant Style Toggle - NEW
+                SettingToggleItem(
+                    title = "Yapay Zeka Tarzı",
+                    subtitle = currentAIStyle.displayName,
+                    icon = Icons.Filled.Psychology,
+                    onClick = {
+                        val nextStyle = when (currentAIStyle) {
+                            AIAssistantStyle.FRIENDLY -> AIAssistantStyle.MOTIVATIONAL
+                            AIAssistantStyle.MOTIVATIONAL -> AIAssistantStyle.PROFESSIONAL
+                            AIAssistantStyle.PROFESSIONAL -> AIAssistantStyle.FRIENDLY
+                        }
+                        onAIStyleChange(nextStyle)
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Theme Toggle
+                SettingToggleItem(
+                    title = "Tema",
+                    subtitle = when (uiState.themeMode) {
+                        ThemeMode.LIGHT -> "Açık"
+                        ThemeMode.DARK -> "Koyu"
+                        ThemeMode.SYSTEM -> "Sistem"
+                    },
+                    icon = Icons.Filled.Palette,
+                    onClick = {
+                        val newTheme = when (uiState.themeMode) {
+                            ThemeMode.LIGHT -> ThemeMode.DARK
+                            ThemeMode.DARK -> ThemeMode.SYSTEM
+                            ThemeMode.SYSTEM -> ThemeMode.LIGHT
+                        }
+                        onEvent(ProfileEvent.UpdateThemeMode(newTheme))
+                    }
+                )
+            }
         }
-    }
-}
-
-@Composable
-private fun SettingItem(
-    title: String,
-    subtitle: String,
-    icon: ImageVector,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = Color(0xFF4ECDC4),
-            modifier = Modifier.size(20.dp)
-        )
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = title,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 13.sp,
-                color = Color(0xFF2C3E50)
-            )
-            Text(
-                text = subtitle,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Normal,
-                fontSize = 11.sp,
-                color = Color(0xFF6C7B8A)
-            )
-        }
-
-        Icon(
-            imageVector = Icons.Filled.ChevronRight,
-            contentDescription = null,
-            tint = Color(0xFF9E9E9E),
-            modifier = Modifier.size(16.dp)
-        )
     }
 }
 
@@ -521,19 +513,23 @@ private fun SettingToggleItem(
     title: String,
     subtitle: String,
     icon: ImageVector,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .background(
+                Color.White.copy(alpha = 0.1f),
+                RoundedCornerShape(12.dp)
+            )
+            .clickable { onClick() }
+            .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = Color(0xFF4ECDC4),
+            tint = Color.White,
             modifier = Modifier.size(20.dp)
         )
 
@@ -544,27 +540,23 @@ private fun SettingToggleItem(
                 text = title,
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Medium,
-                fontSize = 13.sp,
-                color = Color(0xFF2C3E50)
+                fontSize = 14.sp,
+                color = Color.White
             )
             Text(
                 text = subtitle,
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Normal,
-                fontSize = 11.sp,
-                color = Color(0xFF6C7B8A)
+                fontSize = 12.sp,
+                color = Color.White.copy(alpha = 0.8f)
             )
         }
 
-        Switch(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                checkedTrackColor = Color(0xFF4ECDC4),
-                uncheckedThumbColor = Color.White,
-                uncheckedTrackColor = Color(0xFFE0E0E0)
-            )
+        Icon(
+            imageVector = Icons.Filled.ChevronRight,
+            contentDescription = null,
+            tint = Color.White.copy(alpha = 0.6f),
+            modifier = Modifier.size(16.dp)
         )
     }
 }

@@ -20,11 +20,11 @@
     <string name="close">Kapat</string>
 
     <!-- Navigation -->
-    <string name="nav_home">Ana Sayfa</string>
-    <string name="nav_study">Çalışma</string>
-    <string name="nav_add_word">Kelime Ekle</string>
     <string name="nav_ai_assistant">AI Asistan</string>
-    <string name="nav_profile">Profil</string>
+    <string name="nav_home">Ana Sayfa</string>
+    <string name="nav_study">Çalış</string>
+    <string name="nav_add_word">Ekle</string>
+    <string name="nav_profile">Ayarlar</string>
 
     <!-- Authentication -->
     <string name="auth_title">Başlamak için giriş yapın</string>
