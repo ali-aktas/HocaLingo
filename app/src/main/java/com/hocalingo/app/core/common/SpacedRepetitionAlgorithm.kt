@@ -3,25 +3,18 @@ package com.hocalingo.app.core.common
 import com.hocalingo.app.core.database.entities.WordProgressEntity
 import kotlin.math.max
 import kotlin.math.min
+import com.hocalingo.app.core.database.entities.StudyDirection
 
 /**
- * SM-2 Spaced Repetition Algorithm - HYBRID LEARNING + REVIEW APPROACH
+ * SM-2 Spaced Repetition Algorithm - IMPROVED HYBRID VERSION
  *
- * MAJOR UPDATE: Implements session-based learning + time-based review
- *
- * LEARNING PHASE (stays in session):
- * - Hard → Back of current session queue
- * - Medium → Back of current session queue
- * - Easy (1st time) → Back of current session queue
- *
- * REVIEW PHASE (time-based):
- * - Easy (2nd+ time) → 1+ days → Real time scheduling
- *
- * USER EXPERIENCE:
- * ✅ Session never becomes empty (learning cards cycle)
- * ✅ Cards graduate only when user demonstrates mastery
- * ✅ Button texts remain same (time is invisible to user)
- * ✅ Progress bar only increases when cards graduate
+ * CHATGPT İYİLEŞTİRMELERİ UYGULANMIŞ:
+ * ✅ Dynamic GOOD progression (reps arttıkça artış büyür)
+ * ✅ Conservative EASY graduation (2 gün başlangıç)
+ * ✅ Lateness correction (gecikme penaltısı)
+ * ✅ Failures recovery system (3 başarı sonrası failures azalır)
+ * ✅ Success streak tracking
+ * ✅ Improved SM-2 quality mapping
  */
 object SpacedRepetitionAlgorithm {
 
@@ -31,13 +24,13 @@ object SpacedRepetitionAlgorithm {
     const val QUALITY_EASY = 3      // "Kolay" button - perfect recall
 
     // Learning phase intervals (for button display only - cards stay in session)
-    private const val LEARNING_HARD_INTERVAL_MINUTES = 5
-    private const val LEARNING_MEDIUM_INTERVAL_MINUTES = 10
-    private const val LEARNING_EASY_INTERVAL_MINUTES = 15
+    private const val LEARNING_HARD_INTERVAL_MINUTES = 10
+    private const val LEARNING_MEDIUM_INTERVAL_MINUTES = 1440  // 1 gün
+    private const val LEARNING_EASY_INTERVAL_MINUTES = 4320   // 3 gün
 
-    // Graduation thresholds
-    private const val MIN_REPETITIONS_TO_GRADUATE = 2    // Need 2+ easy responses to graduate
-    private const val GRADUATION_INTERVAL_DAYS = 1f     // First review after graduation: 1 day
+    // Graduation thresholds - IMPROVED
+    private const val MIN_REPETITIONS_TO_GRADUATE = 2
+    private const val GRADUATION_INTERVAL_DAYS = 2f     // CHATGPT: Conservative 2 days (was 1)
 
     // Standard intervals in days for Review Phase
     private const val SECOND_REVIEW_INTERVAL_DAYS = 3f
@@ -48,13 +41,12 @@ object SpacedRepetitionAlgorithm {
     private const val MAX_EASE_FACTOR = 2.5f
     private const val DEFAULT_EASE_FACTOR = 2.5f
 
+    // NEW: Recovery system constants
+    private const val SUCCESS_STREAK_TO_RECOVER = 3  // 3 başarı sonrası failures azalır
+    private const val MAX_INTERVAL_DAYS = 730f       // 2 yıl cap
+
     /**
-     * Calculate next review based on user response quality - HYBRID VERSION
-     *
-     * @param currentProgress Current WordProgressEntity
-     * @param quality User response quality (1=Hard, 2=Medium, 3=Easy)
-     * @param currentSessionMaxPosition Current max position in session (for ordering)
-     * @return Updated WordProgressEntity with learning/review phase management
+     * Calculate next review based on user response quality - IMPROVED HYBRID VERSION
      */
     fun calculateNextReview(
         currentProgress: WordProgressEntity,
@@ -63,39 +55,45 @@ object SpacedRepetitionAlgorithm {
     ): WordProgressEntity {
         val currentTime = System.currentTimeMillis()
 
-        com.hocalingo.app.core.common.DebugHelper.log(
-            "🔥 HYBRID SM-2: quality=$quality, currentReps=${currentProgress.repetitions}, " +
-                    "learningPhase=${currentProgress.learningPhase}, sessionPos=${currentProgress.sessionPosition}"
+        DebugHelper.log(
+            "🔥 IMPROVED HYBRID SM-2: quality=$quality, currentReps=${currentProgress.repetitions}, " +
+                    "learningPhase=${currentProgress.learningPhase}, failures=${currentProgress.failures ?: 0}, " +
+                    "successStreak=${currentProgress.successStreak ?: 0}"
         )
+
+        // IMPROVED: Calculate lateness if applicable
+        val latenessDays = if (currentProgress.nextReviewAt > 0) {
+            calculateLateness(currentProgress.nextReviewAt, currentTime)
+        } else 0f
 
         val result = when {
             // LEARNING PHASE RESPONSES
-            currentProgress.learningPhase -> handleLearningPhaseResponse(
+            currentProgress.learningPhase -> handleImprovedLearningPhase(
                 currentProgress, quality, currentTime, currentSessionMaxPosition
             )
 
             // REVIEW PHASE RESPONSES
-            else -> handleReviewPhaseResponse(
-                currentProgress, quality, currentTime
+            else -> handleImprovedReviewPhase(
+                currentProgress, quality, currentTime, latenessDays
             )
         }
 
         // Debug log result
         val phaseText = if (result.learningPhase) "LEARNING" else "REVIEW"
         val timeText = getTimeUntilReview(result.nextReviewAt)
-        com.hocalingo.app.core.common.DebugHelper.log(
-            "✅ HYBRID RESULT: $phaseText phase, reps=${result.repetitions}, " +
-                    "sessionPos=${result.sessionPosition}, timeText='$timeText'"
+        DebugHelper.log(
+            "✅ IMPROVED RESULT: $phaseText phase, reps=${result.repetitions}, " +
+                    "failures=${result.failures}, successStreak=${result.successStreak}, " +
+                    "interval=${result.intervalDays}d, timeText='$timeText'"
         )
 
         return result
     }
 
     /**
-     * Handle responses during Learning Phase
-     * Cards stay in session until graduation
+     * IMPROVED: Handle responses during Learning Phase with better tracking
      */
-    private fun handleLearningPhaseResponse(
+    private fun handleImprovedLearningPhase(
         currentProgress: WordProgressEntity,
         quality: Int,
         currentTime: Long,
@@ -104,7 +102,7 @@ object SpacedRepetitionAlgorithm {
 
         return when (quality) {
             QUALITY_HARD -> {
-                com.hocalingo.app.core.common.DebugHelper.log("🔴 LEARNING HARD: Reset progress, back of session")
+                DebugHelper.log("🔴 LEARNING HARD: Reset progress, increase failures")
 
                 currentProgress.copy(
                     repetitions = 0, // Reset learning progress
@@ -112,50 +110,54 @@ object SpacedRepetitionAlgorithm {
                     easeFactor = max(MIN_EASE_FACTOR, currentProgress.easeFactor - 0.2f),
                     nextReviewAt = currentTime + (LEARNING_HARD_INTERVAL_MINUTES * 60 * 1000),
                     lastReviewAt = currentTime,
-                    learningPhase = true, // Stay in learning
-                    sessionPosition = currentSessionMaxPosition + 1, // Back of queue
+                    learningPhase = true,
+                    sessionPosition = currentSessionMaxPosition + 1,
+                    failures = (currentProgress.failures ?: 0) + 1, // IMPROVED: Track failures
+                    successStreak = 0, // IMPROVED: Reset success streak
                     isMastered = false,
                     updatedAt = currentTime
                 )
             }
 
             QUALITY_MEDIUM -> {
-                com.hocalingo.app.core.common.DebugHelper.log("🟡 LEARNING MEDIUM: Small progress, back of session")
+                DebugHelper.log("🟡 LEARNING MEDIUM: Small progress")
 
                 currentProgress.copy(
                     repetitions = currentProgress.repetitions + 1,
                     intervalDays = LEARNING_MEDIUM_INTERVAL_MINUTES / (24f * 60f),
-                    easeFactor = max(MIN_EASE_FACTOR, currentProgress.easeFactor - 0.1f),
+                    easeFactor = currentProgress.easeFactor, // No change for medium
                     nextReviewAt = currentTime + (LEARNING_MEDIUM_INTERVAL_MINUTES * 60 * 1000),
                     lastReviewAt = currentTime,
-                    learningPhase = true, // Stay in learning
-                    sessionPosition = currentSessionMaxPosition + 1, // Back of queue
-                    isMastered = false,
+                    learningPhase = true,
+                    sessionPosition = currentSessionMaxPosition + 1,
+                    successStreak = (currentProgress.successStreak ?: 0) + 1, // IMPROVED: Track success
                     updatedAt = currentTime
                 )
             }
 
             QUALITY_EASY -> {
                 val newRepetitions = currentProgress.repetitions + 1
+                val newSuccessStreak = (currentProgress.successStreak ?: 0) + 1
 
                 if (newRepetitions >= MIN_REPETITIONS_TO_GRADUATE) {
-                    // GRADUATION! Move to review phase
-                    com.hocalingo.app.core.common.DebugHelper.log("🎓 GRADUATING: Moving to review phase with 1 day interval")
+                    // GRADUATION - IMPROVED: 2 days conservative start
+                    DebugHelper.log("🎓 GRADUATING: Moving to review phase with 2 day interval")
 
                     currentProgress.copy(
                         repetitions = newRepetitions,
-                        intervalDays = GRADUATION_INTERVAL_DAYS,
-                        easeFactor = min(MAX_EASE_FACTOR, currentProgress.easeFactor + 0.1f),
+                        intervalDays = GRADUATION_INTERVAL_DAYS, // IMPROVED: 2 days
+                        easeFactor = min(MAX_EASE_FACTOR, currentProgress.easeFactor + 0.12f),
                         nextReviewAt = currentTime + (GRADUATION_INTERVAL_DAYS * 24 * 60 * 60 * 1000).toLong(),
                         lastReviewAt = currentTime,
-                        learningPhase = false, // GRADUATE to review phase
-                        sessionPosition = null, // No longer in session queue
+                        learningPhase = false, // GRADUATE
+                        sessionPosition = null,
+                        successStreak = newSuccessStreak,
                         isMastered = false,
                         updatedAt = currentTime
                     )
                 } else {
-                    // Still learning, back of session
-                    com.hocalingo.app.core.common.DebugHelper.log("🟢 LEARNING EASY: Progress made, back of session")
+                    // Still learning
+                    DebugHelper.log("🟢 LEARNING EASY: Progress made, back of session")
 
                     currentProgress.copy(
                         repetitions = newRepetitions,
@@ -163,34 +165,34 @@ object SpacedRepetitionAlgorithm {
                         easeFactor = min(MAX_EASE_FACTOR, currentProgress.easeFactor + 0.1f),
                         nextReviewAt = currentTime + (LEARNING_EASY_INTERVAL_MINUTES * 60 * 1000),
                         lastReviewAt = currentTime,
-                        learningPhase = true, // Stay in learning
-                        sessionPosition = currentSessionMaxPosition + 1, // Back of queue
-                        isMastered = false,
+                        learningPhase = true,
+                        sessionPosition = currentSessionMaxPosition + 1,
+                        successStreak = newSuccessStreak,
                         updatedAt = currentTime
                     )
                 }
             }
 
             else -> {
-                com.hocalingo.app.core.common.DebugHelper.logError("Invalid quality score: $quality", Exception())
+                DebugHelper.logError("Invalid quality score: $quality", Exception())
                 currentProgress
             }
         }
     }
 
     /**
-     * Handle responses during Review Phase
-     * Standard SM-2 algorithm with time-based scheduling
+     * IMPROVED: Handle responses during Review Phase with dynamic progression & recovery
      */
-    private fun handleReviewPhaseResponse(
+    private fun handleImprovedReviewPhase(
         currentProgress: WordProgressEntity,
         quality: Int,
-        currentTime: Long
+        currentTime: Long,
+        latenessDays: Float
     ): WordProgressEntity {
 
         return when (quality) {
             QUALITY_HARD -> {
-                com.hocalingo.app.core.common.DebugHelper.log("🔴 REVIEW HARD: Back to learning phase")
+                DebugHelper.log("🔴 REVIEW HARD: Back to learning phase")
 
                 // Failed review → Back to learning phase
                 currentProgress.copy(
@@ -200,66 +202,158 @@ object SpacedRepetitionAlgorithm {
                     nextReviewAt = currentTime + (LEARNING_HARD_INTERVAL_MINUTES * 60 * 1000),
                     lastReviewAt = currentTime,
                     learningPhase = true, // Back to learning
-                    sessionPosition = 1, // Front of session (immediate retry)
+                    sessionPosition = 1, // Front of session
+                    failures = (currentProgress.failures ?: 0) + 1, // IMPROVED: Track failures
+                    successStreak = 0, // IMPROVED: Reset success streak
                     isMastered = false,
                     updatedAt = currentTime
                 )
             }
 
             QUALITY_MEDIUM -> {
-                com.hocalingo.app.core.common.DebugHelper.log("🟡 REVIEW MEDIUM: Short review interval")
+                DebugHelper.log("🟡 REVIEW MEDIUM: Dynamic progression")
+
+                val newRepetitions = currentProgress.repetitions + 1
+                val newSuccessStreak = (currentProgress.successStreak ?: 0) + 1
+
+                // IMPROVED: Dynamic multiplier for MEDIUM - starts at 1.20, increases with reps
+                val additional = min(0.4f, 0.05f * currentProgress.repetitions)
+                val multiplier = 1.20f + additional
+
+                val baseInterval = max(1f, currentProgress.intervalDays)
+                val calculatedInterval = baseInterval * multiplier
+
+                // IMPROVED: Apply lateness correction
+                val adjustedInterval = applyLatenessCorrection(calculatedInterval, latenessDays)
+                val finalInterval = min(adjustedInterval, MAX_INTERVAL_DAYS)
+
+                // IMPROVED: Failures recovery system
+                val (newFailures, finalSuccessStreak) = applyFailuresRecovery(
+                    currentProgress.failures ?: 0,
+                    newSuccessStreak
+                )
 
                 currentProgress.copy(
-                    repetitions = currentProgress.repetitions + 1,
-                    intervalDays = 1f, // 1 day
-                    easeFactor = max(MIN_EASE_FACTOR, currentProgress.easeFactor - 0.1f),
-                    nextReviewAt = currentTime + (24 * 60 * 60 * 1000),
+                    repetitions = newRepetitions,
+                    intervalDays = finalInterval,
+                    easeFactor = updateEaseFactor(currentProgress.easeFactor, 4), // SM-2 quality 4
+                    nextReviewAt = currentTime + (finalInterval * 24 * 60 * 60 * 1000).toLong(),
                     lastReviewAt = currentTime,
-                    learningPhase = false, // Stay in review
+                    learningPhase = false,
                     sessionPosition = null,
-                    isMastered = false,
+                    failures = newFailures,
+                    successStreak = finalSuccessStreak,
+                    isMastered = finalInterval >= 30f && newRepetitions >= 5,
                     updatedAt = currentTime
                 )
             }
 
             QUALITY_EASY -> {
-                com.hocalingo.app.core.common.DebugHelper.log("🟢 REVIEW EASY: Standard SM-2 progression")
+                DebugHelper.log("🟢 REVIEW EASY: Aggressive but controlled progression")
 
                 val newRepetitions = currentProgress.repetitions + 1
-                val newEaseFactor = min(MAX_EASE_FACTOR, currentProgress.easeFactor + 0.1f)
+                val newSuccessStreak = (currentProgress.successStreak ?: 0) + 1
+                val newEaseFactor = updateEaseFactor(currentProgress.easeFactor, 5) // SM-2 quality 5
 
-                val intervalDays = when (newRepetitions) {
-                    3 -> SECOND_REVIEW_INTERVAL_DAYS  // 3 days
-                    4 -> THIRD_REVIEW_INTERVAL_DAYS   // 7 days
-                    else -> currentProgress.intervalDays * newEaseFactor // Exponential growth
+                val baseInterval = max(1f, currentProgress.intervalDays)
+                val calculatedInterval = when (newRepetitions) {
+                    3 -> SECOND_REVIEW_INTERVAL_DAYS
+                    4 -> THIRD_REVIEW_INTERVAL_DAYS
+                    else -> {
+                        // IMPROVED: Controlled EF multiplier (cap at 2.0 to prevent explosion)
+                        val efMultiplier = min(newEaseFactor, 2.0f)
+                        baseInterval * efMultiplier
+                    }
                 }
 
-                val nextReviewTime = currentTime + (intervalDays * 24 * 60 * 60 * 1000).toLong()
-                val isMastered = newRepetitions >= 5 && intervalDays >= 30f
+                // IMPROVED: Apply lateness correction
+                val adjustedInterval = applyLatenessCorrection(calculatedInterval, latenessDays)
+                val finalInterval = min(adjustedInterval, MAX_INTERVAL_DAYS)
+
+                // IMPROVED: Failures recovery system
+                val (newFailures, finalSuccessStreak) = applyFailuresRecovery(
+                    currentProgress.failures ?: 0,
+                    newSuccessStreak
+                )
 
                 currentProgress.copy(
                     repetitions = newRepetitions,
-                    intervalDays = intervalDays,
+                    intervalDays = finalInterval,
                     easeFactor = newEaseFactor,
-                    nextReviewAt = nextReviewTime,
+                    nextReviewAt = currentTime + (finalInterval * 24 * 60 * 60 * 1000).toLong(),
                     lastReviewAt = currentTime,
-                    learningPhase = false, // Stay in review
+                    learningPhase = false,
                     sessionPosition = null,
-                    isMastered = isMastered,
+                    failures = newFailures,
+                    successStreak = finalSuccessStreak,
+                    isMastered = finalInterval >= 30f && newRepetitions >= 5,
                     updatedAt = currentTime
                 )
             }
 
             else -> {
-                com.hocalingo.app.core.common.DebugHelper.logError("Invalid quality score: $quality", Exception())
+                DebugHelper.logError("Invalid quality score: $quality", Exception())
                 currentProgress
             }
         }
     }
 
+    // ==================== NEW HELPER FUNCTIONS ====================
+
+    /**
+     * IMPROVED: Calculate lateness in days (gentle approach)
+     */
+    private fun calculateLateness(scheduledTime: Long, currentTime: Long): Float {
+        if (currentTime <= scheduledTime) return 0f
+        val delayMs = currentTime - scheduledTime
+        return delayMs / (24 * 60 * 60 * 1000f)
+    }
+
+    /**
+     * IMPROVED: Apply gentle lateness correction with gradual penalties
+     */
+    private fun applyLatenessCorrection(intervalDays: Float, latenessDays: Float): Float {
+        if (latenessDays <= 0f) return intervalDays
+
+        val safeInterval = max(0.0001f, intervalDays)
+        val delayRatio = latenessDays / safeInterval
+
+        val factor = when {
+            delayRatio <= 1.0f -> 1.0f   // On time or slight delay - no change
+            delayRatio <= 2.0f -> 0.85f  // 2x late → 15% reduction
+            delayRatio <= 3.0f -> 0.7f   // 3x late → 30% reduction
+            else -> 0.5f                 // Very late → 50% reduction
+        }
+
+        return intervalDays * factor
+    }
+
+    /**
+     * IMPROVED: Proper SM-2 ease factor update formula
+     */
+    private fun updateEaseFactor(currentEF: Float, quality: Int): Float {
+        // Original SM-2 formula
+        val newEF = currentEF + (0.1f - (5 - quality) * (0.08f + (5 - quality) * 0.02f))
+        return max(MIN_EASE_FACTOR, min(newEF, MAX_EASE_FACTOR))
+    }
+
+    /**
+     * IMPROVED: Failures recovery system - 3 successful reviews reduce failures by 1
+     */
+    private fun applyFailuresRecovery(currentFailures: Int, newSuccessStreak: Int): Pair<Int, Int> {
+        return if (newSuccessStreak >= SUCCESS_STREAK_TO_RECOVER && currentFailures > 0) {
+            val reducedFailures = max(0, currentFailures - 1)
+            val resetStreak = 0 // Reset counter after recovery
+            Pair(reducedFailures, resetStreak)
+        } else {
+            Pair(currentFailures, newSuccessStreak)
+        }
+    }
+
+    // ==================== EXISTING FUNCTIONS (unchanged) ====================
+
     /**
      * Get human-readable time description for next review
-     * (Same as before - button texts unchanged)
      */
     fun getTimeUntilReview(nextReviewAt: Long): String {
         val currentTime = System.currentTimeMillis()
@@ -288,13 +382,12 @@ object SpacedRepetitionAlgorithm {
     }
 
     /**
-     * Create initial WordProgressEntity for a newly selected concept
-     * Starts in learning phase
+     * Create initial WordProgressEntity for new concepts
      */
     fun createInitialProgress(
         conceptId: Int,
-        direction: com.hocalingo.app.core.database.entities.StudyDirection,
-        sessionPosition: Int = 1
+        direction: StudyDirection,
+        sessionPosition: Int
     ): WordProgressEntity {
         val currentTime = System.currentTimeMillis()
 
@@ -304,47 +397,51 @@ object SpacedRepetitionAlgorithm {
             repetitions = 0,
             intervalDays = 0f,
             easeFactor = DEFAULT_EASE_FACTOR,
-            nextReviewAt = currentTime, // Available immediately
+            nextReviewAt = currentTime,
             lastReviewAt = null,
             isSelected = true,
             isMastered = false,
-            learningPhase = true, // Start in learning phase
-            sessionPosition = sessionPosition, // Position in session queue
+            learningPhase = true, // Start in learning
+            sessionPosition = sessionPosition,
+            failures = 0, // IMPROVED: Initialize failures
+            successStreak = 0, // IMPROVED: Initialize success streak
             createdAt = currentTime,
             updatedAt = currentTime
         )
     }
 
     /**
-     * Get study priority score for sorting - UPDATED FOR HYBRID
+     * Calculate study priority for session ordering
      */
     fun getStudyPriority(progress: WordProgressEntity, currentTime: Long): Int {
-        return when {
-            // Learning cards: prioritize by session position
-            progress.learningPhase && progress.sessionPosition != null -> {
-                1000 - progress.sessionPosition // Lower position = higher priority
-            }
+        // Learning cards have highest priority
+        if (progress.learningPhase) {
+            return Int.MAX_VALUE - (progress.sessionPosition ?: 0)
+        }
 
-            // Review cards: prioritize by overdue time
-            !progress.learningPhase -> {
-                val overdueDays = ((currentTime - progress.nextReviewAt) / (24 * 60 * 60 * 1000f)).toInt()
-                when {
-                    overdueDays > 0 -> 500 + overdueDays // Overdue reviews
-                    else -> 100 - overdueDays // Future reviews
-                }
-            }
-
-            // Fallback
-            else -> 50
+        // Review cards prioritized by how overdue they are
+        val timeDifference = currentTime - progress.nextReviewAt
+        return if (timeDifference > 0) {
+            (timeDifference / (1000 * 60 * 60)).toInt() // Hours overdue
+        } else {
+            0
         }
     }
 
     /**
-     * Utility: Check if card should graduate (move to review phase)
+     * Get button preview texts (for UI)
      */
-    fun shouldGraduate(progress: WordProgressEntity, quality: Int): Boolean {
-        return progress.learningPhase &&
-                quality == QUALITY_EASY &&
-                progress.repetitions + 1 >= MIN_REPETITIONS_TO_GRADUATE
+    fun getButtonPreviews(progress: WordProgressEntity): Triple<String, String, String> {
+        val mockResults = listOf(
+            calculateNextReview(progress, QUALITY_HARD),
+            calculateNextReview(progress, QUALITY_MEDIUM),
+            calculateNextReview(progress, QUALITY_EASY)
+        )
+
+        return Triple(
+            getTimeUntilReview(mockResults[0].nextReviewAt),
+            getTimeUntilReview(mockResults[1].nextReviewAt),
+            getTimeUntilReview(mockResults[2].nextReviewAt)
+        )
     }
 }

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "28db7fbea60cdeb5d075cf15f05b1d6b",
+    "identityHash": "b6e4d9b133817fcfa72ecd21818ad2dd",
     "entities": [
       {
         "tableName": "concepts",
@@ -109,7 +109,7 @@
       },
       {
         "tableName": "word_progress",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`concept_id` INTEGER NOT NULL, `direction` TEXT NOT NULL, `repetitions` INTEGER NOT NULL, `interval_days` REAL NOT NULL, `ease_factor` REAL NOT NULL, `next_review_at` INTEGER NOT NULL, `last_review_at` INTEGER, `is_selected` INTEGER NOT NULL, `is_mastered` INTEGER NOT NULL, `learning_phase` INTEGER NOT NULL, `session_position` INTEGER, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`concept_id`, `direction`), FOREIGN KEY(`concept_id`) REFERENCES `concepts`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`concept_id` INTEGER NOT NULL, `direction` TEXT NOT NULL, `repetitions` INTEGER NOT NULL, `interval_days` REAL NOT NULL, `ease_factor` REAL NOT NULL, `next_review_at` INTEGER NOT NULL, `last_review_at` INTEGER, `is_selected` INTEGER NOT NULL, `is_mastered` INTEGER NOT NULL, `learning_phase` INTEGER NOT NULL, `session_position` INTEGER, `failures` INTEGER, `success_streak` INTEGER, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`concept_id`, `direction`), FOREIGN KEY(`concept_id`) REFERENCES `concepts`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "conceptId",
@@ -174,6 +174,18 @@
           {
             "fieldPath": "sessionPosition",
             "columnName": "session_position",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "failures",
+            "columnName": "failures",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "successStreak",
+            "columnName": "success_streak",
             "affinity": "INTEGER",
             "notNull": false
           },
@@ -623,7 +635,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '28db7fbea60cdeb5d075cf15f05b1d6b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b6e4d9b133817fcfa72ecd21818ad2dd')"
     ]
   }
 }

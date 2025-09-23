@@ -71,6 +71,20 @@ data class WordProgressEntity(
     @ColumnInfo(name = "session_position")
     val sessionPosition: Int? = null,
 
+    /**
+     * NEW: Failure tracking for algorithm improvements
+     * Counts consecutive failures for leech detection
+     */
+    @ColumnInfo(name = "failures")
+    val failures: Int? = 0,
+
+    /**
+     * NEW: Success streak tracking for recovery system
+     * Counts consecutive successful reviews for failure recovery
+     */
+    @ColumnInfo(name = "success_streak")
+    val successStreak: Int? = 0,
+
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis(),
 

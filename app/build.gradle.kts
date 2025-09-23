@@ -90,6 +90,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.3")
     implementation("androidx.activity:activity-compose:1.10.1")
 
+    // Testing
+    testImplementation("junit:junit:4.13.2")
+
     // ✅ SPLASH SCREEN
     implementation("androidx.core:core-splashscreen:1.0.1")
 
