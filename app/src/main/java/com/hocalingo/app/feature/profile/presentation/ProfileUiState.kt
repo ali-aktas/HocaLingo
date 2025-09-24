@@ -6,8 +6,10 @@ import com.hocalingo.app.feature.profile.domain.UserStats
 import com.hocalingo.app.feature.profile.domain.WordSummary
 
 /**
- * Profile UI State
- * Modern, clean state management for profile screen
+ * Profile UI State - Enhanced with BottomSheet Support
+ * ✅ Modern, clean state management for profile screen
+ * ✅ BottomSheet state management for selected words
+ * ✅ Pagination support for large word lists
  */
 data class ProfileUiState(
     val isLoading: Boolean = false,
@@ -19,6 +21,14 @@ data class ProfileUiState(
     // Selected words preview (5 words max)
     val selectedWordsPreview: List<WordSummary> = emptyList(),
     val totalWordsCount: Int = 0,
+
+    // BottomSheet state for all selected words
+    val showWordsBottomSheet: Boolean = false,
+    val allSelectedWords: List<WordSummary> = emptyList(),
+    val isLoadingAllWords: Boolean = false,
+    val wordsLoadingError: String? = null,
+    val currentWordsPage: Int = 0,
+    val hasMoreWords: Boolean = true,
 
     // User statistics
     val userStats: UserStats = UserStats(
@@ -73,4 +83,14 @@ data class ProfileUiState(
         ThemeMode.DARK -> "Koyu Tema"
         ThemeMode.SYSTEM -> "Sistem Teması"
     }
+
+    /**
+     * Total words loaded in BottomSheet for display
+     */
+    val totalWordsLoaded: Int get() = allSelectedWords.size
+
+    /**
+     * Check if we can load more words
+     */
+    val canLoadMoreWords: Boolean get() = hasMoreWords && !isLoadingAllWords
 }

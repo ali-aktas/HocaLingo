@@ -4,15 +4,22 @@ import com.hocalingo.app.core.common.StudyDirection
 import com.hocalingo.app.core.common.ThemeMode
 
 /**
- * Profile Events - Complete & Clean
+ * Profile Events - Enhanced with BottomSheet Support
  * ✅ All user interactions
  * ✅ Notification support
- * ✅ No duplicate declarations
+ * ✅ BottomSheet management for selected words
+ * ✅ Pagination support
  */
 sealed interface ProfileEvent {
     // Navigation Events
     data object ViewAllWords : ProfileEvent
     data object Refresh : ProfileEvent
+
+    // BottomSheet Events
+    data object ShowWordsBottomSheet : ProfileEvent
+    data object HideWordsBottomSheet : ProfileEvent
+    data object LoadMoreWords : ProfileEvent
+    data object RefreshAllWords : ProfileEvent
 
     // Settings Events
     data class UpdateThemeMode(val themeMode: ThemeMode) : ProfileEvent
@@ -23,10 +30,11 @@ sealed interface ProfileEvent {
 }
 
 /**
- * Profile Effects - Complete & Clean
+ * Profile Effects - Enhanced with BottomSheet Support
  * ✅ Navigation effects
  * ✅ User feedback effects
  * ✅ Notification-specific effects
+ * ✅ BottomSheet effects
  */
 sealed interface ProfileEffect {
     // Navigation Effects
@@ -40,4 +48,9 @@ sealed interface ProfileEffect {
     data object RequestNotificationPermission : ProfileEffect
     data object ShowNotificationPermissionDialog : ProfileEffect
     data class ShowNotificationScheduled(val time: String) : ProfileEffect
+
+    // BottomSheet Effects
+    data object ShowWordsBottomSheet : ProfileEffect
+    data object HideWordsBottomSheet : ProfileEffect
+    data class ShowWordsLoadError(val error: String) : ProfileEffect
 }

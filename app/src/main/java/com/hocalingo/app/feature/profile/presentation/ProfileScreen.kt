@@ -47,14 +47,153 @@ enum class AIAssistantStyle(val displayName: String) {
 }
 
 /**
- * Profile Screen - Modern, Gradient Design
+ * Profile Screen - Enhanced with BottomSheet Support
  * ✅ Settings card moved to top
  * ✅ Motivation notifications toggle added
  * ✅ Sound setting removed
  * ✅ AI Assistant Style added
  * ✅ Settings header with Poppins Black
  * ✅ Selected words card moved to bottom
+ * ✅ BottomSheet for all selected words with pagination
  */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProfileScreen(
+    onNavigateToWordsList: () -> Unit = {},
+    viewModel: ProfileViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Local state for AI style selection (temporary - will be connected to ViewModel later)
+    var currentAIStyle by remember { mutableStateOf(AIAssistantStyle.FRIENDLY) }
+
+    // BottomSheet state
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+
+    // Handle effects
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                ProfileEffect.NavigateToWordsList -> onNavigateToWordsList()
+                is ProfileEffect.ShowMessage -> {
+                    snackbarHostState.showSnackbar(effect.message)
+                }
+                is ProfileEffect.ShowError -> {
+                    snackbarHostState.showSnackbar(effect.error)
+                }
+                ProfileEffect.ShowWordsBottomSheet -> {
+                    // BottomSheet will be shown by state
+                }
+                ProfileEffect.HideWordsBottomSheet -> {
+                    // BottomSheet will be hidden by state
+                }
+                is ProfileEffect.ShowWordsLoadError -> {
+                    snackbarHostState.showSnackbar(effect.error)
+                }
+                // Notification effects - şimdilik boş implement
+                ProfileEffect.RequestNotificationPermission -> { /* TODO: Handle later */ }
+                ProfileEffect.ShowNotificationPermissionDialog -> { /* TODO: Handle later */ }
+                is ProfileEffect.ShowNotificationScheduled -> { /* TODO: Handle later */ }
+            }
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = Color(0xFFF8FAFA)
+    ) { paddingValues ->
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            contentPadding = PaddingValues(20.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+
+            // Settings Header - Poppins Black
+            item {
+                Text(
+                    text = "Ayarlar",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Black,
+                    fontSize = 24.sp,
+                    color = Color(0xFF2C3E50),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            // Modern Settings Card - Now at the top
+            item {
+                ModernSettingsCard(
+                    uiState = uiState,
+                    currentAIStyle = currentAIStyle,
+                    onEvent = viewModel::onEvent,
+                    onAIStyleChange = { newStyle -> currentAIStyle = newStyle }
+                )
+            }
+
+            // Quick Stats Row - Gradient Cards
+            item {
+                ModernStatsRow(uiState = uiState)
+            }
+
+            // Compact Selected Words Card - Now at the bottom with BottomSheet trigger
+            item {
+                CompactSelectedWordsCard(
+                    words = uiState.selectedWordsPreview.take(5), // Max 5 words
+                    totalCount = uiState.totalWordsCount,
+                    onViewMore = { viewModel.onEvent(ProfileEvent.ViewAllWords) }
+                )
+            }
+
+            // Bottom spacing for navigation
+            item {
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+        }
+
+        // Loading overlay
+        if (uiState.isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = Color(0xFF4ECDC4)
+                )
+            }
+        }
+    }
+
+    // Words BottomSheet
+    if (uiState.showWordsBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                viewModel.onEvent(ProfileEvent.HideWordsBottomSheet)
+            },
+            sheetState = bottomSheetState,
+            containerColor = Color.Transparent,
+            contentColor = Color.White,
+            dragHandle = null
+        ) {
+            WordsBottomSheet(
+                words = uiState.allSelectedWords,
+                totalCount = uiState.totalWordsCount,
+                isLoading = uiState.isLoadingAllWords,
+                canLoadMore = uiState.canLoadMoreWords,
+                error = uiState.wordsLoadingError,
+                onLoadMore = { viewModel.onEvent(ProfileEvent.LoadMoreWords) },
+                onRefresh = { viewModel.onEvent(ProfileEvent.RefreshAllWords) },
+                onDismiss = { viewModel.onEvent(ProfileEvent.HideWordsBottomSheet) }
+            )
+        }
+    }
+}
+
 @Composable
 private fun SettingSwitchItem(
     title: String,
@@ -110,105 +249,6 @@ private fun SettingSwitchItem(
                 uncheckedTrackColor = Color.White.copy(alpha = 0.1f)
             )
         )
-    }
-}
-
-@Composable
-fun ProfileScreen(
-    onNavigateToWordsList: () -> Unit = {},
-    viewModel: ProfileViewModel = hiltViewModel()
-) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val snackbarHostState = remember { SnackbarHostState() }
-
-    // Local state for AI style selection (temporary - will be connected to ViewModel later)
-    var currentAIStyle by remember { mutableStateOf(AIAssistantStyle.FRIENDLY) }
-
-    // Handle effects
-    LaunchedEffect(Unit) {
-        viewModel.effect.collectLatest { effect ->
-            when (effect) {
-                ProfileEffect.NavigateToWordsList -> onNavigateToWordsList()
-                is ProfileEffect.ShowMessage -> {
-                    snackbarHostState.showSnackbar(effect.message)
-                }
-                is ProfileEffect.ShowError -> {
-                    snackbarHostState.showSnackbar(effect.error)
-                }
-                // ✅ Yeni effect'ler - şimdilik boş implement
-                ProfileEffect.RequestNotificationPermission -> { /* TODO: Handle later */ }
-                ProfileEffect.ShowNotificationPermissionDialog -> { /* TODO: Handle later */ }
-                is ProfileEffect.ShowNotificationScheduled -> { /* TODO: Handle later */ }
-            }
-        }
-    }
-
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = Color(0xFFF8FAFA)
-    ) { paddingValues ->
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            contentPadding = PaddingValues(20.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-
-            // Settings Header - Poppins Black
-            item {
-                Text(
-                    text = "Ayarlar",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Black,
-                    fontSize = 24.sp,
-                    color = Color(0xFF2C3E50),
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-
-            // Modern Settings Card - Now at the top
-            item {
-                ModernSettingsCard(
-                    uiState = uiState,
-                    currentAIStyle = currentAIStyle,
-                    onEvent = viewModel::onEvent,
-                    onAIStyleChange = { newStyle -> currentAIStyle = newStyle }
-                )
-            }
-
-            // Quick Stats Row - Gradient Cards
-            item {
-                ModernStatsRow(uiState = uiState)
-            }
-
-            // Compact Selected Words Card - Now at the bottom
-            item {
-                CompactSelectedWordsCard(
-                    words = uiState.selectedWordsPreview.take(5), // Max 5 words
-                    totalCount = uiState.totalWordsCount,
-                    onViewMore = { viewModel.onEvent(ProfileEvent.ViewAllWords) }
-                )
-            }
-
-            // Bottom spacing for navigation
-            item {
-                Spacer(modifier = Modifier.height(20.dp))
-            }
-        }
-
-        // Loading overlay
-        if (uiState.isLoading) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    color = Color(0xFF4ECDC4)
-                )
-            }
-        }
     }
 }
 
@@ -329,7 +369,9 @@ private fun CompactSelectedWordsCard(
     onViewMore: () -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onViewMore() }, // Make entire card clickable
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -340,12 +382,12 @@ private fun CompactSelectedWordsCard(
                 .background(
                     brush = Brush.linearGradient(
                         colors = listOf(
-                            Color(0xFFF36D25),
-                            Color(0xFF9F6ADB)
+                            Color(0xFF667eea),
+                            Color(0xFF764ba2)
                         )
                     )
                 )
-                .padding(30.dp)
+                .padding(20.dp)
         ) {
             Column {
                 Row(
@@ -353,43 +395,28 @@ private fun CompactSelectedWordsCard(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
-                        Text(
-                            text = "📚 Seçili Kelimeler",
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            color = Color.White
-                        )
-                        Text(
-                            text = "$totalCount kelime toplam",
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 12.sp,
-                            color = Color.White.copy(alpha = 0.8f)
-                        )
-                    }
+                    Text(
+                        text = "📚 Seçili Kelimeler",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color.White
+                    )
 
-                    TextButton(
-                        onClick = onViewMore,
-                        colors = ButtonDefaults.textButtonColors(
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text(
-                            text = "Daha fazla →",
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 12.sp
-                        )
-                    }
+                    Text(
+                        text = "Tümünü Gör →",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 13.sp,
+                        color = Color.White.copy(alpha = 0.8f)
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 if (words.isEmpty()) {
                     Text(
-                        text = "Henüz kelime seçmediniz.\nPaket seçimi yaparak başlayın! 🚀",
+                        text = "Henüz kelime seçmedin 🚀",
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Normal,
                         fontSize = 14.sp,
@@ -509,18 +536,41 @@ private fun ModernSettingsCard(
                     title = "Çalışma Yönü",
                     subtitle = if (uiState.studyDirection == StudyDirection.EN_TO_TR) "İngilizce → Türkçe" else "Türkçe → İngilizce",
                     icon = Icons.Filled.SwapHoriz,
-                    onClick = {
-                        val newDirection = if (uiState.studyDirection == StudyDirection.EN_TO_TR) StudyDirection.TR_TO_EN else StudyDirection.EN_TO_TR
+                    isEnabled = true,
+                    onToggle = {
+                        val newDirection = if (uiState.studyDirection == StudyDirection.EN_TO_TR) {
+                            StudyDirection.TR_TO_EN
+                        } else {
+                            StudyDirection.EN_TO_TR
+                        }
                         onEvent(ProfileEvent.UpdateStudyDirection(newDirection))
                     }
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Motivation Notifications Toggle - ✅ SWITCH VERSION
+                // Theme Toggle
+                SettingToggleItem(
+                    title = "Tema Modu",
+                    subtitle = uiState.themeModeText,
+                    icon = Icons.Filled.Palette,
+                    isEnabled = true,
+                    onToggle = {
+                        val newTheme = when (uiState.themeMode) {
+                            ThemeMode.LIGHT -> ThemeMode.DARK
+                            ThemeMode.DARK -> ThemeMode.SYSTEM
+                            ThemeMode.SYSTEM -> ThemeMode.LIGHT
+                        }
+                        onEvent(ProfileEvent.UpdateThemeMode(newTheme))
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Notifications Toggle
                 SettingSwitchItem(
-                    title = "Motivasyon Bildirimleri",
-                    subtitle = "Günlük kelime hatırlatmaları",
+                    title = "Bildirimler",
+                    subtitle = "Günlük çalışma hatırlatması",
                     icon = Icons.Filled.Notifications,
                     isChecked = uiState.notificationsEnabled,
                     onCheckedChange = { enabled ->
@@ -530,40 +580,14 @@ private fun ModernSettingsCard(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // AI Assistant Style Toggle - NEW
-                SettingToggleItem(
-                    title = "Yapay Zeka Tarzı",
+                // AI Assistant Style (Future feature - placeholder)
+                SettingDropdownItem(
+                    title = "AI Asistan Stili",
                     subtitle = currentAIStyle.displayName,
                     icon = Icons.Filled.Psychology,
-                    onClick = {
-                        val nextStyle = when (currentAIStyle) {
-                            AIAssistantStyle.FRIENDLY -> AIAssistantStyle.MOTIVATIONAL
-                            AIAssistantStyle.MOTIVATIONAL -> AIAssistantStyle.PROFESSIONAL
-                            AIAssistantStyle.PROFESSIONAL -> AIAssistantStyle.FRIENDLY
-                        }
-                        onAIStyleChange(nextStyle)
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // Theme Toggle
-                SettingToggleItem(
-                    title = "Tema",
-                    subtitle = when (uiState.themeMode) {
-                        ThemeMode.LIGHT -> "Açık"
-                        ThemeMode.DARK -> "Koyu"
-                        ThemeMode.SYSTEM -> "Sistem"
-                    },
-                    icon = Icons.Filled.Palette,
-                    onClick = {
-                        val newTheme = when (uiState.themeMode) {
-                            ThemeMode.LIGHT -> ThemeMode.DARK
-                            ThemeMode.DARK -> ThemeMode.SYSTEM
-                            ThemeMode.SYSTEM -> ThemeMode.LIGHT
-                        }
-                        onEvent(ProfileEvent.UpdateThemeMode(newTheme))
-                    }
+                    options = AIAssistantStyle.entries,
+                    selectedOption = currentAIStyle,
+                    onOptionSelected = onAIStyleChange
                 )
             }
         }
@@ -575,7 +599,8 @@ private fun SettingToggleItem(
     title: String,
     subtitle: String,
     icon: ImageVector,
-    onClick: () -> Unit
+    isEnabled: Boolean,
+    onToggle: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -584,14 +609,14 @@ private fun SettingToggleItem(
                 Color.White.copy(alpha = 0.1f),
                 RoundedCornerShape(12.dp)
             )
-            .clickable { onClick() }
+            .clickable { if (isEnabled) onToggle() }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = Color.White,
+            tint = Color.White.copy(alpha = if (isEnabled) 1f else 0.5f),
             modifier = Modifier.size(20.dp)
         )
 
@@ -603,22 +628,110 @@ private fun SettingToggleItem(
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp,
-                color = Color.White
+                color = Color.White.copy(alpha = if (isEnabled) 1f else 0.5f)
             )
             Text(
                 text = subtitle,
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Normal,
                 fontSize = 12.sp,
-                color = Color.White.copy(alpha = 0.8f)
+                color = Color.White.copy(alpha = if (isEnabled) 0.8f else 0.4f)
             )
         }
 
         Icon(
-            imageVector = Icons.Filled.ChevronRight,
-            contentDescription = null,
-            tint = Color.White.copy(alpha = 0.6f),
-            modifier = Modifier.size(16.dp)
+            imageVector = Icons.Filled.ArrowForward,
+            contentDescription = "Değiştir",
+            tint = Color.White.copy(alpha = if (isEnabled) 0.7f else 0.3f),
+            modifier = Modifier.size(18.dp)
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SettingDropdownItem(
+    title: String,
+    subtitle: String,
+    icon: ImageVector,
+    options: List<AIAssistantStyle>,
+    selectedOption: AIAssistantStyle,
+    onOptionSelected: (AIAssistantStyle) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = it }
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    Color.White.copy(alpha = 0.1f),
+                    RoundedCornerShape(12.dp)
+                )
+                .clickable { expanded = true }
+                .menuAnchor()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(20.dp)
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    color = Color.White
+                )
+                Text(
+                    text = subtitle,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp,
+                    color = Color.White.copy(alpha = 0.8f)
+                )
+            }
+
+            Icon(
+                imageVector = if (expanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
+                contentDescription = if (expanded) "Kapat" else "Aç",
+                tint = Color.White.copy(alpha = 0.7f),
+                modifier = Modifier.size(20.dp)
+            )
+        }
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.background(Color.White)
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = option.displayName,
+                            fontFamily = PoppinsFontFamily,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 14.sp,
+                            color = if (option == selectedOption) Color(0xFF4ECDC4) else Color.Black
+                        )
+                    },
+                    onClick = {
+                        onOptionSelected(option)
+                        expanded = false
+                    }
+                )
+            }
+        }
     }
 }

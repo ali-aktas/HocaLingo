@@ -20,10 +20,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Profile ViewModel - Enhanced with Notification Management
+ * Profile ViewModel - Enhanced with BottomSheet Management
  * ✅ Modern Profile Management
  * ✅ Notification toggle with WorkManager integration
  * ✅ Settings management (theme, notifications, study direction)
+ * ✅ BottomSheet with pagination for selected words
  * ✅ Performance optimized data loading
  */
 @HiltViewModel
@@ -39,6 +40,11 @@ class ProfileViewModel @Inject constructor(
     private val _effect = MutableSharedFlow<ProfileEffect>()
     val effect: SharedFlow<ProfileEffect> = _effect.asSharedFlow()
 
+    // Pagination constants
+    private companion object {
+        const val WORDS_PER_PAGE = 20
+    }
+
     init {
         loadProfile()
     }
@@ -47,12 +53,19 @@ class ProfileViewModel @Inject constructor(
         when (event) {
             ProfileEvent.Refresh -> refreshData()
             ProfileEvent.ViewAllWords -> handleViewAllWords()
+
+            // BottomSheet Events
+            ProfileEvent.ShowWordsBottomSheet -> showWordsBottomSheet()
+            ProfileEvent.HideWordsBottomSheet -> hideWordsBottomSheet()
+            ProfileEvent.LoadMoreWords -> loadMoreWords()
+            ProfileEvent.RefreshAllWords -> refreshAllWords()
+
+            // Settings Events
             is ProfileEvent.UpdateThemeMode -> updateThemeMode(event.themeMode)
             is ProfileEvent.UpdateStudyDirection -> updateStudyDirection(event.direction)
             is ProfileEvent.UpdateNotifications -> updateNotifications(event.enabled)
             is ProfileEvent.UpdateNotificationTime -> updateNotificationTime(event.hour)
             is ProfileEvent.UpdateDailyGoal -> updateDailyGoal(event.goal)
-            else -> {}
         }
     }
 
@@ -136,9 +149,98 @@ class ProfileViewModel @Inject constructor(
         loadProfile()
     }
 
+    // BottomSheet Management Functions
     private fun handleViewAllWords() {
+        showWordsBottomSheet()
+    }
+
+    private fun showWordsBottomSheet() {
         viewModelScope.launch {
-            _effect.emit(ProfileEffect.NavigateToWordsList)
+            _uiState.update {
+                it.copy(
+                    showWordsBottomSheet = true,
+                    currentWordsPage = 0,
+                    allSelectedWords = emptyList(),
+                    hasMoreWords = true
+                )
+            }
+
+            // Load first page of words
+            loadWordsPage(0)
+
+            _effect.emit(ProfileEffect.ShowWordsBottomSheet)
+        }
+    }
+
+    private fun hideWordsBottomSheet() {
+        _uiState.update {
+            it.copy(
+                showWordsBottomSheet = false,
+                allSelectedWords = emptyList(),
+                wordsLoadingError = null,
+                isLoadingAllWords = false,
+                currentWordsPage = 0
+            )
+        }
+    }
+
+    private fun loadMoreWords() {
+        val currentState = _uiState.value
+        if (currentState.canLoadMoreWords) {
+            val nextPage = currentState.currentWordsPage + 1
+            loadWordsPage(nextPage)
+        }
+    }
+
+    private fun refreshAllWords() {
+        _uiState.update {
+            it.copy(
+                allSelectedWords = emptyList(),
+                currentWordsPage = 0,
+                hasMoreWords = true,
+                wordsLoadingError = null
+            )
+        }
+        loadWordsPage(0)
+    }
+
+    private fun loadWordsPage(page: Int) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoadingAllWords = true, wordsLoadingError = null) }
+
+            val offset = page * WORDS_PER_PAGE
+            when (val result = profileRepository.getSelectedWords(offset, WORDS_PER_PAGE)) {
+                is Result.Success -> {
+                    val newWords = result.data
+                    val hasMore = newWords.size == WORDS_PER_PAGE
+
+                    _uiState.update { currentState ->
+                        val updatedWords = if (page == 0) {
+                            newWords // First page, replace all
+                        } else {
+                            currentState.allSelectedWords + newWords // Append to existing
+                        }
+
+                        currentState.copy(
+                            allSelectedWords = updatedWords,
+                            isLoadingAllWords = false,
+                            currentWordsPage = page,
+                            hasMoreWords = hasMore,
+                            wordsLoadingError = null
+                        )
+                    }
+                }
+                is Result.Error -> {
+                    _uiState.update {
+                        it.copy(
+                            isLoadingAllWords = false,
+                            wordsLoadingError = "Kelimeler yüklenemedi",
+                            hasMoreWords = false
+                        )
+                    }
+                    _effect.emit(ProfileEffect.ShowWordsLoadError("Kelimeler yüklenemedi"))
+                }
+            }
         }
     }
 
@@ -176,7 +278,6 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    // ✅ NEW: Notification management
     private fun updateNotifications(enabled: Boolean) {
         viewModelScope.launch {
             // Check permission first if enabling
@@ -214,7 +315,6 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    // ✅ NEW: Notification time management
     private fun updateNotificationTime(hour: Int) {
         viewModelScope.launch {
             // Update schedule with new time
@@ -228,39 +328,7 @@ class ProfileViewModel @Inject constructor(
     private fun updateDailyGoal(goal: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(dailyGoal = goal) }
-            // Repository method will be added later
-            _effect.emit(ProfileEffect.ShowMessage("Günlük hedef $goal kelime olarak ayarlandı"))
-        }
-    }
-
-    /**
-     * Public method to refresh specific data sections
-     */
-    fun refreshUserStats() {
-        viewModelScope.launch {
-            val userStatsResult = profileRepository.getUserStats()
-            if (userStatsResult is Result.Success) {
-                _uiState.update { it.copy(userStats = userStatsResult.data) }
-            }
-        }
-    }
-
-    /**
-     * Public method to refresh selected words
-     */
-    fun refreshSelectedWords() {
-        viewModelScope.launch {
-            val selectedWordsResult = profileRepository.getSelectedWordsPreview()
-            val totalWordsResult = profileRepository.getTotalSelectedWordsCount()
-
-            if (selectedWordsResult is Result.Success && totalWordsResult is Result.Success) {
-                _uiState.update {
-                    it.copy(
-                        selectedWordsPreview = selectedWordsResult.data,
-                        totalWordsCount = totalWordsResult.data
-                    )
-                }
-            }
+            _effect.emit(ProfileEffect.ShowMessage("Günlük hedef güncellendi"))
         }
     }
 }

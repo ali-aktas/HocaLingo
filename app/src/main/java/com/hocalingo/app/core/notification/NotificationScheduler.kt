@@ -105,8 +105,8 @@ class NotificationScheduler @Inject constructor(
         val now = calendar.timeInMillis
 
         // Set to 1:35 AM (test time)
-        calendar.set(Calendar.HOUR_OF_DAY, 1)  // 1 AM
-        calendar.set(Calendar.MINUTE, 57)      // 35 minutes
+        calendar.set(Calendar.HOUR_OF_DAY, 20)  // 1 AM
+        calendar.set(Calendar.MINUTE, 43)      // 35 minutes
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
 
