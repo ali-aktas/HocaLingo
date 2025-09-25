@@ -44,8 +44,9 @@ private val PoppinsFontFamily = FontFamily(
     Font(R.font.poppins_black, FontWeight.Black)
 )
 
-// Modern card colors (10 şık renk - beyaz/gri/sarı hariç)
+// Modern card colors (20 şık renk - beyaz/gri/sarı hariç)
 private val cardColors = listOf(
+    // Mevcut renkler (korundu)
     Color(0xFF6366F1), // Indigo
     Color(0xFF8B5CF6), // Purple
     Color(0xFFEC4899), // Pink
@@ -55,7 +56,17 @@ private val cardColors = listOf(
     Color(0xFF06B6D4), // Cyan
     Color(0xFF3B82F6), // Blue
     Color(0xFF8B5A2B), // Brown
-    Color(0xFF059669)  // Green
+    Color(0xFF059669), // Green
+    Color(0xFF7C3AED), // Violet
+    Color(0xFFDC2626), // Rose Red
+    Color(0xFF0891B2), // Sky Blue
+    Color(0xFF065F46), // Forest Green
+    Color(0xFF7C2D12), // Rust
+    Color(0xFF1E40AF), // Royal Blue
+    Color(0xFF7E22CE), // Grape
+    Color(0xFF0F766E), // Teal
+    Color(0xFFA21CAF), // Magenta
+    Color(0xFF9A3412)  // Terracotta
 )
 
 /**

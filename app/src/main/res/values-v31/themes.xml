@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- themes.xml'e ekle -->
     <style name="SplashTheme" parent="Theme.HocaLingo">
         <item name="android:windowSplashScreenBackground">@color/splash_orange</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/hocalingo_icon_plane</item>
     </style>
-
-    <style name="Theme.HocaLingo" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>

@@ -30,6 +30,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hocalingo.app.R
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
+import com.hocalingo.app.core.ui.theme.ThemeViewModel
+import com.hocalingo.app.feature.home.presentation.HomeEvent
+import com.hocalingo.app.feature.home.presentation.HomeEffect
+import com.hocalingo.app.feature.home.presentation.HomeUiState
+import com.hocalingo.app.feature.home.presentation.HomeViewModel
+import com.hocalingo.app.feature.home.presentation.DailyGoalProgress
+import com.hocalingo.app.feature.home.presentation.MonthlyStats
 import kotlinx.coroutines.flow.collectLatest
 
 // Poppins font family
@@ -41,62 +48,13 @@ private val PoppinsFontFamily = FontFamily(
 )
 
 /**
- * Modern Home Dashboard Screen - v2.0
- * PackageSelection teması ile yeniden tasarlandı
+ * Modern Home Dashboard Screen - Theme-Aware Version
+ * ✅ Smart theme switching with beautiful dark mode
+ * ✅ Maintains gradient beauty in both themes
+ * ✅ Cards adapt to light/dark backgrounds
+ * ✅ Text colors theme-aware via MaterialTheme
  */
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun DeckInfoRow(
-    totalCards: Int,
-    masteredCards: Int
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        // Toplam deck kartları
-        DeckInfoItem(
-            label = "Destedeki Kelime",
-            value = totalCards.toString(),
-            color = Color(0xFF44A08D)
-        )
-
-        // Mastered kartlar
-        DeckInfoItem(
-            label = "Öğrenilen Kelime",
-            value = masteredCards.toString(),
-            color = Color(0xFF4CAF50)
-        )
-    }
-}
-
-@Composable
-private fun DeckInfoItem(
-    label: String,
-    value: String,
-    color: Color
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = value,
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            color = color
-        )
-        Text(
-            text = label,
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 12.sp,
-            color = Color(0xFF6C7B8A),
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
 @Composable
 fun HomeScreen(
     onNavigateToStudy: () -> Unit,
@@ -106,6 +64,10 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    // Get theme state for smart styling
+    val themeViewModel: ThemeViewModel = hiltViewModel()
+    val isDarkTheme = themeViewModel.shouldUseDarkTheme()
 
     // Handle effects
     LaunchedEffect(Unit) {
@@ -126,75 +88,63 @@ fun HomeScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = Color(0xFFF8FAFA) // Açık background
+        containerColor = MaterialTheme.colorScheme.background // Theme-aware background
     ) { paddingValues ->
-        Box(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .background(MaterialTheme.colorScheme.background) // Theme-aware
+                .padding(paddingValues),
+            contentPadding = PaddingValues(20.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            if (uiState.isLoading) {
-                LoadingState(modifier = Modifier.fillMaxSize())
-            } else {
-                HomeContent(
-                    uiState = uiState,
-                    onEvent = viewModel::onEvent
+
+            // Welcome Header
+            item {
+                WelcomeHeader(
+                    userName = uiState.userName,
+                    streakDays = uiState.streakDays,
+                    onRefresh = { viewModel.onEvent(HomeEvent.RefreshData) },
+                    isDarkTheme = isDarkTheme
                 )
             }
-        }
-    }
-}
 
-@Composable
-private fun HomeContent(
-    uiState: HomeUiState,
-    onEvent: (HomeEvent) -> Unit
-) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-        // Welcome Header with Streak
-        item {
-            WelcomeHeader(
-                userName = uiState.userName,
-                streakDays = uiState.streakDays,
-                onRefresh = { onEvent(HomeEvent.RefreshData) }
-            )
-        }
+            // Daily Goal Card
+            item {
+                DailyGoalCard(
+                    progress = uiState.dailyGoalProgress,
+                    onStartStudy = { viewModel.onEvent(HomeEvent.StartStudy) },
+                    isDarkTheme = isDarkTheme
+                )
+            }
 
-        // Daily Goal Progress
-        item {
-            DailyGoalCard(
-                progress = uiState.dailyGoalProgress,
-                onStartStudy = { onEvent(HomeEvent.StartStudy) }
-            )
-        }
+            // Package Selection Card (Theme-aware gradients)
+            item {
+                PackageSelectionCard(
+                    onNavigateToPackageSelection = { viewModel.onEvent(HomeEvent.NavigateToPackageSelection) },
+                    isDarkTheme = isDarkTheme
+                )
+            }
 
-        // Package Selection Card (Bugünkü kelimeler yerine)
-        item {
-            PackageSelectionCard(
-                onNavigateToPackageSelection = { onEvent(HomeEvent.NavigateToPackageSelection) }
-            )
-        }
+            // Monthly Stats
+            item {
+                MonthlyStatsCard(
+                    stats = uiState.monthlyStats,
+                    isDarkTheme = isDarkTheme
+                )
+            }
 
-        // Monthly Stats (Bu Hafta → Bu Ay)
-        item {
-            MonthlyStatsCard(
-                stats = uiState.monthlyStats
-            )
-        }
+            // AI Assistant Card (Theme-aware gradients)
+            item {
+                AIAssistantCard(
+                    onNavigateToAI = { viewModel.onEvent(HomeEvent.NavigateToAIAssistant) },
+                    isDarkTheme = isDarkTheme
+                )
+            }
 
-        // AI Assistant Card (Hızlı Eylemler yerine)
-        item {
-            AIAssistantCard(
-                onNavigateToAI = { onEvent(HomeEvent.NavigateToAIAssistant) }
-            )
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(32.dp))
+            item {
+                Spacer(modifier = Modifier.height(32.dp))
+            }
         }
     }
 }
@@ -203,12 +153,17 @@ private fun HomeContent(
 private fun WelcomeHeader(
     userName: String,
     streakDays: Int,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
+    isDarkTheme: Boolean
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = if (isDarkTheme) {
+                MaterialTheme.colorScheme.surface // Dark theme card
+            } else {
+                Color.White // Light theme card
+            }
         ),
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -228,7 +183,7 @@ private fun WelcomeHeader(
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
-                    color = Color(0xFF2C3E50)
+                    color = MaterialTheme.colorScheme.onSurface // Theme-aware text
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -239,7 +194,7 @@ private fun WelcomeHeader(
                     Icon(
                         imageVector = Icons.Filled.LocalFireDepartment,
                         contentDescription = null,
-                        tint = Color(0xFFFF5722),
+                        tint = if (isDarkTheme) Color(0xFFFF8A65) else Color(0xFFFF5722), // Theme-aware fire color
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -248,7 +203,7 @@ private fun WelcomeHeader(
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp,
-                        color = Color(0xFF6C7B8A)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant // Theme-aware subtitle
                     )
                 }
             }
@@ -257,14 +212,18 @@ private fun WelcomeHeader(
                 onClick = onRefresh,
                 modifier = Modifier
                     .background(
-                        color = Color(0xFF4ECDC4).copy(alpha = 0.1f),
+                        color = if (isDarkTheme) {
+                            Color(0xFF26C6DA).copy(alpha = 0.2f) // Dark theme teal
+                        } else {
+                            Color(0xFF4ECDC4).copy(alpha = 0.1f) // Light theme teal
+                        },
                         shape = CircleShape
                     )
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Refresh,
                     contentDescription = "Yenile",
-                    tint = Color(0xFF4ECDC4)
+                    tint = if (isDarkTheme) Color(0xFF26C6DA) else Color(0xFF4ECDC4) // Theme-aware teal
                 )
             }
         }
@@ -274,13 +233,18 @@ private fun WelcomeHeader(
 @Composable
 private fun DailyGoalCard(
     progress: DailyGoalProgress,
-    onStartStudy: () -> Unit
+    onStartStudy: () -> Unit,
+    isDarkTheme: Boolean
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = if (isDarkTheme) {
+                MaterialTheme.colorScheme.surface // Dark theme card
+            } else {
+                Color.White // Light theme card
+            }
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -297,14 +261,14 @@ private fun DailyGoalCard(
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = Color(0xFF2C3E50)
+                    color = MaterialTheme.colorScheme.onSurface // Theme-aware text
                 )
 
                 if (progress.isDailyGoalComplete) {
                     Icon(
                         imageVector = Icons.Filled.CheckCircle,
                         contentDescription = "Tamamlandı",
-                        tint = Color(0xFF4CAF50),
+                        tint = if (isDarkTheme) Color(0xFF66BB6A) else Color(0xFF4CAF50), // Theme-aware green
                         modifier = Modifier.size(24.dp)
                     )
                 }
@@ -312,33 +276,27 @@ private fun DailyGoalCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Günlük kartlar progress (sadece bu progress bar'lı)
-            ProgressItem(
-                title = "Günlük Kartlar",
+            // Günlük kartlar
+            DailyGoalProgressRow(
                 current = progress.todayCompletedCards,
                 total = progress.todayAvailableCards,
-                progress = progress.todayProgress,
-                color = Color(0xFF4ECDC4)
+                isDarkTheme = isDarkTheme
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Deck bilgisi (sadece sayılar, progress bar yok)
-            DeckInfoRow(
-                totalCards = progress.totalDeckCards,
-                masteredCards = progress.masteredDeckCards
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // Start Study Button
+            // Çalışmaya başla butonu
             Button(
                 onClick = onStartStudy,
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF00D4FF)
-                )
+                    containerColor = if (isDarkTheme) {
+                        Color(0xFFFB9322) // Dark theme orange
+                    } else {
+                        Color(0xFFFB9322) // Light theme orange
+                    }
+                ),
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -347,11 +305,12 @@ private fun DailyGoalCard(
                     Icon(
                         imageVector = Icons.Filled.PlayArrow,
                         contentDescription = null,
-                        tint = Color.White
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Çalışmaya Başla",
+                        text = if (progress.todayCompletedCards == 0) "Çalışmaya Başla" else "Devam Et",
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
@@ -364,24 +323,25 @@ private fun DailyGoalCard(
 }
 
 @Composable
-private fun ProgressItem(
-    title: String,
+private fun DailyGoalProgressRow(
     current: Int,
     total: Int,
-    progress: Float,
-    color: Color
+    isDarkTheme: Boolean
 ) {
+    val progress = if (total > 0) current.toFloat() / total.toFloat() else 0f
+    val color = if (isDarkTheme) Color(0xFF26C6DA) else Color(0xFF4ECDC4)
+
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = title,
+                text = "Bugün çalıştığın kelimeler",
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp,
-                color = Color(0xFF6C7B8A)
+                color = MaterialTheme.colorScheme.onSurfaceVariant // Theme-aware
             )
             Text(
                 text = "$current/$total",
@@ -414,7 +374,8 @@ private fun ProgressItem(
 
 @Composable
 private fun PackageSelectionCard(
-    onNavigateToPackageSelection: () -> Unit
+    onNavigateToPackageSelection: () -> Unit,
+    isDarkTheme: Boolean
 ) {
     Card(
         modifier = Modifier
@@ -422,7 +383,7 @@ private fun PackageSelectionCard(
             .clickable { onNavigateToPackageSelection() },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = Color.Transparent
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -431,7 +392,11 @@ private fun PackageSelectionCard(
                 .fillMaxWidth()
                 .background(
                     brush = Brush.linearGradient(
-                        colors = listOf(Color(0xFF43E97B), Color(0xFF38F9D7))
+                        colors = if (isDarkTheme) {
+                            listOf(Color(0xFF26A69A), Color(0xFF00897B)) // Dark theme green
+                        } else {
+                            listOf(Color(0xFF43E97B), Color(0xFF38F9D7)) // Light theme green
+                        }
                     ),
                     shape = RoundedCornerShape(20.dp)
                 )
@@ -452,8 +417,9 @@ private fun PackageSelectionCard(
                         fontSize = 18.sp,
                         color = Color.White
                     )
+                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Seviyene uygun paketleri keşfet",
+                        text = "Seviyene uygun kelime paketlerini keşfet",
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp,
@@ -462,167 +428,10 @@ private fun PackageSelectionCard(
                 }
 
                 Icon(
-                    imageVector = Icons.Filled.ChevronRight,
-                    contentDescription = null,
+                    imageVector = Icons.Outlined.ArrowForward,
+                    contentDescription = "Git",
                     tint = Color.White,
-                    modifier = Modifier.size(28.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun MonthlyStatsCard(
-    stats: MonthlyStats
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(20.dp)
-        ) {
-            Text(
-                text = "Bu Ay 📊",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                color = Color(0xFF2C3E50)
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Stats Row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                StatItem(
-                    title = "Süre",
-                    value = stats.studyTimeFormatted,
-                    icon = Icons.Outlined.AccessTime,
-                    color = Color(0xFF4ECDC4)
-                )
-                StatItem(
-                    title = "Aktif Gün",
-                    value = "${stats.activeDaysThisMonth}",
-                    icon = Icons.Outlined.CalendarToday,
-                    color = Color(0xFF44A08D)
-                )
-                StatItem(
-                    title = "Disiplin",
-                    value = "${stats.disciplineScore}%",
-                    icon = Icons.Outlined.EmojiEvents,
-                    color = Color(0xFF00D4FF)
-                )
-            }
-
-            if (stats.chartData.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Simple Chart
-                SimpleLineChart(
-                    data = stats.chartData,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(60.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun StatItem(
-    title: String,
-    value: String,
-    icon: ImageVector,
-    color: Color
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = color,
-            modifier = Modifier.size(24.dp)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = value,
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp,
-            color = Color(0xFF2C3E50)
-        )
-        Text(
-            text = title,
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 12.sp,
-            color = Color(0xFF6C7B8A)
-        )
-    }
-}
-
-@Composable
-private fun SimpleLineChart(
-    data: List<ChartDataPoint>,
-    modifier: Modifier = Modifier
-) {
-    // Simple bar chart using LinearProgressIndicator
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.Bottom
-    ) {
-        data.take(7).forEach { point ->
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.weight(1f)
-            ) {
-                // Bar
-                Box(
-                    modifier = Modifier
-                        .width(8.dp)
-                        .height(40.dp)
-                        .background(
-                            color = Color(0xFFE0E0E0),
-                            shape = RoundedCornerShape(4.dp)
-                        )
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(point.value)
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color(0xFF4ECDC4),
-                                        Color(0xFF44A08D)
-                                    )
-                                ),
-                                shape = RoundedCornerShape(4.dp)
-                            )
-                            .align(Alignment.BottomCenter)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                // Day label
-                Text(
-                    text = point.day,
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 10.sp,
-                    color = Color(0xFF6C7B8A)
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
@@ -631,7 +440,8 @@ private fun SimpleLineChart(
 
 @Composable
 private fun AIAssistantCard(
-    onNavigateToAI: () -> Unit
+    onNavigateToAI: () -> Unit,
+    isDarkTheme: Boolean
 ) {
     Card(
         modifier = Modifier
@@ -639,7 +449,7 @@ private fun AIAssistantCard(
             .clickable { onNavigateToAI() },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = Color.Transparent
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -648,7 +458,11 @@ private fun AIAssistantCard(
                 .fillMaxWidth()
                 .background(
                     brush = Brush.linearGradient(
-                        colors = listOf(Color(0xFF667eea), Color(0xFF764ba2))
+                        colors = if (isDarkTheme) {
+                            listOf(Color(0xFF7986CB), Color(0xFF5C6BC0)) // Dark theme purple
+                        } else {
+                            listOf(Color(0xFF667eea), Color(0xFF764ba2)) // Light theme purple
+                        }
                     ),
                     shape = RoundedCornerShape(20.dp)
                 )
@@ -669,8 +483,9 @@ private fun AIAssistantCard(
                         fontSize = 18.sp,
                         color = Color.White
                     )
+                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Sorularınız için yapay zeka desteği",
+                        text = "Kişisel öğrenme yardımcın hazır",
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp,
@@ -679,10 +494,10 @@ private fun AIAssistantCard(
                 }
 
                 Icon(
-                    imageVector = Icons.Filled.Psychology,
-                    contentDescription = null,
+                    imageVector = Icons.Outlined.Psychology,
+                    contentDescription = "AI",
                     tint = Color.White,
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
@@ -690,29 +505,102 @@ private fun AIAssistantCard(
 }
 
 @Composable
-private fun LoadingState(
-    modifier: Modifier = Modifier
+private fun MonthlyStatsCard(
+    stats: MonthlyStats,
+    isDarkTheme: Boolean
 ) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isDarkTheme) {
+                MaterialTheme.colorScheme.surface // Dark theme card
+            } else {
+                Color.White // Light theme card
+            }
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            modifier = Modifier.padding(20.dp)
         ) {
-            CircularProgressIndicator(
-                color = Color(0xFF4ECDC4)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Dashboard yükleniyor...",
+                text = "Bu Ay 📈",
                 fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-                color = Color(0xFF6C7B8A)
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                color = MaterialTheme.colorScheme.onSurface // Theme-aware text
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                // Çalışılan günler
+                MonthlyStatItem(
+                    label = "Aktif Gün",
+                    value = stats.activeDaysThisMonth.toString(),
+                    color = if (isDarkTheme) Color(0xFFFF8A65) else Color(0xFFFF5722),
+                    icon = Icons.Filled.CalendarToday
+                )
+
+                // Çalışma süresi
+                MonthlyStatItem(
+                    label = "Çalışma Süresi",
+                    value = stats.studyTimeFormatted,
+                    color = if (isDarkTheme) Color(0xFF66BB6A) else Color(0xFF4CAF50),
+                    icon = Icons.Filled.Schedule
+                )
+
+                // Disiplin puanı
+                MonthlyStatItem(
+                    label = "Disiplin",
+                    value = "${stats.disciplineScore}",
+                    color = if (isDarkTheme) Color(0xFF26C6DA) else Color(0xFF4ECDC4),
+                    icon = Icons.Filled.TrendingUp
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun MonthlyStatItem(
+    label: String,
+    value: String,
+    color: Color,
+    icon: ImageVector
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = color,
+            modifier = Modifier.size(20.dp)
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = value,
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            color = color
+        )
+
+        Text(
+            text = label,
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant, // Theme-aware text
+            textAlign = TextAlign.Center
+        )
     }
 }
 

@@ -113,9 +113,9 @@ fun HocaBottomNavigationBar(
                     .background(
                         brush = Brush.horizontalGradient(
                             colors = listOf(
-                                Color(0xFF4ECDC4).copy(alpha = 0.95f),
-                                Color(0xFF44A08D).copy(alpha = 0.95f),
-                                Color(0xFF4ECDC4).copy(alpha = 0.95f)
+                                Color(0xFFC28152).copy(alpha = 0.95f),
+                                Color(0xFFE07B2D).copy(alpha = 0.95f),
+                                Color(0xFFBA8546).copy(alpha = 0.95f)
                             )
                         ),
                         shape = RoundedCornerShape(35.dp)

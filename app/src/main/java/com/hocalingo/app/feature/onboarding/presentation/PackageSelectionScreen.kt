@@ -1,5 +1,6 @@
 package com.hocalingo.app.feature.onboarding.presentation
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -33,6 +34,7 @@ import com.hocalingo.app.R
 import com.hocalingo.app.core.ui.components.HocaErrorState
 import com.hocalingo.app.core.ui.components.HocaLoadingIndicator
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
+import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -55,6 +57,10 @@ fun PackageSelectionScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
+    // ✅ THEME ADAPTATION - Get theme state
+    val themeViewModel: ThemeViewModel = hiltViewModel()
+    val isDarkTheme = themeViewModel.shouldUseDarkTheme()
+
     // Handle effects
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
@@ -74,12 +80,13 @@ fun PackageSelectionScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = MaterialTheme.colorScheme.background // ✅ Theme-aware background
     ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF5F5F5))
+                .background(MaterialTheme.colorScheme.background) // ✅ Theme-aware background
                 .padding(paddingValues)
         ) {
             when {
@@ -101,6 +108,7 @@ fun PackageSelectionScreen(
                         packages = uiState.packages,
                         selectedPackageId = uiState.selectedPackageId,
                         isLoading = uiState.isLoading,
+                        isDarkTheme = isDarkTheme, // ✅ Pass theme state
                         onPackageSelected = { packageId ->
                             viewModel.onEvent(PackageSelectionEvent.SelectPackage(packageId))
                         },
@@ -127,6 +135,7 @@ private fun PackageSelectionContent(
     packages: List<PackageInfo>,
     selectedPackageId: String?,
     isLoading: Boolean,
+    isDarkTheme: Boolean, // ✅ New parameter for theme awareness
     onPackageSelected: (String) -> Unit,
     onContinue: (String) -> Unit
 ) {
@@ -138,18 +147,18 @@ private fun PackageSelectionContent(
     ) {
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Header
+        // Header - ✅ Theme-aware text color
         Text(
-            text = "Öğrenmek istediğin seviye paketini indir",
+            text = "Öğrenmek istediğin kelime paketini indir",
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp,
-            color = Color(0xFF2C3E50),
+            color = MaterialTheme.colorScheme.onBackground, // ✅ Theme-aware
             textAlign = TextAlign.Center,
             lineHeight = 30.sp
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         // Package Grid
         LazyVerticalGrid(
@@ -162,14 +171,15 @@ private fun PackageSelectionContent(
                 PackageCard(
                     packageInfo = packageInfo,
                     isSelected = selectedPackageId == packageInfo.id,
+                    isDarkTheme = isDarkTheme, // ✅ Pass theme state to cards
                     onClick = { onPackageSelected(packageInfo.id) }
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
-        // ✅ FIXED: Continue Button - Conditional enabling
+        // ✅ THEME-AWARE Continue Button
         Button(
             onClick = {
                 selectedPackageId?.let { packageId ->
@@ -181,204 +191,198 @@ private fun PackageSelectionContent(
                 .height(56.dp),
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (selectedPackageId != null) Color(0xFF00D4FF) else Color(0xFFE0E0E0),
-                disabledContainerColor = Color(0xFFE0E0E0)
+                containerColor = if (selectedPackageId != null) {
+                    if (isDarkTheme) Color(0xFF4FC3F7) else Color(0xFF00D4FF)
+                } else {
+                    MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                },
+                disabledContainerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
             ),
-            enabled = selectedPackageId != null && !isLoading // ✅ Only enabled when package selected
+            enabled = selectedPackageId != null && !isLoading
         ) {
             if (isLoading) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    CircularProgressIndicator(
-                        color = Color.White,
-                        modifier = Modifier.size(20.dp),
-                        strokeWidth = 2.dp
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Loading...",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color.White
-                    )
-                }
-            } else {
-                Text(
-                    text = if (selectedPackageId != null) "Continue" else "Select a Package",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    color = if (selectedPackageId != null) Color.White else Color(0xFF999999)
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = Color.White,
+                    strokeWidth = 2.dp
                 )
+                Spacer(modifier = Modifier.width(8.dp))
             }
+
+            Text(
+                text = if (isLoading) "İndiriliyor..." else "Devam Et",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                color = Color.White
+            )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
-// ✅ FIXED: Real Package Card with original gradient colors
 @Composable
 private fun PackageCard(
     packageInfo: PackageInfo,
     isSelected: Boolean,
+    isDarkTheme: Boolean, // ✅ New theme parameter
     onClick: () -> Unit
 ) {
-    // ✅ Get original gradient for each level
-    val gradient = getOriginalGradient(packageInfo.level)
-    val icon = getLevelIcon(packageInfo.level)
+    val backgroundColor = Color(packageInfo.color.removePrefix("#").toLong(16) or 0xFF000000)
+    val isDownloaded = packageInfo.isDownloaded
+    val downloadProgress = packageInfo.downloadProgress
 
+    // ✅ Theme-aware card container
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(160.dp)
-            .clickable { onClick() }
-            .then(
-                if (isSelected) {
-                    Modifier.border(
-                        width = 3.dp,
-                        color = Color(0xFF00D4FF),
-                        shape = RoundedCornerShape(20.dp)
-                    )
-                } else Modifier
-            ),
+            .clickable { onClick() },
         shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = gradient, // ✅ Using original gradients
-                    shape = RoundedCornerShape(20.dp)
-                )
-        ) {
-            // Level icon
-            Box(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.TopStart)
-            ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(32.dp)
-                )
+        colors = CardDefaults.cardColors(
+            containerColor = if (isDarkTheme) {
+                MaterialTheme.colorScheme.surfaceVariant
+            } else {
+                Color.White
             }
-
-            // ✅ FIXED: Download status indicator - Simplified
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (isSelected) 12.dp else 6.dp
+        ),
+        border = if (isSelected) {
+            BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
+        } else null
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Gradient background for package color
             Box(
                 modifier = Modifier
-                    .padding(12.dp)
-                    .align(Alignment.TopEnd)
+                    .fillMaxSize()
                     .background(
-                        color = Color.White.copy(alpha = 0.9f),
-                        shape = CircleShape
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                backgroundColor.copy(alpha = 0.1f),
+                                backgroundColor.copy(alpha = 0.05f)
+                            )
+                        )
                     )
-                    .padding(6.dp)
-            ) {
-                if (packageInfo.isDownloaded) {
+            )
+
+            // Selection indicator (top-right corner)
+            if (isSelected) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(12.dp)
+                        .size(24.dp)
+                        .background(MaterialTheme.colorScheme.primary, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
                     Icon(
-                        imageVector = Icons.Filled.CheckCircle,
-                        contentDescription = "Downloaded",
-                        tint = Color(0xFF4CAF50),
-                        modifier = Modifier.size(20.dp)
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Outlined.FileDownload,
-                        contentDescription = "Download",
-                        tint = Color(0xFF757575),
-                        modifier = Modifier.size(20.dp)
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "Selected",
+                        tint = Color.White,
+                        modifier = Modifier.size(16.dp)
                     )
                 }
             }
 
-            // Level ve açıklama
+            // Package info
             Column(
                 modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(16.dp)
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = packageInfo.level,
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = Color.White
-                )
-                Text(
-                    text = packageInfo.name,
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
-                    color = Color.White.copy(alpha = 0.9f)
-                )
-                Text(
-                    text = packageInfo.description,
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 12.sp,
-                    color = Color.White.copy(alpha = 0.8f),
-                    lineHeight = 14.sp,
-                    maxLines = 2
-                )
+                // Level badge
+                Box(
+                    modifier = Modifier
+                        .background(backgroundColor, RoundedCornerShape(8.dp))
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = packageInfo.level,
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp,
+                        color = Color.White
+                    )
+                }
+
+                // Content
+                Column {
+                    Text(
+                        text = packageInfo.name,
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSurface // ✅ Theme-aware
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = packageInfo.description,
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant // ✅ Theme-aware
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Word count and status
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MenuBook,
+                            contentDescription = null,
+                            tint = backgroundColor,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "${packageInfo.wordCount} kelime",
+                            fontFamily = PoppinsFontFamily,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 11.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant // ✅ Theme-aware
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        // Download status
+                        when {
+                            isDownloaded -> {
+                                Icon(
+                                    imageVector = Icons.Default.CheckCircle,
+                                    contentDescription = "Downloaded",
+                                    tint = Color(0xFF4CAF50),
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                            downloadProgress > 0 -> {
+                                CircularProgressIndicator(
+                                    progress = downloadProgress / 100f,
+                                    modifier = Modifier.size(16.dp),
+                                    color = backgroundColor,
+                                    strokeWidth = 2.dp
+                                )
+                            }
+                            else -> {
+                                Icon(
+                                    imageVector = Icons.Default.CloudDownload,
+                                    contentDescription = "Not downloaded",
+                                    tint = MaterialTheme.colorScheme.outline, // ✅ Theme-aware
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
-    }
-}
-
-// ✅ Original gradient colors from the old system
-private fun getOriginalGradient(level: String): Brush {
-    return when (level) {
-        "A1" -> Brush.linearGradient(
-            colors = listOf(Color(0xFFFF6B35), Color(0xFFF7931E))
-        )
-        "A2" -> Brush.linearGradient(
-            colors = listOf(Color(0xFF4ECDC4), Color(0xFF44A08D))
-        )
-        "B1" -> Brush.linearGradient(
-            colors = listOf(Color(0xFF43E97B), Color(0xFF38F9D7))
-        )
-        "B2" -> Brush.linearGradient(
-            colors = listOf(Color(0xFF667eea), Color(0xFF764ba2))
-        )
-        "C1" -> Brush.linearGradient(
-            colors = listOf(Color(0xFFf12711), Color(0xFFf5af19))
-        )
-        "C2" -> Brush.linearGradient(
-            colors = listOf(Color(0xFFff9a9e), Color(0xFFfecfef))
-        )
-        else -> Brush.linearGradient(
-            colors = listOf(Color(0xFFFF6B35), Color(0xFFF7931E))
-        )
-    }
-}
-
-// Helper function for level icons
-private fun getLevelIcon(level: String): ImageVector {
-    return when (level) {
-        "A1" -> Icons.Outlined.MenuBook
-        "A2" -> Icons.Filled.Star
-        "B1" -> Icons.Outlined.TrendingUp
-        "B2" -> Icons.Outlined.Psychology
-        "C1" -> Icons.Outlined.EmojiEvents
-        "C2" -> Icons.Outlined.Verified
-        else -> Icons.Outlined.MenuBook
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PackageSelectionScreenPreview() {
-    HocaLingoTheme {
-        PackageSelectionScreen(
-            onNavigateToWordSelection = {},
-            onNavigateBack = {}
-        )
     }
 }
