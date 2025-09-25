@@ -23,7 +23,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hocalingo.app.R
+import com.hocalingo.app.core.ui.theme.getPurpleGradient
+import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import com.hocalingo.app.feature.profile.domain.WordSummary
 
 // Poppins font family
@@ -35,10 +38,10 @@ private val PoppinsFontFamily = FontFamily(
 )
 
 /**
- * Words Bottom Sheet - Modern Gradient Design
+ * Words Bottom Sheet - Theme-Aware Version
  * ✅ Pagination support with infinite scroll
  * ✅ Loading states and error handling
- * ✅ Modern gradient design matching app theme
+ * ✅ Theme-aware gradient design
  * ✅ Pull-to-refresh functionality
  * ✅ Search capability (placeholder for future)
  */
@@ -55,6 +58,10 @@ fun WordsBottomSheet(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Get theme state for gradients
+    val themeViewModel: ThemeViewModel = hiltViewModel()
+    val isDarkTheme = themeViewModel.shouldUseDarkTheme()
+
     // LazyColumn scroll state for pagination detection
     val lazyListState = rememberLazyListState()
 
@@ -82,10 +89,11 @@ fun WordsBottomSheet(
                 .heightIn(min = 400.dp, max = 600.dp)
                 .background(
                     brush = Brush.linearGradient(
-                        colors = listOf(
-                            Color(0xFF667eea),
-                            Color(0xFF764ba2)
-                        )
+                        colors = if (isDarkTheme) {
+                            listOf(Color(0xFF1E1034), Color(0xFF710299))
+                        } else {
+                            listOf(Color(0xFF667eea), Color(0xFF764ba2))
+                        }
                     )
                 )
         ) {

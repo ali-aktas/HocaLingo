@@ -28,6 +28,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hocalingo.app.R
 import com.hocalingo.app.core.common.StudyDirection
 import com.hocalingo.app.core.common.ThemeMode
+import com.hocalingo.app.core.ui.theme.*
+import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import com.hocalingo.app.feature.profile.domain.WordSummary
 import kotlinx.coroutines.flow.collectLatest
 
@@ -47,13 +49,11 @@ enum class AIAssistantStyle(val displayName: String) {
 }
 
 /**
- * Profile Screen - Enhanced with BottomSheet Support
- * ✅ Settings card moved to top
- * ✅ Motivation notifications toggle added
- * ✅ Sound setting removed
- * ✅ AI Assistant Style added
- * ✅ Settings header with Poppins Black
- * ✅ Selected words card moved to bottom
+ * Profile Screen - Theme-Aware Version
+ * ✅ Smart gradients that adapt to light/dark theme
+ * ✅ Material 3 theme colors integration
+ * ✅ Real-time theme switching support
+ * ✅ Maintains visual beauty in both themes
  * ✅ BottomSheet for all selected words with pagination
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,6 +64,10 @@ fun ProfileScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    // Get theme state for gradients
+    val themeViewModel: ThemeViewModel = hiltViewModel()
+    val isDarkTheme = themeViewModel.shouldUseDarkTheme()
 
     // Local state for AI style selection (temporary - will be connected to ViewModel later)
     var currentAIStyle by remember { mutableStateOf(AIAssistantStyle.FRIENDLY) }
@@ -103,7 +107,7 @@ fun ProfileScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = Color(0xFFF8FAFA)
+        containerColor = MaterialTheme.colorScheme.background // Theme-aware background
     ) { paddingValues ->
 
         LazyColumn(
@@ -114,39 +118,41 @@ fun ProfileScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
 
-            // Settings Header - Poppins Black
+            // Settings Header - Theme-aware text color
             item {
                 Text(
-                    text = "Ayarlar",
+                    text = "Kişiselleştir",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Black,
                     fontSize = 24.sp,
-                    color = Color(0xFF2C3E50),
+                    color = MaterialTheme.colorScheme.onBackground, // Theme-aware
                     modifier = Modifier.fillMaxWidth()
                 )
             }
 
-            // Modern Settings Card - Now at the top
+            // Modern Settings Card - Theme-aware gradients
             item {
                 ModernSettingsCard(
                     uiState = uiState,
                     currentAIStyle = currentAIStyle,
                     onEvent = viewModel::onEvent,
-                    onAIStyleChange = { newStyle -> currentAIStyle = newStyle }
+                    onAIStyleChange = { newStyle -> currentAIStyle = newStyle },
+                    isDarkTheme = isDarkTheme
                 )
             }
 
-            // Quick Stats Row - Gradient Cards
+            // Quick Stats Row - Theme-aware gradient cards
             item {
-                ModernStatsRow(uiState = uiState)
+                ModernStatsRow(uiState = uiState, isDarkTheme = isDarkTheme)
             }
 
-            // Compact Selected Words Card - Now at the bottom with BottomSheet trigger
+            // Compact Selected Words Card - Theme-aware gradients
             item {
                 CompactSelectedWordsCard(
                     words = uiState.selectedWordsPreview.take(5), // Max 5 words
                     totalCount = uiState.totalWordsCount,
-                    onViewMore = { viewModel.onEvent(ProfileEvent.ViewAllWords) }
+                    onViewMore = { viewModel.onEvent(ProfileEvent.ViewAllWords) },
+                    isDarkTheme = isDarkTheme
                 )
             }
 
@@ -163,13 +169,13 @@ fun ProfileScreen(
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(
-                    color = Color(0xFF4ECDC4)
+                    color = MaterialTheme.colorScheme.primary // Theme-aware
                 )
             }
         }
     }
 
-    // Words BottomSheet
+    // Words BottomSheet - Theme-aware
     if (uiState.showWordsBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = {
@@ -178,7 +184,7 @@ fun ProfileScreen(
             sheetState = bottomSheetState,
             containerColor = Color.Transparent,
             contentColor = Color.White,
-            dragHandle = null
+            dragHandle = null // Custom header in WordsBottomSheet
         ) {
             WordsBottomSheet(
                 words = uiState.allSelectedWords,
@@ -253,52 +259,55 @@ private fun SettingSwitchItem(
 }
 
 @Composable
-private fun ModernStatsRow(uiState: ProfileUiState) {
+private fun ModernStatsRow(uiState: ProfileUiState, isDarkTheme: Boolean) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Streak - Fire gradient
+        // Streak - Theme-aware fire gradient
         GradientStatCard(
             title = "Streak",
             value = "${uiState.userStats.currentStreak}",
             subtitle = "gün",
             icon = Icons.Filled.LocalFireDepartment,
             gradient = Brush.linearGradient(
-                colors = listOf(
-                    Color(0xFFFF6B35),
-                    Color(0xFFFF8E53)
-                )
+                colors = if (isDarkTheme) {
+                    listOf(Color(0xFF927E71), Color(0xFFB45433))
+                } else {
+                    listOf(Color(0xFFFF6B35), Color(0xFFFF8E53))
+                }
             ),
             modifier = Modifier.weight(1f)
         )
 
-        // Words Studied Today - Teal gradient (matching bottom nav)
+        // Words Studied Today - Theme-aware teal gradient
         GradientStatCard(
             title = "Bugün",
             value = "${uiState.userStats.wordsStudiedToday}",
             subtitle = "kelime",
             icon = Icons.Filled.TrendingUp,
             gradient = Brush.linearGradient(
-                colors = listOf(
-                    Color(0xFF4ECDC4),
-                    Color(0xFF44A08D)
-                )
+                colors = if (isDarkTheme) {
+                    listOf(Color(0xFF119A43), Color(0xFF006A79))
+                } else {
+                    listOf(Color(0xFF4ECDC4), Color(0xFF44A08D))
+                }
             ),
             modifier = Modifier.weight(1f)
         )
 
-        // Mastered Words - Gold gradient
+        // Mastered Words - Theme-aware gold gradient
         GradientStatCard(
             title = "Öğrenilen",
             value = "${uiState.userStats.masteredWordsCount}",
             subtitle = "toplam",
             icon = Icons.Filled.EmojiEvents,
             gradient = Brush.linearGradient(
-                colors = listOf(
-                    Color(0xFFFFD700),
-                    Color(0xFFFFA500)
-                )
+                colors = if (isDarkTheme) {
+                    listOf(Color(0xFFB3973D), Color(0xFF845C00))
+                } else {
+                    listOf(Color(0xFFFFD700), Color(0xFFFFA500))
+                }
             ),
             modifier = Modifier.weight(1f)
         )
@@ -366,7 +375,8 @@ private fun GradientStatCard(
 private fun CompactSelectedWordsCard(
     words: List<WordSummary>,
     totalCount: Int,
-    onViewMore: () -> Unit
+    onViewMore: () -> Unit,
+    isDarkTheme: Boolean
 ) {
     Card(
         modifier = Modifier
@@ -381,10 +391,11 @@ private fun CompactSelectedWordsCard(
                 .fillMaxWidth()
                 .background(
                     brush = Brush.linearGradient(
-                        colors = listOf(
-                            Color(0xFF667eea),
-                            Color(0xFF764ba2)
-                        )
+                        colors = if (isDarkTheme) {
+                            listOf(Color(0xFF1E1034), Color(0xFF710299))
+                        } else {
+                            listOf(Color(0xFF667eea), Color(0xFF764ba2))
+                        }
                     )
                 )
                 .padding(20.dp)
@@ -498,7 +509,8 @@ private fun ModernSettingsCard(
     uiState: ProfileUiState,
     currentAIStyle: AIAssistantStyle,
     onEvent: (ProfileEvent) -> Unit,
-    onAIStyleChange: (AIAssistantStyle) -> Unit
+    onAIStyleChange: (AIAssistantStyle) -> Unit,
+    isDarkTheme: Boolean
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -511,17 +523,18 @@ private fun ModernSettingsCard(
                 .fillMaxWidth()
                 .background(
                     brush = Brush.linearGradient(
-                        colors = listOf(
-                            Color(0xFF11998e),
-                            Color(0xFF38ef7d)
-                        )
+                        colors = if (isDarkTheme) {
+                            listOf(Color(0xFF570A7D), Color(0xFF123C50))
+                        } else {
+                            listOf(Color(0xFF11998e), Color(0xFF38ef7d))
+                        }
                     )
                 )
                 .padding(20.dp)
         ) {
             Column {
                 Text(
-                    text = "⚙️ Ayarlar",
+                    text = "⚙️ Kişiselleştir",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
@@ -713,7 +726,7 @@ private fun SettingDropdownItem(
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.background(Color.White)
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface) // Theme-aware
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
@@ -723,7 +736,7 @@ private fun SettingDropdownItem(
                             fontFamily = PoppinsFontFamily,
                             fontWeight = FontWeight.Medium,
                             fontSize = 14.sp,
-                            color = if (option == selectedOption) Color(0xFF4ECDC4) else Color.Black
+                            color = if (option == selectedOption) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface // Theme-aware
                         )
                     },
                     onClick = {
