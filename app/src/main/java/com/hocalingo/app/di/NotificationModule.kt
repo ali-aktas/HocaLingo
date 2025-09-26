@@ -1,6 +1,6 @@
 package com.hocalingo.app.di
 
-import com.hocalingo.app.feature.notification.data.NotificationRepositoryImpl
+import com.hocalingo.app.feature.notification.NotificationRepositoryImpl
 import com.hocalingo.app.feature.notification.NotificationRepository
 import dagger.Binds
 import dagger.Module

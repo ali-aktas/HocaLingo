@@ -51,7 +51,7 @@ class DailyNotificationWorker @AssistedInject constructor(
 
             // 3. Get a word for notification
             when (val wordResult = notificationRepository.getWordForNotification()) {
-                is com.hocalingo.app.core.common.base.Result.Success -> {
+                is com.hocalingo.app.core.base.Result.Success -> {
                     val word = wordResult.data
                     if (word != null) {
                         // 4. Show notification
@@ -67,7 +67,7 @@ class DailyNotificationWorker @AssistedInject constructor(
                         Result.success() // Not an error - user might not have selected words yet
                     }
                 }
-                is com.hocalingo.app.core.common.base.Result.Error -> {
+                is com.hocalingo.app.core.base.Result.Error -> {
                     Log.e(TAG, "Failed to get word for notification: ${wordResult.error}")
                     Result.failure() // Will trigger retry
                 }

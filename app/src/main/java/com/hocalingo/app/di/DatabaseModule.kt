@@ -1,8 +1,15 @@
 package com.hocalingo.app.di
 
 import android.content.Context
-import com.hocalingo.app.core.database.HocaLingoDatabase
-import com.hocalingo.app.core.database.dao.*
+import com.hocalingo.app.database.HocaLingoDatabase
+import com.hocalingo.app.database.dao.CombinedDataDao
+import com.hocalingo.app.database.dao.ConceptDao
+import com.hocalingo.app.database.dao.DailyStatsDao
+import com.hocalingo.app.database.dao.StudySessionDao
+import com.hocalingo.app.database.dao.UserPreferencesDao
+import com.hocalingo.app.database.dao.UserSelectionDao
+import com.hocalingo.app.database.dao.WordPackageDao
+import com.hocalingo.app.database.dao.WordProgressDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

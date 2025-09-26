@@ -1,9 +1,9 @@
 package com.hocalingo.app.core.common
 
-import com.hocalingo.app.core.database.entities.WordProgressEntity
+import com.hocalingo.app.database.entities.WordProgressEntity
 import kotlin.math.max
 import kotlin.math.min
-import com.hocalingo.app.core.database.entities.StudyDirection
+import com.hocalingo.app.database.entities.StudyDirection
 
 /**
  * SM-2 Spaced Repetition Algorithm - IMPROVED HYBRID VERSION

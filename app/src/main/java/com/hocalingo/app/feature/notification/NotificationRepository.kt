@@ -1,7 +1,7 @@
 package com.hocalingo.app.feature.notification
 
-import com.hocalingo.app.core.common.base.Result
-import com.hocalingo.app.feature.profile.domain.WordSummary
+import com.hocalingo.app.core.base.Result
+import com.hocalingo.app.feature.profile.WordSummary
 
 /**
  * Notification Repository Interface

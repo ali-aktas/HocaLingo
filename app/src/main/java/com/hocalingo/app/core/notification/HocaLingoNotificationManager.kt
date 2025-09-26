@@ -14,7 +14,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.hocalingo.app.MainActivity
 import com.hocalingo.app.R
-import com.hocalingo.app.feature.profile.domain.WordSummary
+import com.hocalingo.app.feature.profile.WordSummary
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -2,11 +2,12 @@ package com.hocalingo.app.feature.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hocalingo.app.core.base.Result
 import com.hocalingo.app.core.common.DebugHelper
 import com.hocalingo.app.core.common.UserPreferencesManager
-import com.hocalingo.app.core.database.JsonLoader
-import com.hocalingo.app.core.database.MainDatabaseSeeder
-import com.hocalingo.app.feature.auth.data.AuthRepository
+import com.hocalingo.app.database.JsonLoader
+import com.hocalingo.app.database.MainDatabaseSeeder
+import com.hocalingo.app.feature.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -84,15 +85,15 @@ class SplashViewModel @Inject constructor(
             DebugHelper.log("Test data check result: $isTestLoadedResult")
 
             when (isTestLoadedResult) {
-                is com.hocalingo.app.core.common.base.Result.Success -> {
+                is Result.Success -> {
                     if (!isTestLoadedResult.data) {
                         DebugHelper.log("Test verisi yüklü değil, yükleniyor...")
                         val loadResult = jsonLoader.loadTestWords()
                         when (loadResult) {
-                            is com.hocalingo.app.core.common.base.Result.Success -> {
+                            is Result.Success -> {
                                 DebugHelper.log("Test verisi başarıyla yüklendi: ${loadResult.data} kelime")
                             }
-                            is com.hocalingo.app.core.common.base.Result.Error -> {
+                            is Result.Error -> {
                                 DebugHelper.logError("Test verisi yükleme hatası", loadResult.error)
                             }
                         }
@@ -100,7 +101,7 @@ class SplashViewModel @Inject constructor(
                         DebugHelper.log("Test verisi zaten yüklü, atlanıyor...")
                     }
                 }
-                is com.hocalingo.app.core.common.base.Result.Error -> {
+                is Result.Error -> {
                     DebugHelper.logError("Test verisi kontrol hatası", isTestLoadedResult.error)
                     // Hata durumunda yine de yüklemeyi dene
                     DebugHelper.log("Hata durumunda fallback loading deneniyor...")

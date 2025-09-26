@@ -19,14 +19,14 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.hocalingo.app.feature.auth.presentation.AuthScreen
-import com.hocalingo.app.feature.home.presentation.HomeScreen
-import com.hocalingo.app.feature.onboarding.presentation.PackageSelectionScreen
-import com.hocalingo.app.feature.selection.presentation.WordSelectionScreen
+import com.hocalingo.app.feature.auth.AuthScreen
+import com.hocalingo.app.feature.home.HomeScreen
+import com.hocalingo.app.feature.onboarding.PackageSelectionScreen
+import com.hocalingo.app.feature.selection.WordSelectionScreen
 import com.hocalingo.app.feature.splash.SplashScreen
-import com.hocalingo.app.feature.study.presentation.StudyScreen
+import com.hocalingo.app.feature.study.StudyScreen
 import com.hocalingo.app.feature.addword.presentation.AddWordScreen
-import com.hocalingo.app.feature.profile.presentation.ProfileScreen
+import com.hocalingo.app.feature.profile.ProfileScreen
 
 /**
  * Enhanced HocaLingo Navigation Routes - With Profile Feature
