@@ -267,14 +267,31 @@ class StudyRepositoryImpl @Inject constructor(
         val session = sessions.firstOrNull { it.id == sessionId }
 
         if (session != null) {
+            val sessionDuration = currentTime - session.startedAt
+
+            // 1️⃣ Session entity'yi güncelle (mevcut kod)
             val updatedSession = session.copy(
                 endedAt = currentTime,
                 wordsStudied = wordsStudied,
                 correctAnswers = correctAnswers,
-                totalDurationMs = currentTime - session.startedAt
+                totalDurationMs = sessionDuration
             )
             database.studySessionDao().updateSession(updatedSession)
-            DebugHelper.log("📚 Study session ended: $sessionId, words: $wordsStudied")
+
+            // 2️⃣ ✅ YENİ: DailyStatsEntity'ye de süreyi ekle
+            val today = Calendar.getInstance()
+            val todayString = dateFormat.format(today.time)
+            val userId = "user_1"
+
+            val todayStats = database.dailyStatsDao().getStatsByDate(userId, todayString)
+            if (todayStats != null) {
+                val updatedDailyStats = todayStats.copy(
+                    studyTimeMs = todayStats.studyTimeMs + sessionDuration
+                )
+                database.dailyStatsDao().insertOrUpdateStats(updatedDailyStats)
+            }
+
+            DebugHelper.log("📚 Session ended: $sessionId, duration: ${sessionDuration}ms")
         }
 
         Result.Success(Unit)

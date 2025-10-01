@@ -20,6 +20,7 @@ import javax.inject.Singleton
  * ✅ Schedules at user-preferred time
  * ✅ Battery and network optimized
  * ✅ Handles timezone changes
+ * ✅ FIXED: Production-ready with proper time calculation
  */
 @Singleton
 class NotificationScheduler @Inject constructor(
@@ -31,7 +32,7 @@ class NotificationScheduler @Inject constructor(
 
     /**
      * Schedule daily notifications
-     * Runs at user's preferred time (default: 8 PM)
+     * Runs at user's preferred time (default: 8 PM / 20:00)
      */
     suspend fun scheduleDailyNotifications() {
         // Get user preference for notification time
@@ -98,15 +99,15 @@ class NotificationScheduler @Inject constructor(
 
     /**
      * Calculate initial delay to start at preferred hour today or tomorrow
-     * ✅ Updated for 1:35 AM testing
+     * ✅ FIXED: Now uses actual preferredHour parameter properly
      */
     private fun calculateInitialDelay(preferredHour: Int): Long {
         val calendar = Calendar.getInstance()
         val now = calendar.timeInMillis
 
-        // Set to 1:35 AM (test time)
-        calendar.set(Calendar.HOUR_OF_DAY, 20)  // 1 AM
-        calendar.set(Calendar.MINUTE, 43)      // 35 minutes
+        // Set target time to user's preferred hour today
+        calendar.set(Calendar.HOUR_OF_DAY, preferredHour)
+        calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
 

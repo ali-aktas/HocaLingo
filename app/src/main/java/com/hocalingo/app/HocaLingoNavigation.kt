@@ -26,6 +26,7 @@ import com.hocalingo.app.feature.selection.WordSelectionScreen
 import com.hocalingo.app.feature.splash.SplashScreen
 import com.hocalingo.app.feature.study.StudyScreen
 import com.hocalingo.app.feature.addword.presentation.AddWordScreen
+import com.hocalingo.app.feature.ai.AIAssistantScreen
 import com.hocalingo.app.feature.profile.ProfileScreen
 
 /**
@@ -226,13 +227,10 @@ fun HocaLingoNavigation(
             )
         }
 
-        // AI Assistant Screen (Future Feature)
+        // AI Assistant Screen - Professional Coming Soon
         composable(route = HocaRoutes.AI_ASSISTANT) {
-            PlaceholderScreen(
-                title = "🤖 AI Asistan",
-                subtitle = "Sorularınız için yapay zeka desteği\nKelime açıklamaları, örnekler ve daha fazlası",
-                buttonText = stringResource(R.string.nav_home),
-                onNavigate = {
+            AIAssistantScreen(
+                onNavigateBack = {
                     navController.navigate(HocaRoutes.HOME) {
                         popUpTo(HocaRoutes.HOME) { inclusive = false }
                     }

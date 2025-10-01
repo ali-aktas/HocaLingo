@@ -333,4 +333,15 @@ class ProfileViewModel @Inject constructor(
             _effect.emit(ProfileEffect.ShowMessage("Günlük hedef güncellendi"))
         }
     }
+
+    /**
+     * Handle permission denial
+     */
+    fun onPermissionDenied() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(notificationsEnabled = false) }
+            _effect.emit(ProfileEffect.ShowError("Bildirim izni verilmedi"))
+        }
+    }
+
 }

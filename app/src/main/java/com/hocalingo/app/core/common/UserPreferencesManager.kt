@@ -173,10 +173,10 @@ class UserPreferencesManager @Inject constructor(
     fun getStudyReminderSettings(): Flow<Pair<Boolean, Int>> = dataStore.data
         .map { preferences ->
             val enabled = preferences[STUDY_REMINDER_ENABLED] ?: true
-            val hour = preferences[STUDY_REMINDER_HOUR] ?: 20
+            val hour = preferences[STUDY_REMINDER_HOUR] ?: 23
             enabled to hour
         }
-        .catch { emit(true to 20) }
+        .catch { emit(true to 23) }
 
     // ✅ Enhanced Study Direction with enum support
     suspend fun setStudyDirection(direction: StudyDirection): Result<Unit> = safeOperation {

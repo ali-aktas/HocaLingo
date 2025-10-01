@@ -550,7 +550,7 @@ private fun MonthlyStatsCard(
                 // Disiplin puanı
                 MonthlyStatItem(
                     label = "Disiplin",
-                    value = "${stats.disciplineScore}",
+                    value = "${stats.disciplineScore}%",
                     color = if (isDarkTheme) Color(0xFF26C6DA) else Color(0xFF4ECDC4),
                     icon = Icons.Filled.TrendingUp
                 )

@@ -159,7 +159,7 @@ private fun WordSelectionContent(
 
         // Instruction text - ✅ Theme-aware
         Text(
-            text = "Swipe right to learn, left if you already know.",
+            text = "Öğrenmek istediğin kelimeyi sağa kayır!",
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Normal,
             fontSize = 14.sp,

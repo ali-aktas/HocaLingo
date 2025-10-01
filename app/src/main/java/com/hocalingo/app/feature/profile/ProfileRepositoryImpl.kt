@@ -95,7 +95,9 @@ class ProfileRepositoryImpl @Inject constructor(
                 totalWordsSelected = totalSelected,
                 wordsStudiedToday = 5, // TODO: Implement actual today's study count
                 masteredWordsCount = masteredCount,
-                currentStreak = 3, // TODO: Implement streak calculation
+                currentStreak = database.dailyStatsDao()
+                    .getStatsByDate("user_1", dateFormat.format(Date()))
+                    ?.streakCount ?: 0,
                 studyTimeThisWeek = 120, // TODO: Implement actual study time tracking
                 averageAccuracy = 0.85f // TODO: Implement accuracy calculation
             )
