@@ -27,9 +27,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.hocalingo.app.HocaRoutes
 import com.hocalingo.app.R
 import com.hocalingo.app.core.ui.components.HocaErrorState
 import com.hocalingo.app.core.ui.components.HocaLoadingIndicator
+import com.hocalingo.app.core.ui.components.HocaSnackbarHost
 import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -76,8 +78,13 @@ fun WordSelectionScreen(
 
     // ✅ Theme-aware scaffold
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = MaterialTheme.colorScheme.background // ✅ Theme-aware background
+        snackbarHost = {
+            HocaSnackbarHost(
+                hostState = snackbarHostState,
+                currentRoute = HocaRoutes.WORD_SELECTION
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -206,7 +213,7 @@ private fun WordSelectionContent(
             // Home button (small)
             SmallActionButton(
                 icon = Icons.Default.Home,
-                backgroundColor = if (isDarkTheme) Color(0xFF6C757D) else Color(0xFF6C757D),
+                backgroundColor = if (isDarkTheme) Color(0xFF0086FF) else Color(0xFF153E39),
                 contentDescription = "Home",
                 onClick = onNavigateToHome
             )

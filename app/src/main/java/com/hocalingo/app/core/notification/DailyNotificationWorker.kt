@@ -1,6 +1,5 @@
 package com.hocalingo.app.core.notification
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.hilt.work.HiltWorker
@@ -9,73 +8,111 @@ import androidx.work.WorkerParameters
 import com.hocalingo.app.feature.notification.NotificationRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import java.text.SimpleDateFormat
+import java.util.*
+import androidx.work.ListenableWorker
 
 /**
  * Daily Notification Worker
- * ✅ Background task for daily word notifications
- * ✅ Hilt integration for dependency injection
- * ✅ Coroutine-based for async operations
- * ✅ Robust error handling
+ * ✅ Runs once per day at scheduled time
+ * ✅ Selects a word and sends notification
+ * ✅ Handles errors gracefully
+ * ✅ DEBUG LOGS: Enhanced logging to track execution
  */
 @HiltWorker
 class DailyNotificationWorker @AssistedInject constructor(
     @Assisted context: Context,
-    @Assisted workerParams: WorkerParameters,
+    @Assisted params: WorkerParameters,
     private val notificationRepository: NotificationRepository,
     private val notificationManager: HocaLingoNotificationManager
-) : CoroutineWorker(context, workerParams) {
+) : CoroutineWorker(context, params) {
 
     companion object {
-        const val WORKER_TAG = "daily_notification_worker"
-        const val WORK_NAME = "hocalingo_daily_notification"
+        const val WORK_NAME = "daily_notification_work"
+        const val WORKER_TAG = "daily_notification"
         private const val TAG = "DailyNotificationWorker"
     }
 
-    @SuppressLint("MissingPermission")
     override suspend fun doWork(): Result {
-        Log.d(TAG, "Daily notification worker started")
+        Log.d(TAG, "========================================")
+        Log.d(TAG, "🔔 DAILY NOTIFICATION WORKER STARTED")
+        Log.d(TAG, "========================================")
+        Log.d(TAG, "Run time: ${formatTimestamp(System.currentTimeMillis())}")
+        Log.d(TAG, "Run attempt: ${runAttemptCount + 1}")
 
         return try {
-            // 1. Check if notifications are enabled in settings
+            // Check if notifications are enabled
             val notificationsEnabled = notificationRepository.areNotificationsEnabled()
+            Log.d(TAG, "Notifications enabled in preferences: $notificationsEnabled")
+
             if (!notificationsEnabled) {
-                Log.d(TAG, "Notifications disabled in settings - skipping")
+                Log.d(TAG, "❌ Notifications disabled, skipping")
                 return Result.success()
             }
 
-            // 2. Check system notification permission
-            if (!notificationManager.hasNotificationPermission()) {
-                Log.d(TAG, "No notification permission - skipping")
-                return Result.success()
-            }
-
-            // 3. Get a word for notification
-            when (val wordResult = notificationRepository.getWordForNotification()) {
+            // Get a word for notification
+            Log.d(TAG, "📚 Fetching word for notification...")
+            when (val result = notificationRepository.getWordForNotification()) {
                 is com.hocalingo.app.core.base.Result.Success -> {
-                    val word = wordResult.data
-                    if (word != null) {
-                        // 4. Show notification
+                    val word = result.data
+
+                    if (word == null) {
+                        Log.d(TAG, "⚠️ No word available for notification")
+                        return Result.success()
+                    }
+
+                    Log.d(TAG, "✅ Word selected:")
+                    Log.d(TAG, "  - ID: ${word.id}")
+                    Log.d(TAG, "  - English: ${word.english}")
+                    Log.d(TAG, "  - Turkish: ${word.turkish}")
+                    Log.d(TAG, "  - Level: ${word.level}")
+
+                    // Send notification
+                    Log.d(TAG, "📤 Sending notification...")
+                    try {
                         notificationManager.showDailyWordNotification(word)
-                        Log.d(TAG, "Daily notification sent: ${word.english} → ${word.turkish}")
+                        Log.d(TAG, "✅ Notification sent successfully")
 
-                        // 5. Track notification sent
+                        // Record that notification was sent
+                        Log.d(TAG, "📊 Recording notification analytics...")
                         notificationRepository.recordNotificationSent(word.id)
+                        Log.d(TAG, "✅ Analytics recorded")
 
-                        Result.success()
-                    } else {
-                        Log.d(TAG, "No words available for notification")
-                        Result.success() // Not an error - user might not have selected words yet
+                    } catch (e: SecurityException) {
+                        Log.e(TAG, "❌ SecurityException: Missing notification permission")
+                        Log.e(TAG, "  → User needs to grant POST_NOTIFICATIONS permission")
+                    } catch (e: Exception) {
+                        Log.e(TAG, "❌ Error sending notification: ${e.message}")
+                        e.printStackTrace()
                     }
                 }
+
                 is com.hocalingo.app.core.base.Result.Error -> {
-                    Log.e(TAG, "Failed to get word for notification: ${wordResult.error}")
-                    Result.failure() // Will trigger retry
+                    Log.e(TAG, "❌ Error fetching word: ${result.error}")
                 }
             }
 
+            Log.d(TAG, "========================================")
+            Log.d(TAG, "✅ WORKER COMPLETED SUCCESSFULLY")
+            Log.d(TAG, "========================================")
+
+            Result.success()
+
         } catch (e: Exception) {
-            Log.e(TAG, "Daily notification worker failed", e)
-            Result.failure() // Will trigger retry according to backoff policy
+            Log.e(TAG, "========================================")
+            Log.e(TAG, "❌ WORKER FAILED WITH EXCEPTION")
+            Log.e(TAG, "========================================")
+            Log.e(TAG, "Error: ${e.message}")
+            e.printStackTrace()
+
+            // Return success anyway to avoid retry loops
+            // Notification failures shouldn't retry
+            Result.success()
         }
+    }
+
+    private fun formatTimestamp(timestamp: Long): String {
+        val sdf = SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.getDefault())
+        return sdf.format(Date(timestamp))
     }
 }

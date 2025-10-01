@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.hocalingo.app.core.common.StudyDirection
 import com.hocalingo.app.core.common.ThemeMode
 import com.hocalingo.app.core.base.Result
+import com.hocalingo.app.core.common.UserPreferencesManager
 import com.hocalingo.app.core.notification.HocaLingoNotificationManager
 import com.hocalingo.app.core.notification.NotificationScheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -33,7 +35,8 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val notificationScheduler: NotificationScheduler,
-    private val notificationManager: HocaLingoNotificationManager
+    private val notificationManager: HocaLingoNotificationManager,
+    private val userPreferencesManager: UserPreferencesManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -79,70 +82,61 @@ class ProfileViewModel @Inject constructor(
                 // Load all profile data in parallel
                 val selectedWordsResult = profileRepository.getSelectedWordsPreview()
                 val totalWordsResult = profileRepository.getTotalSelectedWordsCount()
-                val userStatsResult = profileRepository.getUserStats()
-                val userPreferencesResult = profileRepository.getUserPreferences()
+                val statsResult = profileRepository.getUserStats()
+                val preferencesResult = profileRepository.getUserPreferences()
 
-                // Check all results
-                if (selectedWordsResult is Result.Success &&
-                    totalWordsResult is Result.Success &&
-                    userStatsResult is Result.Success &&
-                    userPreferencesResult is Result.Success) {
+                // ✅ YENİ: Bildirim saatini yükle
+                val (notificationsEnabled, notificationHour) = userPreferencesManager.getStudyReminderSettings().first()
 
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            isLoading = false,
-                            selectedWordsPreview = selectedWordsResult.data,
-                            totalWordsCount = totalWordsResult.data,
-                            userStats = userStatsResult.data,
-                            themeMode = userPreferencesResult.data.themeMode,
-                            studyDirection = userPreferencesResult.data.studyDirection,
-                            notificationsEnabled = userPreferencesResult.data.notificationsEnabled,
-                            soundEnabled = userPreferencesResult.data.soundEnabled,
-                            dailyGoal = userPreferencesResult.data.dailyGoal,
-                            error = null
-                        )
-                    }
-                } else {
-                    // Handle individual errors but still show what we can
-                    val errorMessages = mutableListOf<String>()
+                // Update UI state with loaded data
+                val words = when (selectedWordsResult) {
+                    is Result.Success -> selectedWordsResult.data
+                    is Result.Error -> emptyList()
+                }
 
-                    val selectedWords = (selectedWordsResult as? Result.Success)?.data ?: emptyList()
-                    val totalWords = (totalWordsResult as? Result.Success)?.data ?: 0
-                    val userStats = (userStatsResult as? Result.Success)?.data ?: ProfileUiState().userStats
-                    val preferences = (userPreferencesResult as? Result.Success)?.data
+                val totalWords = when (totalWordsResult) {
+                    is Result.Success -> totalWordsResult.data
+                    is Result.Error -> 0
+                }
 
-                    if (selectedWordsResult is Result.Error) errorMessages.add("Kelimeler yüklenemedi")
-                    if (userStatsResult is Result.Error) errorMessages.add("İstatistikler yüklenemedi")
-                    if (userPreferencesResult is Result.Error) errorMessages.add("Ayarlar yüklenemedi")
+                val stats = when (statsResult) {
+                    is Result.Success -> statsResult.data
+                    is Result.Error -> UserStats(0, 0, 0, 0, 0, 0.0f)
+                }
 
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            isLoading = false,
-                            selectedWordsPreview = selectedWords,
-                            totalWordsCount = totalWords,
-                            userStats = userStats,
-                            themeMode = preferences?.themeMode ?: ThemeMode.SYSTEM,
-                            studyDirection = preferences?.studyDirection ?: StudyDirection.EN_TO_TR,
-                            notificationsEnabled = preferences?.notificationsEnabled ?: true,
-                            soundEnabled = preferences?.soundEnabled ?: true,
-                            dailyGoal = preferences?.dailyGoal ?: 20,
-                            error = if (errorMessages.isNotEmpty()) errorMessages.joinToString(", ") else null
-                        )
-                    }
+                val prefs = when (preferencesResult) {
+                    is Result.Success -> preferencesResult.data
+                    is Result.Error -> UserPreferences(
+                        ThemeMode.SYSTEM,
+                        StudyDirection.EN_TO_TR,
+                        true,
+                        20,
+                        true
+                    )
+                }
 
-                    if (errorMessages.isNotEmpty()) {
-                        _effect.emit(ProfileEffect.ShowError("Bazı veriler yüklenemedi"))
-                    }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        selectedWordsPreview = words,
+                        totalWordsCount = totalWords,
+                        userStats = stats,
+                        themeMode = prefs.themeMode,
+                        studyDirection = prefs.studyDirection,
+                        notificationsEnabled = notificationsEnabled, // ✅ Preferences'tan
+                        notificationHour = notificationHour, // ✅ YENİ: Preferences'tan
+                        soundEnabled = prefs.soundEnabled,
+                        dailyGoal = prefs.dailyGoal
+                    )
                 }
 
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Profil yüklenirken hata oluştu: ${e.message}"
+                        error = "Profil yüklenemedi"
                     )
                 }
-                _effect.emit(ProfileEffect.ShowError("Beklenmeyen hata oluştu"))
             }
         }
     }
@@ -319,11 +313,29 @@ class ProfileViewModel @Inject constructor(
 
     private fun updateNotificationTime(hour: Int) {
         viewModelScope.launch {
-            // Update schedule with new time
-            notificationScheduler.updateNotificationSchedule()
+            // ✅ YENİ: UI state'i güncelle
+            _uiState.update { it.copy(notificationHour = hour) }
 
-            val timeFormat = String.format("%02d:00", hour)
-            _effect.emit(ProfileEffect.ShowMessage("Bildirim saati $timeFormat olarak ayarlandı"))
+            // ✅ YENİ: Preferences'a kaydet
+            val result = userPreferencesManager.setStudyReminder(
+                enabled = _uiState.value.notificationsEnabled,
+                hour = hour
+            )
+
+            when (result) {
+                is Result.Success -> {
+                    // Update WorkManager schedule with new time
+                    notificationScheduler.updateNotificationSchedule()
+
+                    val timeFormat = String.format("%02d:00", hour)
+                    _effect.emit(ProfileEffect.ShowMessage("Bildirim saati $timeFormat olarak ayarlandı"))
+                }
+                is Result.Error -> {
+                    // Revert UI state
+                    loadProfile()
+                    _effect.emit(ProfileEffect.ShowError("Bildirim saati değiştirilemedi"))
+                }
+            }
         }
     }
 

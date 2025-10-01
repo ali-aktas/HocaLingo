@@ -4,9 +4,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,9 +23,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.hocalingo.app.HocaRoutes
 import com.hocalingo.app.R
 import com.hocalingo.app.core.ui.components.HocaErrorState
 import com.hocalingo.app.core.ui.components.HocaLoadingIndicator
+import com.hocalingo.app.core.ui.components.HocaSnackbarHost
 import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -73,7 +74,12 @@ fun PackageSelectionScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            HocaSnackbarHost(
+                hostState = snackbarHostState,
+                currentRoute = HocaRoutes.PACKAGE_SELECTION
+            )
+        },
         containerColor = MaterialTheme.colorScheme.background // ✅ Theme-aware background
     ) { paddingValues ->
         Box(
@@ -153,11 +159,9 @@ private fun PackageSelectionContent(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Package Grid
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+        // ✅ SADECE DEĞİŞEN KISIM: Grid → Column
+        LazyColumn(
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.weight(1f)
         ) {
             items(packages) { packageInfo ->
@@ -340,38 +344,27 @@ private fun PackageCard(
                             text = "${packageInfo.wordCount} kelime",
                             fontFamily = PoppinsFontFamily,
                             fontWeight = FontWeight.Medium,
-                            fontSize = 11.sp,
+                            fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant // ✅ Theme-aware
                         )
 
-                        Spacer(modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.width(8.dp))
 
                         // Download status
-                        when {
-                            isDownloaded -> {
-                                Icon(
-                                    imageVector = Icons.Default.CheckCircle,
-                                    contentDescription = "Downloaded",
-                                    tint = Color(0xFF4CAF50),
-                                    modifier = Modifier.size(16.dp)
-                                )
-                            }
-                            downloadProgress > 0 -> {
-                                CircularProgressIndicator(
-                                    progress = downloadProgress / 100f,
-                                    modifier = Modifier.size(16.dp),
-                                    color = backgroundColor,
-                                    strokeWidth = 2.dp
-                                )
-                            }
-                            else -> {
-                                Icon(
-                                    imageVector = Icons.Default.CloudDownload,
-                                    contentDescription = "Not downloaded",
-                                    tint = MaterialTheme.colorScheme.outline, // ✅ Theme-aware
-                                    modifier = Modifier.size(16.dp)
-                                )
-                            }
+                        if (isDownloaded) {
+                            Icon(
+                                imageVector = Icons.Default.CheckCircle,
+                                contentDescription = "Downloaded",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.CloudDownload,
+                                contentDescription = "Download",
+                                tint = MaterialTheme.colorScheme.outline,
+                                modifier = Modifier.size(16.dp)
+                            )
                         }
                     }
                 }

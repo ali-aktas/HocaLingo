@@ -4,10 +4,11 @@ import com.hocalingo.app.core.common.StudyDirection
 import com.hocalingo.app.core.common.ThemeMode
 
 /**
- * Profile UI State - Enhanced with BottomSheet Support
+ * Profile UI State - Enhanced with Notification Time
  * ✅ Modern, clean state management for profile screen
  * ✅ BottomSheet state management for selected words
  * ✅ Pagination support for large word lists
+ * ✅ Notification time selection support
  */
 data class ProfileUiState(
     val isLoading: Boolean = false,
@@ -42,6 +43,7 @@ data class ProfileUiState(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val studyDirection: StudyDirection = StudyDirection.EN_TO_TR,
     val notificationsEnabled: Boolean = true,
+    val notificationHour: Int = 20, // ✅ NEW: Default 20:00 (8 PM)
     val soundEnabled: Boolean = true,
     val dailyGoal: Int = 20
 ) {
@@ -81,6 +83,11 @@ data class ProfileUiState(
         ThemeMode.DARK -> "Koyu Tema"
         ThemeMode.SYSTEM -> "Sistem Teması"
     }
+
+    /**
+     * ✅ NEW: Notification time display text
+     */
+    val notificationTimeText: String get() = String.format("%02d:00", notificationHour)
 
     /**
      * Total words loaded in BottomSheet for display

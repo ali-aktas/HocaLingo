@@ -34,7 +34,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.hocalingo.app.HocaRoutes
 import com.hocalingo.app.R
+import com.hocalingo.app.core.ui.components.HocaSnackbarHost
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
 import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -100,7 +102,12 @@ fun AddWordScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            HocaSnackbarHost(
+                hostState = snackbarHostState,
+                currentRoute = HocaRoutes.ADD_WORD
+            )
+        },
         containerColor = MaterialTheme.colorScheme.background, // Theme-aware background
         topBar = {
             TopAppBar(

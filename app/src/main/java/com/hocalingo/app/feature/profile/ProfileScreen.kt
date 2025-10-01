@@ -26,9 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hocalingo.app.HocaRoutes
 import com.hocalingo.app.R
 import com.hocalingo.app.core.common.StudyDirection
 import com.hocalingo.app.core.common.ThemeMode
+import com.hocalingo.app.core.ui.components.HocaSnackbarHost
 import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import kotlinx.coroutines.flow.collectLatest
 
@@ -134,8 +136,13 @@ fun ProfileScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = MaterialTheme.colorScheme.background // Theme-aware background
+        snackbarHost = {
+            HocaSnackbarHost(
+                hostState = snackbarHostState,
+                currentRoute = HocaRoutes.PROFILE // ✅ Profile route
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
 
         LazyColumn(
@@ -496,6 +503,17 @@ private fun ModernSettingsCard(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
+                if (uiState.notificationsEnabled) {
+                    NotificationTimePickerItem(
+                        selectedHour = uiState.notificationHour,
+                        onHourSelected = { hour ->
+                            onEvent(ProfileEvent.UpdateNotificationTime(hour))
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+
                 // AI Assistant Style (Future feature - placeholder)
                 SettingDropdownItem(
                     title = "AI Asistan Stili",
@@ -504,6 +522,185 @@ private fun ModernSettingsCard(
                     options = AIAssistantStyle.entries,
                     selectedOption = currentAIStyle,
                     onOptionSelected = onAIStyleChange
+                )
+            }
+        }
+    }
+}
+
+// ===========================================
+// ✅ YENİ COMPOSABLE: Bildirim Saati Seçici
+// ===========================================
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun NotificationTimePickerItem(
+    selectedHour: Int,
+    onHourSelected: (Int) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    // Popüler saatler (önerilen)
+    val popularHours = listOf(7, 8, 9, 18, 19, 20, 21, 22, 23)
+
+    // Tüm saatler (0-23)
+    val allHours = (0..23).toList()
+
+    // Şu anki saat için display text
+    val selectedTimeText = String.format("%02d:00", selectedHour)
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = it }
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    Color.White.copy(alpha = 0.1f),
+                    RoundedCornerShape(12.dp)
+                )
+                .clickable { expanded = true }
+                .menuAnchor()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Schedule,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(20.dp)
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Bildirim Saati",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    color = Color.White
+                )
+                Text(
+                    text = selectedTimeText,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp,
+                    color = Color.White.copy(alpha = 0.8f)
+                )
+            }
+
+            Icon(
+                imageVector = if (expanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
+                contentDescription = if (expanded) "Kapat" else "Aç",
+                tint = Color.White.copy(alpha = 0.7f),
+                modifier = Modifier.size(20.dp)
+            )
+        }
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.background(Color(0xFF1E1E30))
+        ) {
+            // Popüler saatler başlığı
+            Text(
+                text = "📌 Popüler Saatler",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 12.sp,
+                color = Color.White.copy(alpha = 0.6f),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+
+            // Popüler saatler
+            popularHours.forEach { hour ->
+                DropdownMenuItem(
+                    text = {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = String.format("%02d:00", hour),
+                                fontFamily = PoppinsFontFamily,
+                                color = if (hour == selectedHour) {
+                                    Color(0xFF667EEA)
+                                } else {
+                                    Color.White
+                                }
+                            )
+                            if (hour == selectedHour) {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = null,
+                                    tint = Color(0xFF667EEA),
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                        }
+                    },
+                    onClick = {
+                        onHourSelected(hour)
+                        expanded = false
+                    },
+                    colors = MenuDefaults.itemColors(
+                        textColor = Color.White
+                    )
+                )
+            }
+
+            Divider(
+                modifier = Modifier.padding(vertical = 4.dp),
+                color = Color.White.copy(alpha = 0.1f)
+            )
+
+            // Tüm saatler başlığı
+            Text(
+                text = "🕐 Tüm Saatler",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 12.sp,
+                color = Color.White.copy(alpha = 0.6f),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+
+            // Geri kalan saatler
+            val remainingHours = allHours.filterNot { it in popularHours }
+            remainingHours.forEach { hour ->
+                DropdownMenuItem(
+                    text = {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = String.format("%02d:00", hour),
+                                fontFamily = PoppinsFontFamily,
+                                color = if (hour == selectedHour) {
+                                    Color(0xFF667EEA)
+                                } else {
+                                    Color.White
+                                }
+                            )
+                            if (hour == selectedHour) {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = null,
+                                    tint = Color(0xFF667EEA),
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                        }
+                    },
+                    onClick = {
+                        onHourSelected(hour)
+                        expanded = false
+                    },
+                    colors = MenuDefaults.itemColors(
+                        textColor = Color.White
+                    )
                 )
             }
         }

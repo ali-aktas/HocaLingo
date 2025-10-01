@@ -1,42 +1,25 @@
 package com.hocalingo.app.feature.auth
 
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,12 +27,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hocalingo.app.R
+import com.hocalingo.app.core.ui.components.HocaSnackbarHost
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
+import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import kotlinx.coroutines.flow.collectLatest
 
+// Poppins font family
+private val PoppinsFontFamily = FontFamily(
+    Font(R.font.poppins_regular, FontWeight.Normal),
+    Font(R.font.poppins_medium, FontWeight.Medium),
+    Font(R.font.poppins_semibold, FontWeight.SemiBold),
+    Font(R.font.poppins_bold, FontWeight.Bold),
+    Font(R.font.poppins_black, FontWeight.Black)
+)
+
 /**
- * Modern Authentication Screen with enhanced UI/UX
- * Features: Gradient backgrounds, polished cards, smooth animations
+ * Modern Authentication Screen
+ * ✅ Splash Screen ile aynı turuncu tema
+ * ✅ lingo_hoca_image.png görseli
+ * ✅ Açık, canlı ve profesyonel tasarım
+ * ✅ Responsive - Her ekran boyutuna uyumlu
+ * ✅ Status bar transparent
  */
 @Composable
 fun AuthScreen(
@@ -59,377 +57,209 @@ fun AuthScreen(
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    // Theme awareness
+    val themeViewModel: ThemeViewModel = hiltViewModel()
+    val isDarkTheme = themeViewModel.shouldUseDarkTheme()
+
     // Google Sign-In Helper
     val (googleSignInHelper, launcher) = rememberGoogleSignInHelper(
         onSignInSuccess = { idToken ->
             viewModel.onEvent(AuthEvent.GoogleSignInResult(idToken))
         },
         onSignInFailed = { exception ->
-            // Error handled in ViewModel
+            // Error will be shown via ViewModel
         }
     )
 
-    // Handle navigation effects
+    // Handle effects
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 AuthEffect.NavigateToOnboarding -> onNavigateToOnboarding()
                 is AuthEffect.ShowError -> {
-                    snackbarHostState.showSnackbar(effect.message)
+                    snackbarHostState.showSnackbar(
+                        message = effect.message,
+                        duration = SnackbarDuration.Short
+                    )
                 }
             }
         }
     }
 
+    // Breathing animation for logo
+    val infiniteTransition = rememberInfiniteTransition(label = "breathing")
+    val breathingScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.15f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "breathing"
+    )
+
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = {
+            HocaSnackbarHost(
+                hostState = snackbarHostState,
+                currentRoute = null // Auth screen has no bottom nav
+            )
+        },
+        containerColor = Color.Transparent
     ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
-                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.05f),
-                            MaterialTheme.colorScheme.background
-                        )
-                    )
-                )
+                .background(Color(0xFFFB9322)) // Turuncu arkaplan
+                .windowInsetsPadding(WindowInsets.statusBars) // ✅ Status bar padding
                 .padding(paddingValues)
         ) {
-            // Background decorative elements
-            BackgroundDecorations()
-
-            if (uiState.isLoading) {
-                // Enhanced loading state
-                LoadingState(modifier = Modifier.align(Alignment.Center))
-            } else {
-                // Main auth content
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    // App branding section
-                    AppBrandingSection()
-
-                    Spacer(modifier = Modifier.height(64.dp))
-
-                    // Enhanced sign in card
-                    EnhancedSignInCard(
-                        onGoogleSignIn = { googleSignInHelper.signIn(launcher) },
-                        onAnonymousSignIn = { viewModel.onEvent(AuthEvent.SignInAnonymously) }
-                    )
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    // Terms and privacy
-                    TermsAndPrivacyText()
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun BackgroundDecorations() {
-    // Subtle background circles for visual interest
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        // Top right circle
-        Box(
-            modifier = Modifier
-                .size(200.dp)
-                .offset(x = 100.dp, y = (-50).dp)
-                .align(Alignment.TopEnd)
-                .background(
-                    MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                    CircleShape
-                )
-                .blur(50.dp)
-        )
-
-        // Bottom left circle
-        Box(
-            modifier = Modifier
-                .size(150.dp)
-                .offset(x = (-30).dp, y = 50.dp)
-                .align(Alignment.BottomStart)
-                .background(
-                    MaterialTheme.colorScheme.tertiary.copy(alpha = 0.08f),
-                    CircleShape
-                )
-                .blur(40.dp)
-        )
-    }
-}
-
-@Composable
-private fun LoadingState(modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        shape = RoundedCornerShape(24.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(48.dp),
-                color = MaterialTheme.colorScheme.primary,
-                strokeWidth = 4.dp
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(R.string.loading),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
-    }
-}
-
-@Composable
-private fun AppBrandingSection() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Enhanced app icon
-        Card(
-            modifier = Modifier.size(120.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
-            shape = CircleShape
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+            // ✅ Scrollable Column - Her ekrana uyumlu
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp)
+                    .padding(top = 20.dp, bottom = 32.dp), // ✅ Responsive padding
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = "🎓",
-                    fontSize = 56.sp
+
+                // Logo & Branding - Küçültülmüş
+                BrandingSection(breathingScale = breathingScale)
+
+                Spacer(modifier = Modifier.height(40.dp)) // ✅ Azaltıldı
+
+                // Main Content Card
+                AuthContentCard(
+                    isLoading = uiState.isLoading,
+                    onGoogleSignIn = { googleSignInHelper.signIn(launcher) },
+                    onAnonymousSignIn = { viewModel.onEvent(AuthEvent.SignInAnonymously) }
                 )
+
+                Spacer(modifier = Modifier.height(20.dp)) // ✅ Azaltıldı
+
+                // Terms & Privacy
+                TermsText()
             }
         }
+    }
+}
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // App name with enhanced typography
-        Text(
-            text = stringResource(R.string.app_name),
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
-            letterSpacing = (-0.5).sp
+@Composable
+private fun BrandingSection(breathingScale: Float) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp) // ✅ Azaltıldı
+    ) {
+        // Logo Image - Küçültülmüş
+        Image(
+            painter = painterResource(id = R.drawable.lingo_hoca_image),
+            contentDescription = "HocaLingo Logo",
+            modifier = Modifier
+                .size(120.dp) // ✅ 160dp → 120dp
+                .scale(breathingScale),
+            contentScale = ContentScale.Fit
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Tagline with better styling
+        // App Name - Küçültülmüş
         Text(
-            text = stringResource(R.string.app_tagline),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            letterSpacing = 0.25.sp
+            text = "HocaLingo",
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Black,
+            fontSize = 32.sp, // ✅ 40sp → 32sp
+            color = Color.White,
+            letterSpacing = 1.sp
+        )
+
+        // Tagline - Küçültülmüş
+        Text(
+            text = "Kelime Öğrenmenin En Keyifli Yolu",
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 14.sp, // ✅ 16sp → 14sp
+            color = Color.White.copy(alpha = 0.95f),
+            textAlign = TextAlign.Center
         )
     }
 }
 
 @Composable
-private fun EnhancedSignInCard(
+private fun AuthContentCard(
+    isLoading: Boolean,
     onGoogleSignIn: () -> Unit,
     onAnonymousSignIn: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        shape = RoundedCornerShape(28.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = Color.White
         ),
-        shape = RoundedCornerShape(24.dp)
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 12.dp
+        )
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(28.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(28.dp), // ✅ 32dp → 28dp
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp) // ✅ 20dp → 16dp
         ) {
+
+            // Welcome Text - Küçültülmüş
             Text(
-                text = stringResource(R.string.auth_title),
-                style = MaterialTheme.typography.titleLarge,
+                text = "Hoş Geldin!",
+                fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 24.sp, // ✅ 28sp → 24sp
+                color = Color(0xFF1A1A2E),
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Text(
+                text = "Kelime öğrenme yolculuğuna başlamak için giriş yap",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Normal,
+                fontSize = 14.sp, // ✅ 15sp → 14sp
+                color = Color(0xFF6C757D),
+                textAlign = TextAlign.Center,
+                lineHeight = 20.sp // ✅ 22sp → 20sp
+            )
 
-            // Enhanced Google Sign In Button
-            Button(
+            Spacer(modifier = Modifier.height(4.dp)) // ✅ 8dp → 4dp
+
+            // Google Sign In Button
+            GoogleSignInButton(
                 onClick = onGoogleSignIn,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
-                shape = RoundedCornerShape(16.dp),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 4.dp,
-                    pressedElevation = 8.dp
-                )
-            ) {
-                Row(
-                    modifier = Modifier.padding(vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    // Enhanced Google icon
-                    Card(
-                        modifier = Modifier.size(24.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White
-                        ),
-                        shape = CircleShape
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "G",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
+                isLoading = isLoading
+            )
 
-                    Spacer(modifier = Modifier.width(16.dp))
+            // Divider with OR
+            DividerWithText()
 
-                    Text(
-                        text = stringResource(R.string.auth_google_signin),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Enhanced divider with "OR" text
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(1.dp)
-                        .background(
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    MaterialTheme.colorScheme.outlineVariant,
-                                    Color.Transparent
-                                )
-                            )
-                        )
-                )
-
-                Card(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
-                    ),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.auth_or),
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(1.dp)
-                        .background(
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    MaterialTheme.colorScheme.outlineVariant,
-                                    Color.Transparent
-                                )
-                            )
-                        )
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Enhanced Anonymous Sign In Button
-            OutlinedButton(
+            // Anonymous Sign In Button
+            AnonymousSignInButton(
                 onClick = onAnonymousSignIn,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            ) {
-                Row(
-                    modifier = Modifier.padding(vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "👤",
-                        fontSize = 20.sp
-                    )
+                isLoading = isLoading
+            )
 
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    Text(
-                        text = stringResource(R.string.auth_guest_signin),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Enhanced guest mode info
+            // Guest Info - Padding azaltıldı
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
+                    containerColor = Color(0xFFFFF4E6)
                 ),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
                     text = stringResource(R.string.auth_guest_info),
-                    modifier = Modifier.padding(16.dp),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.padding(12.dp), // ✅ 14dp → 12dp
+                    fontFamily = PoppinsFontFamily,
+                    fontSize = 11.sp, // ✅ 12sp → 11sp
+                    color = Color(0xFF8B5A00),
                     textAlign = TextAlign.Center,
-                    lineHeight = 20.sp
+                    lineHeight = 16.sp // ✅ 18sp → 16sp
                 )
             }
         }
@@ -437,28 +267,165 @@ private fun EnhancedSignInCard(
 }
 
 @Composable
-private fun TermsAndPrivacyText() {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
+private fun GoogleSignInButton(
+    onClick: () -> Unit,
+    isLoading: Boolean
+) {
+    Button(
+        onClick = onClick,
+        enabled = !isLoading,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp), // ✅ 58dp → 56dp
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFFFB9322), // Turuncu tema
+            disabledContainerColor = Color.Gray.copy(alpha = 0.3f)
         ),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(16.dp),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = 4.dp,
+            pressedElevation = 8.dp
+        )
     ) {
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(24.dp),
+                color = Color.White,
+                strokeWidth = 2.dp
+            )
+        } else {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                // Google Icon
+                Box(
+                    modifier = Modifier
+                        .size(30.dp) // ✅ 32dp → 30dp
+                        .clip(CircleShape)
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "G",
+                        fontFamily = PoppinsFontFamily,
+                        fontSize = 16.sp, // ✅ 18sp → 16sp
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFFB9322)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Text(
+                    text = stringResource(R.string.auth_google_signin),
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 15.sp, // ✅ 16sp → 15sp
+                    color = Color.White
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun AnonymousSignInButton(
+    onClick: () -> Unit,
+    isLoading: Boolean
+) {
+    OutlinedButton(
+        onClick = onClick,
+        enabled = !isLoading,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp), // ✅ 58dp → 56dp
+        shape = RoundedCornerShape(16.dp),
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = Color.Transparent,
+            contentColor = Color(0xFF1A1A2E)
+        ),
+        border = ButtonDefaults.outlinedButtonBorder.copy(
+            width = 2.dp
+        )
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "👤",
+                fontSize = 24.sp // ✅ 26sp → 24sp
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Text(
+                text = stringResource(R.string.auth_guest_signin),
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 15.sp // ✅ 16sp → 15sp
+            )
+        }
+    }
+}
+
+@Composable
+private fun DividerWithText() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp), // ✅ 8dp → 6dp
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        HorizontalDivider(
+            modifier = Modifier.weight(1f),
+            color = Color(0xFFE0E0E0)
+        )
+
         Text(
-            text = stringResource(R.string.auth_terms),
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
-            textAlign = TextAlign.Center,
-            lineHeight = 20.sp
+            text = stringResource(R.string.auth_or),
+            modifier = Modifier.padding(horizontal = 16.dp),
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 12.sp, // ✅ 13sp → 12sp
+            color = Color(0xFF9E9E9E)
+        )
+
+        HorizontalDivider(
+            modifier = Modifier.weight(1f),
+            color = Color(0xFFE0E0E0)
         )
     }
+}
+
+@Composable
+private fun TermsText() {
+    Text(
+        text = stringResource(R.string.auth_terms),
+        fontFamily = PoppinsFontFamily,
+        fontSize = 11.sp, // ✅ 12sp → 11sp
+        color = Color.White.copy(alpha = 0.85f),
+        textAlign = TextAlign.Center,
+        lineHeight = 16.sp // ✅ 18sp → 16sp
+    )
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun AuthScreenPreview() {
     HocaLingoTheme {
+        AuthScreen(
+            onNavigateToOnboarding = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Loading State")
+@Composable
+private fun AuthScreenLoadingPreview() {
+    HocaLingoTheme {
+        // Preview with loading state
         AuthScreen(
             onNavigateToOnboarding = {}
         )
