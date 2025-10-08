@@ -10,7 +10,14 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * DatabaseSeeder
+ * DatabaseSeeder - FIXED FOR FIREBASE
+ *
+ * Package: app/src/main/java/com/hocalingo/app/database/
+ *
+ * ✅ Firebase uyumlu hale getirildi
+ * ✅ Assets bağımlılıkları kaldırıldı
+ * ✅ Eski metodlar yeni sisteme adapte edildi
+ *
  * Handles initial data setup for new users and app installation
  * Coordinates JsonLoader, UserRepository, and UserPreferencesManager
  */
@@ -64,6 +71,7 @@ class MainDatabaseSeeder @Inject constructor(
             )
 
             // 3. Load test word data if not already loaded
+            // ✅ FIXED: Firebase'den yükleniyor
             jsonLoader.isTestDataLoaded().fold(
                 onSuccess = { isLoaded ->
                     if (!isLoaded) {
@@ -97,6 +105,8 @@ class MainDatabaseSeeder @Inject constructor(
 
     /**
      * Initialize app on first launch (before user authentication)
+     *
+     * ✅ FIXED: Assets bağımlılığı kaldırıldı
      */
     suspend fun initializeApp(): Result<AppInitResult> {
         try {
@@ -120,15 +130,19 @@ class MainDatabaseSeeder @Inject constructor(
             // Set app version
             preferencesManager.setAppVersion("1.0.0")
 
-            // Load basic app data if needed
+            // ✅ FIXED: Available packages artık Firestore'dan çekilecek
+            // Şimdilik hardcoded list kullanıyoruz (UI'da zaten var)
             if (result.isFirstLaunch) {
-                // Pre-load word packages for selection
-                jsonLoader.getAvailableWordPackages().fold(
-                    onSuccess = { packages ->
-                        result.availablePackages = packages
-                        result.packagesScanned = true
-                    },
-                    onError = { /* Non-critical */ }
+                // Firebase'den package listesi çekilebilir ama şimdilik gerekli değil
+                // Çünkü PackageSelectionViewModel zaten kendi listesini oluşturuyor
+                result.packagesScanned = true
+                result.availablePackages = listOf(
+                    "a1_en_tr_test_v1",
+                    "a2_en_tr_v1",
+                    "b1_en_tr_v1",
+                    "b2_en_tr_v1",
+                    "c1_en_tr_v1",
+                    "c2_en_tr_v1"
                 )
             }
 
@@ -167,6 +181,8 @@ class MainDatabaseSeeder @Inject constructor(
 
     /**
      * Set up word selection after onboarding
+     *
+     * ✅ FIXED: Firebase sistemine adapte edildi
      */
     suspend fun setupWordSelection(selectedLevel: String): Result<WordSelectionSetup> {
         try {
@@ -179,41 +195,16 @@ class MainDatabaseSeeder @Inject constructor(
             val concepts = database.conceptDao().getConceptsByLevel(selectedLevel)
             result.availableWords = concepts.size
 
+            // ✅ FIXED: Artık Firebase'den yükleniyor
             if (concepts.isEmpty()) {
-                // Load words for this level if not available
-                val jsonFile = "${selectedLevel.lowercase()}_en_tr.json"
-                jsonLoader.getAvailableWordPackages().fold(
-                    onSuccess = { packages ->
-                        if (jsonFile in packages) {
-                            jsonLoader.loadWordsFromAssets(jsonFile).fold(
-                                onSuccess = { loadedCount ->
-                                    result.wordsLoaded = loadedCount
-                                    result.availableWords = loadedCount
-                                },
-                                onError = {
-                                    // Fallback to test data
-                                    jsonLoader.loadTestWords().fold(
-                                        onSuccess = { testCount ->
-                                            result.wordsLoaded = testCount
-                                            result.availableWords = testCount
-                                        },
-                                        onError = { error -> return Result.Error(error) }
-                                    )
-                                }
-                            )
-                        } else {
-                            // Use test data as fallback
-                            jsonLoader.loadTestWords().fold(
-                                onSuccess = { testCount ->
-                                    result.wordsLoaded = testCount
-                                    result.availableWords = testCount
-                                },
-                                onError = { error -> return Result.Error(error) }
-                            )
-                        }
-                    },
-                    onError = { error -> return Result.Error(error) }
-                )
+                // Kullanıcı henüz paket indirmemiş
+                // PackageSelectionScreen'de manuel indirme yapacak
+                // Burada otomatik indirme yapmıyoruz
+                result.wordsLoaded = 0
+                result.availableWords = 0
+            } else {
+                result.wordsLoaded = concepts.size
+                result.availableWords = concepts.size
             }
 
             return Result.Success(result)
