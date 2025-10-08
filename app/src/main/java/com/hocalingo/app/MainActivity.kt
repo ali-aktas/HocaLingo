@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hocalingo.app.core.ui.navigation.HocaBottomNavigationBar
@@ -34,11 +33,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * MainActivity - Enhanced with Theme Management
- * ✅ Centralized theme management with ThemeViewModel
- * ✅ Real-time theme switching without restart
- * ✅ Persists theme preferences
- * ✅ Clean, edge-to-edge navigation
- * ✅ Bottom navigation only when needed
+ * ✅ Bottom navigation fixed to bottom
+ * ✅ No floating padding
  */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -83,27 +79,24 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background), // Theme-aware
-                    containerColor = MaterialTheme.colorScheme.background, // Theme-aware
+                        .background(MaterialTheme.colorScheme.background),
+                    containerColor = MaterialTheme.colorScheme.background,
                     bottomBar = {
-                        // Show bottom navigation only for main app screens
+                        // UPDATED: Show bottom navigation directly at bottom
                         if (shouldShowBottomNavigation(currentRoute)) {
                             HocaBottomNavigationBar(navController = navController)
                         }
                     }
-                ) { _ ->
+                ) { paddingValues ->
 
-                    // Edge-to-edge with proper padding
+                    // UPDATED: Apply padding from Scaffold (includes bottom nav)
                     HocaLingoNavigation(
                         navController = navController,
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background) // Theme-aware
-                            .windowInsetsPadding(WindowInsets.statusBars) // Proper status bar padding
-                            // Bottom padding only when bottom nav is shown
-                            .padding(
-                                bottom = if (shouldShowBottomNavigation(currentRoute)) 50.dp else 0.dp
-                            )
+                            .background(MaterialTheme.colorScheme.background)
+                            .windowInsetsPadding(WindowInsets.statusBars)
+                            .padding(paddingValues) // Use Scaffold padding
                     )
                 }
             }

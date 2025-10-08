@@ -43,11 +43,10 @@ private val PoppinsFontFamily = FontFamily(
 )
 
 /**
- * Modern Floating Bottom Navigation - Oval, Gradient, Transparent Background
- * ✅ Floating oval design
- * ✅ Gradient colors
- * ✅ Study button in center (prominent)
- * ✅ Transparent background for smooth scrolling
+ * UPDATED Bottom Navigation - Fixed to Bottom
+ * ✅ No floating padding
+ * ✅ Direct attachment to screen bottom
+ * ✅ Gradient colors maintained
  */
 @Composable
 fun HocaBottomNavigationBar(
@@ -57,7 +56,7 @@ fun HocaBottomNavigationBar(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination?.route
 
-    // Navigation items - Study button in center, Add word moved
+    // Navigation items
     val bottomNavItems = remember {
         listOf(
             BottomNavItem(
@@ -80,7 +79,7 @@ fun HocaBottomNavigationBar(
                 unselectedIcon = Icons.Outlined.School,
                 labelRes = R.string.nav_study,
                 label = "Çalış",
-                isMainAction = true // Center button - prominent
+                isMainAction = true
             ),
             BottomNavItem(
                 route = HocaRoutes.PROFILE,
@@ -92,72 +91,65 @@ fun HocaBottomNavigationBar(
         )
     }
 
-    // Floating container with transparent background
-    Box(
+    // UPDATED: Direct container without padding
+    Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 16.dp)
+            .height(70.dp),
+        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp), // Rounded top corners only
+        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
-        // Floating oval navigation container
-        Card(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(70.dp),
-            shape = RoundedCornerShape(35.dp), // Oval shape
-            elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+                .fillMaxSize()
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFFC28152).copy(alpha = 0.95f),
+                            Color(0xFFE07B2D).copy(alpha = 0.95f),
+                            Color(0xFFBA8546).copy(alpha = 0.95f)
+                        )
+                    ),
+                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                )
+                .border(
+                    width = 1.dp,
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color.White.copy(alpha = 0.3f),
+                            Color.White.copy(alpha = 0.1f),
+                            Color.White.copy(alpha = 0.3f)
+                        )
+                    ),
+                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                )
         ) {
-            Box(
+            Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                Color(0xFFC28152).copy(alpha = 0.95f),
-                                Color(0xFFE07B2D).copy(alpha = 0.95f),
-                                Color(0xFFBA8546).copy(alpha = 0.95f)
-                            )
-                        ),
-                        shape = RoundedCornerShape(35.dp)
-                    )
-                    .border(
-                        width = 1.dp,
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                Color.White.copy(alpha = 0.3f),
-                                Color.White.copy(alpha = 0.1f),
-                                Color.White.copy(alpha = 0.3f)
-                            )
-                        ),
-                        shape = RoundedCornerShape(35.dp)
-                    )
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    bottomNavItems.forEach { item ->
-                        val isSelected = currentDestination?.startsWith(item.route) == true
+                bottomNavItems.forEach { item ->
+                    val isSelected = currentDestination?.startsWith(item.route) == true
 
-                        FloatingNavItem(
-                            item = item,
-                            isSelected = isSelected,
-                            onClick = {
-                                if (!isSelected) {
-                                    navController.navigate(item.route) {
-                                        popUpTo(navController.graph.startDestinationId) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
+                    FixedNavItem(
+                        item = item,
+                        isSelected = isSelected,
+                        onClick = {
+                            if (!isSelected) {
+                                navController.navigate(item.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
                                     }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
                             }
-                        )
-                    }
+                        }
+                    )
                 }
             }
         }
@@ -165,13 +157,12 @@ fun HocaBottomNavigationBar(
 }
 
 @Composable
-private fun FloatingNavItem(
+private fun FixedNavItem(
     item: BottomNavItem,
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Simple animations - no complex springs
     val scale by animateFloatAsState(
         targetValue = if (isSelected) 1.2f else 1f,
         animationSpec = tween(200),
@@ -211,7 +202,6 @@ private fun FloatingNavItem(
             },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Icon with special treatment for main action (Study)
         Icon(
             imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
             contentDescription = item.label,
@@ -221,7 +211,6 @@ private fun FloatingNavItem(
             )
         )
 
-        // Label only for selected items
         if (isSelected) {
             Spacer(modifier = Modifier.height(2.dp))
             Text(
@@ -237,22 +226,15 @@ private fun FloatingNavItem(
     }
 }
 
-/**
- * Data class for bottom navigation items
- */
 data class BottomNavItem(
     val route: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
     val labelRes: Int,
     val label: String,
-    val isMainAction: Boolean = false // For center button (Study)
+    val isMainAction: Boolean = false
 )
 
-/**
- * Helper function to check if route should show bottom navigation
- * ✅ UPDATED: Package selection now shows bottom navigation
- */
 fun shouldShowBottomNavigation(currentRoute: String?): Boolean {
     return when {
         currentRoute == null -> false
@@ -262,13 +244,13 @@ fun shouldShowBottomNavigation(currentRoute: String?): Boolean {
         currentRoute.startsWith(HocaRoutes.ONBOARDING_LEVEL) -> false
         currentRoute.startsWith(HocaRoutes.WORD_SELECTION) -> false
         currentRoute.startsWith(HocaRoutes.STUDY) -> false
-        else -> true // ✅ Package selection will now show bottom nav
+        else -> true
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun FloatingBottomNavigationPreview() {
+private fun FixedBottomNavigationPreview() {
     HocaLingoTheme {
         Column(
             modifier = Modifier

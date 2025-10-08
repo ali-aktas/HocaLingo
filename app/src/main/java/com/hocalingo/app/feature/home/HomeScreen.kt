@@ -2,6 +2,7 @@ package com.hocalingo.app.feature.home
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,9 +17,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -99,17 +103,31 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
 
-            // Welcome Header
+            // App Title - "Hocalingo"
             item {
-                WelcomeHeader(
+                Text(
+                    text = "Hocalingo",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 26.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            // Welcome Header + Monthly Stats - UPDATED LARGE CARD
+            item {
+                WelcomeHeaderWithStats(
                     userName = uiState.userName,
                     streakDays = uiState.streakDays,
+                    stats = uiState.monthlyStats,
                     onRefresh = { viewModel.onEvent(HomeEvent.RefreshData) },
                     isDarkTheme = isDarkTheme
                 )
             }
 
-            // Daily Goal Card
+            // Daily Goal Card - UPDATED COLORS
             item {
                 DailyGoalCard(
                     progress = uiState.dailyGoalProgress,
@@ -118,7 +136,7 @@ fun HomeScreen(
                 )
             }
 
-            // Package Selection Card (Theme-aware gradients)
+            // Package Selection Card - UPDATED TO TEAL
             item {
                 PackageSelectionCard(
                     onNavigateToPackageSelection = { viewModel.onEvent(HomeEvent.NavigateToPackageSelection) },
@@ -126,15 +144,7 @@ fun HomeScreen(
                 )
             }
 
-            // Monthly Stats
-            item {
-                MonthlyStatsCard(
-                    stats = uiState.monthlyStats,
-                    isDarkTheme = isDarkTheme
-                )
-            }
-
-            // AI Assistant Card (Theme-aware gradients)
+            // AI Assistant Card
             item {
                 AIAssistantCard(
                     onNavigateToAI = { viewModel.onEvent(HomeEvent.NavigateToAIAssistant) },
@@ -142,48 +152,71 @@ fun HomeScreen(
                 )
             }
 
+            // Bottom spacing for BottomNavigationBar
             item {
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(80.dp))
             }
         }
     }
 }
 
+/**
+ * UPDATED Welcome Header + Monthly Stats Combined
+ * ✅ Large card with greeting + monthly stats
+ * ✅ Left bottom: Merhaba Ali! + Streak + Stats
+ * ✅ Right: Lingo Hoca image aligned to bottom
+ * ✅ Green gradient + shadow
+ */
 @Composable
-private fun WelcomeHeader(
+private fun WelcomeHeaderWithStats(
     userName: String,
     streakDays: Int,
+    stats: MonthlyStats,
     onRefresh: () -> Unit,
     isDarkTheme: Boolean
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(220.dp) // Larger card
+            .shadow(
+                elevation = 8.dp,
+                shape = RoundedCornerShape(24.dp),
+                spotColor = Color.Black.copy(alpha = 0.25f)
+            ),
+        shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isDarkTheme) {
-                MaterialTheme.colorScheme.surface // Dark theme card
-            } else {
-                Color.White // Light theme card
-            }
+            containerColor = Color.Transparent
         ),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Row(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize()
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = if (isDarkTheme) {
+                            listOf(Color(0xFF388E3C), Color(0xFF2E7D32)) // Dark green
+                        } else {
+                            listOf(Color(0xFF66BB6A), Color(0xFF81C784)) // Light green
+                        }
+                    ),
+                    shape = RoundedCornerShape(24.dp)
+                )
         ) {
+            // Left side - Text content at bottom
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(20.dp)
+                    .fillMaxWidth(0.6f) // Leave space for image
             ) {
                 Text(
-                    text = "Merhaba, $userName! 👋",
+                    text = "Merhaba, $userName!",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    color = MaterialTheme.colorScheme.onSurface // Theme-aware text
+                    fontSize = 22.sp,
+                    color = Color.White
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -191,45 +224,99 @@ private fun WelcomeHeader(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.LocalFireDepartment,
-                        contentDescription = null,
-                        tint = if (isDarkTheme) Color(0xFFFF8A65) else Color(0xFFFF5722), // Theme-aware fire color
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "$streakDays gün streak!",
+                        text = "🔥",
+                        fontSize = 16.sp
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "$streakDays günlük seri!",
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant // Theme-aware subtitle
+                        fontSize = 15.sp,
+                        color = Color.White
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Monthly Stats - Small version
+                Text(
+                    text = "Bu Ay 📈",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Color.White.copy(alpha = 0.95f)
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    CompactStatItem(
+                        label = "Aktif",
+                        value = "${stats.activeDaysThisMonth} gün"
+                    )
+                    CompactStatItem(
+                        label = "Süre",
+                        value = stats.studyTimeFormatted
+                    )
+                    CompactStatItem(
+                        label = "Disiplin",
+                        value = "${stats.disciplineScore}%"
                     )
                 }
             }
 
-            IconButton(
-                onClick = onRefresh,
+            // Right side - Lingo Hoca Image aligned to bottom
+            Image(
+                painter = painterResource(id = R.drawable.main_screen_card),
+                contentDescription = "Lingo Hoca",
                 modifier = Modifier
-                    .background(
-                        color = if (isDarkTheme) {
-                            Color(0xFF26C6DA).copy(alpha = 0.2f) // Dark theme teal
-                        } else {
-                            Color(0xFF4ECDC4).copy(alpha = 0.1f) // Light theme teal
-                        },
-                        shape = CircleShape
-                    )
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Refresh,
-                    contentDescription = "Yenile",
-                    tint = if (isDarkTheme) Color(0xFF26C6DA) else Color(0xFF4ECDC4) // Theme-aware teal
-                )
-            }
+                    .size(170.dp)
+                    .align(Alignment.BottomEnd)
+                    .offset(x = 15.dp, y = 0.dp), // Slight offset to pop out
+                contentScale = ContentScale.Fit,
+                alignment = Alignment.BottomCenter
+            )
         }
     }
 }
 
+/**
+ * Compact stat item for the welcome card
+ */
+@Composable
+private fun CompactStatItem(
+    label: String,
+    value: String
+) {
+    Column(
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(
+            text = value,
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp,
+            color = Color.White
+        )
+        Text(
+            text = label,
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 11.sp,
+            color = Color.White.copy(alpha = 0.85f)
+        )
+    }
+}
+
+/**
+ * UPDATED Daily Goal Card - Orange/Yellow Gradient
+ * ✅ Light: Warm orange gradient
+ * ✅ Dark: Deeper orange gradient
+ */
 @Composable
 private fun DailyGoalCard(
     progress: DailyGoalProgress,
@@ -237,84 +324,122 @@ private fun DailyGoalCard(
     isDarkTheme: Boolean
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(20.dp),
+                spotColor = Color.Black.copy(alpha = 0.2f)
+            ),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isDarkTheme) {
-                MaterialTheme.colorScheme.surface // Dark theme card
-            } else {
-                Color.White // Light theme card
-            }
+            containerColor = Color.Transparent
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(20.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = if (isDarkTheme) {
+                            listOf(Color(0xFFFF8A65), Color(0xFFFF7043)) // Dark warm orange
+                        } else {
+                            listOf(Color(0xFFFFB74D), Color(0xFFFFA726)) // Light warm orange
+                        }
+                    ),
+                    shape = RoundedCornerShape(20.dp)
+                )
+                .padding(20.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Günlük Hedef 🎯",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = Color.White
+                    )
+
+                    if (progress.isDailyGoalComplete) {
+                        Icon(
+                            imageVector = Icons.Filled.CheckCircle,
+                            contentDescription = "Tamamlandı",
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
                 Text(
-                    text = "Günlük Hedef 🎯",
+                    text = "Bugün çalıştığın kelimeler",
                     fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onSurface // Theme-aware text
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    color = Color.White.copy(alpha = 0.9f)
                 )
 
-                if (progress.isDailyGoalComplete) {
-                    Icon(
-                        imageVector = Icons.Filled.CheckCircle,
-                        contentDescription = "Tamamlandı",
-                        tint = if (isDarkTheme) Color(0xFF66BB6A) else Color(0xFF4CAF50), // Theme-aware green
-                        modifier = Modifier.size(24.dp)
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Progress bar
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(12.dp)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(Color.White.copy(alpha = 0.3f))
+                ) {
+                    val animatedProgress by animateFloatAsState(
+                        targetValue = progress.todayProgress,
+                        animationSpec = tween(durationMillis = 1000),
+                        label = "progress"
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .fillMaxWidth(animatedProgress)
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(Color.White)
                     )
                 }
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            // Günlük kartlar
-            DailyGoalProgressRow(
-                current = progress.todayCompletedCards,
-                total = progress.todayAvailableCards,
-                isDarkTheme = isDarkTheme
-            )
+                Text(
+                    text = "${progress.todayCompletedCards} / ${progress.todayAvailableCards}",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = Color.White
+                )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // Çalışmaya başla butonu
-            Button(
-                onClick = onStartStudy,
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isDarkTheme) {
-                        Color(0xFFFB9322) // Dark theme orange
-                    } else {
-                        Color(0xFFFB9322) // Light theme orange
-                    }
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+                // Start Study Button
+                Button(
+                    onClick = onStartStudy,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = if (isDarkTheme) Color(0xFFFF7043) else Color(0xFFFF9800)
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.PlayArrow,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = if (progress.todayCompletedCards == 0) "Çalışmaya Başla" else "Devam Et",
+                        text = "Çalışmaya Başla",
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
-                        color = Color.White
+                        modifier = Modifier.padding(vertical = 4.dp)
                     )
                 }
             }
@@ -322,56 +447,12 @@ private fun DailyGoalCard(
     }
 }
 
-@Composable
-private fun DailyGoalProgressRow(
-    current: Int,
-    total: Int,
-    isDarkTheme: Boolean
-) {
-    val progress = if (total > 0) current.toFloat() / total.toFloat() else 0f
-    val color = if (isDarkTheme) Color(0xFF26C6DA) else Color(0xFF4ECDC4)
-
-    Column {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Bugün çalıştığın kelimeler",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant // Theme-aware
-            )
-            Text(
-                text = "$current/$total",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
-                color = color
-            )
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        val animatedProgress by animateFloatAsState(
-            targetValue = progress,
-            animationSpec = tween(durationMillis = 800),
-            label = "progress"
-        )
-
-        LinearProgressIndicator(
-            progress = { animatedProgress },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(8.dp)
-                .clip(RoundedCornerShape(4.dp)),
-            color = color,
-            trackColor = color.copy(alpha = 0.2f)
-        )
-    }
-}
-
+/**
+ * UPDATED Package Selection Card - Teal/Cyan Gradient
+ * ✅ Light: Bright teal gradient
+ * ✅ Dark: Deeper cyan gradient
+ * ✅ Different from purple AI card
+ */
 @Composable
 private fun PackageSelectionCard(
     onNavigateToPackageSelection: () -> Unit,
@@ -380,12 +461,17 @@ private fun PackageSelectionCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onNavigateToPackageSelection() },
+            .clickable { onNavigateToPackageSelection() }
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(20.dp),
+                spotColor = Color.Black.copy(alpha = 0.2f)
+            ),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Box(
             modifier = Modifier
@@ -393,9 +479,9 @@ private fun PackageSelectionCard(
                 .background(
                     brush = Brush.linearGradient(
                         colors = if (isDarkTheme) {
-                            listOf(Color(0xFF26A69A), Color(0xFF00897B)) // Dark theme green
+                            listOf(Color(0xFF26A69A), Color(0xFF00897B)) // Dark teal
                         } else {
-                            listOf(Color(0xFF43E97B), Color(0xFF38F9D7)) // Light theme green
+                            listOf(Color(0xFF4ECDC4), Color(0xFF44A08D)) // Light teal
                         }
                     ),
                     shape = RoundedCornerShape(20.dp)
@@ -438,6 +524,9 @@ private fun PackageSelectionCard(
     }
 }
 
+/**
+ * AI Assistant Card - Existing Purple Gradient
+ */
 @Composable
 private fun AIAssistantCard(
     onNavigateToAI: () -> Unit,
@@ -446,12 +535,17 @@ private fun AIAssistantCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onNavigateToAI() },
+            .clickable { onNavigateToAI() }
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(20.dp),
+                spotColor = Color.Black.copy(alpha = 0.2f)
+            ),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Box(
             modifier = Modifier
@@ -501,106 +595,6 @@ private fun AIAssistantCard(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun MonthlyStatsCard(
-    stats: MonthlyStats,
-    isDarkTheme: Boolean
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isDarkTheme) {
-                MaterialTheme.colorScheme.surface // Dark theme card
-            } else {
-                Color.White // Light theme card
-            }
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(20.dp)
-        ) {
-            Text(
-                text = "Bu Ay 📈",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                color = MaterialTheme.colorScheme.onSurface // Theme-aware text
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                // Çalışılan günler
-                MonthlyStatItem(
-                    label = "Aktif Gün",
-                    value = stats.activeDaysThisMonth.toString(),
-                    color = if (isDarkTheme) Color(0xFFFF8A65) else Color(0xFFFF5722),
-                    icon = Icons.Filled.CalendarToday
-                )
-
-                // Çalışma süresi
-                MonthlyStatItem(
-                    label = "Çalışma Süresi",
-                    value = stats.studyTimeFormatted,
-                    color = if (isDarkTheme) Color(0xFF66BB6A) else Color(0xFF4CAF50),
-                    icon = Icons.Filled.Schedule
-                )
-
-                // Disiplin puanı
-                MonthlyStatItem(
-                    label = "Disiplin",
-                    value = "${stats.disciplineScore}%",
-                    color = if (isDarkTheme) Color(0xFF26C6DA) else Color(0xFF4ECDC4),
-                    icon = Icons.Filled.TrendingUp
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun MonthlyStatItem(
-    label: String,
-    value: String,
-    color: Color,
-    icon: ImageVector
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = color,
-            modifier = Modifier.size(20.dp)
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Text(
-            text = value,
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            color = color
-        )
-
-        Text(
-            text = label,
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant, // Theme-aware text
-            textAlign = TextAlign.Center
-        )
     }
 }
 

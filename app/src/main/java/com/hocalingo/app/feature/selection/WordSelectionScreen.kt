@@ -2,7 +2,6 @@ package com.hocalingo.app.feature.selection
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -13,6 +12,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
+import com.hocalingo.app.core.ui.components.HocaLoadingIndicator
+import com.hocalingo.app.core.ui.components.HocaErrorState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -23,19 +26,19 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.hocalingo.app.HocaRoutes
 import com.hocalingo.app.R
-import com.hocalingo.app.core.ui.components.HocaErrorState
-import com.hocalingo.app.core.ui.components.HocaLoadingIndicator
 import com.hocalingo.app.core.ui.components.HocaSnackbarHost
+import com.hocalingo.app.core.ui.theme.HocaLingoTheme
 import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlin.math.*
+import kotlin.math.abs
+import kotlin.math.roundToInt
 
 // Poppins font family
 private val PoppinsFontFamily = FontFamily(
@@ -45,71 +48,75 @@ private val PoppinsFontFamily = FontFamily(
     Font(R.font.poppins_black, FontWeight.Black)
 )
 
+/**
+ * Modern Word Selection Screen - Enhanced UI
+ * ✅ Blue cards for both light and dark themes
+ * ✅ Turkish swipe indicators ("Geç" and "Öğren")
+ * ✅ Snackbar repositioned between hint and card
+ * ✅ Card height increased by 40dp
+ * ✅ Extended hint text
+ */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WordSelectionScreen(
     onNavigateToStudy: () -> Unit,
-    onNavigateToHome: () -> Unit = {},
+    onNavigateToHome: () -> Unit,
     viewModel: WordSelectionViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState() // ✅ Using original collectAsState
+    val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // ✅ THEME ADAPTATION - Get theme state
+    // Get theme state
     val themeViewModel: ThemeViewModel = hiltViewModel()
     val isDarkTheme = themeViewModel.shouldUseDarkTheme()
 
-    // Handle effects - ✅ Using original effect handling
+    // Handle effects
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
-                WordSelectionEffect.NavigateToStudy -> onNavigateToStudy()
-                WordSelectionEffect.ShowCompletionMessage -> {
-                    snackbarHostState.showSnackbar("Tebrikler! Tüm kelimeler işlendi.")
-                }
-                WordSelectionEffect.ShowUndoMessage -> {
-                    snackbarHostState.showSnackbar("Geri alındı")
+                is WordSelectionEffect.NavigateToStudy -> onNavigateToStudy()
+                is WordSelectionEffect.ShowMessage -> {
+                    snackbarHostState.showSnackbar(effect.message)
                 }
                 is WordSelectionEffect.ShowMessage -> {
                     snackbarHostState.showSnackbar(effect.message)
                 }
+
+                else -> {}
             }
         }
     }
 
-    // ✅ Theme-aware scaffold
     Scaffold(
         snackbarHost = {
-            HocaSnackbarHost(
-                hostState = snackbarHostState,
-                currentRoute = HocaRoutes.WORD_SELECTION
-            )
+            // Snackbar will be positioned manually in the content
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background) // ✅ Theme-aware background
+                .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
         ) {
             when {
                 uiState.isLoading -> {
                     HocaLoadingIndicator(
-                        modifier = Modifier.align(Alignment.Center),
-                        text = "Kelimeler yükleniyor..."
+                        text = "Kelimeler yükleniyor...",
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
                 uiState.error != null -> {
                     HocaErrorState(
-                        message = uiState.error!!, // ✅ FIXED: error -> message
-                        onRetry = { /* Retry logic if needed */ },
+                        message = uiState.error!!,
+                        onRetry = null, // veya retry mantığı varsa ekle
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
                 uiState.isCompleted -> {
                     CompletionScreen(
                         selectedCount = uiState.selectedCount,
-                        isDarkTheme = isDarkTheme, // ✅ Pass theme state
+                        isDarkTheme = isDarkTheme,
                         onContinue = { viewModel.onEvent(WordSelectionEvent.FinishSelection) },
                         modifier = Modifier.align(Alignment.Center)
                     )
@@ -117,7 +124,8 @@ fun WordSelectionScreen(
                 uiState.currentWord != null -> {
                     WordSelectionContent(
                         uiState = uiState,
-                        isDarkTheme = isDarkTheme, // ✅ Pass theme state
+                        isDarkTheme = isDarkTheme,
+                        snackbarHostState = snackbarHostState, // Pass snackbar host
                         onSwipeLeft = { wordId ->
                             viewModel.onEvent(WordSelectionEvent.SwipeLeft(wordId))
                         },
@@ -138,7 +146,8 @@ fun WordSelectionScreen(
 @Composable
 private fun WordSelectionContent(
     uiState: WordSelectionUiState,
-    isDarkTheme: Boolean, // ✅ New theme parameter
+    isDarkTheme: Boolean,
+    snackbarHostState: SnackbarHostState, // NEW: Snackbar host
     onSwipeLeft: (Int) -> Unit,
     onSwipeRight: (Int) -> Unit,
     onUndo: () -> Unit,
@@ -160,24 +169,39 @@ private fun WordSelectionContent(
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 28.sp,
-            color = MaterialTheme.colorScheme.onBackground, // ✅ Theme-aware
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(vertical = 16.dp)
         )
 
-        // Instruction text - ✅ Theme-aware
+        // UPDATED: Extended instruction text
         Text(
-            text = "Öğrenmek istediğin kelimeyi sağa kayır!",
+            text = "Öğrenmek istediğin kelimeyi sağa kaydır!\nBildiğin kelimeyi sola at.",
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Normal,
             fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant, // ✅ Theme-aware
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp)
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // Card area - ✅ Using original single card approach
+        // NEW: Snackbar positioned here (between hint and card)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            HocaSnackbarHost(
+                hostState = snackbarHostState,
+                currentRoute = "word_selection"
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Card area
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -187,11 +211,11 @@ private fun WordSelectionContent(
         ) {
             uiState.currentWord?.let { word ->
                 SwipeableWordCard(
-                    word = word.english, // ✅ Using ConceptEntity.english
-                    translation = word.turkish, // ✅ Using ConceptEntity.turkish
-                    isDarkTheme = isDarkTheme, // ✅ Theme support
-                    onSwipeLeft = { onSwipeLeft(word.id) }, // ✅ Using ConceptEntity.id
-                    onSwipeRight = { onSwipeRight(word.id) }, // ✅ Using ConceptEntity.id
+                    word = word.english,
+                    translation = word.turkish,
+                    isDarkTheme = isDarkTheme,
+                    onSwipeLeft = { onSwipeLeft(word.id) },
+                    onSwipeRight = { onSwipeRight(word.id) },
                     triggerSwipeLeft = triggerSwipeLeft,
                     triggerSwipeRight = triggerSwipeRight,
                     onAnimationComplete = {
@@ -202,7 +226,7 @@ private fun WordSelectionContent(
             }
         }
 
-        // Enhanced 4-button action row - ✅ Theme-aware
+        // Enhanced 4-button action row
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -244,7 +268,7 @@ private fun WordSelectionContent(
                 }
             )
 
-            // Undo button (small) - ✅ Using original canUndo logic
+            // Undo button (small)
             SmallActionButton(
                 icon = Icons.Default.Undo,
                 backgroundColor = if (isDarkTheme) Color(0xFF2196F3) else Color(0xFF2196F3),
@@ -259,7 +283,7 @@ private fun WordSelectionContent(
 @Composable
 private fun CompletionScreen(
     selectedCount: Int,
-    isDarkTheme: Boolean, // ✅ Theme parameter
+    isDarkTheme: Boolean,
     onContinue: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -289,19 +313,19 @@ private fun CompletionScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Great job!",
+                text = "Harika iş!",
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSurface // ✅ Theme-aware
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Text(
-                text = "You selected $selectedCount words to learn.",
+                text = "$selectedCount kelime seçtiniz.",
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Normal,
                 fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant, // ✅ Theme-aware
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
 
@@ -311,13 +335,19 @@ private fun CompletionScreen(
                 onClick = onContinue,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Start Learning")
+                Text("Çalışmaya Başla")
             }
         }
     }
 }
 
-// ✅ IMPROVED: Smooth swipeable card with Tinder-like animations
+/**
+ * UPDATED Swipeable card with Turkish indicators
+ * ✅ Blue card for both themes
+ * ✅ "Geç" and "Öğren" in Turkish
+ * ✅ Height increased by 40dp (400dp -> 440dp)
+ * ✅ Swipe logic UNCHANGED
+ */
 @Composable
 private fun SwipeableWordCard(
     word: String,
@@ -364,7 +394,7 @@ private fun SwipeableWordCard(
             scope.launch {
                 val screenWidthPx = with(density) { screenWidth.toPx() }
                 offsetX.animateTo(
-                    targetValue = -screenWidthPx * 1.5f, // ✅ Completely off-screen
+                    targetValue = -screenWidthPx * 1.5f,
                     animationSpec = tween(400, easing = FastOutSlowInEasing)
                 )
                 onAnimationComplete()
@@ -377,7 +407,7 @@ private fun SwipeableWordCard(
             scope.launch {
                 val screenWidthPx = with(density) { screenWidth.toPx() }
                 offsetX.animateTo(
-                    targetValue = screenWidthPx * 1.5f, // ✅ Completely off-screen
+                    targetValue = screenWidthPx * 1.5f,
                     animationSpec = tween(400, easing = FastOutSlowInEasing)
                 )
                 onAnimationComplete()
@@ -396,7 +426,7 @@ private fun SwipeableWordCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(400.dp)
+            .height(440.dp) // UPDATED: Increased from 400dp to 440dp
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
             .graphicsLayer {
                 rotationZ = cardRotation
@@ -413,7 +443,7 @@ private fun SwipeableWordCard(
                                     // Swipe right - learn
                                     launch {
                                         offsetX.animateTo(
-                                            targetValue = size.width.toFloat() * 1.5f, // ✅ Fully off-screen
+                                            targetValue = size.width.toFloat() * 1.5f,
                                             animationSpec = tween(400, easing = FastOutSlowInEasing)
                                         )
                                     }
@@ -423,7 +453,7 @@ private fun SwipeableWordCard(
                                     // Swipe left - skip
                                     launch {
                                         offsetX.animateTo(
-                                            targetValue = -size.width.toFloat() * 1.5f, // ✅ Fully off-screen
+                                            targetValue = -size.width.toFloat() * 1.5f,
                                             animationSpec = tween(400, easing = FastOutSlowInEasing)
                                         )
                                     }
@@ -440,15 +470,16 @@ private fun SwipeableWordCard(
                 ) { _, dragAmount ->
                     scope.launch {
                         offsetX.snapTo(offsetX.value + dragAmount.x)
-                        offsetY.snapTo(offsetY.value + dragAmount.y * 0.3f) // Slight vertical movement
+                        offsetY.snapTo(offsetY.value + dragAmount.y * 0.3f)
                     }
                 }
             },
         colors = CardDefaults.cardColors(
+            // UPDATED: Blue cards for both themes
             containerColor = if (isDarkTheme) {
-                MaterialTheme.colorScheme.surface
+                Color(0xFF1E3A5F) // Dark blue
             } else {
-                Color.White
+                Color(0xFF64B5F6) // Light blue
             }
         ),
         shape = RoundedCornerShape(24.dp),
@@ -463,31 +494,31 @@ private fun SwipeableWordCard(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(32.dp)
             ) {
-                // Main word - ✅ Theme-aware colors
+                // Main word
                 Text(
                     text = word,
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 32.sp,
-                    color = if (isDarkTheme) Color(0xFF81D4FA) else Color(0xFF1976D2),
+                    color = Color.White, // White text on blue card
                     textAlign = TextAlign.Center
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Translation - ✅ Theme-aware colors
+                // Translation
                 Text(
                     text = translation,
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Medium,
                     fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = Color.White.copy(alpha = 0.9f), // Slightly transparent white
                     textAlign = TextAlign.Center
                 )
             }
 
-            // Swipe indicators overlay
-            // Left indicator (Skip)
+            // UPDATED: Turkish swipe indicators
+            // Left indicator (Geç)
             if (offsetX.value < -50f) {
                 Box(
                     modifier = Modifier
@@ -500,15 +531,16 @@ private fun SwipeableWordCard(
                         .padding(16.dp)
                 ) {
                     Text(
-                        text = "❌ SKIP",
+                        text = "❌ GEÇ",
                         color = Color.White,
+                        fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
                     )
                 }
             }
 
-            // Right indicator (Learn)
+            // Right indicator (Öğren)
             if (offsetX.value > 50f) {
                 Box(
                     modifier = Modifier
@@ -521,8 +553,9 @@ private fun SwipeableWordCard(
                         .padding(16.dp)
                 ) {
                     Text(
-                        text = "✅ LEARN",
+                        text = "✅ ÖĞREN",
                         color = Color.White,
+                        fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
                     )
@@ -532,7 +565,7 @@ private fun SwipeableWordCard(
     }
 }
 
-// ✅ THEME-AWARE Action Buttons
+// Action Buttons (unchanged logic)
 @Composable
 private fun LargeActionButton(
     icon: ImageVector,
@@ -543,35 +576,26 @@ private fun LargeActionButton(
 ) {
     val scale by animateFloatAsState(
         targetValue = if (enabled) 1f else 0.8f,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
-        label = "LargeButtonScale"
+        label = "scale"
     )
 
-    Card(
+    IconButton(
+        onClick = onClick,
+        enabled = enabled,
         modifier = Modifier
-            .size(64.dp)
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            }
-            .clickable(enabled = enabled) { onClick() },
-        colors = CardDefaults.cardColors(
-            containerColor = if (enabled) backgroundColor else backgroundColor.copy(alpha = 0.5f)
-        ),
-        shape = CircleShape,
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = contentDescription,
-                tint = Color.White,
-                modifier = Modifier.size(28.dp)
+            .size(72.dp)
+            .scale(scale)
+            .background(
+                color = backgroundColor.copy(alpha = if (enabled) 1f else 0.5f),
+                shape = CircleShape
             )
-        }
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = Color.White,
+            modifier = Modifier.size(32.dp)
+        )
     }
 }
 
@@ -584,35 +608,37 @@ private fun SmallActionButton(
     enabled: Boolean = true
 ) {
     val scale by animateFloatAsState(
-        targetValue = if (enabled) 1f else 0.7f,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
-        label = "SmallButtonScale"
+        targetValue = if (enabled) 1f else 0.8f,
+        label = "scale"
     )
 
-    Card(
+    IconButton(
+        onClick = onClick,
+        enabled = enabled,
         modifier = Modifier
-            .size(48.dp)
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            }
-            .clickable(enabled = enabled) { onClick() },
-        colors = CardDefaults.cardColors(
-            containerColor = if (enabled) backgroundColor else backgroundColor.copy(alpha = 0.5f)
-        ),
-        shape = CircleShape,
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = contentDescription,
-                tint = Color.White,
-                modifier = Modifier.size(20.dp)
+            .size(56.dp)
+            .scale(scale)
+            .background(
+                color = backgroundColor.copy(alpha = if (enabled) 1f else 0.5f),
+                shape = CircleShape
             )
-        }
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = Color.White,
+            modifier = Modifier.size(24.dp)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun WordSelectionScreenPreview() {
+    HocaLingoTheme {
+        WordSelectionScreen(
+            onNavigateToStudy = {},
+            onNavigateToHome = {}
+        )
     }
 }
