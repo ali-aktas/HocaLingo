@@ -9,7 +9,7 @@ package com.hocalingo.app.feature.subscription
  * DataStore'da cache'lenir, RevenueCat source of truth'tur.
  *
  * @property isPremium Kullanıcı premium üye mi?
- * @property productType Ürün tipi: "monthly", "quarterly", "lifetime", null
+ * @property productType Ürün tipi: "monthly", "quarterly", "yearly", null
  * @property expiryDate Abonelik bitiş tarihi (epoch millis), null ise lifetime
  * @property lastSyncTime Son RevenueCat sync zamanı (epoch millis)
  * @property originalPurchaseDate İlk satın alma tarihi (epoch millis)
@@ -31,9 +31,6 @@ data class SubscriptionState(
     fun isActive(): Boolean {
         if (!isPremium) return false
 
-        // Lifetime için expiry date yok
-        if (productType == ProductType.LIFETIME) return true
-
         // Subscription'lar için expiry date kontrolü
         val currentTime = System.currentTimeMillis()
         return expiryDate?.let { it > currentTime } ?: false
@@ -43,7 +40,6 @@ data class SubscriptionState(
      * Aboneliğin süresinin dolmasına kalan gün sayısı
      */
     fun daysUntilExpiry(): Int? {
-        if (productType == ProductType.LIFETIME) return null
         if (expiryDate == null) return null
 
         val currentTime = System.currentTimeMillis()
@@ -70,14 +66,14 @@ data class SubscriptionState(
 enum class ProductType {
     MONTHLY,
     QUARTERLY,
-    LIFETIME;
+    YEARLY;
 
     companion object {
         fun fromString(value: String?): ProductType? {
             return when (value?.lowercase()) {
                 "monthly" -> MONTHLY
                 "quarterly" -> QUARTERLY
-                "lifetime" -> LIFETIME
+                "yearly" -> YEARLY
                 else -> null
             }
         }
@@ -87,7 +83,7 @@ enum class ProductType {
         return when (this) {
             MONTHLY -> "Aylık Abonelik"
             QUARTERLY -> "3 Aylık Abonelik"
-            LIFETIME -> "Ömür Boyu"
+            YEARLY -> "Yıllık Abonelik"
         }
     }
 }
