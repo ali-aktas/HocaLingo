@@ -278,10 +278,12 @@ private fun PricingCard(
     onClick: () -> Unit
 ) {
     val title = when {
-        packageItem.identifier.contains("monthly") -> "Aylık"
-        packageItem.identifier.contains("quarterly") -> "3 Aylık"
-        packageItem.identifier.contains("yearly") -> "Yıllık"
-        else -> packageItem.identifier
+        packageItem.identifier.contains("monthly", ignoreCase = true) -> "Aylık"
+        packageItem.identifier.contains("quarterly", ignoreCase = true) -> "3 Aylık"
+        packageItem.identifier.contains("three", ignoreCase = true) -> "3 Aylık"
+        packageItem.identifier.contains("yearly", ignoreCase = true) -> "Yıllık"
+        packageItem.identifier.contains("annual", ignoreCase = true) -> "Yıllık"
+        else -> "Abonelik" // Fallback
     }
 
     val price = packageItem.product.price.formatted
