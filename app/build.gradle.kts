@@ -21,8 +21,8 @@ android {
         applicationId = "com.hocalingo.app"
         minSdk = 24
         targetSdk = 35
-        versionCode = 5
-        versionName = "1.0.5"
+        versionCode = 6
+        versionName = "1.0.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -73,11 +73,6 @@ android {
     }
 }
 
-// ✅ COMPOSE COMPILER CONFIGURATION
-composeCompiler {
-    enableStrongSkippingMode = true // Bu deprecated ama şimdilik dursun
-}
-
 // ✅ KSP configuration
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
@@ -91,9 +86,6 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.10.1")
     implementation(libs.androidx.hilt.common)
 
-    // Testing
-    testImplementation("junit:junit:4.13.2")
-
     // ✅ SPLASH SCREEN
     implementation("androidx.core:core-splashscreen:1.0.1")
 
@@ -104,26 +96,28 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
 
+    // Icons
+    implementation(libs.compose.material.icons.extended)
+
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.8.5")
 
-    // Dependency Injection
+    // Dependency Injection - Hilt
     implementation("com.google.dagger:hilt-android:2.53.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     ksp("com.google.dagger:hilt-compiler:2.53.1")
 
-    // Database
+    // Database - Room
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
 
-    // ✅ NEW: WorkManager for daily notifications
+    // ✅ WorkManager for daily notifications
     implementation("androidx.work:work-runtime-ktx:2.8.1")
 
-    // ✅ NEW: Hilt WorkManager integration
+    // ✅ Hilt WorkManager integration
     implementation("androidx.hilt:hilt-work:1.0.0")
     ksp("androidx.hilt:hilt-compiler:1.0.0")
-
 
     // Network
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
@@ -141,21 +135,17 @@ dependencies {
     // implementation("com.google.firebase:firebase-crashlytics") // Sonra
     implementation("com.google.firebase:firebase-config")
 
-    // ✅ Google Sign In - BU EKSİKTİ!
-    implementation("com.google.android.gms:play-services-auth:21.3.0")
-
     // ✅ Google Sign In
     implementation("com.google.android.gms:play-services-auth:21.3.0")
 
-    // ❌ Monetization şimdilik devre dışı
-    // implementation("com.revenuecat.purchases:purchases:8.10.0")
-    // implementation("com.google.android.gms:play-services-ads:23.8.0")
+    // ✅ MONETIZATION - RevenueCat (AKTIF!)
+    implementation("com.revenuecat.purchases:purchases:8.10.0")
 
-    // Image Loading
+    // ❌ AdMob şimdilik kapalı - ADIM 3'te eklenecek
+    // implementation("com.google.android.gms:play-services-ads:23.6.0")
+
+    // Image Loading - STABLE VERSION
     implementation("io.coil-kt:coil-compose:2.7.0")
-
-    // Icons
-    implementation(libs.compose.material.icons.extended)
 
     // DataStore for preferences
     implementation("androidx.datastore:datastore-preferences:1.1.1")
@@ -170,6 +160,7 @@ dependencies {
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.12.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.53.1")
+    kspAndroidTest("com.google.dagger:hilt-compiler:2.53.1")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
