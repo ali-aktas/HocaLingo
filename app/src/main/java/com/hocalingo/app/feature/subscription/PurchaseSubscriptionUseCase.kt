@@ -1,15 +1,16 @@
 package com.hocalingo.app.feature.subscription
 
+import android.app.Activity
 import com.hocalingo.app.core.base.Result
 import com.revenuecat.purchases.Package
 import javax.inject.Inject
 
 /**
- * PurchaseSubscriptionUseCase
+ * PurchaseSubscriptionUseCase - UPDATED ✅
  *
  * Package: app/src/main/java/com/hocalingo/app/feature/subscription/
  *
- * Abonelik satın alma işlemini yönetir.
+ * ✅ Activity parametresi eklendi
  */
 class PurchaseSubscriptionUseCase @Inject constructor(
     private val repository: SubscriptionRepository
@@ -23,10 +24,14 @@ class PurchaseSubscriptionUseCase @Inject constructor(
     }
 
     /**
+     * ✅ UPDATED: Activity parametresi eklendi
      * Seçilen paketi satın alır
      */
-    suspend fun purchasePackage(packageToPurchase: Package): Result<Boolean> {
-        return when (val result = repository.purchasePackage(packageToPurchase)) {
+    suspend fun purchasePackage(
+        activity: Activity,
+        packageToPurchase: Package
+    ): Result<Boolean> {
+        return when (val result = repository.purchasePackage(activity, packageToPurchase)) {
             is Result.Success -> {
                 // Purchase başarılı, sync yap
                 repository.syncSubscriptionStatus()

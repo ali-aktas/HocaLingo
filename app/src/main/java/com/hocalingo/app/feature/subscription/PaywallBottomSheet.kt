@@ -4,17 +4,18 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 /**
- * PaywallBottomSheet
+ * PaywallBottomSheet - FIXED ✅
  *
  * Package: app/src/main/java/com/hocalingo/app/feature/subscription/
  *
- * BottomSheet wrapper for paywall content.
- * Can be triggered from Profile, AI features, or anywhere.
+ * ✅ Activity referansını ViewModel'e geçiyor
+ * ✅ Satın alma artık çalışıyor
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,6 +29,16 @@ fun PaywallBottomSheet(
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
+
+    // ✅ Activity referansını al ve ViewModel'e geç
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        // Context'i Activity'ye cast et
+        val activity = context as? android.app.Activity
+        if (activity != null) {
+            viewModel.setActivity(activity)
+        }
+    }
 
     // Handle effects
     LaunchedEffect(Unit) {

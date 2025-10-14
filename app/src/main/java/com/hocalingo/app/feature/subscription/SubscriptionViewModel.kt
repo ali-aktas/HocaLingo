@@ -1,5 +1,6 @@
 package com.hocalingo.app.feature.subscription
 
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hocalingo.app.core.base.Result
@@ -17,11 +18,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * SubscriptionViewModel
+ * SubscriptionViewModel - FIXED ✅
  *
  * Package: app/src/main/java/com/hocalingo/app/feature/subscription/
  *
- * Handles subscription state and purchase flow
+ * ✅ Satın alma artık çalışıyor
+ * ✅ Activity referansı ile RevenueCat entegrasyonu tam
  */
 @HiltViewModel
 class SubscriptionViewModel @Inject constructor(
@@ -36,9 +38,19 @@ class SubscriptionViewModel @Inject constructor(
     private val _effect = MutableSharedFlow<SubscriptionEffect>()
     val effect: SharedFlow<SubscriptionEffect> = _effect.asSharedFlow()
 
+    // Activity reference - will be set from composable
+    private var activity: Activity? = null
+
     init {
         observeSubscriptionState()
         loadAvailablePackages()
+    }
+
+    /**
+     * ✅ NEW: Activity'yi set et (composable'dan çağrılacak)
+     */
+    fun setActivity(activity: Activity) {
+        this.activity = activity
     }
 
     /**
@@ -116,10 +128,11 @@ class SubscriptionViewModel @Inject constructor(
     }
 
     /**
-     * Purchase selected package
+     * ✅ FIXED: Purchase selected package - artık çalışıyor!
      */
     private fun purchaseSelectedPackage() {
         val selectedPackage = _uiState.value.selectedPackage
+        val activityRef = activity
 
         if (selectedPackage == null) {
             viewModelScope.launch {
@@ -128,17 +141,31 @@ class SubscriptionViewModel @Inject constructor(
             return
         }
 
+        if (activityRef == null) {
+            viewModelScope.launch {
+                _effect.emit(SubscriptionEffect.ShowError("Activity bulunamadı"))
+            }
+            return
+        }
+
         viewModelScope.launch {
             _uiState.update { it.copy(isPurchasing = true) }
 
-            // TODO: Activity reference gerekli, şimdilik error göster
-            _effect.emit(
-                SubscriptionEffect.ShowError(
-                    "Satın alma özelliği yakında eklenecek"
-                )
-            )
-
-            _uiState.update { it.copy(isPurchasing = false) }
+            when (val result = purchaseSubscriptionUseCase.purchasePackage(activityRef, selectedPackage)) {
+                is Result.Success -> {
+                    _uiState.update { it.copy(isPurchasing = false) }
+                    _effect.emit(SubscriptionEffect.ShowMessage("🎉 Premium üyelik aktif!"))
+                    _effect.emit(SubscriptionEffect.PurchaseSuccess)
+                }
+                is Result.Error -> {
+                    _uiState.update { it.copy(isPurchasing = false) }
+                    _effect.emit(
+                        SubscriptionEffect.ShowError(
+                            result.error.message ?: "Satın alma başarısız"
+                        )
+                    )
+                }
+            }
         }
     }
 

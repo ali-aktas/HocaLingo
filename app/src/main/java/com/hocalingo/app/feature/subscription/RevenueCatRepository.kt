@@ -1,28 +1,39 @@
 package com.hocalingo.app.feature.subscription
 
+import android.app.Activity
 import com.hocalingo.app.core.base.AppError
 import com.hocalingo.app.core.base.Result
 import com.hocalingo.app.core.common.DebugHelper
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Package
+import com.revenuecat.purchases.PeriodType
+import com.revenuecat.purchases.PurchaseParams
 import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.PurchasesError
+import com.revenuecat.purchases.models.StoreTransaction
 import com.revenuecat.purchases.awaitCustomerInfo
 import com.revenuecat.purchases.awaitOfferings
 import com.revenuecat.purchases.awaitRestore
+import com.revenuecat.purchases.interfaces.PurchaseCallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 /**
- * RevenueCatRepository
+ * RevenueCatRepository - Profesyonel & Doğru Implementasyon ✅
  *
  * Package: app/src/main/java/com/hocalingo/app/feature/subscription/
  *
- * RevenueCat SDK ile iletişimi yöneten repository implementation.
- * SubscriptionDataStore ile birlikte çalışarak offline cache sağlar.
+ * RevenueCat SDK ile tam entegrasyon
+ * - Callback-based API'yi coroutine'e çevirme
+ * - Error handling ve user cancellation
+ * - Local cache management
  */
 @Singleton
 class RevenueCatRepository @Inject constructor(
@@ -43,7 +54,6 @@ class RevenueCatRepository @Inject constructor(
             val customerInfo = Purchases.sharedInstance.awaitCustomerInfo()
             val subscriptionState = parseCustomerInfo(customerInfo)
 
-            // Cache'e kaydet
             subscriptionDataStore.saveSubscriptionState(subscriptionState)
 
             DebugHelper.logSuccess("✅ Subscription synced: isPremium=${subscriptionState.isPremium}")
@@ -89,16 +99,47 @@ class RevenueCatRepository @Inject constructor(
     }
 
     /**
-     * Paketi satın alır
-     * NOT: Activity reference gerekli (Google Billing Library)
+     * Paketi satın alır - RevenueCat PurchaseCallback ile
      */
-    override suspend fun purchasePackage(packageToPurchase: Package): Result<CustomerInfo> = withContext(Dispatchers.IO) {
+    override suspend fun purchasePackage(
+        activity: Activity,
+        packageToPurchase: Package
+    ): Result<CustomerInfo> = withContext(Dispatchers.Main) {
         try {
             DebugHelper.log("💳 Purchasing package: ${packageToPurchase.identifier}")
 
-            // Activity gerekiyor ama şimdilik hata döneceğiz
-            // ViewModel'den Activity pass edilmesi gerekecek
-            Result.Error(AppError.Unknown(Exception("Activity required for purchase")))
+            val customerInfo = suspendCoroutine<CustomerInfo> { continuation ->
+                val purchaseParams = PurchaseParams.Builder(activity, packageToPurchase).build()
+
+                Purchases.sharedInstance.purchase(
+                    purchaseParams,
+                    object : PurchaseCallback {
+                        override fun onCompleted(
+                            storeTransaction: StoreTransaction,
+                            customerInfo: CustomerInfo
+                        ) {
+                            DebugHelper.logSuccess("✅ Purchase successful")
+                            continuation.resume(customerInfo)
+                        }
+
+                        override fun onError(error: PurchasesError, userCancelled: Boolean) {
+                            if (userCancelled) {
+                                DebugHelper.log("ℹ️ User cancelled purchase")
+                                continuation.resumeWithException(Exception("Satın alma iptal edildi"))
+                            } else {
+                                DebugHelper.logError("❌ Purchase error", Exception(error.message))
+                                continuation.resumeWithException(Exception(error.message))
+                            }
+                        }
+                    }
+                )
+            }
+
+            val subscriptionState = parseCustomerInfo(customerInfo)
+            subscriptionDataStore.saveSubscriptionState(subscriptionState)
+
+            DebugHelper.logSuccess("✅ Purchase completed: isPremium=${subscriptionState.isPremium}")
+            Result.Success(customerInfo)
 
         } catch (e: Exception) {
             DebugHelper.logError("❌ Purchase error", e)
@@ -116,7 +157,6 @@ class RevenueCatRepository @Inject constructor(
             val customerInfo = Purchases.sharedInstance.awaitRestore()
             val subscriptionState = parseCustomerInfo(customerInfo)
 
-            // Cache'e kaydet
             subscriptionDataStore.saveSubscriptionState(subscriptionState)
 
             DebugHelper.logSuccess("✅ Purchases restored: isPremium=${subscriptionState.isPremium}")
@@ -129,46 +169,49 @@ class RevenueCatRepository @Inject constructor(
     }
 
     /**
-     * Premium durumunu hızlıca kontrol eder
+     * Premium durumunu kontrol eder (cache'den)
      */
     override suspend fun isPremium(): Boolean {
-        return try {
-            val state = subscriptionDataStore.getSubscriptionState().first()
-            state.isPremium && state.isActive()
-        } catch (e: Exception) {
-            DebugHelper.logError("Failed to check premium status", e)
-            false
-        }
+        return subscriptionDataStore.getSubscriptionState().first().isPremium
     }
 
     /**
-     * CustomerInfo'dan SubscriptionState'e dönüşüm
+     * CustomerInfo'yu SubscriptionState'e parse eder
      */
     private fun parseCustomerInfo(customerInfo: CustomerInfo): SubscriptionState {
         val entitlement = customerInfo.entitlements[PREMIUM_ENTITLEMENT_ID]
-        val isActive = entitlement?.isActive == true
 
-        if (!isActive) {
+        if (entitlement == null || !entitlement.isActive) {
             return SubscriptionState.FREE
         }
 
-        // Product identifier'dan plan tipini çıkar
-        val productId = entitlement.productIdentifier // "hocalingo_premium:monthly"
-        val productType = when {
-            productId.contains("monthly") -> ProductType.MONTHLY
-            productId.contains("quarterly") -> ProductType.QUARTERLY
-            productId.contains("yearly") -> ProductType.YEARLY
-            else -> null
-        }
+        val expirationDate = entitlement.expirationDate
+        val productIdentifier = entitlement.productIdentifier
+        val originalPurchaseDate = entitlement.originalPurchaseDate
+        val willRenew = entitlement.willRenew
 
         return SubscriptionState(
             isPremium = true,
-            productType = productType,
-            expiryDate = entitlement.expirationDate?.time,
+            productType = parseProductType(productIdentifier),
+            expiryDate = expirationDate?.time,
             lastSyncTime = System.currentTimeMillis(),
-            originalPurchaseDate = entitlement.originalPurchaseDate?.time,
-            isInTrialPeriod = entitlement.periodType == com.revenuecat.purchases.PeriodType.TRIAL,
-            willRenew = entitlement.willRenew
+            originalPurchaseDate = originalPurchaseDate?.time,
+            isInTrialPeriod = entitlement.periodType == PeriodType.TRIAL,
+            willRenew = willRenew
         )
+    }
+
+    /**
+     * Product identifier'dan ProductType çıkarır
+     */
+    private fun parseProductType(productId: String?): ProductType? {
+        return when {
+            productId == null -> null
+            productId.contains("monthly", ignoreCase = true) -> ProductType.MONTHLY
+            productId.contains("quarterly", ignoreCase = true) -> ProductType.QUARTERLY
+            productId.contains("yearly", ignoreCase = true) ||
+                    productId.contains("annual", ignoreCase = true) -> ProductType.YEARLY
+            else -> null
+        }
     }
 }
