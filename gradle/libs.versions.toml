@@ -47,7 +47,9 @@ junitVersion = "1.3.0"              # ✅ Latest
 espressoCore = "3.7.0"              # ✅ Latest
 mockk = "1.13.14"                   # ✅ Latest
 coroutinesTest = "1.10.1"
-hiltCommon = "1.3.0"           # ✅ Latest
+hiltCommon = "1.3.0"
+coreKtxVersion = "1.10.3"
+reviewKtx = "2.0.2"           # ✅ Latest
 
 [libraries]
 # Android Core
@@ -118,6 +120,8 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
 androidx-hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltCommon" }
+core-ktx = { group = "com.google.android.play", name = "core-ktx", version.ref = "coreKtxVersion" }
+review-ktx = { group = "com.google.android.play", name = "review-ktx", version.ref = "reviewKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

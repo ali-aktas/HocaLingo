@@ -7,6 +7,8 @@ import com.hocalingo.app.core.common.SpacedRepetitionAlgorithm
 import com.hocalingo.app.core.common.TextToSpeechManager
 import com.hocalingo.app.core.common.UserPreferencesManager
 import com.hocalingo.app.core.base.Result
+import com.hocalingo.app.core.feedback.RatingManager
+import com.hocalingo.app.core.feedback.FeedbackRepository
 import com.hocalingo.app.database.entities.ConceptEntity
 import com.hocalingo.app.database.entities.StudyDirection
 import com.hocalingo.app.database.entities.SessionType
@@ -25,17 +27,20 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * StudyViewModel - Complete Enhanced Version
+ * StudyViewModel - Complete Enhanced Version WITH RATING
  * ✅ Fixed TTS handling
  * ✅ Fixed completion state management
  * ✅ Enhanced debugging and error handling
  * ✅ Proper session management
+ * ✅ Rating prompt integration
  */
 @HiltViewModel
 class StudyViewModel @Inject constructor(
     private val studyRepository: StudyRepository,
     private val preferencesManager: UserPreferencesManager,
-    private val textToSpeechManager: TextToSpeechManager
+    private val textToSpeechManager: TextToSpeechManager,
+    private val ratingManager: RatingManager,
+    private val feedbackRepository: FeedbackRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StudyUiState())
@@ -79,11 +84,13 @@ class StudyViewModel @Inject constructor(
                 val ttsEnabled: Boolean = preferencesManager.isSoundEnabled().first()
 
                 // Map common enum to entity enum
-                val entityStudyDirection = when(userStudyDirection) {
+                val entityStudyDirection = when (userStudyDirection) {
                     com.hocalingo.app.core.common.StudyDirection.EN_TO_TR ->
                         StudyDirection.EN_TO_TR
+
                     com.hocalingo.app.core.common.StudyDirection.TR_TO_EN ->
                         StudyDirection.TR_TO_EN
+
                     com.hocalingo.app.core.common.StudyDirection.MIXED ->
                         StudyDirection.EN_TO_TR // fallback
                 }
@@ -143,63 +150,73 @@ class StudyViewModel @Inject constructor(
                         startNewSession()
 
                         // Get study queue
-                        studyRepository.getStudyQueue(direction, limit = 20).collectLatest { queueData ->
-                            DebugHelper.log("Study queue received: ${queueData.size} words")
+                        studyRepository.getStudyQueue(direction, limit = 20)
+                            .collectLatest { queueData ->
+                                DebugHelper.log("Study queue received: ${queueData.size} words")
 
-                            if (queueData.isEmpty()) {
+                                if (queueData.isEmpty()) {
+                                    _uiState.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            isQueueEmpty = true,
+                                            showEmptyQueueMessage = true,
+                                            currentConcept = null
+                                        )
+                                    }
+                                    return@collectLatest
+                                }
+
+                                // Convert ConceptWithTimingData to ConceptEntity
+                                val concepts = mutableListOf<ConceptEntity>()
+                                for (timingData in queueData) {
+                                    when (val result =
+                                        studyRepository.getConceptById(timingData.id)) {
+                                        is Result.Success -> {
+                                            result.data?.let { concepts.add(it) }
+                                        }
+
+                                        is Result.Error -> {
+                                            DebugHelper.logError(
+                                                "Failed to get concept ${timingData.id}",
+                                                result.error
+                                            )
+                                        }
+                                    }
+                                }
+
+                                // Update queue and start with first word
+                                studyQueue = concepts
+                                currentQueueIndex = 0
+
+                                if (studyQueue.isNotEmpty()) {
+                                    loadNextWord()
+                                } else {
+                                    _uiState.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            isQueueEmpty = true,
+                                            showEmptyQueueMessage = true,
+                                            currentConcept = null,
+                                            error = null
+                                        )
+                                    }
+                                }
+
                                 _uiState.update {
                                     it.copy(
                                         isLoading = false,
-                                        isQueueEmpty = true,
-                                        showEmptyQueueMessage = true,
-                                        currentConcept = null
-                                    )
-                                }
-                                return@collectLatest
-                            }
-
-                            // Convert ConceptWithTimingData to ConceptEntity
-                            val concepts = mutableListOf<ConceptEntity>()
-                            for (timingData in queueData) {
-                                when (val result = studyRepository.getConceptById(timingData.id)) {
-                                    is Result.Success -> {
-                                        result.data?.let { concepts.add(it) }
-                                    }
-                                    is Result.Error -> {
-                                        DebugHelper.logError("Failed to get concept ${timingData.id}", result.error)
-                                    }
-                                }
-                            }
-
-                            // Update queue and start with first word
-                            studyQueue = concepts
-                            currentQueueIndex = 0
-
-                            if (studyQueue.isNotEmpty()) {
-                                loadNextWord()
-                            } else {
-                                _uiState.update {
-                                    it.copy(
-                                        isLoading = false,
-                                        isQueueEmpty = true,
-                                        showEmptyQueueMessage = true,
-                                        currentConcept = null,
-                                        error = null
+                                        totalWordsInQueue = studyQueue.size,
+                                        hasWordsToStudy = studyQueue.isNotEmpty()
                                     )
                                 }
                             }
-
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    totalWordsInQueue = studyQueue.size,
-                                    hasWordsToStudy = studyQueue.isNotEmpty()
-                                )
-                            }
-                        }
                     }
+
                     is Result.Error -> {
-                        DebugHelper.logError("Has words to study check failed", hasWordsResult.error)
+                        DebugHelper.logError(
+                            "Has words to study check failed",
+                            hasWordsResult.error
+                        )
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
@@ -214,93 +231,9 @@ class StudyViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Çalışma kuyruğu yüklenirken hata: ${e.message}"
+                        error = "Çalışma kuyruğu yüklenemedi: ${e.message}"
                     )
                 }
-            }
-        }
-    }
-
-    /**
-     * ✅ Enhanced reload queue for learning cards
-     */
-    private fun reloadStudyQueue() {
-        viewModelScope.launch {
-            try {
-                _uiState.update { it.copy(isLoading = true) }
-
-                val direction = _uiState.value.studyDirection
-                DebugHelper.log("🔄 Reloading study queue for direction: $direction")
-
-                studyRepository.getStudyQueue(direction, limit = 20).collectLatest { queueData ->
-                    DebugHelper.log("🔄 Reloaded queue received: ${queueData.size} words")
-
-                    if (queueData.isEmpty()) {
-                        DebugHelper.log("🔄 Reloaded queue is empty, showing completion")
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                currentConcept = null,
-                                showEmptyQueueMessage = true,
-                                isCardFlipped = false
-                            )
-                        }
-                        completeSession()
-                        return@collectLatest
-                    }
-
-                    // Convert ConceptWithTimingData to ConceptEntity
-                    val concepts = mutableListOf<ConceptEntity>()
-                    for (timingData in queueData) {
-                        when (val result = studyRepository.getConceptById(timingData.id)) {
-                            is Result.Success -> {
-                                result.data?.let { concepts.add(it) }
-                            }
-                            is Result.Error -> {
-                                DebugHelper.logError("Failed to get concept ${timingData.id}", result.error)
-                            }
-                        }
-                    }
-
-                    // Update queue and reset index
-                    studyQueue = concepts
-                    currentQueueIndex = 0
-
-                    DebugHelper.log("🔄 Queue reloaded: ${studyQueue.size} words, starting from index 0")
-
-                    if (studyQueue.isNotEmpty()) {
-                        loadNextWord() // Continue with first word in new queue
-                    } else {
-                        _uiState.update {
-                            it.copy(
-                                currentConcept = null,
-                                showEmptyQueueMessage = true,
-                                isCardFlipped = false
-                            )
-                        }
-                        completeSession()
-                    }
-
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            totalWordsInQueue = studyQueue.size
-                        )
-                    }
-                }
-
-            } catch (e: Exception) {
-                DebugHelper.logError("Reload study queue error", e)
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        currentConcept = null,
-                        showEmptyQueueMessage = true,
-                        isCardFlipped = false,
-                        error = "Queue yeniden yüklenirken hata: ${e.message}"
-                    )
-                }
-                completeSession()
             }
         }
     }
@@ -324,35 +257,23 @@ class StudyViewModel @Inject constructor(
                 val direction = _uiState.value.studyDirection
 
                 // Get current progress for button text calculation
-                val progressResult = studyRepository.getCurrentProgress(currentConcept.id, direction)
+                val progressResult =
+                    studyRepository.getCurrentProgress(currentConcept.id, direction)
                 val currentProgress = when (progressResult) {
                     is Result.Success -> progressResult.data
                     is Result.Error -> null
                 } ?: createDefaultProgress(currentConcept.id, direction)
 
                 // Calculate button timing texts using SpacedRepetitionAlgorithm
-                val easyResult = SpacedRepetitionAlgorithm.calculateNextReview(
-                    currentProgress,
-                    SpacedRepetitionAlgorithm.QUALITY_EASY
+                val (hardTimeText, mediumTimeText, easyTimeText) = SpacedRepetitionAlgorithm.getButtonPreviews(
+                    currentProgress
                 )
-
-                val mediumResult = SpacedRepetitionAlgorithm.calculateNextReview(
-                    currentProgress,
-                    SpacedRepetitionAlgorithm.QUALITY_MEDIUM
-                )
-
-                val hardResult = SpacedRepetitionAlgorithm.calculateNextReview(
-                    currentProgress,
-                    SpacedRepetitionAlgorithm.QUALITY_HARD
-                )
-
-                // Format timing texts using built-in method
-                val (hardTimeText, mediumTimeText, easyTimeText) = SpacedRepetitionAlgorithm.getButtonPreviews(currentProgress)
 
                 _uiState.update {
                     it.copy(
                         currentConcept = currentConcept,
-                        currentWordIndex = currentQueueIndex,
+                        currentCardIndex = currentQueueIndex,
+                        remainingCards = studyQueue.size - currentQueueIndex,
                         isCardFlipped = false,
                         easyTimeText = easyTimeText,
                         mediumTimeText = mediumTimeText,
@@ -377,74 +298,52 @@ class StudyViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                // Update word progress
-                val result = studyRepository.updateWordProgress(concept.id, direction, quality)
+                DebugHelper.log("User response: Quality=$quality for word: ${concept.english}")
 
-                when (result) {
+                // Update word progress
+                when (val updateResult =
+                    studyRepository.updateWordProgress(concept.id, direction, quality)) {
                     is Result.Success -> {
-                        DebugHelper.log("Word progress updated: ${concept.english} with quality $quality")
+                        val updatedProgress = updateResult.data
+                        DebugHelper.log("Progress updated: ${updatedProgress.repetitions} reps, ${updatedProgress.intervalDays} days")
 
                         // Update session stats
+                        val isCorrect = quality >= SpacedRepetitionAlgorithm.QUALITY_MEDIUM
                         _uiState.update {
                             it.copy(
                                 sessionWordsCount = it.sessionWordsCount + 1,
-                                correctAnswers = if (quality >= 2) it.correctAnswers + 1 else it.correctAnswers,
-                                isCardFlipped = false
+                                correctAnswers = if (isCorrect) it.correctAnswers + 1 else it.correctAnswers
                             )
                         }
 
-                        // ✅ CRITICAL FIX: Move to next immediately, check completion afterwards
+                        // Move to next word
                         currentQueueIndex++
 
-                        // ✅ FIXED: Check if this was the last card BEFORE trying to load next
-                        if (currentQueueIndex >= studyQueue.size) {
-                            DebugHelper.log("🏁 Last card completed, checking for more learning cards...")
-
-                            // Check if there are more learning cards
-                            val learningCardsResult = studyRepository.getLearningCardsCount(direction)
-                            when (learningCardsResult) {
-                                is Result.Success -> {
-                                    if (learningCardsResult.data > 0) {
-                                        DebugHelper.log("🔄 Learning cards remain, reloading queue...")
-                                        reloadStudyQueue()
-                                    } else {
-                                        DebugHelper.log("🎉 No more learning cards, showing completion!")
-                                        // ✅ IMMEDIATE: Show completion state right away
-                                        _uiState.update {
-                                            it.copy(
-                                                currentConcept = null,
-                                                showEmptyQueueMessage = true,
-                                                isCardFlipped = false
-                                            )
-                                        }
-                                        completeSession()
-                                    }
-                                }
-                                is Result.Error -> {
-                                    DebugHelper.logError("Error checking learning cards", learningCardsResult.error)
-                                    // ✅ FALLBACK: Show completion on error
-                                    _uiState.update {
-                                        it.copy(
-                                            currentConcept = null,
-                                            showEmptyQueueMessage = true,
-                                            isCardFlipped = false
-                                        )
-                                    }
-                                    completeSession()
-                                }
-                            }
-                        } else {
-                            // Load next word in current queue
+                        if (currentQueueIndex < studyQueue.size) {
+                            // More words in queue
                             loadNextWord()
+                        } else {
+                            // Queue completed
+                            DebugHelper.log("✅ All words studied!")
+                            _uiState.update {
+                                it.copy(
+                                    currentConcept = null,
+                                    showEmptyQueueMessage = true,
+                                    isCardFlipped = false
+                                )
+                            }
+                            completeSession()
                         }
                     }
+
                     is Result.Error -> {
-                        DebugHelper.logError("Word progress update error", result.error)
-                        _effect.tryEmit(StudyEffect.ShowMessage("Kelime güncellenirken hata oluştu"))
+                        DebugHelper.logError("Progress update error", updateResult.error)
+                        _effect.tryEmit(StudyEffect.ShowMessage("Kelime kaydedilemedi"))
                     }
                 }
+
             } catch (e: Exception) {
-                DebugHelper.logError("Handle user response exception", e)
+                DebugHelper.logError("Handle response error", e)
             }
         }
     }
@@ -468,19 +367,14 @@ class StudyViewModel @Inject constructor(
         val concept = _uiState.value.currentConcept
         if (concept != null && _uiState.value.isTtsEnabled) {
             val (textToSpeak, language) = when (_uiState.value.studyDirection) {
-                StudyDirection.EN_TO_TR -> concept.english to "en" // İngilizce kelimeyi oku
-                StudyDirection.TR_TO_EN -> concept.turkish to "tr" // Türkçe kelimeyi oku
+                StudyDirection.EN_TO_TR -> concept.english to "en"
+                StudyDirection.TR_TO_EN -> concept.turkish to "tr"
             }
 
-            // ✅ FIX: Direct TTS call instead of effect emission
             if (textToSpeak.isNotEmpty()) {
                 textToSpeechManager.speak(textToSpeak, language)
                 DebugHelper.log("TTS: Speaking '$textToSpeak' in $language")
-            } else {
-                DebugHelper.log("TTS: Empty text, cannot speak")
             }
-        } else {
-            DebugHelper.log("TTS: Cannot speak - concept: ${concept != null}, TTS enabled: ${_uiState.value.isTtsEnabled}")
         }
     }
 
@@ -498,6 +392,7 @@ class StudyViewModel @Inject constructor(
                 sessionStartTime = System.currentTimeMillis()
                 DebugHelper.log("Started new study session: $currentSessionId")
             }
+
             is Result.Error -> {
                 DebugHelper.logError("Session start error", result.error)
             }
@@ -522,6 +417,9 @@ class StudyViewModel @Inject constructor(
                 )
 
                 _effect.tryEmit(StudyEffect.ShowSessionComplete(sessionStats))
+
+                // ========== CHECK RATING PROMPT ==========
+                checkAndShowRatingPrompt(wordsStudied, correctAnswers)
             }
         }
     }
@@ -532,10 +430,9 @@ class StudyViewModel @Inject constructor(
     }
 
     private fun loadDailyProgress() {
-        // Simplified daily progress loading
         _uiState.update {
             it.copy(
-                wordsStudiedToday = 0, // Will be updated as session progresses
+                wordsStudiedToday = 0,
                 dailyProgressPercentage = 0f
             )
         }
@@ -567,14 +464,22 @@ class StudyViewModel @Inject constructor(
             StudyEvent.RetryLoading -> loadStudyQueue()
             StudyEvent.NavigateToWordSelection -> navigateToWordSelection()
             StudyEvent.NavigateBack -> navigateBack()
+
+            // ========== RATING EVENTS ==========
+            StudyEvent.ShowSatisfactionDialog -> showSatisfactionDialog()
+            StudyEvent.DismissSatisfactionDialog -> dismissSatisfactionDialog()
+            is StudyEvent.SatisfactionSelected -> handleSatisfactionSelected(event.level)
+            StudyEvent.DismissFeedbackDialog -> dismissFeedbackDialog()
+            is StudyEvent.SubmitFeedback -> submitFeedback(
+                event.category,
+                event.message,
+                event.email
+            )
         }
     }
 
     // ========== HELPER METHODS ==========
 
-    /**
-     * Create default progress for new words
-     */
     private fun createDefaultProgress(conceptId: Int, direction: StudyDirection) =
         WordProgressEntity(
             conceptId = conceptId,
@@ -590,24 +495,29 @@ class StudyViewModel @Inject constructor(
             sessionPosition = 1
         )
 
-    /**
-     * Format interval for display
-     */
-    private fun formatIntervalText(intervalDays: Float): String {
-        return when {
-            intervalDays < 1f -> "${(intervalDays * 24 * 60).toInt()} dk"
-            intervalDays < 2f -> "${(intervalDays * 24).toInt()} saat"
-            intervalDays < 30f -> "${intervalDays.toInt()} gün"
-            intervalDays < 365f -> "${(intervalDays / 30).toInt()} ay"
-            else -> "${(intervalDays / 365).toInt()} yıl"
-        }
+    // ========== RATING ACCESSOR FUNCTIONS ==========
+    // (StudyViewModelRating.kt extension'ları için gerekli)
+
+    internal fun getRatingManager() = ratingManager
+
+    internal fun getFeedbackRepository() = feedbackRepository
+
+    internal fun updateUiState(update: (StudyUiState) -> StudyUiState) {
+        _uiState.update(update)
     }
+
+    internal fun emitEffect(effect: StudyEffect) {
+        viewModelScope.launch { _effect.emit(effect) }
+    }
+
+    internal fun getUiState() = _uiState.value
 
     // ========== CLEANUP ==========
 
     override fun onCleared() {
         super.onCleared()
-        textToSpeechManager.stop() // Stop TTS when ViewModel is cleared
+        textToSpeechManager.stop()
         DebugHelper.log("StudyViewModel cleared")
     }
+
 }

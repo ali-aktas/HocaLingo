@@ -2,72 +2,68 @@ package com.hocalingo.app.feature.study
 
 import com.hocalingo.app.database.entities.ConceptEntity
 import com.hocalingo.app.database.entities.StudyDirection
+import com.hocalingo.app.core.feedback.SatisfactionLevel
+import com.hocalingo.app.core.feedback.FeedbackCategory
 
 /**
- * UI State for Study Screen
+ * StudyUiState.kt - REFACTORED
+ * =============================
+ * State, Events, Effects separated from ViewModel
+ * ✅ Mevcut tüm özellikler korundu
+ * ✅ Rating özellikleri eklendi
  *
- * Simplified version focused on:
- * - Card display and flip state
- * - Daily progress tracking (not accuracy)
- * - Study queue management
- * - Error and loading states
+ * Package: app/src/main/java/com/hocalingo/app/feature/study/
+ */
+
+/**
+ * Main UI State for Study Screen
  */
 data class StudyUiState(
-    // Loading & Error States
+    // ========== LOADING & ERROR ==========
     val isLoading: Boolean = false,
     val error: String? = null,
 
-    // Study Content
+    // ========== CURRENT STUDY CARD ==========
     val currentConcept: ConceptEntity? = null,
     val isCardFlipped: Boolean = false,
-    val studyDirection: StudyDirection = StudyDirection.EN_TO_TR,
-
-    // Queue Management
-    val totalWordsInQueue: Int = 0,
+    val currentCardIndex: Int = 0,
     val currentWordIndex: Int = 0,
+    val remainingCards: Int = 0,
+
+    // ========== QUEUE MANAGEMENT ==========
+    val totalWordsInQueue: Int = 0,
     val hasWordsToStudy: Boolean = false,
-    val isQueueEmpty: Boolean = false,
-    val showEmptyQueueMessage: Boolean = false,
 
-    // Daily Progress (Simplified - Only Daily Goal)
-    val wordsStudiedToday: Int = 0,
-    val dailyGoal: Int = 20,
-    val dailyProgressPercentage: Float = 0f,
-
-    // Session Info (Simple)
+    // ========== SESSION INFO ==========
     val sessionWordsCount: Int = 0,
     val correctAnswers: Int = 0,
+    val studyDirection: StudyDirection = StudyDirection.EN_TO_TR,
 
-    // Button Timing Text (SM-2 Algorithm Results)
+    // ========== BUTTON TIMING TEXT (SM-2 Algorithm) ==========
     val easyTimeText: String = "",
     val mediumTimeText: String = "",
     val hardTimeText: String = "",
 
-    // TTS State
+    // ========== PROGRESS ==========
+    val wordsStudiedToday: Int = 0,
+    val dailyGoal: Int = 20,
+    val dailyProgressPercentage: Float = 0f,
+
+    // ========== QUEUE STATE ==========
+    val isQueueEmpty: Boolean = false,
+    val showEmptyQueueMessage: Boolean = false,
+
+    // ========== TTS ==========
     val isTtsEnabled: Boolean = true,
-    val isSpeaking: Boolean = false
+    val isSpeaking: Boolean = false,
+
+    // ========== RATING PROMPT STATE ==========
+    val showSatisfactionDialog: Boolean = false,
+    val showFeedbackDialog: Boolean = false,
+    val selectedSatisfactionLevel: SatisfactionLevel? = null
 ) {
-
     /**
-     * Progress percentage for current study queue
-     * This shows how many words completed in current session
-     */
-    val progressPercentage: Float
-        get() = if (totalWordsInQueue > 0) {
-            (currentWordIndex.toFloat() / totalWordsInQueue.toFloat()) * 100f
-        } else 0f
-
-    /**
-     * Daily progress calculation - only based on daily goal
-     * When a card is moved to next day, this progress increases
-     */
-    val dailyProgressCalculated: Float
-        get() = if (dailyGoal > 0) {
-            (wordsStudiedToday.toFloat() / dailyGoal.toFloat() * 100f).coerceAtMost(100f)
-        } else 0f
-
-    /**
-     * Text to show on front of card based on study direction
+     * Front side text based on study direction
      */
     val frontText: String
         get() = when (studyDirection) {
@@ -76,7 +72,7 @@ data class StudyUiState(
         }
 
     /**
-     * Text to show on back of card based on study direction
+     * Back side text based on study direction
      */
     val backText: String
         get() = when (studyDirection) {
@@ -85,86 +81,89 @@ data class StudyUiState(
         }
 
     /**
-     * FIXED: Front example sentence (ön yüzde gösterilecek)
+     * Example sentence for current card
      */
-    val frontExampleText: String
+    val exampleText: String
         get() = when (studyDirection) {
-            StudyDirection.EN_TO_TR -> currentConcept?.exampleEn ?: "" // İngilizce ön yüz → İngilizce örnek
-            StudyDirection.TR_TO_EN -> currentConcept?.exampleTr ?: "" // Türkçe ön yüz → Türkçe örnek
+            StudyDirection.EN_TO_TR -> currentConcept?.exampleTr ?: ""
+            StudyDirection.TR_TO_EN -> currentConcept?.exampleEn ?: ""
         }
 
     /**
-     * FIXED: Back example sentence (arka yüzde gösterilecek)
-     */
-    val backExampleText: String
-        get() = when (studyDirection) {
-            StudyDirection.EN_TO_TR -> currentConcept?.exampleTr ?: "" // Türkçe arka yüz → Türkçe örnek
-            StudyDirection.TR_TO_EN -> currentConcept?.exampleEn ?: "" // İngilizce arka yüz → İngilizce örnek
-        }
-
-    /**
-     * NEW: TTS için doğru dil ve metin
+     * TTS için doğru dil ve metin
      */
     val pronunciationText: String
         get() = when (studyDirection) {
-            StudyDirection.EN_TO_TR -> currentConcept?.english ?: "" // İngilizce kelimeyi oku
-            StudyDirection.TR_TO_EN -> currentConcept?.turkish ?: "" // Türkçe kelimeyi oku
+            StudyDirection.EN_TO_TR -> currentConcept?.english ?: ""
+            StudyDirection.TR_TO_EN -> currentConcept?.turkish ?: ""
         }
 
     /**
-     * NEW: TTS butonunu ne zaman göster
+     * TTS butonunu ne zaman göster
      */
     val shouldShowTtsButton: Boolean
         get() = pronunciationText.isNotEmpty() && isTtsEnabled
 }
 
 /**
- * User Events for Study Screen - Simplified
+ * User Events for Study Screen
  */
 sealed interface StudyEvent {
-    // Card Interaction
+    // ========== CARD INTERACTION ==========
     data object FlipCard : StudyEvent
     data object ResetCard : StudyEvent
 
-    // Study Response Buttons (SM-2 Algorithm)
+    // ========== STUDY RESPONSE BUTTONS (SM-2 Algorithm) ==========
     data object EasyButtonPressed : StudyEvent
     data object MediumButtonPressed : StudyEvent
     data object HardButtonPressed : StudyEvent
 
-    // TTS Controls
+    // ========== TTS CONTROLS ==========
     data object PlayPronunciation : StudyEvent
     data object StopTts : StudyEvent
 
-    // Session Management
+    // ========== SESSION MANAGEMENT ==========
     data object LoadStudyQueue : StudyEvent
     data object EndSession : StudyEvent
     data object RetryLoading : StudyEvent
 
-    // Navigation
+    // ========== NAVIGATION ==========
     data object NavigateToWordSelection : StudyEvent
     data object NavigateBack : StudyEvent
 
-    // Removed: Settings and direction toggle (moved to profile)
+    // ========== RATING EVENTS ==========
+    data object ShowSatisfactionDialog : StudyEvent
+    data object DismissSatisfactionDialog : StudyEvent
+    data class SatisfactionSelected(val level: SatisfactionLevel) : StudyEvent
+    data object DismissFeedbackDialog : StudyEvent
+    data class SubmitFeedback(
+        val category: FeedbackCategory,
+        val message: String,
+        val email: String?
+    ) : StudyEvent
 }
 
 /**
  * One-time UI Effects for Study Screen
  */
 sealed interface StudyEffect {
-    // Navigation Effects
+    // ========== NAVIGATION EFFECTS ==========
     data object NavigateToHome : StudyEffect
     data object NavigateToWordSelection : StudyEffect
 
-    // UI Feedback
+    // ========== UI FEEDBACK ==========
     data class ShowMessage(val message: String) : StudyEffect
     data class PlaySound(val soundType: StudySoundType) : StudyEffect
     data class ShowSessionComplete(val stats: SessionStats) : StudyEffect
 
-    // TTS Effects
+    // ========== TTS EFFECTS ==========
     data class SpeakText(val text: String, val language: String = "en") : StudyEffect
 
-    // Haptic Feedback
+    // ========== HAPTIC FEEDBACK ==========
     data class HapticFeedback(val type: HapticType) : StudyEffect
+
+    // ========== RATING EFFECTS ==========
+    data object LaunchNativeStoreRating : StudyEffect
 }
 
 /**
@@ -190,7 +189,7 @@ enum class HapticType {
 }
 
 /**
- * Session completion statistics - Simplified
+ * Session completion statistics
  */
 data class SessionStats(
     val wordsStudied: Int,
@@ -199,9 +198,6 @@ data class SessionStats(
     val newWordsLearned: Int,
     val wordsReviewed: Int
 ) {
-    /**
-     * Simple accuracy calculation
-     */
     val accuracy: Float
         get() = if (wordsStudied > 0) {
             (correctAnswers.toFloat() / wordsStudied.toFloat()) * 100f
