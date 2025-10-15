@@ -1,5 +1,6 @@
 package com.hocalingo.app.feature.study
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
@@ -34,6 +35,10 @@ import com.hocalingo.app.HocaRoutes
 import com.hocalingo.app.R
 import com.hocalingo.app.core.ui.components.HocaSnackbarHost
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
+import com.hocalingo.app.core.feedback.SatisfactionDialog
+import com.hocalingo.app.core.feedback.FeedbackDialog
+import androidx.activity.compose.LocalActivity
+import androidx.activity.compose.LocalActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.absoluteValue
 
@@ -76,6 +81,7 @@ private val cardColors = listOf(
  * ✅ Parameter consistency fixed
  * ✅ All components working properly
  */
+@SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudyScreen(
@@ -86,27 +92,46 @@ fun StudyScreen(
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val activity = LocalActivity.current
+
     // ✅ FIX: Handle ALL effects including TTS
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
-                StudyEffect.NavigateToHome -> onNavigateBack()
-                StudyEffect.NavigateToWordSelection -> onNavigateToWordSelection()
+                StudyEffect.NavigateToHome -> {
+                    onNavigateBack()
+                }
+                StudyEffect.NavigateToWordSelection -> {
+                    onNavigateToWordSelection()
+                }
                 is StudyEffect.ShowMessage -> {
                     snackbarHostState.showSnackbar(effect.message)
                 }
                 is StudyEffect.SpeakText -> {
-                    // TTS handled in ViewModel directly, no need to handle here
-                    // But we could add UI feedback if needed
+                    // TTS handled in ViewModel directly
                 }
                 is StudyEffect.HapticFeedback -> {
-                    // TODO: Implement haptic feedback if needed
+                    // TODO: Implement haptic feedback
                 }
                 is StudyEffect.PlaySound -> {
-                    // TODO: Implement sound effects if needed
+                    // TODO: Implement sound effects
                 }
                 is StudyEffect.ShowSessionComplete -> {
                     // Handled via UI state
+                }
+                StudyEffect.LaunchNativeStoreRating -> {
+                    // Native rating will be handled separately
+                }
+            }
+        }
+    }
+
+    // ✅ Handle Native Rating Effect
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            if (effect is StudyEffect.LaunchNativeStoreRating) {
+                activity?.let {
+                    viewModel.getRatingManager().launchNativeRating(it)
                 }
             }
         }
@@ -152,6 +177,41 @@ fun StudyScreen(
                 }
                 else -> {
                     LoadingState(modifier = Modifier.fillMaxSize())
+                }
+            }
+            // ========== RATING DIALOGS ==========
+
+            // Satisfaction Dialog (Emoji selection)
+            if (uiState.showSatisfactionDialog) {
+                SatisfactionDialog(
+                    onDismiss = {
+                        viewModel.onEvent(StudyEvent.DismissSatisfactionDialog)
+                    },
+                    onSatisfactionSelected = { level ->
+                        viewModel.onEvent(StudyEvent.SatisfactionSelected(level))
+                    }
+                )
+            }
+
+            // Feedback Dialog (Negative users)
+            if (uiState.showFeedbackDialog) {
+                val satisfactionLevel = uiState.selectedSatisfactionLevel
+                if (satisfactionLevel != null) {
+                    FeedbackDialog(
+                        satisfactionLevel = satisfactionLevel,
+                        onDismiss = {
+                            viewModel.onEvent(StudyEvent.DismissFeedbackDialog)
+                        },
+                        onSubmit = { category, message, email ->
+                            viewModel.onEvent(
+                                StudyEvent.SubmitFeedback(
+                                    category = category,
+                                    message = message,
+                                    email = email
+                                )
+                            )
+                        }
+                    )
                 }
             }
         }

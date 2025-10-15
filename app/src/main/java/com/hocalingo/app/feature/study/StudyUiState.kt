@@ -103,6 +103,32 @@ data class StudyUiState(
      */
     val shouldShowTtsButton: Boolean
         get() = pronunciationText.isNotEmpty() && isTtsEnabled
+
+    /**
+     * Progress percentage for current study queue
+     */
+    val progressPercentage: Float
+        get() = if (totalWordsInQueue > 0) {
+            (currentCardIndex.toFloat() / totalWordsInQueue.toFloat()) * 100f
+        } else 0f
+
+    /**
+     * Front example sentence
+     */
+    val frontExampleText: String
+        get() = when (studyDirection) {
+            StudyDirection.EN_TO_TR -> currentConcept?.exampleEn ?: ""
+            StudyDirection.TR_TO_EN -> currentConcept?.exampleTr ?: ""
+        }
+
+    /**
+     * Back example sentence
+     */
+    val backExampleText: String
+        get() = when (studyDirection) {
+            StudyDirection.EN_TO_TR -> currentConcept?.exampleTr ?: ""
+            StudyDirection.TR_TO_EN -> currentConcept?.exampleEn ?: ""
+        }
 }
 
 /**
