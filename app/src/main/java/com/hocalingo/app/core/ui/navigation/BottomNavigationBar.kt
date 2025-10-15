@@ -73,13 +73,6 @@ fun HocaBottomNavigationBar(
                 label = "Ana Sayfa"
             ),
             BottomNavItem(
-                route = HocaRoutes.ADD_WORD,
-                selectedIcon = Icons.Filled.Add,
-                unselectedIcon = Icons.Outlined.Add,
-                labelRes = R.string.nav_add_word,
-                label = "Ekle"
-            ),
-            BottomNavItem(
                 route = HocaRoutes.STUDY,
                 selectedIcon = Icons.Filled.School,
                 unselectedIcon = Icons.Outlined.School,
@@ -88,11 +81,18 @@ fun HocaBottomNavigationBar(
                 isMainAction = true
             ),
             BottomNavItem(
+                route = HocaRoutes.ADD_WORD,
+                selectedIcon = Icons.Filled.Add,
+                unselectedIcon = Icons.Outlined.Add,
+                labelRes = R.string.nav_add_word,
+                label = "Kelime Ekle"
+            ),
+            BottomNavItem(
                 route = HocaRoutes.PROFILE,
-                selectedIcon = Icons.Filled.Settings,
-                unselectedIcon = Icons.Outlined.Settings,
+                selectedIcon = Icons.Filled.Person2,
+                unselectedIcon = Icons.Outlined.Person2,
                 labelRes = R.string.nav_profile,
-                label = "Ayarlar"
+                label = "Profil"
             )
         )
     }
@@ -114,9 +114,9 @@ fun HocaBottomNavigationBar(
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
-                            Color(0xFFC28152).copy(alpha = 0.95f),
-                            Color(0xFFE07B2D).copy(alpha = 0.95f),
-                            Color(0xFFBA8546).copy(alpha = 0.95f)
+                            Color(0xFFFF6B00).copy(alpha = 0.95f),
+                            Color(0xFFCD7A37).copy(alpha = 0.95f),
+                            Color(0xFFFF920E).copy(alpha = 0.95f)
                         )
                     ),
                     shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
