@@ -138,6 +138,9 @@ dependencies {
     // ✅ Google Sign In
     implementation("com.google.android.gms:play-services-auth:21.3.0")
 
+    // AdMob
+    implementation(libs.play.services.ads)
+
     // ✅ MONETIZATION - RevenueCat (AKTIF!)
     implementation("com.revenuecat.purchases:purchases:8.10.0")
 
@@ -164,6 +167,7 @@ dependencies {
 
     // ✅ Google Play In-App Review
     implementation(libs.review.ktx)
+
 
     // Testing
     testImplementation("junit:junit:4.13.2")

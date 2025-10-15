@@ -2,6 +2,7 @@ package com.hocalingo.app.feature.study
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hocalingo.app.core.ads.AdMobManager
 import com.hocalingo.app.core.common.DebugHelper
 import com.hocalingo.app.core.common.SpacedRepetitionAlgorithm
 import com.hocalingo.app.core.common.TextToSpeechManager
@@ -27,12 +28,16 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * StudyViewModel - Complete Enhanced Version WITH RATING
+ * StudyViewModel - Complete Enhanced Version WITH RATING & ADMOB
+ *
+ * Package: app/src/main/java/com/hocalingo/app/feature/study/
+ *
  * ✅ Fixed TTS handling
  * ✅ Fixed completion state management
  * ✅ Enhanced debugging and error handling
  * ✅ Proper session management
  * ✅ Rating prompt integration
+ * ✅ AdMob rewarded ad integration (25 words)
  */
 @HiltViewModel
 class StudyViewModel @Inject constructor(
@@ -40,7 +45,8 @@ class StudyViewModel @Inject constructor(
     private val preferencesManager: UserPreferencesManager,
     private val textToSpeechManager: TextToSpeechManager,
     private val ratingManager: RatingManager,
-    private val feedbackRepository: FeedbackRepository
+    private val feedbackRepository: FeedbackRepository,
+    private val adMobManager: AdMobManager // ✅ AdMob integration
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StudyUiState())
@@ -290,7 +296,7 @@ class StudyViewModel @Inject constructor(
     }
 
     /**
-     * ✅ Enhanced user response handling with immediate completion
+     * ✅ Enhanced user response handling with AdMob integration
      */
     private fun handleUserResponse(quality: Int) {
         val concept = _uiState.value.currentConcept ?: return
@@ -314,6 +320,16 @@ class StudyViewModel @Inject constructor(
                                 sessionWordsCount = it.sessionWordsCount + 1,
                                 correctAnswers = if (isCorrect) it.correctAnswers + 1 else it.correctAnswers
                             )
+                        }
+
+                        // ✅ INCREMENT STUDY WORD COUNTER (AdMob)
+                        adMobManager.incrementStudyWordCount()
+
+                        // ✅ CHECK IF SHOULD SHOW REWARDED AD
+                        if (adMobManager.shouldShowStudyRewardedAd()) {
+                            DebugHelper.log("🎯 25 kelime tamamlandı - Rewarded ad gösterilecek!")
+                            _effect.tryEmit(StudyEffect.ShowStudyRewardedAd)
+                            return@launch // Ad gösterildikten sonra devam edilecek
                         }
 
                         // Move to next word
@@ -344,6 +360,31 @@ class StudyViewModel @Inject constructor(
 
             } catch (e: Exception) {
                 DebugHelper.logError("Handle response error", e)
+            }
+        }
+    }
+
+    /**
+     * ✅ Ad gösterildikten sonra çalışmaya devam et
+     */
+    fun continueAfterAd() {
+        viewModelScope.launch {
+            DebugHelper.log("📚 Reklam sonrası çalışmaya devam")
+
+            currentQueueIndex++
+
+            if (currentQueueIndex < studyQueue.size) {
+                loadNextWord()
+            } else {
+                DebugHelper.log("✅ All words studied!")
+                _uiState.update {
+                    it.copy(
+                        currentConcept = null,
+                        showEmptyQueueMessage = true,
+                        isCardFlipped = false
+                    )
+                }
+                completeSession()
             }
         }
     }
@@ -475,6 +516,9 @@ class StudyViewModel @Inject constructor(
                 event.message,
                 event.email
             )
+
+            // ✅ AD EVENTS
+            StudyEvent.ContinueAfterAd -> continueAfterAd()
         }
     }
 
@@ -512,6 +556,9 @@ class StudyViewModel @Inject constructor(
 
     internal fun getUiState() = _uiState.value
 
+    // ========== ADMOB ACCESSOR ==========
+    fun getAdMobManager() = adMobManager
+
     // ========== CLEANUP ==========
 
     override fun onCleared() {
@@ -519,5 +566,4 @@ class StudyViewModel @Inject constructor(
         textToSpeechManager.stop()
         DebugHelper.log("StudyViewModel cleared")
     }
-
 }

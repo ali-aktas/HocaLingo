@@ -35,7 +35,7 @@ googleServices = "4.4.2"
 
 # RevenueCat & AdMob
 revenuecat = "8.10.0"               # ✅ Latest
-playServicesAds = "23.8.0"         # ✅ Latest
+playServicesAds = "23.5.0"       # ✅ Latest
 
 # UI & Image Loading
 coil = "3.0.4"                      # ✅ Latest stable
@@ -106,6 +106,7 @@ firebase-config = { group = "com.google.firebase", name = "firebase-config" }
 # Monetization
 revenuecat = { group = "com.revenuecat.purchases", name = "purchases", version.ref = "revenuecat" }
 play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
+
 
 # UI & Utils
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }

@@ -7,11 +7,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -21,18 +21,27 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.hocalingo.app.core.ads.AdMobManager
+import com.hocalingo.app.core.ads.NativeAdLoader
 import com.hocalingo.app.core.ui.navigation.HocaBottomNavigationBar
 import com.hocalingo.app.core.ui.navigation.shouldShowBottomNavigation
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
 import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
- * MainActivity - Professional Edge-to-Edge Implementation
+ * MainActivity - Professional Edge-to-Edge Implementation with AdMob
+ *
+ * Package: app/src/main/java/com/hocalingo/app/
  *
  * ✅ API 35 Compatible
+ * ✅ AdMob Integration (Rewarded & Native Ads)
  * ✅ Status Bar: Transparent, content extends behind it
  * ✅ Navigation Bar: Proper padding for gesture navigation
  * ✅ Central WindowInsets management for all screens
@@ -41,15 +50,32 @@ import dagger.hilt.android.AndroidEntryPoint
  * - Added contentWindowInsets = WindowInsets(0, 0, 0, 0) to Scaffold
  * - This allows each screen to manage its own status bar padding
  * - Bottom navigation handles gesture bar padding automatically
+ * - AdMob initialized on app start
+ * - Native ads preloaded for better UX
+ * - App launch counter for rewarded ads
  */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    // ✅ AdMob Dependencies
+    @Inject
+    lateinit var adMobManager: AdMobManager
+
+    @Inject
+    lateinit var nativeAdLoader: NativeAdLoader
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Install splash screen first
         installSplashScreen()
 
         super.onCreate(savedInstanceState)
+
+        // ✅ Initialize AdMob SDK
+        initializeAdMob()
+
+        // ✅ Increment app launch count
+        incrementAppLaunchCount()
 
         // ✅ Enable edge-to-edge (mandatory for API 35)
         enableEdgeToEdge()
@@ -85,6 +111,24 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
+                // ✅ Check and show app launch rewarded ad
+                LaunchedEffect(Unit) {
+                    // Delay 2 seconds for better UX
+                    delay(2000)
+
+                    if (adMobManager.shouldShowAppLaunchAd()) {
+                        adMobManager.showAppLaunchRewardedAd(
+                            activity = this@MainActivity,
+                            onAdShown = {},
+                            onAdDismissed = {},
+                            onAdFailed = { error ->
+                                // Log error but don't show to user
+                                println("❌ App launch ad failed: $error")
+                            }
+                        )
+                    }
+                }
+
                 // ✅ CRITICAL FIX: contentWindowInsets removes default padding
                 // Now each screen manages its own status bar padding
                 Scaffold(
@@ -110,6 +154,61 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             }
+        }
+    }
+
+    /**
+     * ============================================
+     * ADMOB INITIALIZATION
+     * ============================================
+     */
+
+    /**
+     * Initialize AdMob SDK
+     */
+    private fun initializeAdMob() {
+        lifecycleScope.launch {
+            try {
+                // Initialize AdMob SDK
+                adMobManager.initialize()
+
+                // Preload native ads for better UX
+                nativeAdLoader.preloadNativeAds()
+
+            } catch (e: Exception) {
+                println("❌ AdMob initialization failed: ${e.message}")
+            }
+        }
+    }
+
+    /**
+     * Increment app launch count (for rewarded ad logic)
+     */
+    private fun incrementAppLaunchCount() {
+        lifecycleScope.launch {
+            try {
+                adMobManager.incrementAppLaunchCount()
+            } catch (e: Exception) {
+                println("❌ Failed to increment app launch count: ${e.message}")
+            }
+        }
+    }
+
+    /**
+     * ============================================
+     * LIFECYCLE CLEANUP
+     * ============================================
+     */
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // Clean up ads when app is destroyed
+        try {
+            adMobManager.clearAllAds()
+            nativeAdLoader.destroyAllAds()
+        } catch (e: Exception) {
+            println("❌ Failed to clean up ads: ${e.message}")
         }
     }
 }

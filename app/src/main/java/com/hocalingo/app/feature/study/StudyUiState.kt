@@ -1,69 +1,76 @@
 package com.hocalingo.app.feature.study
 
+import com.hocalingo.app.core.feedback.FeedbackCategory
+import com.hocalingo.app.core.feedback.SatisfactionLevel
 import com.hocalingo.app.database.entities.ConceptEntity
 import com.hocalingo.app.database.entities.StudyDirection
-import com.hocalingo.app.core.feedback.SatisfactionLevel
-import com.hocalingo.app.core.feedback.FeedbackCategory
 
 /**
- * StudyUiState.kt - REFACTORED
- * =============================
- * State, Events, Effects separated from ViewModel
- * ✅ Mevcut tüm özellikler korundu
- * ✅ Rating özellikleri eklendi
+ * StudyUiState - Complete State with AdMob Support
  *
  * Package: app/src/main/java/com/hocalingo/app/feature/study/
- */
-
-/**
- * Main UI State for Study Screen
+ *
+ * ✅ Fixed to include all necessary properties
+ * ✅ AdMob support added
  */
 data class StudyUiState(
     // ========== LOADING & ERROR ==========
     val isLoading: Boolean = false,
     val error: String? = null,
 
-    // ========== CURRENT STUDY CARD ==========
+    // ========== CURRENT CONCEPT ==========
     val currentConcept: ConceptEntity? = null,
     val isCardFlipped: Boolean = false,
-    val currentCardIndex: Int = 0,
-    val currentWordIndex: Int = 0,
-    val remainingCards: Int = 0,
 
-    // ========== QUEUE MANAGEMENT ==========
-    val totalWordsInQueue: Int = 0,
-    val hasWordsToStudy: Boolean = false,
-
-    // ========== SESSION INFO ==========
-    val sessionWordsCount: Int = 0,
-    val correctAnswers: Int = 0,
+    // ========== STUDY DIRECTION ==========
     val studyDirection: StudyDirection = StudyDirection.EN_TO_TR,
 
-    // ========== BUTTON TIMING TEXT (SM-2 Algorithm) ==========
+    // ========== QUEUE MANAGEMENT ==========
+    val studyQueue: List<ConceptEntity> = emptyList(),
+    val currentCardIndex: Int = 0,
+    val remainingCards: Int = 0,
+    val totalWordsInQueue: Int = 0,
+    val hasWordsToStudy: Boolean = false,
+    val isQueueEmpty: Boolean = false,
+    val showEmptyQueueMessage: Boolean = false,
+
+    // ========== SESSION STATS ==========
+    val sessionWordsCount: Int = 0,
+    val correctAnswers: Int = 0,
+    val wordsStudiedToday: Int = 0,
+    val dailyGoal: Int = 10,
+    val dailyProgressPercentage: Float = 0f,
+
+    // ========== TTS & SOUND ==========
+    val isTtsEnabled: Boolean = true,
+    val isSpeaking: Boolean = false,
+
+    // ========== BUTTON TIMING TEXTS (SM-2 Algorithm) ==========
     val easyTimeText: String = "",
     val mediumTimeText: String = "",
     val hardTimeText: String = "",
 
-    // ========== PROGRESS ==========
-    val wordsStudiedToday: Int = 0,
-    val dailyGoal: Int = 20,
-    val dailyProgressPercentage: Float = 0f,
-
-    // ========== QUEUE STATE ==========
-    val isQueueEmpty: Boolean = false,
-    val showEmptyQueueMessage: Boolean = false,
-
-    // ========== TTS ==========
-    val isTtsEnabled: Boolean = true,
-    val isSpeaking: Boolean = false,
-
-    // ========== RATING PROMPT STATE ==========
+    // ========== RATING ==========
     val showSatisfactionDialog: Boolean = false,
     val showFeedbackDialog: Boolean = false,
     val selectedSatisfactionLevel: SatisfactionLevel? = null
 ) {
     /**
-     * Front side text based on study direction
+     * Current word index (1-based for display)
+     */
+    val currentWordIndex: Int
+        get() = currentCardIndex
+
+    /**
+     * Progress percentage
+     */
+    val progressPercentage: Float
+        get() = if (totalWordsInQueue > 0) {
+            (currentCardIndex.toFloat() / totalWordsInQueue.toFloat()) * 100f
+        } else 0f
+
+    /**
+     * Front text based on study direction
      */
     val frontText: String
         get() = when (studyDirection) {
@@ -72,7 +79,7 @@ data class StudyUiState(
         }
 
     /**
-     * Back side text based on study direction
+     * Back text based on study direction
      */
     val backText: String
         get() = when (studyDirection) {
@@ -81,36 +88,10 @@ data class StudyUiState(
         }
 
     /**
-     * Example sentence for current card
-     */
-    val exampleText: String
-        get() = when (studyDirection) {
-            StudyDirection.EN_TO_TR -> currentConcept?.exampleTr ?: ""
-            StudyDirection.TR_TO_EN -> currentConcept?.exampleEn ?: ""
-        }
-
-    /**
-     * TTS için doğru dil ve metin
-     */
-    val pronunciationText: String
-        get() = when (studyDirection) {
-            StudyDirection.EN_TO_TR -> currentConcept?.english ?: ""
-            StudyDirection.TR_TO_EN -> currentConcept?.turkish ?: ""
-        }
-
-    /**
-     * TTS butonunu ne zaman göster
+     * Should show TTS button
      */
     val shouldShowTtsButton: Boolean
-        get() = pronunciationText.isNotEmpty() && isTtsEnabled
-
-    /**
-     * Progress percentage for current study queue
-     */
-    val progressPercentage: Float
-        get() = if (totalWordsInQueue > 0) {
-            (currentCardIndex.toFloat() / totalWordsInQueue.toFloat()) * 100f
-        } else 0f
+        get() = isTtsEnabled && currentConcept != null
 
     /**
      * Front example sentence
@@ -167,6 +148,9 @@ sealed interface StudyEvent {
         val message: String,
         val email: String?
     ) : StudyEvent
+
+    // ✅ ADMOB EVENTS
+    data object ContinueAfterAd : StudyEvent
 }
 
 /**
@@ -190,6 +174,9 @@ sealed interface StudyEffect {
 
     // ========== RATING EFFECTS ==========
     data object LaunchNativeStoreRating : StudyEffect
+
+    // ✅ ADMOB EFFECTS
+    data object ShowStudyRewardedAd : StudyEffect
 }
 
 /**
