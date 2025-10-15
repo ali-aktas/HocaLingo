@@ -102,42 +102,8 @@ fun AddWordScreen(
     }
 
     Scaffold(
-        snackbarHost = {
-            HocaSnackbarHost(
-                hostState = snackbarHostState,
-                currentRoute = HocaRoutes.ADD_WORD
-            )
-        },
-        containerColor = MaterialTheme.colorScheme.background, // Theme-aware background
-        topBar = {
-            TopAppBar(
-                title = {},
-                navigationIcon = {
-                    IconButton(
-                        onClick = onNavigateBack,
-                        modifier = Modifier
-                            .padding(start = 16.dp)
-                            .background(
-                                color = if (isDarkTheme) {
-                                    MaterialTheme.colorScheme.surface
-                                } else {
-                                    Color(0xFFF5F5F5)
-                                },
-                                shape = CircleShape
-                            )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Geri",
-                            tint = MaterialTheme.colorScheme.onSurface // Theme-aware
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                )
-            )
-        }
+        containerColor = MaterialTheme.colorScheme.background
+        // topBar YOK!
     ) { paddingValues ->
 
         Column(
@@ -219,7 +185,7 @@ private fun HeaderSection(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(top = 4.dp)
+        modifier = Modifier.padding(top = 24.dp)
     ) {
         Text(
             text = "Kendi Kelimeni Ekle",

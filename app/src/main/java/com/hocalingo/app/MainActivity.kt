@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -28,22 +30,28 @@ import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
- * MainActivity - True Edge-to-Edge Experience
- * ✅ API 35 uyumlu tam ekran tasarım
- * ✅ Status bar transparan ve içerik arkasından başlıyor
- * ✅ Bottom navigation doğru konumda
- * ✅ Tüm ekranlar için merkezi yönetim
+ * MainActivity - Professional Edge-to-Edge Implementation
+ *
+ * ✅ API 35 Compatible
+ * ✅ Status Bar: Transparent, content extends behind it
+ * ✅ Navigation Bar: Proper padding for gesture navigation
+ * ✅ Central WindowInsets management for all screens
+ *
+ * CRITICAL CHANGES:
+ * - Added contentWindowInsets = WindowInsets(0, 0, 0, 0) to Scaffold
+ * - This allows each screen to manage its own status bar padding
+ * - Bottom navigation handles gesture bar padding automatically
  */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Splash screen
+        // Install splash screen first
         installSplashScreen()
 
         super.onCreate(savedInstanceState)
 
-        // ✅ API 35 için edge-to-edge zorunlu, eski API'ler için de aktif ediyoruz
+        // ✅ Enable edge-to-edge (mandatory for API 35)
         enableEdgeToEdge()
 
         setContent {
@@ -59,45 +67,46 @@ class MainActivity : ComponentActivity() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
 
-                // 🎨 Modern Status Bar - Transparan ve temaya uygun ikonlar
+                // 🎨 System bars configuration
                 val view = LocalView.current
                 val window = (view.context as Activity).window
 
                 SideEffect {
-                    // Status bar tamamen transparan
+                    // Status bar: completely transparent
                     window.statusBarColor = Color.Transparent.toArgb()
 
-                    // Navigation bar da transparan (gesture nav için)
+                    // Navigation bar: transparent (for gesture navigation)
                     window.navigationBarColor = Color.Transparent.toArgb()
 
-                    // Status bar icon renklerini temaya göre ayarla
+                    // Icon colors based on theme
                     WindowCompat.getInsetsController(window, view).apply {
                         isAppearanceLightStatusBars = !shouldUseDarkTheme
                         isAppearanceLightNavigationBars = !shouldUseDarkTheme
                     }
                 }
 
-                // ✅ Edge-to-Edge Scaffold - İçerik tam ekran
+                // ✅ CRITICAL FIX: contentWindowInsets removes default padding
+                // Now each screen manages its own status bar padding
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(MaterialTheme.colorScheme.background),
                     containerColor = MaterialTheme.colorScheme.background,
+                    contentWindowInsets = WindowInsets(0, 0, 0, 0), // 👈 BU SATIR MUTLAKA OLMALI!
                     bottomBar = {
-                        // Bottom navigation sadece gerekli ekranlarda göster
                         if (shouldShowBottomNavigation(currentRoute)) {
                             HocaBottomNavigationBar(navController = navController)
                         }
                     }
                 ) { paddingValues ->
-                    // 🚀 İçerik buradan başlıyor - STATUS BAR'IN ARKASINDA!
-                    // windowInsetsPadding KALDIRILDI - artık edge-to-edge!
+                    // Content starts here
+                    // Each screen will add its own statusBarsPadding()
                     HocaLingoNavigation(
                         navController = navController,
                         modifier = Modifier
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.background)
-                            .padding(paddingValues) // Sadece Scaffold padding'i (bottom nav için)
+                            .padding(paddingValues) // Only bottom nav padding
                     )
                 }
             }

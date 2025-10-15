@@ -143,23 +143,22 @@ fun ProfileScreen(
             )
         },
         containerColor = MaterialTheme.colorScheme.background
-    ) { paddingValues ->
+    ) { _ ->
 
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            contentPadding = PaddingValues(20.dp),
+                .fillMaxSize(),
+            contentPadding = PaddingValues(start = 14.dp, end = 14.dp, top = 54.dp, bottom = 20.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
 
             // Settings Header - Theme-aware text color
             item {
                 Text(
-                    text = "Kişiselleştir",
+                    text = "Profil",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Black,
-                    fontSize = 24.sp,
+                    fontSize = 32.sp,
                     color = MaterialTheme.colorScheme.onBackground, // Theme-aware
                     modifier = Modifier.fillMaxWidth()
                 )

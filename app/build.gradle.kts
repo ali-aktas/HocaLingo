@@ -150,6 +150,18 @@ dependencies {
     // DataStore for preferences
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
+    // ✅ System UI Controller (Status bar/Navigation bar renkleri için)
+    // MainActivity.kt'de kullanıyoruz
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")
+
+    // ✅ WindowInsets (Edge-to-edge için)
+    // Compose'da zaten var ama emin olmak için
+    implementation("androidx.compose.foundation:foundation:1.7.5")
+
+    // ✅ Activity Compose (enableEdgeToEdge için)
+    // Compose'da zaten var ama version check
+    implementation("androidx.activity:activity-compose:1.9.3")
+
     // Testing
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")

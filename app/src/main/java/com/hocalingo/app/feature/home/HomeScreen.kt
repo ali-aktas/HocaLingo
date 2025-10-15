@@ -93,14 +93,13 @@ fun HomeScreen(
             )
         },
         containerColor = MaterialTheme.colorScheme.background // Theme-aware background
-    ) { paddingValues ->
+    ) { _ -> // paddingValues ignore edildi
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background) // Theme-aware
-                .padding(paddingValues),
-            contentPadding = PaddingValues(20.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+                .background(MaterialTheme.colorScheme.background),
+            contentPadding = PaddingValues(start = 14.dp, end = 14.dp, top = 54.dp, bottom = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
 
             // App Title - "Hocalingo"
@@ -108,8 +107,8 @@ fun HomeScreen(
                 Text(
                     text = "Hocalingo",
                     fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 26.sp,
+                    fontWeight = FontWeight.Black,
+                    fontSize = 32.sp,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
@@ -215,7 +214,7 @@ private fun WelcomeHeaderWithStats(
                     text = "Merhaba, $userName!",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp,
+                    fontSize = 24.sp,
                     color = Color.White
                 )
 

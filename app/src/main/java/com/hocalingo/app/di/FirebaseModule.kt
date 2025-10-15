@@ -1,10 +1,7 @@
 package com.hocalingo.app.di
 
-import com.google.firebase.Firebase
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
@@ -17,7 +14,8 @@ import javax.inject.Singleton
  *
  * Package: app/src/main/java/com/hocalingo/app/di/
  *
- * ✅ Custom Firestore database: hocalingodatabase
+ * ✅ FIXED: Default Firestore database kullanıyoruz (ÜCRETSİZ!)
+ * ❌ ÖNCE: Custom database "hocalingodatabase" (PAHALIYDI!)
  */
 @Module
 @InstallIn(SingletonComponent::class)
@@ -32,8 +30,11 @@ object FirebaseModule {
     @Provides
     @Singleton
     fun provideFirebaseFirestore(): FirebaseFirestore {
-        // ✅ Custom database adı: hocalingodatabase
-        return Firebase.firestore(FirebaseApp.getInstance(), "hocalingodatabase")
+        // ✅ FIXED: Default database kullan (Spark plan'da çalışır!)
+        return FirebaseFirestore.getInstance()
+
+        // ❌ ÖNCE BÖYLEYDI (Custom database - Blaze plan gerekiyor!)
+        // return Firebase.firestore(FirebaseApp.getInstance(), "hocalingodatabase")
     }
 
     @Provides

@@ -15,9 +15,23 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * User Repository
- * Manages user data in both Firestore and local Room database
- * Handles user preferences, progress, and profile information
+ * User Repository (OPTIMIZED FOR SPARK PLAN)
+ *
+ * ✅ LOCAL-FIRST YAKLAŞIM:
+ * - Ana database: Room (local)
+ * - Yedekleme: Firestore (cloud)
+ * - Sync: Sadece kritik durumlarda
+ *
+ * ✅ FIRESTORE'A NE ZAMAN YAZIYORUZ:
+ * - İlk login (user profili oluşturma)
+ * - Premium satın alma
+ * - Uygulama açıldığında (günde 1 sync)
+ * - Logout (son data'yı kaydet)
+ *
+ * ❌ FIRESTORE'A NE ZAMAN YAZMIYORUZ:
+ * - Her preference değişikliği
+ * - Her kelime öğrenme
+ * - Her setting update
  */
 @Singleton
 class UserRepository @Inject constructor(
@@ -38,7 +52,7 @@ class UserRepository @Inject constructor(
     private fun getCurrentUserId(): String? = firebaseAuth.currentUser?.uid
 
     /**
-     * Get user preferences as Flow
+     * Get user preferences as Flow (LOCAL - NO FIRESTORE!)
      */
     fun getUserPreferences(): Flow<UserPreferencesEntity?> {
         val userId = getCurrentUserId() ?: return flowOf(null)
@@ -46,7 +60,7 @@ class UserRepository @Inject constructor(
     }
 
     /**
-     * Get user preferences once
+     * Get user preferences once (LOCAL - NO FIRESTORE!)
      */
     suspend fun getUserPreferencesOnce(): Result<UserPreferencesEntity?> {
         return try {
@@ -59,7 +73,8 @@ class UserRepository @Inject constructor(
     }
 
     /**
-     * Create user profile in Firestore and local DB
+     * Create user profile
+     * ✅ Bu kritik bir işlem - Firestore'a yazıyoruz!
      */
     suspend fun createUserProfile(
         nativeLanguage: String = "tr",
@@ -70,7 +85,7 @@ class UserRepository @Inject constructor(
             val userId = getCurrentUserId() ?: return Result.Error(AppError.Unauthorized)
             val user = firebaseAuth.currentUser ?: return Result.Error(AppError.Unauthorized)
 
-            // Create user preferences
+            // Create user preferences (LOCAL)
             val preferences = UserPreferencesEntity(
                 userId = userId,
                 nativeLanguage = nativeLanguage,
@@ -83,10 +98,11 @@ class UserRepository @Inject constructor(
                 onboardingCompleted = false
             )
 
-            // Save to local database
+            // Save to local database (PRIMARY)
             database.userPreferencesDao().insertOrUpdatePreferences(preferences)
 
-            // Create user document in Firestore
+            // ✅ Create user document in Firestore (BACKUP)
+            // Bu kritik bir işlem, sadece ilk login'de yapılıyor
             val userDoc = hashMapOf(
                 "uid" to userId,
                 "email" to user.email,
@@ -102,7 +118,7 @@ class UserRepository @Inject constructor(
                 .set(userDoc)
                 .await()
 
-            // Save preferences to Firestore
+            // Save preferences to Firestore (BACKUP)
             syncPreferencesToFirestore(preferences)
 
             Result.Success(preferences)
@@ -113,16 +129,18 @@ class UserRepository @Inject constructor(
 
     /**
      * Update user preferences
+     * ❌ FIRESTORE'A YAZMIYOR! (Sadece local)
+     * Sync işlemi ayrı bir fonksiyondan yapılacak
      */
     suspend fun updateUserPreferences(preferences: UserPreferencesEntity): Result<Unit> {
         return try {
             val userId = getCurrentUserId() ?: return Result.Error(AppError.Unauthorized)
 
-            // Update local database
+            // ✅ Sadece local database'e yaz (HIZLI!)
             database.userPreferencesDao().updatePreferences(preferences)
 
-            // Sync to Firestore
-            syncPreferencesToFirestore(preferences)
+            // ❌ Firestore'a yazmıyoruz (Para kesintisine neden olur!)
+            // syncPreferencesToFirestore(preferences)
 
             Result.Success(Unit)
         } catch (e: Exception) {
@@ -132,19 +150,22 @@ class UserRepository @Inject constructor(
 
     /**
      * Update daily goal
+     * ❌ FIRESTORE'A YAZMIYOR! (Sadece local)
      */
     suspend fun updateDailyGoal(goal: Int): Result<Unit> {
         return try {
             val userId = getCurrentUserId() ?: return Result.Error(AppError.Unauthorized)
+
+            // ✅ Sadece local database'e yaz
             database.userPreferencesDao().updateDailyGoal(userId, goal)
 
-            // Update in Firestore
-            firestore.collection(USERS_COLLECTION)
-                .document(userId)
-                .collection(USER_PREFERENCES)
-                .document("settings")
-                .update("dailyGoal", goal)
-                .await()
+            // ❌ Firestore'a yazmıyoruz
+            // firestore.collection(USERS_COLLECTION)
+            //     .document(userId)
+            //     .collection(USER_PREFERENCES)
+            //     .document("settings")
+            //     .update("dailyGoal", goal)
+            //     .await()
 
             Result.Success(Unit)
         } catch (e: Exception) {
@@ -154,17 +175,20 @@ class UserRepository @Inject constructor(
 
     /**
      * Mark onboarding as completed
+     * ❌ FIRESTORE'A YAZMIYOR! (Sadece local)
      */
     suspend fun completeOnboarding(): Result<Unit> {
         return try {
             val userId = getCurrentUserId() ?: return Result.Error(AppError.Unauthorized)
+
+            // ✅ Sadece local database'e yaz
             database.userPreferencesDao().markOnboardingCompleted(userId)
 
-            // Update in Firestore
-            firestore.collection(USERS_COLLECTION)
-                .document(userId)
-                .update("onboardingCompleted", true)
-                .await()
+            // ❌ Firestore'a yazmıyoruz
+            // firestore.collection(USERS_COLLECTION)
+            //     .document(userId)
+            //     .update("onboardingCompleted", true)
+            //     .await()
 
             Result.Success(Unit)
         } catch (e: Exception) {
@@ -174,13 +198,17 @@ class UserRepository @Inject constructor(
 
     /**
      * Update premium status
+     * ✅ Bu kritik bir işlem - Firestore'a yazıyoruz!
+     * (Premium satın alma önemli bir event)
      */
     suspend fun updatePremiumStatus(isPremium: Boolean): Result<Unit> {
         return try {
             val userId = getCurrentUserId() ?: return Result.Error(AppError.Unauthorized)
+
+            // Local database
             database.userPreferencesDao().updatePremiumStatus(userId, isPremium)
 
-            // Update in Firestore
+            // ✅ Firestore'a da yaz (Premium bilgisi kritik!)
             firestore.collection(USERS_COLLECTION)
                 .document(userId)
                 .update("isPremium", isPremium)
@@ -194,6 +222,7 @@ class UserRepository @Inject constructor(
 
     /**
      * Sync user data from Firestore to local database
+     * ✅ SADECE UYGULAMA AÇILIŞINDA ÇAĞRILACAK (Günde 1 kez!)
      */
     suspend fun syncUserDataFromFirestore(): Result<Unit> {
         return try {
@@ -233,7 +262,27 @@ class UserRepository @Inject constructor(
     }
 
     /**
+     * Sync local data to Firestore
+     * ✅ SADECE LOGOUT'TA VEYA GÜN SONU SYNC'TE ÇAĞRILACAK
+     */
+    suspend fun syncLocalDataToFirestore(): Result<Unit> {
+        return try {
+            val userId = getCurrentUserId() ?: return Result.Error(AppError.Unauthorized)
+            val preferences = database.userPreferencesDao().getPreferences(userId)
+                ?: return Result.Error(AppError.NotFound)
+
+            // Batch write ile tek işlemde yaz (daha verimli!)
+            syncPreferencesToFirestore(preferences)
+
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e.toAppError())
+        }
+    }
+
+    /**
      * Delete user account and all data
+     * ✅ Bu kritik bir işlem - Firestore'dan da sil!
      */
     suspend fun deleteUserAccount(): Result<Unit> {
         return try {
@@ -245,8 +294,7 @@ class UserRepository @Inject constructor(
                 .delete()
                 .await()
 
-            // Delete from local database (user-specific data)
-            // Note: This might need more specific cleanup based on your data model
+            // Delete from local database
             database.userPreferencesDao().getPreferences(userId)?.let { preferences ->
                 database.userPreferencesDao().updatePreferences(
                     preferences.copy(
@@ -264,6 +312,7 @@ class UserRepository @Inject constructor(
 
     /**
      * Update last login timestamp
+     * ✅ SADECE İLK AÇILIŞTA ÇAĞRILACAK (Günde 1 kez!)
      */
     suspend fun updateLastLogin(): Result<Unit> {
         return try {
@@ -300,6 +349,7 @@ class UserRepository @Inject constructor(
 
     /**
      * Private helper: Sync preferences to Firestore
+     * ✅ Batch write kullanarak tek işlemde yaz
      */
     private suspend fun syncPreferencesToFirestore(preferences: UserPreferencesEntity) {
         val userId = getCurrentUserId() ?: return

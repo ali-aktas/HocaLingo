@@ -146,10 +146,10 @@ private fun PackageSelectionContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         // Header
         Text(
@@ -166,7 +166,7 @@ private fun PackageSelectionContent(
 
         // Package cards list
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.weight(1f)
         ) {
             items(packages) { packageInfo ->
@@ -179,7 +179,7 @@ private fun PackageSelectionContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(18.dp))
 
         // Continue Button
         Button(
@@ -220,7 +220,7 @@ private fun PackageSelectionContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(2.dp))
     }
 }
 

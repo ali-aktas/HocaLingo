@@ -43,10 +43,16 @@ private val PoppinsFontFamily = FontFamily(
 )
 
 /**
- * UPDATED Bottom Navigation - Fixed to Bottom
- * ✅ No floating padding
- * ✅ Direct attachment to screen bottom
- * ✅ Gradient colors maintained
+ * Professional Bottom Navigation - API 35 Compatible
+ *
+ * ✅ Fixed gesture bar overlap with navigationBarsPadding()
+ * ✅ Beautiful gradient maintained
+ * ✅ Smooth animations
+ * ✅ Rounded top corners
+ *
+ * CRITICAL CHANGE:
+ * - Added .navigationBarsPadding() to handle system gesture bar
+ * - Prevents overlap with 3-button/gesture navigation
  */
 @Composable
 fun HocaBottomNavigationBar(
@@ -91,12 +97,14 @@ fun HocaBottomNavigationBar(
         )
     }
 
-    // UPDATED: Direct container without padding
+    // ✅ CRITICAL FIX: navigationBarsPadding() added
+    // This prevents overlap with system navigation bar (gesture/3-button)
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(70.dp),
-        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp), // Rounded top corners only
+            .height(70.dp)
+            .navigationBarsPadding(), // 🎯 KEY CHANGE: Handles gesture bar
+        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
