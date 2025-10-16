@@ -2,7 +2,9 @@ package com.hocalingo.app.feature.study
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.ads.nativead.NativeAd
 import com.hocalingo.app.core.ads.AdMobManager
+import com.hocalingo.app.core.ads.NativeAdLoader
 import com.hocalingo.app.core.common.DebugHelper
 import com.hocalingo.app.core.common.SpacedRepetitionAlgorithm
 import com.hocalingo.app.core.common.TextToSpeechManager
@@ -28,16 +30,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * StudyViewModel - Complete Enhanced Version WITH RATING & ADMOB
+ * StudyViewModel - FIXED VERSION
  *
  * Package: app/src/main/java/com/hocalingo/app/feature/study/
  *
- * ✅ Fixed TTS handling
- * ✅ Fixed completion state management
- * ✅ Enhanced debugging and error handling
- * ✅ Proper session management
- * ✅ Rating prompt integration
- * ✅ AdMob rewarded ad integration (25 words)
+ * ✅ FIXED: Index artırma mantığı düzeltildi
+ * ✅ FIXED: Native ad her 10 kelimede doğru gösteriliyor
+ * ✅ FIXED: Rewarded ad sonrası kelime atlanmıyor
+ * ✅ FIXED: wordsCompletedCount kaldırıldı, currentQueueIndex kullanılıyor
  */
 @HiltViewModel
 class StudyViewModel @Inject constructor(
@@ -46,7 +46,8 @@ class StudyViewModel @Inject constructor(
     private val textToSpeechManager: TextToSpeechManager,
     private val ratingManager: RatingManager,
     private val feedbackRepository: FeedbackRepository,
-    private val adMobManager: AdMobManager // ✅ AdMob integration
+    private val adMobManager: AdMobManager,
+    private val nativeAdLoader: NativeAdLoader
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StudyUiState())
@@ -54,6 +55,8 @@ class StudyViewModel @Inject constructor(
 
     private val _effect = MutableSharedFlow<StudyEffect>()
     val effect: SharedFlow<StudyEffect> = _effect.asSharedFlow()
+
+    val nativeAdState: StateFlow<NativeAd?> = nativeAdLoader.studyScreenAd
 
     // Study session tracking
     private var currentSessionId: Long? = null
@@ -64,13 +67,14 @@ class StudyViewModel @Inject constructor(
     init {
         loadInitialData()
         trackTtsState()
+
+        viewModelScope.launch {
+            nativeAdLoader.loadStudyScreenAd()
+        }
     }
 
     // ========== INITIALIZATION ==========
 
-    /**
-     * ✅ Enhanced TTS state tracking
-     */
     private fun trackTtsState() {
         viewModelScope.launch {
             textToSpeechManager.isSpeaking.collectLatest { isSpeaking ->
@@ -84,21 +88,17 @@ class StudyViewModel @Inject constructor(
             try {
                 _uiState.update { it.copy(isLoading = true) }
 
-                // Get user preferences
                 val userStudyDirection = preferencesManager.getStudyDirection().first()
                 val dailyGoal = preferencesManager.getDailyGoal().first()
                 val ttsEnabled: Boolean = preferencesManager.isSoundEnabled().first()
 
-                // Map common enum to entity enum
                 val entityStudyDirection = when (userStudyDirection) {
                     com.hocalingo.app.core.common.StudyDirection.EN_TO_TR ->
                         StudyDirection.EN_TO_TR
-
                     com.hocalingo.app.core.common.StudyDirection.TR_TO_EN ->
                         StudyDirection.TR_TO_EN
-
                     com.hocalingo.app.core.common.StudyDirection.MIXED ->
-                        StudyDirection.EN_TO_TR // fallback
+                        StudyDirection.EN_TO_TR
                 }
 
                 _uiState.update {
@@ -109,10 +109,7 @@ class StudyViewModel @Inject constructor(
                     )
                 }
 
-                // Load today's progress
                 loadDailyProgress()
-
-                // Load study queue
                 loadStudyQueue()
 
             } catch (e: Exception) {
@@ -152,10 +149,8 @@ class StudyViewModel @Inject constructor(
                             return@launch
                         }
 
-                        // Start new session
                         startNewSession()
 
-                        // Get study queue
                         studyRepository.getStudyQueue(direction, limit = 20)
                             .collectLatest { queueData ->
                                 DebugHelper.log("Study queue received: ${queueData.size} words")
@@ -172,7 +167,6 @@ class StudyViewModel @Inject constructor(
                                     return@collectLatest
                                 }
 
-                                // Convert ConceptWithTimingData to ConceptEntity
                                 val concepts = mutableListOf<ConceptEntity>()
                                 for (timingData in queueData) {
                                     when (val result =
@@ -180,7 +174,6 @@ class StudyViewModel @Inject constructor(
                                         is Result.Success -> {
                                             result.data?.let { concepts.add(it) }
                                         }
-
                                         is Result.Error -> {
                                             DebugHelper.logError(
                                                 "Failed to get concept ${timingData.id}",
@@ -190,7 +183,6 @@ class StudyViewModel @Inject constructor(
                                     }
                                 }
 
-                                // Update queue and start with first word
                                 studyQueue = concepts
                                 currentQueueIndex = 0
 
@@ -247,11 +239,14 @@ class StudyViewModel @Inject constructor(
     // ========== WORD MANAGEMENT ==========
 
     /**
-     * Load next word from study queue with enhanced progress calculation
+     * ✅ UNCHANGED: Load next word from queue
      */
     private fun loadNextWord() {
+        DebugHelper.log("🔵 loadNextWord: index=$currentQueueIndex, size=${studyQueue.size}")
+
         if (currentQueueIndex >= studyQueue.size) {
             DebugHelper.log("🏁 Queue completed")
+            completeSession()
             return
         }
 
@@ -262,7 +257,6 @@ class StudyViewModel @Inject constructor(
             try {
                 val direction = _uiState.value.studyDirection
 
-                // Get current progress for button text calculation
                 val progressResult =
                     studyRepository.getCurrentProgress(currentConcept.id, direction)
                 val currentProgress = when (progressResult) {
@@ -270,10 +264,11 @@ class StudyViewModel @Inject constructor(
                     is Result.Error -> null
                 } ?: createDefaultProgress(currentConcept.id, direction)
 
-                // Calculate button timing texts using SpacedRepetitionAlgorithm
                 val (hardTimeText, mediumTimeText, easyTimeText) = SpacedRepetitionAlgorithm.getButtonPreviews(
                     currentProgress
                 )
+
+                DebugHelper.log("🔍 Updating state: concept=${currentConcept.english}, isLoading=false")
 
                 _uiState.update {
                     it.copy(
@@ -281,22 +276,31 @@ class StudyViewModel @Inject constructor(
                         currentCardIndex = currentQueueIndex,
                         remainingCards = studyQueue.size - currentQueueIndex,
                         isCardFlipped = false,
+                        isLoading = false, // ✅ FIXED: Hide loading screen
+                        error = null,      // ✅ FIXED: Clear any errors
                         easyTimeText = easyTimeText,
                         mediumTimeText = mediumTimeText,
                         hardTimeText = hardTimeText
                     )
                 }
 
+                DebugHelper.log("🔍 State updated successfully")
                 DebugHelper.log("Word loaded: ${currentConcept.english} -> ${currentConcept.turkish}")
 
             } catch (e: Exception) {
-                DebugHelper.logError("Load word exception", e)
+                DebugHelper.logError("🔴 Load word exception", e)
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = "Kelime yüklenemedi: ${e.message}"
+                    )
+                }
             }
         }
     }
 
     /**
-     * ✅ Enhanced user response handling with AdMob integration
+     * ✅ FIXED: User response handling with corrected index logic
      */
     private fun handleUserResponse(quality: Int) {
         val concept = _uiState.value.currentConcept ?: return
@@ -304,16 +308,16 @@ class StudyViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                DebugHelper.log("User response: Quality=$quality for word: ${concept.english}")
+                DebugHelper.log("🎯 handleUserResponse: quality=$quality, word=${concept.english}")
 
-                // Update word progress
+                // 1. Update word progress
                 when (val updateResult =
                     studyRepository.updateWordProgress(concept.id, direction, quality)) {
                     is Result.Success -> {
                         val updatedProgress = updateResult.data
-                        DebugHelper.log("Progress updated: ${updatedProgress.repetitions} reps, ${updatedProgress.intervalDays} days")
+                        DebugHelper.log("✅ Progress updated: reps=${updatedProgress.repetitions}, interval=${updatedProgress.intervalDays}d")
 
-                        // Update session stats
+                        // 2. Update session stats
                         val isCorrect = quality >= SpacedRepetitionAlgorithm.QUALITY_MEDIUM
                         _uiState.update {
                             it.copy(
@@ -322,25 +326,28 @@ class StudyViewModel @Inject constructor(
                             )
                         }
 
-                        // ✅ INCREMENT STUDY WORD COUNTER (AdMob)
+                        // 3. Increment AdMob study word counter
                         adMobManager.incrementStudyWordCount()
 
-                        // ✅ CHECK IF SHOULD SHOW REWARDED AD
-                        if (adMobManager.shouldShowStudyRewardedAd()) {
-                            DebugHelper.log("🎯 25 kelime tamamlandı - Rewarded ad gösterilecek!")
+                        // ✅ 4. INCREMENT INDEX (single place - always)
+                        currentQueueIndex++
+                        DebugHelper.log("🔵 Index incremented: $currentQueueIndex / ${studyQueue.size}")
+
+                        // 5. Check rewarded ad (25 words)
+                        val shouldShowAd = adMobManager.shouldShowStudyRewardedAd()
+                        DebugHelper.log("🔍 Ad Check: shouldShow=$shouldShowAd, index=$currentQueueIndex")
+
+                        if (shouldShowAd) {
+                            DebugHelper.log("🎯 25 words completed - showing rewarded ad")
+                            _uiState.update { it.copy(currentConcept = null, isLoading = true) }
                             _effect.tryEmit(StudyEffect.ShowStudyRewardedAd)
-                            return@launch // Ad gösterildikten sonra devam edilecek
+                            DebugHelper.log("🔍 Effect emitted, state updated")
+                            return@launch
                         }
 
-                        // Move to next word
-                        currentQueueIndex++
-
-                        if (currentQueueIndex < studyQueue.size) {
-                            // More words in queue
-                            loadNextWord()
-                        } else {
-                            // Queue completed
-                            DebugHelper.log("✅ All words studied!")
+                        // 6. Check queue completion
+                        if (currentQueueIndex >= studyQueue.size) {
+                            DebugHelper.log("✅ All words completed!")
                             _uiState.update {
                                 it.copy(
                                     currentConcept = null,
@@ -349,7 +356,19 @@ class StudyViewModel @Inject constructor(
                                 )
                             }
                             completeSession()
+                            return@launch
                         }
+
+                        // ✅ 7. Check native ad (every 10 words using currentQueueIndex)
+                        if (currentQueueIndex > 0 && currentQueueIndex % 10 == 0) {
+                            DebugHelper.log("🎯 10 words completed - showing native ad")
+                            _uiState.update { it.copy(showNativeAd = true) }
+                            nativeAdLoader.loadStudyScreenAd()
+                            return@launch // Show native ad, don't load next word yet
+                        }
+
+                        // 8. Load next word
+                        loadNextWord()
                     }
 
                     is Result.Error -> {
@@ -365,23 +384,28 @@ class StudyViewModel @Inject constructor(
     }
 
     /**
-     * ✅ Ad gösterildikten sonra çalışmaya devam et
+     * ✅ FIXED: Continue after rewarded ad - NO index increment
      */
     fun continueAfterAd() {
         viewModelScope.launch {
-            DebugHelper.log("📚 Reklam sonrası çalışmaya devam")
+            DebugHelper.log("🔍 continueAfterAd called: index=$currentQueueIndex, size=${studyQueue.size}")
 
-            currentQueueIndex++
+            // ✅ FIXED: Don't increment index - already done in handleUserResponse
+            // ✅ FIXED: Set loading true before loading next word
+            _uiState.update { it.copy(isLoading = true) }
+            DebugHelper.log("🔍 Loading set to true")
 
             if (currentQueueIndex < studyQueue.size) {
+                DebugHelper.log("🔍 Calling loadNextWord()")
                 loadNextWord()
             } else {
-                DebugHelper.log("✅ All words studied!")
+                DebugHelper.log("✅ All words completed after ad")
                 _uiState.update {
                     it.copy(
                         currentConcept = null,
                         showEmptyQueueMessage = true,
-                        isCardFlipped = false
+                        isCardFlipped = false,
+                        isLoading = false
                     )
                 }
                 completeSession()
@@ -399,11 +423,8 @@ class StudyViewModel @Inject constructor(
         _uiState.update { it.copy(isCardFlipped = false) }
     }
 
-    // ========== TTS ACTIONS (✅ FIXED) ==========
+    // ========== TTS ACTIONS ==========
 
-    /**
-     * ✅ Fixed TTS implementation - Direct call instead of effect
-     */
     private fun playPronunciation() {
         val concept = _uiState.value.currentConcept
         if (concept != null && _uiState.value.isTtsEnabled) {
@@ -459,7 +480,6 @@ class StudyViewModel @Inject constructor(
 
                 _effect.tryEmit(StudyEffect.ShowSessionComplete(sessionStats))
 
-                // ========== CHECK RATING PROMPT ==========
                 checkAndShowRatingPrompt(wordsStudied, correctAnswers)
             }
         }
@@ -506,6 +526,12 @@ class StudyViewModel @Inject constructor(
             StudyEvent.NavigateToWordSelection -> navigateToWordSelection()
             StudyEvent.NavigateBack -> navigateBack()
 
+            StudyEvent.CloseNativeAd -> {
+                DebugHelper.log("🔵 CloseNativeAd: hiding ad and loading next word")
+                _uiState.update { it.copy(showNativeAd = false) }
+                loadNextWord()
+            }
+
             // ========== RATING EVENTS ==========
             StudyEvent.ShowSatisfactionDialog -> showSatisfactionDialog()
             StudyEvent.DismissSatisfactionDialog -> dismissSatisfactionDialog()
@@ -517,7 +543,6 @@ class StudyViewModel @Inject constructor(
                 event.email
             )
 
-            // ✅ AD EVENTS
             StudyEvent.ContinueAfterAd -> continueAfterAd()
         }
     }
@@ -540,7 +565,6 @@ class StudyViewModel @Inject constructor(
         )
 
     // ========== RATING ACCESSOR FUNCTIONS ==========
-    // (StudyViewModelRating.kt extension'ları için gerekli)
 
     internal fun getRatingManager() = ratingManager
 

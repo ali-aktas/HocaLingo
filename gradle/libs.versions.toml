@@ -48,7 +48,8 @@ espressoCore = "3.7.0"              # ✅ Latest
 mockk = "1.13.14"                   # ✅ Latest
 coroutinesTest = "1.10.1"
 hiltCommon = "1.3.0"
-reviewKtx = "2.0.2"          # ✅ Latest
+reviewKtx = "2.0.2"
+cardview = "1.0.0"          # ✅ Latest
 
 [libraries]
 # Android Core
@@ -121,6 +122,7 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
 androidx-hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltCommon" }
 review-ktx = { group = "com.google.android.play", name = "review-ktx", version.ref = "reviewKtx" }
+androidx-cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

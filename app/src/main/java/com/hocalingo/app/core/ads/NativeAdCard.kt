@@ -1,21 +1,17 @@
 package com.hocalingo.app.core.ads
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.RatingBar
+import android.widget.TextView
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.google.android.gms.ads.nativead.MediaView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.hocalingo.app.R
@@ -26,184 +22,85 @@ import com.hocalingo.app.R
  * Package: app/src/main/java/com/hocalingo/app/core/ads/
  *
  * Google AdMob native reklamlarını gösterir.
- * - Material 3 Card wrapper
- * - "Sponsorlu" badge
- * - Dark mode support
- * - Swipeable in lists
  */
+@SuppressLint("InflateParams")
 @Composable
 fun NativeAdCard(
     nativeAd: NativeAd?,
-    modifier: Modifier = Modifier,
-    cardHeight: Int = 300
+    modifier: Modifier = Modifier
 ) {
-    if (nativeAd == null) {
-        // Ad yüklenene kadar placeholder göster
-        NativeAdPlaceholder(modifier = modifier)
-        return
-    }
+    if (nativeAd == null) return
 
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(cardHeight.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            // "Sponsorlu" badge
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 8.dp)
-            ) {
-                Text(
-                    text = "Sponsorlu",
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+    AndroidView(
+        modifier = modifier,
+        factory = { context ->
+            val inflater = LayoutInflater.from(context)
+            val adView = inflater.inflate(
+                R.layout.native_ad_layout,
+                null,
+                false
+            ) as NativeAdView
 
-            // Native Ad View
-            AndroidView(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                factory = { context ->
-                    val inflater = LayoutInflater.from(context)
-                    val adView = inflater.inflate(
-                        R.layout.native_ad_layout,
-                        null
-                    ) as NativeAdView
-
-                    // Populate the native ad
-                    populateNativeAdView(nativeAd, adView)
-
-                    adView
-                },
-                update = { adView ->
-                    // Update ad view if needed
-                    populateNativeAdView(nativeAd, adView)
-                }
-            )
+            populateNativeAdView(nativeAd, adView)
+            adView
         }
-    }
+    )
 }
 
 /**
- * Populate Native Ad View with data
+ * ✅ Native Ad View'ı Doldur (Tip Güvenli)
  */
 private fun populateNativeAdView(nativeAd: NativeAd, adView: NativeAdView) {
-    // Set the native ad to the ad view
+    // ✅ Find views with explicit types
+    val iconView: ImageView? = adView.findViewById(R.id.ad_app_icon)
+    val headlineView: TextView? = adView.findViewById(R.id.ad_headline)
+    val bodyView: TextView? = adView.findViewById(R.id.ad_body)
+    val ctaView: Button? = adView.findViewById(R.id.ad_call_to_action)
+    val advertiserView: TextView? = adView.findViewById(R.id.ad_advertiser)
+    val starRatingView: RatingBar? = adView.findViewById(R.id.ad_stars)
+
+//    // Opsiyonel view'lar (XML'de olmayabilir)
+//    val mediaView: MediaView? = adView.findViewById(R.id.ad_media)
+//    val priceView: TextView? = adView.findViewById(R.id.ad_price)
+//    val storeView: TextView? = adView.findViewById(R.id.ad_store)
+
+    // ✅ Assign views to NativeAdView
+    adView.headlineView = headlineView
+    adView.bodyView = bodyView
+    adView.callToActionView = ctaView
+    adView.iconView = iconView
+    adView.advertiserView = advertiserView
+    adView.starRatingView = starRatingView
+//    adView.mediaView = mediaView
+//    adView.priceView = priceView
+//    adView.storeView = storeView
+
+    // ✅ Set content from NativeAd
+    headlineView?.text = nativeAd.headline ?: ""
+    bodyView?.text = nativeAd.body ?: ""
+    ctaView?.text = nativeAd.callToAction ?: "Daha Fazla"
+    advertiserView?.text = nativeAd.advertiser ?: ""
+
+    // Icon
+    nativeAd.icon?.let { icon ->
+        iconView?.setImageDrawable(icon.drawable)
+    }
+
+    // Star rating
+    nativeAd.starRating?.let { rating ->
+        starRatingView?.rating = rating.toFloat()
+    }
+
+//    // Price (opsiyonel)
+//    nativeAd.price?.let { price ->
+//        priceView?.text = price
+//    }
+//
+//    // Store (opsiyonel)
+//    nativeAd.store?.let { store ->
+//        storeView?.text = store
+//    }
+
+    // ✅ EN ÖNEMLİ: Native ad'i view'a bind et
     adView.setNativeAd(nativeAd)
-
-    // Set asset views
-    adView.headlineView = adView.findViewById(R.id.ad_headline)
-    adView.bodyView = adView.findViewById(R.id.ad_body)
-    adView.callToActionView = adView.findViewById(R.id.ad_call_to_action)
-    adView.iconView = adView.findViewById(R.id.ad_app_icon)
-    adView.priceView = adView.findViewById(R.id.ad_price)
-    adView.starRatingView = adView.findViewById(R.id.ad_stars)
-    adView.storeView = adView.findViewById(R.id.ad_store)
-    adView.advertiserView = adView.findViewById(R.id.ad_advertiser)
-    adView.mediaView = adView.findViewById(R.id.ad_media)
-
-    // Populate headline
-    nativeAd.headline?.let {
-        (adView.headlineView as? android.widget.TextView)?.text = it
-    }
-
-    // Populate body
-    nativeAd.body?.let {
-        adView.bodyView?.visibility = android.view.View.VISIBLE
-        (adView.bodyView as? android.widget.TextView)?.text = it
-    } ?: run {
-        adView.bodyView?.visibility = android.view.View.GONE
-    }
-
-    // Populate call to action
-    nativeAd.callToAction?.let {
-        adView.callToActionView?.visibility = android.view.View.VISIBLE
-        (adView.callToActionView as? android.widget.Button)?.text = it
-    } ?: run {
-        adView.callToActionView?.visibility = android.view.View.GONE
-    }
-
-    // Populate icon
-    nativeAd.icon?.let {
-        adView.iconView?.visibility = android.view.View.VISIBLE
-        (adView.iconView as? android.widget.ImageView)?.setImageDrawable(it.drawable)
-    } ?: run {
-        adView.iconView?.visibility = android.view.View.GONE
-    }
-
-    // Populate price
-    nativeAd.price?.let {
-        adView.priceView?.visibility = android.view.View.VISIBLE
-        (adView.priceView as? android.widget.TextView)?.text = it
-    } ?: run {
-        adView.priceView?.visibility = android.view.View.GONE
-    }
-
-    // Populate star rating
-    nativeAd.starRating?.let {
-        adView.starRatingView?.visibility = android.view.View.VISIBLE
-        (adView.starRatingView as? android.widget.RatingBar)?.rating = it.toFloat()
-    } ?: run {
-        adView.starRatingView?.visibility = android.view.View.GONE
-    }
-
-    // Populate store
-    nativeAd.store?.let {
-        adView.storeView?.visibility = android.view.View.VISIBLE
-        (adView.storeView as? android.widget.TextView)?.text = it
-    } ?: run {
-        adView.storeView?.visibility = android.view.View.GONE
-    }
-
-    // Populate advertiser
-    nativeAd.advertiser?.let {
-        adView.advertiserView?.visibility = android.view.View.VISIBLE
-        (adView.advertiserView as? android.widget.TextView)?.text = it
-    } ?: run {
-        adView.advertiserView?.visibility = android.view.View.GONE
-    }
-
-    // Populate media view
-    nativeAd.mediaContent?.let {
-        adView.mediaView?.setMediaContent(it)
-    }
-}
-
-/**
- * Placeholder while ad is loading
- */
-@Composable
-private fun NativeAdPlaceholder(modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(300.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "Reklam yükleniyor...",
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontWeight = FontWeight.Medium
-            )
-        }
-    }
 }

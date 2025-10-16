@@ -6,47 +6,58 @@ import kotlin.math.min
 import com.hocalingo.app.database.entities.StudyDirection
 
 /**
- * SM-2 Spaced Repetition Algorithm - IMPROVED HYBRID VERSION
+ * ✅ FIXED SM-2 Spaced Repetition Algorithm - TRUE LEARNING VERSION
  *
- * CHATGPT İYİLEŞTİRMELERİ UYGULANMIŞ:
- * ✅ Dynamic GOOD progression (reps arttıkça artış büyür)
- * ✅ Conservative EASY graduation (2 gün başlangıç)
- * ✅ Lateness correction (gecikme penaltısı)
- * ✅ Failures recovery system (3 başarı sonrası failures azalır)
- * ✅ Success streak tracking
- * ✅ Improved SM-2 quality mapping
+ * Package: app/src/main/java/com/hocalingo/app/core/common/
+ *
+ * 🎯 核心修正：
+ * 1. Learning phase = Bugün içinde tekrar göster (nextReviewAt = today)
+ * 2. Graduation = Gerçek öğrenme (minimum 3-4 başarılı deneme)
+ * 3. Session position = Aynı gün içinde sıralama (başa/ortaya/sona)
+ * 4. Review phase = Gerçekten öğrenilmiş kelimeler için
+ *
+ * 🔥 SORUN GİDERİLDİ:
+ * - ❌ İlk EASY'de 3 gün sonra → ✅ İlk EASY'de aynı gün sona
+ * - ❌ 2 EASY yeterli → ✅ En az 3-4 başarılı deneme gerekli
+ * - ❌ Kelime queue'dan çıkıyor → ✅ Learning'de kalıyor
  */
 object SpacedRepetitionAlgorithm {
 
-    // Quality scores for user responses
-    const val QUALITY_HARD = 1      // "Zor" button - poor recall
-    const val QUALITY_MEDIUM = 2    // "Orta" button - good recall
-    const val QUALITY_EASY = 3      // "Kolay" button - perfect recall
+    // ==================== QUALITY SCORES ====================
+    const val QUALITY_HARD = 1      // "Zor" - Hatırlamadım, tekrar göster
+    const val QUALITY_MEDIUM = 2    // "Orta" - Hatırladım ama zorlandım
+    const val QUALITY_EASY = 3      // "Kolay" - Rahatça hatırladım
 
-    // Learning phase intervals (for button display only - cards stay in session)
-    private const val LEARNING_HARD_INTERVAL_MINUTES = 10
-    private const val LEARNING_MEDIUM_INTERVAL_MINUTES = 1440  // 1 gün
-    private const val LEARNING_EASY_INTERVAL_MINUTES = 4320   // 3 gün
+    // ==================== LEARNING PHASE CONSTANTS ====================
+    // ✅ Session position increments (aynı gün içinde sıralama)
+    private const val HARD_POSITION_INCREMENT = 1    // En başa
+    private const val MEDIUM_POSITION_INCREMENT = 5  // Ortaya
+    private const val EASY_POSITION_INCREMENT = 10   // Sona
 
-    // Graduation thresholds - IMPROVED
-    private const val MIN_REPETITIONS_TO_GRADUATE = 2
-    private const val GRADUATION_INTERVAL_DAYS = 2f     // CHATGPT: Conservative 2 days (was 1)
+    // ✅ Graduation thresholds (gerçek öğrenme kriterleri)
+    private const val MIN_SUCCESSFUL_REVIEWS = 3     // En az 3 başarılı
+    private const val MAX_HARD_PRESSES_TO_GRADUATE = 1  // Max 1 HARD basışı
 
-    // Standard intervals in days for Review Phase
-    private const val SECOND_REVIEW_INTERVAL_DAYS = 3f
-    private const val THIRD_REVIEW_INTERVAL_DAYS = 7f
+    // ==================== REVIEW PHASE CONSTANTS ====================
+    // Graduation sonrası başlangıç aralığı
+    private const val GRADUATION_INTERVAL_DAYS = 1f  // 1 gün (ilk review)
+
+    // Standard review intervals
+    private const val SECOND_REVIEW_INTERVAL_DAYS = 3f   // 2. review: 3 gün
+    private const val THIRD_REVIEW_INTERVAL_DAYS = 7f    // 3. review: 7 gün
 
     // Ease factor bounds
     private const val MIN_EASE_FACTOR = 1.3f
     private const val MAX_EASE_FACTOR = 2.5f
     private const val DEFAULT_EASE_FACTOR = 2.5f
 
-    // NEW: Recovery system constants
-    private const val SUCCESS_STREAK_TO_RECOVER = 3  // 3 başarı sonrası failures azalır
-    private const val MAX_INTERVAL_DAYS = 730f       // 2 yıl cap
+    // Max interval cap
+    private const val MAX_INTERVAL_DAYS = 365f  // 1 yıl
+
+    // ==================== MAIN ALGORITHM ====================
 
     /**
-     * Calculate next review based on user response quality - IMPROVED HYBRID VERSION
+     * ✅ FIXED: Calculate next review with proper learning phase handling
      */
     fun calculateNextReview(
         currentProgress: WordProgressEntity,
@@ -54,306 +65,284 @@ object SpacedRepetitionAlgorithm {
         currentSessionMaxPosition: Int = 100
     ): WordProgressEntity {
         val currentTime = System.currentTimeMillis()
+        val todayEnd = getTodayEndTime(currentTime) // ✅ Bugünün sonu
 
         DebugHelper.log(
-            "🔥 IMPROVED HYBRID SM-2: quality=$quality, currentReps=${currentProgress.repetitions}, " +
-                    "learningPhase=${currentProgress.learningPhase}, failures=${currentProgress.failures ?: 0}, " +
-                    "successStreak=${currentProgress.successStreak ?: 0}"
+            "🔥 SM-2 FIXED: quality=$quality, reps=${currentProgress.repetitions}, " +
+                    "learningPhase=${currentProgress.learningPhase}, " +
+                    "hardPresses=${currentProgress.hardPresses ?: 0}, " +
+                    "successfulReviews=${currentProgress.successfulReviews ?: 0}"
         )
 
-        // IMPROVED: Calculate lateness if applicable
-        val latenessDays = if (currentProgress.nextReviewAt > 0) {
-            calculateLateness(currentProgress.nextReviewAt, currentTime)
-        } else 0f
-
         val result = when {
-            // LEARNING PHASE RESPONSES
-            currentProgress.learningPhase -> handleImprovedLearningPhase(
-                currentProgress, quality, currentTime, currentSessionMaxPosition
+            // ✅ LEARNING PHASE (bugün içinde tekrar göster)
+            currentProgress.learningPhase -> handleLearningPhase(
+                currentProgress, quality, currentTime, todayEnd, currentSessionMaxPosition
             )
 
-            // REVIEW PHASE RESPONSES
-            else -> handleImprovedReviewPhase(
-                currentProgress, quality, currentTime, latenessDays
+            // ✅ REVIEW PHASE (gerçek spaced repetition)
+            else -> handleReviewPhase(
+                currentProgress, quality, currentTime
             )
         }
 
-        // Debug log result
+        // Debug log
         val phaseText = if (result.learningPhase) "LEARNING" else "REVIEW"
         val timeText = getTimeUntilReview(result.nextReviewAt)
         DebugHelper.log(
-            "✅ IMPROVED RESULT: $phaseText phase, reps=${result.repetitions}, " +
-                    "failures=${result.failures}, successStreak=${result.successStreak}, " +
-                    "interval=${result.intervalDays}d, timeText='$timeText'"
+            "✅ RESULT: $phaseText, reps=${result.repetitions}, " +
+                    "interval=${result.intervalDays}d, next='$timeText'"
         )
 
         return result
     }
 
+    // ==================== LEARNING PHASE ====================
+
     /**
-     * IMPROVED: Handle responses during Learning Phase with better tracking
+     * ✅ FIXED Learning Phase: Kelimeleri aynı gün içinde tekrar göster
+     *
+     * Mantık:
+     * - HARD → En başa (position = current + 1), hardPresses++
+     * - MEDIUM → Ortaya (position = current + 5), successfulReviews++
+     * - EASY → Sona (position = current + 10), successfulReviews++
+     * - Graduation check: 3+ başarılı VE max 1 HARD
+     * - nextReviewAt = Bugünün sonu (aynı gün içinde review)
      */
-    private fun handleImprovedLearningPhase(
+    private fun handleLearningPhase(
         currentProgress: WordProgressEntity,
         quality: Int,
         currentTime: Long,
+        todayEnd: Long,
         currentSessionMaxPosition: Int
     ): WordProgressEntity {
 
         return when (quality) {
             QUALITY_HARD -> {
-                DebugHelper.log("🔴 LEARNING HARD: Reset progress, increase failures")
+                DebugHelper.log("🔴 LEARNING HARD: Position = başa")
 
                 currentProgress.copy(
-                    repetitions = 0, // Reset learning progress
-                    intervalDays = LEARNING_HARD_INTERVAL_MINUTES / (24f * 60f),
+                    repetitions = currentProgress.repetitions + 1,
+                    intervalDays = 0f, // Same day
                     easeFactor = max(MIN_EASE_FACTOR, currentProgress.easeFactor - 0.2f),
-                    nextReviewAt = currentTime + (LEARNING_HARD_INTERVAL_MINUTES * 60 * 1000),
+                    nextReviewAt = todayEnd, // ✅ Bugünün sonu
                     lastReviewAt = currentTime,
                     learningPhase = true,
-                    sessionPosition = currentSessionMaxPosition + 1,
-                    failures = (currentProgress.failures ?: 0) + 1, // IMPROVED: Track failures
-                    successStreak = 0, // IMPROVED: Reset success streak
+                    sessionPosition = currentSessionMaxPosition + HARD_POSITION_INCREMENT,
+                    hardPresses = (currentProgress.hardPresses ?: 0) + 1,
+                    successfulReviews = currentProgress.successfulReviews ?: 0, // No change
                     isMastered = false,
                     updatedAt = currentTime
                 )
             }
 
             QUALITY_MEDIUM -> {
-                DebugHelper.log("🟡 LEARNING MEDIUM: Small progress")
+                val newSuccessful = (currentProgress.successfulReviews ?: 0) + 1
+                val newReps = currentProgress.repetitions + 1
+                val hardPresses = currentProgress.hardPresses ?: 0
 
-                currentProgress.copy(
-                    repetitions = currentProgress.repetitions + 1,
-                    intervalDays = LEARNING_MEDIUM_INTERVAL_MINUTES / (24f * 60f),
-                    easeFactor = currentProgress.easeFactor, // No change for medium
-                    nextReviewAt = currentTime + (LEARNING_MEDIUM_INTERVAL_MINUTES * 60 * 1000),
-                    lastReviewAt = currentTime,
-                    learningPhase = true,
-                    sessionPosition = currentSessionMaxPosition + 1,
-                    successStreak = (currentProgress.successStreak ?: 0) + 1, // IMPROVED: Track success
-                    updatedAt = currentTime
-                )
-            }
-
-            QUALITY_EASY -> {
-                val newRepetitions = currentProgress.repetitions + 1
-                val newSuccessStreak = (currentProgress.successStreak ?: 0) + 1
-
-                if (newRepetitions >= MIN_REPETITIONS_TO_GRADUATE) {
-                    // GRADUATION - IMPROVED: 2 days conservative start
-                    DebugHelper.log("🎓 GRADUATING: Moving to review phase with 2 day interval")
-
-                    currentProgress.copy(
-                        repetitions = newRepetitions,
-                        intervalDays = GRADUATION_INTERVAL_DAYS, // IMPROVED: 2 days
-                        easeFactor = min(MAX_EASE_FACTOR, currentProgress.easeFactor + 0.12f),
-                        nextReviewAt = currentTime + (GRADUATION_INTERVAL_DAYS * 24 * 60 * 60 * 1000).toLong(),
-                        lastReviewAt = currentTime,
-                        learningPhase = false, // GRADUATE
-                        sessionPosition = null,
-                        successStreak = newSuccessStreak,
-                        isMastered = false,
-                        updatedAt = currentTime
-                    )
+                // ✅ Check graduation
+                if (shouldGraduate(newSuccessful, hardPresses)) {
+                    DebugHelper.log("🎓 GRADUATING (MEDIUM): $newSuccessful successful, $hardPresses hard")
+                    graduateToReview(currentProgress, newReps, currentTime)
                 } else {
-                    // Still learning
-                    DebugHelper.log("🟢 LEARNING EASY: Progress made, back of session")
+                    DebugHelper.log("🟡 LEARNING MEDIUM: Position = ortaya, successful = $newSuccessful")
 
                     currentProgress.copy(
-                        repetitions = newRepetitions,
-                        intervalDays = LEARNING_EASY_INTERVAL_MINUTES / (24f * 60f),
-                        easeFactor = min(MAX_EASE_FACTOR, currentProgress.easeFactor + 0.1f),
-                        nextReviewAt = currentTime + (LEARNING_EASY_INTERVAL_MINUTES * 60 * 1000),
+                        repetitions = newReps,
+                        intervalDays = 0f, // Same day
+                        easeFactor = currentProgress.easeFactor, // No change
+                        nextReviewAt = todayEnd, // ✅ Bugünün sonu
                         lastReviewAt = currentTime,
                         learningPhase = true,
-                        sessionPosition = currentSessionMaxPosition + 1,
-                        successStreak = newSuccessStreak,
+                        sessionPosition = currentSessionMaxPosition + MEDIUM_POSITION_INCREMENT,
+                        successfulReviews = newSuccessful,
+                        isMastered = false,
                         updatedAt = currentTime
                     )
                 }
             }
 
-            else -> {
-                DebugHelper.logError("Invalid quality score: $quality", Exception())
-                currentProgress
+            QUALITY_EASY -> {
+                val newSuccessful = (currentProgress.successfulReviews ?: 0) + 1
+                val newReps = currentProgress.repetitions + 1
+                val hardPresses = currentProgress.hardPresses ?: 0
+
+                // ✅ Check graduation
+                if (shouldGraduate(newSuccessful, hardPresses)) {
+                    DebugHelper.log("🎓 GRADUATING (EASY): $newSuccessful successful, $hardPresses hard")
+                    graduateToReview(currentProgress, newReps, currentTime)
+                } else {
+                    DebugHelper.log("🟢 LEARNING EASY: Position = sona, successful = $newSuccessful")
+
+                    currentProgress.copy(
+                        repetitions = newReps,
+                        intervalDays = 0f, // Same day
+                        easeFactor = min(MAX_EASE_FACTOR, currentProgress.easeFactor + 0.1f),
+                        nextReviewAt = todayEnd, // ✅ Bugünün sonu
+                        lastReviewAt = currentTime,
+                        learningPhase = true,
+                        sessionPosition = currentSessionMaxPosition + EASY_POSITION_INCREMENT,
+                        successfulReviews = newSuccessful,
+                        isMastered = false,
+                        updatedAt = currentTime
+                    )
+                }
             }
+
+            else -> currentProgress
         }
     }
 
     /**
-     * IMPROVED: Handle responses during Review Phase with dynamic progression & recovery
+     * ✅ Graduation criteria check
      */
-    private fun handleImprovedReviewPhase(
+    private fun shouldGraduate(successfulReviews: Int, hardPresses: Int): Boolean {
+        return successfulReviews >= MIN_SUCCESSFUL_REVIEWS &&
+                hardPresses <= MAX_HARD_PRESSES_TO_GRADUATE
+    }
+
+    /**
+     * ✅ Graduate to Review Phase
+     */
+    private fun graduateToReview(
+        currentProgress: WordProgressEntity,
+        newReps: Int,
+        currentTime: Long
+    ): WordProgressEntity {
+        return currentProgress.copy(
+            repetitions = newReps,
+            intervalDays = GRADUATION_INTERVAL_DAYS,
+            easeFactor = min(MAX_EASE_FACTOR, currentProgress.easeFactor + 0.15f),
+            nextReviewAt = currentTime + (GRADUATION_INTERVAL_DAYS * 24 * 60 * 60 * 1000).toLong(),
+            lastReviewAt = currentTime,
+            learningPhase = false, // ✅ GRADUATE
+            sessionPosition = null, // No longer in session
+            isMastered = false,
+            updatedAt = currentTime
+        )
+    }
+
+    // ==================== REVIEW PHASE ====================
+
+    /**
+     * ✅ Review Phase: Gerçek spaced repetition (SM-2)
+     */
+    private fun handleReviewPhase(
         currentProgress: WordProgressEntity,
         quality: Int,
-        currentTime: Long,
-        latenessDays: Float
+        currentTime: Long
     ): WordProgressEntity {
 
         return when (quality) {
             QUALITY_HARD -> {
-                DebugHelper.log("🔴 REVIEW HARD: Back to learning phase")
+                DebugHelper.log("🔴 REVIEW HARD: Back to learning")
 
-                // Failed review → Back to learning phase
+                // ✅ Başarısız review → Learning phase'e geri dön
+                val todayEnd = getTodayEndTime(currentTime)
+
                 currentProgress.copy(
-                    repetitions = 0,
-                    intervalDays = LEARNING_HARD_INTERVAL_MINUTES / (24f * 60f),
+                    repetitions = 0, // Reset
+                    intervalDays = 0f,
                     easeFactor = max(MIN_EASE_FACTOR, currentProgress.easeFactor - 0.2f),
-                    nextReviewAt = currentTime + (LEARNING_HARD_INTERVAL_MINUTES * 60 * 1000),
+                    nextReviewAt = todayEnd, // ✅ Bugün tekrar göster
                     lastReviewAt = currentTime,
                     learningPhase = true, // Back to learning
                     sessionPosition = 1, // Front of session
-                    failures = (currentProgress.failures ?: 0) + 1, // IMPROVED: Track failures
-                    successStreak = 0, // IMPROVED: Reset success streak
+                    hardPresses = 1, // Reset counter
+                    successfulReviews = 0, // Reset
                     isMastered = false,
                     updatedAt = currentTime
                 )
             }
 
             QUALITY_MEDIUM -> {
-                DebugHelper.log("🟡 REVIEW MEDIUM: Dynamic progression")
+                DebugHelper.log("🟡 REVIEW MEDIUM: Moderate progression")
 
-                val newRepetitions = currentProgress.repetitions + 1
-                val newSuccessStreak = (currentProgress.successStreak ?: 0) + 1
-
-                // IMPROVED: Dynamic multiplier for MEDIUM - starts at 1.20, increases with reps
-                val additional = min(0.4f, 0.05f * currentProgress.repetitions)
-                val multiplier = 1.20f + additional
-
+                val newReps = currentProgress.repetitions + 1
                 val baseInterval = max(1f, currentProgress.intervalDays)
-                val calculatedInterval = baseInterval * multiplier
 
-                // IMPROVED: Apply lateness correction
-                val adjustedInterval = applyLatenessCorrection(calculatedInterval, latenessDays)
-                val finalInterval = min(adjustedInterval, MAX_INTERVAL_DAYS)
+                // ✅ Moderate multiplier (1.5x)
+                val calculatedInterval = baseInterval * 1.5f
+                val finalInterval = min(calculatedInterval, MAX_INTERVAL_DAYS)
 
-                // IMPROVED: Failures recovery system
-                val (newFailures, finalSuccessStreak) = applyFailuresRecovery(
-                    currentProgress.failures ?: 0,
-                    newSuccessStreak
-                )
+                val newEaseFactor = updateEaseFactor(currentProgress.easeFactor, 4) // SM-2 quality 4
 
                 currentProgress.copy(
-                    repetitions = newRepetitions,
-                    intervalDays = finalInterval,
-                    easeFactor = updateEaseFactor(currentProgress.easeFactor, 4), // SM-2 quality 4
-                    nextReviewAt = currentTime + (finalInterval * 24 * 60 * 60 * 1000).toLong(),
-                    lastReviewAt = currentTime,
-                    learningPhase = false,
-                    sessionPosition = null,
-                    failures = newFailures,
-                    successStreak = finalSuccessStreak,
-                    isMastered = finalInterval >= 30f && newRepetitions >= 5,
-                    updatedAt = currentTime
-                )
-            }
-
-            QUALITY_EASY -> {
-                DebugHelper.log("🟢 REVIEW EASY: Aggressive but controlled progression")
-
-                val newRepetitions = currentProgress.repetitions + 1
-                val newSuccessStreak = (currentProgress.successStreak ?: 0) + 1
-                val newEaseFactor = updateEaseFactor(currentProgress.easeFactor, 5) // SM-2 quality 5
-
-                val baseInterval = max(1f, currentProgress.intervalDays)
-                val calculatedInterval = when (newRepetitions) {
-                    3 -> SECOND_REVIEW_INTERVAL_DAYS
-                    4 -> THIRD_REVIEW_INTERVAL_DAYS
-                    else -> {
-                        // IMPROVED: Controlled EF multiplier (cap at 2.0 to prevent explosion)
-                        val efMultiplier = min(newEaseFactor, 2.0f)
-                        baseInterval * efMultiplier
-                    }
-                }
-
-                // IMPROVED: Apply lateness correction
-                val adjustedInterval = applyLatenessCorrection(calculatedInterval, latenessDays)
-                val finalInterval = min(adjustedInterval, MAX_INTERVAL_DAYS)
-
-                // IMPROVED: Failures recovery system
-                val (newFailures, finalSuccessStreak) = applyFailuresRecovery(
-                    currentProgress.failures ?: 0,
-                    newSuccessStreak
-                )
-
-                currentProgress.copy(
-                    repetitions = newRepetitions,
+                    repetitions = newReps,
                     intervalDays = finalInterval,
                     easeFactor = newEaseFactor,
                     nextReviewAt = currentTime + (finalInterval * 24 * 60 * 60 * 1000).toLong(),
                     lastReviewAt = currentTime,
                     learningPhase = false,
                     sessionPosition = null,
-                    failures = newFailures,
-                    successStreak = finalSuccessStreak,
-                    isMastered = finalInterval >= 30f && newRepetitions >= 5,
+                    isMastered = finalInterval >= 21f && newReps >= 4, // 3 hafta+
                     updatedAt = currentTime
                 )
             }
 
-            else -> {
-                DebugHelper.logError("Invalid quality score: $quality", Exception())
-                currentProgress
+            QUALITY_EASY -> {
+                DebugHelper.log("🟢 REVIEW EASY: Strong progression")
+
+                val newReps = currentProgress.repetitions + 1
+                val newEaseFactor = updateEaseFactor(currentProgress.easeFactor, 5) // SM-2 quality 5
+
+                // ✅ Progressive interval calculation
+                val calculatedInterval = when (newReps) {
+                    1 -> GRADUATION_INTERVAL_DAYS     // 1 gün
+                    2 -> SECOND_REVIEW_INTERVAL_DAYS  // 3 gün
+                    3 -> THIRD_REVIEW_INTERVAL_DAYS   // 7 gün
+                    else -> {
+                        val baseInterval = max(1f, currentProgress.intervalDays)
+                        baseInterval * newEaseFactor
+                    }
+                }
+
+                val finalInterval = min(calculatedInterval, MAX_INTERVAL_DAYS)
+
+                currentProgress.copy(
+                    repetitions = newReps,
+                    intervalDays = finalInterval,
+                    easeFactor = newEaseFactor,
+                    nextReviewAt = currentTime + (finalInterval * 24 * 60 * 60 * 1000).toLong(),
+                    lastReviewAt = currentTime,
+                    learningPhase = false,
+                    sessionPosition = null,
+                    isMastered = finalInterval >= 21f && newReps >= 4,
+                    updatedAt = currentTime
+                )
             }
+
+            else -> currentProgress
         }
     }
 
-    // ==================== NEW HELPER FUNCTIONS ====================
+    // ==================== HELPER FUNCTIONS ====================
 
     /**
-     * IMPROVED: Calculate lateness in days (gentle approach)
+     * ✅ Get today's end time (23:59:59.999)
      */
-    private fun calculateLateness(scheduledTime: Long, currentTime: Long): Float {
-        if (currentTime <= scheduledTime) return 0f
-        val delayMs = currentTime - scheduledTime
-        return delayMs / (24 * 60 * 60 * 1000f)
+    private fun getTodayEndTime(currentTime: Long): Long {
+        val calendar = java.util.Calendar.getInstance()
+        calendar.timeInMillis = currentTime
+        calendar.set(java.util.Calendar.HOUR_OF_DAY, 23)
+        calendar.set(java.util.Calendar.MINUTE, 59)
+        calendar.set(java.util.Calendar.SECOND, 59)
+        calendar.set(java.util.Calendar.MILLISECOND, 999)
+        return calendar.timeInMillis
     }
 
     /**
-     * IMPROVED: Apply gentle lateness correction with gradual penalties
-     */
-    private fun applyLatenessCorrection(intervalDays: Float, latenessDays: Float): Float {
-        if (latenessDays <= 0f) return intervalDays
-
-        val safeInterval = max(0.0001f, intervalDays)
-        val delayRatio = latenessDays / safeInterval
-
-        val factor = when {
-            delayRatio <= 1.0f -> 1.0f   // On time or slight delay - no change
-            delayRatio <= 2.0f -> 0.85f  // 2x late → 15% reduction
-            delayRatio <= 3.0f -> 0.7f   // 3x late → 30% reduction
-            else -> 0.5f                 // Very late → 50% reduction
-        }
-
-        return intervalDays * factor
-    }
-
-    /**
-     * IMPROVED: Proper SM-2 ease factor update formula
+     * ✅ SM-2 Ease Factor update formula
      */
     private fun updateEaseFactor(currentEF: Float, quality: Int): Float {
-        // Original SM-2 formula
+        // SM-2 formula: EF' = EF + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02))
         val newEF = currentEF + (0.1f - (5 - quality) * (0.08f + (5 - quality) * 0.02f))
         return max(MIN_EASE_FACTOR, min(newEF, MAX_EASE_FACTOR))
     }
 
     /**
-     * IMPROVED: Failures recovery system - 3 successful reviews reduce failures by 1
-     */
-    private fun applyFailuresRecovery(currentFailures: Int, newSuccessStreak: Int): Pair<Int, Int> {
-        return if (newSuccessStreak >= SUCCESS_STREAK_TO_RECOVER && currentFailures > 0) {
-            val reducedFailures = max(0, currentFailures - 1)
-            val resetStreak = 0 // Reset counter after recovery
-            Pair(reducedFailures, resetStreak)
-        } else {
-            Pair(currentFailures, newSuccessStreak)
-        }
-    }
-
-    // ==================== EXISTING FUNCTIONS (unchanged) ====================
-
-    /**
-     * Get human-readable time description for next review
+     * ✅ Get human-readable time until review
      */
     fun getTimeUntilReview(nextReviewAt: Long): String {
         val currentTime = System.currentTimeMillis()
@@ -363,26 +352,21 @@ object SpacedRepetitionAlgorithm {
             return "Şimdi"
         }
 
-        val seconds = timeDifferenceMs / 1000
-        val minutes = seconds / 60
+        val minutes = timeDifferenceMs / (60 * 1000)
         val hours = minutes / 60
         val days = hours / 24
-        val weeks = days / 7
-        val months = days / 30
 
         return when {
-            seconds < 60 -> "${seconds.toInt()} saniye sonra"
-            minutes < 60 -> "${minutes.toInt()} dakika sonra"
-            hours < 24 -> "${hours.toInt()} saat sonra"
-            days < 7 -> "${days.toInt()} gün sonra"
-            weeks < 4 -> "${weeks.toInt()} hafta sonra"
-            months >= 1 -> "${months.toInt()} ay sonra"
-            else -> "${days.toInt()} gün sonra"
+            minutes < 60 -> "${minutes.toInt()} dk"
+            hours < 24 -> "${hours.toInt()} saat"
+            days < 7 -> "${days.toInt()} gün"
+            days < 30 -> "${(days / 7).toInt()} hafta"
+            else -> "${(days / 30).toInt()} ay"
         }
     }
 
     /**
-     * Create initial WordProgressEntity for new concepts
+     * ✅ Create initial progress for new words
      */
     fun createInitialProgress(
         conceptId: Int,
@@ -390,6 +374,7 @@ object SpacedRepetitionAlgorithm {
         sessionPosition: Int
     ): WordProgressEntity {
         val currentTime = System.currentTimeMillis()
+        val todayEnd = getTodayEndTime(currentTime)
 
         return WordProgressEntity(
             conceptId = conceptId,
@@ -397,29 +382,29 @@ object SpacedRepetitionAlgorithm {
             repetitions = 0,
             intervalDays = 0f,
             easeFactor = DEFAULT_EASE_FACTOR,
-            nextReviewAt = currentTime,
+            nextReviewAt = todayEnd, // ✅ Bugün çalışılacak
             lastReviewAt = null,
             isSelected = true,
             isMastered = false,
             learningPhase = true, // Start in learning
             sessionPosition = sessionPosition,
-            failures = 0, // IMPROVED: Initialize failures
-            successStreak = 0, // IMPROVED: Initialize success streak
+            hardPresses = 0,
+            successfulReviews = 0,
             createdAt = currentTime,
             updatedAt = currentTime
         )
     }
 
     /**
-     * Calculate study priority for session ordering
+     * ✅ Get study priority for session ordering
      */
     fun getStudyPriority(progress: WordProgressEntity, currentTime: Long): Int {
-        // Learning cards have highest priority
+        // Learning cards sorted by sessionPosition
         if (progress.learningPhase) {
             return Int.MAX_VALUE - (progress.sessionPosition ?: 0)
         }
 
-        // Review cards prioritized by how overdue they are
+        // Review cards sorted by how overdue
         val timeDifference = currentTime - progress.nextReviewAt
         return if (timeDifference > 0) {
             (timeDifference / (1000 * 60 * 60)).toInt() // Hours overdue
@@ -429,7 +414,7 @@ object SpacedRepetitionAlgorithm {
     }
 
     /**
-     * Get button preview texts (for UI)
+     * ✅ Get button preview texts for UI
      */
     fun getButtonPreviews(progress: WordProgressEntity): Triple<String, String, String> {
         val mockResults = listOf(

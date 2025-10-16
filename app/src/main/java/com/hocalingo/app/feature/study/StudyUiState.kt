@@ -18,6 +18,8 @@ data class StudyUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
 
+    val showRewardedAdDialog: Boolean = false,
+
     // ========== CURRENT CONCEPT ==========
     val currentConcept: ConceptEntity? = null,
     val isCardFlipped: Boolean = false,
@@ -53,7 +55,11 @@ data class StudyUiState(
     // ========== RATING ==========
     val showSatisfactionDialog: Boolean = false,
     val showFeedbackDialog: Boolean = false,
-    val selectedSatisfactionLevel: SatisfactionLevel? = null
+    val selectedSatisfactionLevel: SatisfactionLevel? = null,
+
+    // ========== ADMOB ==========
+    val showNativeAd: Boolean = false,
+    val wordsCompletedCount: Int = 0
 ) {
     /**
      * Current word index (1-based for display)
@@ -119,6 +125,7 @@ sealed interface StudyEvent {
     // ========== CARD INTERACTION ==========
     data object FlipCard : StudyEvent
     data object ResetCard : StudyEvent
+    data object CloseNativeAd : StudyEvent
 
     // ========== STUDY RESPONSE BUTTONS (SM-2 Algorithm) ==========
     data object EasyButtonPressed : StudyEvent
@@ -149,7 +156,7 @@ sealed interface StudyEvent {
         val email: String?
     ) : StudyEvent
 
-    // ✅ ADMOB EVENTS
+    // ========== ADMOB EVENTS ==========
     data object ContinueAfterAd : StudyEvent
 }
 
@@ -175,7 +182,7 @@ sealed interface StudyEffect {
     // ========== RATING EFFECTS ==========
     data object LaunchNativeStoreRating : StudyEffect
 
-    // ✅ ADMOB EFFECTS
+    // ========== ADMOB EFFECTS ==========
     data object ShowStudyRewardedAd : StudyEffect
 }
 

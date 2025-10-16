@@ -105,6 +105,7 @@ dependencies {
     // Dependency Injection - Hilt
     implementation("com.google.dagger:hilt-android:2.53.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation(libs.androidx.cardview)
     ksp("com.google.dagger:hilt-compiler:2.53.1")
 
     // Database - Room

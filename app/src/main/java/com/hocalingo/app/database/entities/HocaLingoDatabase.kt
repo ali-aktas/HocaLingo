@@ -1,4 +1,4 @@
-package com.hocalingo.app.database
+package com.hocalingo.app.database.entities
 
 import androidx.room.Database
 import androidx.room.Room
@@ -26,13 +26,17 @@ import com.hocalingo.app.database.entities.WordPackageEntity
 import com.hocalingo.app.database.entities.WordProgressEntity
 
 /**
- * HocaLingo Room Database - UPDATED TO VERSION 2
+ * HocaLingo Room Database - UPDATED TO VERSION 3
+ *
+ * VERSION 3 CHANGES:
+ * ✅ Added hard_presses column to word_progress table
+ * ✅ Added successful_reviews column to word_progress table
+ * ✅ Enhanced spaced repetition tracking
  *
  * VERSION 2 CHANGES:
  * ✅ Added learning_phase column to word_progress table
  * ✅ Added session_position column to word_progress table
  * ✅ Added indexes for new columns
- * ✅ Migration from version 1 to 2 included
  *
  * Central database for all app data including:
  * - Word concepts and vocabulary
@@ -50,7 +54,7 @@ import com.hocalingo.app.database.entities.WordProgressEntity
         UserPreferencesEntity::class,
         WordPackageEntity::class
     ],
-    version = 3, // 🔥 UPDATED: Version 1 → 2 for hybrid learning system
+    version = 3, // 🔥 UPDATED: Version 2 → 3 for enhanced spaced repetition
     exportSchema = true
 )
 @TypeConverters(DatabaseTypeConverters::class)
@@ -127,7 +131,47 @@ abstract class HocaLingoDatabase : RoomDatabase() {
         }
 
         /**
-         * Get database instance with singleton pattern - UPDATED WITH MIGRATION
+         * 🔥 MIGRATION 2 → 3: Add Enhanced Spaced Repetition Tracking
+         *
+         * Adds hard_presses and successful_reviews columns to word_progress table
+         * for improved graduation criteria and learning analytics
+         */
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                try {
+                    // Add hard_presses column (track HARD button presses)
+                    database.execSQL("""
+                        ALTER TABLE word_progress 
+                        ADD COLUMN hard_presses INTEGER DEFAULT 0
+                    """)
+
+                    // Add successful_reviews column (track successful reviews for graduation)
+                    database.execSQL("""
+                        ALTER TABLE word_progress 
+                        ADD COLUMN successful_reviews INTEGER DEFAULT 0
+                    """)
+
+                    // Initialize values for existing cards
+                    database.execSQL("""
+                        UPDATE word_progress 
+                        SET hard_presses = 0, 
+                            successful_reviews = CASE 
+                                WHEN learning_phase = 0 THEN 3 
+                                ELSE repetitions 
+                            END
+                    """)
+
+                    Log.d("HocaLingoDatabase", "✅ Migration 2→3 completed successfully")
+
+                } catch (e: Exception) {
+                    Log.e("HocaLingoDatabase", "❌ Migration 2→3 failed", e)
+                    throw e
+                }
+            }
+        }
+
+        /**
+         * Get database instance with singleton pattern - UPDATED WITH MIGRATIONS
          */
         fun getDatabase(context: Context): HocaLingoDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -136,7 +180,8 @@ abstract class HocaLingoDatabase : RoomDatabase() {
                     HocaLingoDatabase::class.java,
                     DATABASE_NAME
                 )
-                    .addMigrations(MIGRATION_1_2) // 🔥 ADD MIGRATION HERE
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3) // 🔥 ADD ALL MIGRATIONS
+                    .fallbackToDestructiveMigration() // 🔥 GELIŞTIRME KOLAYLIĞI (Production'da kaldır!)
                     .build()
                 INSTANCE = instance
                 instance

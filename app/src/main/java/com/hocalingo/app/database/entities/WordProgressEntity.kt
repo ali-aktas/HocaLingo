@@ -52,6 +52,9 @@ data class WordProgressEntity(
     @ColumnInfo(name = "is_mastered")
     val isMastered: Boolean = false,
 
+    @ColumnInfo(name = "hard_presses") val hardPresses: Int? = null,
+    @ColumnInfo(name = "successful_reviews") val successfulReviews: Int? = null,
+
     /**
      * NEW: Learning Phase Management
      *
@@ -90,6 +93,7 @@ data class WordProgressEntity(
 
     @ColumnInfo(name = "updated_at")
     val updatedAt: Long = System.currentTimeMillis()
+
 ) {
     /**
      * Helper method to check if card should stay in current session
