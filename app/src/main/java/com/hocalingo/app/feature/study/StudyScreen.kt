@@ -205,9 +205,9 @@ fun StudyScreen(
                                         viewModel.onEvent(StudyEvent.ContinueAfterAd)
                                     },
                                     onAdFailed = { error ->
-                                        android.util.Log.d("HocaLingo", "🔍 Ad failed: $error")
+                                        showRewardedAdDialog = false  // ← YENİ SATIR
                                         scope.launch {
-                                            snackbarHostState.showSnackbar("Reklam gösterilemedi: $error")
+                                            snackbarHostState.showSnackbar("Reklam yüklenemedi, devam ediyorsunuz")
                                         }
                                         viewModel.onEvent(StudyEvent.ContinueAfterAd)
                                     }

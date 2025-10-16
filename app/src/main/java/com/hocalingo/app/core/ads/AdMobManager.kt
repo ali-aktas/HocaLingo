@@ -140,6 +140,16 @@ class AdMobManager @Inject constructor(
     }
 
     /**
+     * Reset study word count (ad gösterilemediğinde kullanılır)
+     */
+    suspend fun resetStudyWordCount() {
+        if (!shouldShowAnyAd()) return
+
+        DebugHelper.log("🔄 Resetting study word count")
+        adCounterDataStore.resetStudyWordCount()
+    }
+
+    /**
      * Load app launch rewarded ad
      */
     fun loadAppLaunchRewardedAd() {

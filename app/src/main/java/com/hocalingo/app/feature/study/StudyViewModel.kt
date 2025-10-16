@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.ads.nativead.NativeAd
 import com.hocalingo.app.core.ads.AdMobManager
+import com.hocalingo.app.core.ads.AdState
 import com.hocalingo.app.core.ads.NativeAdLoader
 import com.hocalingo.app.core.common.DebugHelper
 import com.hocalingo.app.core.common.SpacedRepetitionAlgorithm
@@ -70,6 +71,8 @@ class StudyViewModel @Inject constructor(
 
         viewModelScope.launch {
             nativeAdLoader.loadStudyScreenAd()
+            // ✅ YENİ SATIR - BURAYA EKLE
+            adMobManager.loadStudyRewardedAd()
         }
     }
 
@@ -238,6 +241,8 @@ class StudyViewModel @Inject constructor(
 
     // ========== WORD MANAGEMENT ==========
 
+
+
     /**
      * ✅ UNCHANGED: Load next word from queue
      */
@@ -329,20 +334,28 @@ class StudyViewModel @Inject constructor(
                         // 3. Increment AdMob study word counter
                         adMobManager.incrementStudyWordCount()
 
-                        // ✅ 4. INCREMENT INDEX (single place - always)
+                        // 4. INCREMENT INDEX (single place - always)
                         currentQueueIndex++
                         DebugHelper.log("🔵 Index incremented: $currentQueueIndex / ${studyQueue.size}")
 
                         // 5. Check rewarded ad (25 words)
                         val shouldShowAd = adMobManager.shouldShowStudyRewardedAd()
-                        DebugHelper.log("🔍 Ad Check: shouldShow=$shouldShowAd, index=$currentQueueIndex")
+                        val isAdLoaded = adMobManager.studyRewardedAdState.value is AdState.Loaded
+
+                        DebugHelper.log("🔍 Rewarded Ad Check: shouldShow=$shouldShowAd, isLoaded=$isAdLoaded")
 
                         if (shouldShowAd) {
-                            DebugHelper.log("🎯 25 words completed - showing rewarded ad")
-                            _uiState.update { it.copy(currentConcept = null, isLoading = true) }
-                            _effect.tryEmit(StudyEffect.ShowStudyRewardedAd)
-                            DebugHelper.log("🔍 Effect emitted, state updated")
-                            return@launch
+                            if (!isAdLoaded) {
+                                DebugHelper.logError("⚠️ Rewarded ad not loaded - skipping")
+                                adMobManager.resetStudyWordCount()
+                                adMobManager.loadStudyRewardedAd()
+                                // Continue to next checks
+                            } else {
+                                DebugHelper.log("🎯 Showing rewarded ad")
+                                _uiState.update { it.copy(currentConcept = null, isLoading = true) }
+                                _effect.emit(StudyEffect.ShowStudyRewardedAd)
+                                return@launch
+                            }
                         }
 
                         // 6. Check queue completion
@@ -359,12 +372,12 @@ class StudyViewModel @Inject constructor(
                             return@launch
                         }
 
-                        // ✅ 7. Check native ad (every 10 words using currentQueueIndex)
+                        // 7. Check native ad (every 10 words)
                         if (currentQueueIndex > 0 && currentQueueIndex % 10 == 0) {
                             DebugHelper.log("🎯 10 words completed - showing native ad")
                             _uiState.update { it.copy(showNativeAd = true) }
                             nativeAdLoader.loadStudyScreenAd()
-                            return@launch // Show native ad, don't load next word yet
+                            return@launch
                         }
 
                         // 8. Load next word
@@ -373,7 +386,7 @@ class StudyViewModel @Inject constructor(
 
                     is Result.Error -> {
                         DebugHelper.logError("Progress update error", updateResult.error)
-                        _effect.tryEmit(StudyEffect.ShowMessage("Kelime kaydedilemedi"))
+                        _effect.emit(StudyEffect.ShowMessage("Kelime kaydedilemedi"))
                     }
                 }
 
@@ -383,23 +396,18 @@ class StudyViewModel @Inject constructor(
         }
     }
 
-    /**
-     * ✅ FIXED: Continue after rewarded ad - NO index increment
-     */
     fun continueAfterAd() {
         viewModelScope.launch {
-            DebugHelper.log("🔍 continueAfterAd called: index=$currentQueueIndex, size=${studyQueue.size}")
+            DebugHelper.log("🔍 continueAfterAd called")
 
-            // ✅ FIXED: Don't increment index - already done in handleUserResponse
-            // ✅ FIXED: Set loading true before loading next word
-            _uiState.update { it.copy(isLoading = true) }
-            DebugHelper.log("🔍 Loading set to true")
+            // Önce loading'i kapat
+            _uiState.update { it.copy(isLoading = false) }
 
             if (currentQueueIndex < studyQueue.size) {
-                DebugHelper.log("🔍 Calling loadNextWord()")
                 loadNextWord()
+                // Sonraki için preload
+                adMobManager.loadStudyRewardedAd()
             } else {
-                DebugHelper.log("✅ All words completed after ad")
                 _uiState.update {
                     it.copy(
                         currentConcept = null,
