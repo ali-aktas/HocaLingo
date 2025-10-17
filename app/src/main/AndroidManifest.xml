@@ -15,7 +15,11 @@
     <!-- ✅ Notification permissions for daily reminders -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!-- ✅ WorkManager permissions -->
+    <!-- ✅ NEW: AlarmManager permissions for exact alarms (Android 12+) -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+
+    <!-- ✅ WorkManager & Alarm permissions -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
@@ -71,6 +75,19 @@
                 <data android:scheme="hocalingo" />
             </intent-filter>
         </activity>
+
+        <!-- ✅ NEW: Daily Notification Receiver (AlarmManager based) -->
+        <receiver
+            android:name=".core.notification.DailyNotificationReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <!-- Custom action for daily notifications -->
+                <action android:name="com.hocalingo.app.ACTION_DAILY_NOTIFICATION" />
+                <!-- System boot completed to reschedule alarms -->
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

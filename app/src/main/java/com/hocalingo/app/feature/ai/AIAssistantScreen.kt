@@ -66,12 +66,12 @@ fun AIAssistantScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Psychology,
+                            imageVector = Icons.Default.AutoAwesome,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
                         Text(
-                            text = "AI Asistan",
+                            text = "Yapay Zeka Asistanı",
                             fontFamily = PoppinsFontFamily,
                             fontWeight = FontWeight.Bold
                         )
@@ -229,7 +229,7 @@ private fun FreeUserContent(
 
         // Title
         Text(
-            text = "AI Asistanı",
+            text = "Yapay Zeka Asistanı",
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 28.sp,
@@ -306,7 +306,7 @@ private fun FreeUserContent(
                         tint = Color.White
                     )
                     Text(
-                        text = "Premium'a Geç",
+                        text = "Premium Üyesi Ol",
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,

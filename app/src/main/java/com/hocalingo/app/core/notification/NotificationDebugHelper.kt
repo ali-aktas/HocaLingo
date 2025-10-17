@@ -3,8 +3,6 @@ package com.hocalingo.app.core.notification
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import com.hocalingo.app.core.common.UserPreferencesManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
@@ -14,11 +12,13 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Notification Debug Helper
+ * Notification Debug Helper - v2.0 (AlarmManager based)
+ * ✅ Updated for AlarmManager instead of WorkManager
  * ✅ Helps diagnose notification issues
- * ✅ Logs WorkManager state
  * ✅ Shows next scheduled time
- * ✅ Non-intrusive - only for debugging
+ * ✅ Checks AlarmManager permissions
+ *
+ * Package: app/src/main/java/com/hocalingo/app/core/notification/
  *
  * Usage: Call from Profile screen or test activity
  */
@@ -26,7 +26,8 @@ import javax.inject.Singleton
 class NotificationDebugHelper @Inject constructor(
     @ApplicationContext private val context: Context,
     private val userPreferencesManager: UserPreferencesManager,
-    private val notificationScheduler: NotificationScheduler
+    private val notificationScheduler: NotificationScheduler,
+    private val alarmScheduler: AlarmScheduler
 ) {
 
     companion object {
@@ -38,14 +39,14 @@ class NotificationDebugHelper @Inject constructor(
      */
     suspend fun printDebugInfo() {
         Log.d(TAG, "========================================")
-        Log.d(TAG, "🔔 NOTIFICATION DEBUG INFO")
+        Log.d(TAG, "🔔 NOTIFICATION DEBUG INFO (AlarmManager)")
         Log.d(TAG, "========================================")
 
         // 1. User Preferences
         printUserPreferences()
 
-        // 2. WorkManager State
-        printWorkManagerState()
+        // 2. AlarmManager State
+        printAlarmManagerState()
 
         // 3. Next Scheduled Time
         printNextScheduledTime()
@@ -67,77 +68,34 @@ class NotificationDebugHelper @Inject constructor(
         Log.d(TAG, "  - General Notifications: $notificationsEnabled")
     }
 
-    private suspend fun printWorkManagerState() {
-        Log.d(TAG, "\n⚙️ WORKMANAGER STATE:")
+    private fun printAlarmManagerState() {
+        Log.d(TAG, "\n⏰ ALARMMANAGER STATE:")
 
-        try {
-            val workManager = WorkManager.getInstance(context)
+        // Check if exact alarms can be scheduled
+        val canSchedule = alarmScheduler.canScheduleAlarm()
+        Log.d(TAG, "  - Can schedule exact alarms: $canSchedule")
 
-            // Check by work name
-            val workInfos = workManager
-                .getWorkInfosForUniqueWork(DailyNotificationWorker.WORK_NAME)
-                .get()
-
-            if (workInfos.isEmpty()) {
-                Log.d(TAG, "  ❌ No work scheduled!")
-                Log.d(TAG, "  → Solution: Turn notifications ON in settings")
-                return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!canSchedule) {
+                Log.d(TAG, "  ⚠️ WARNING: Cannot schedule exact alarms!")
+                Log.d(TAG, "  → User needs to grant SCHEDULE_EXACT_ALARM permission")
+                Log.d(TAG, "  → Go to: Settings > Apps > HocaLingo > Alarms & reminders")
+            } else {
+                Log.d(TAG, "  ✅ Exact alarm permission granted")
             }
-
-            workInfos.forEachIndexed { index, workInfo ->
-                Log.d(TAG, "  Work #${index + 1}:")
-                Log.d(TAG, "    - ID: ${workInfo.id}")
-                Log.d(TAG, "    - State: ${workInfo.state}")
-                Log.d(TAG, "    - Run Attempt: ${workInfo.runAttemptCount}")
-                Log.d(TAG, "    - Tags: ${workInfo.tags}")
-
-                when (workInfo.state) {
-                    WorkInfo.State.ENQUEUED -> {
-                        Log.d(TAG, "    ✅ Work is scheduled and waiting")
-                        Log.d(TAG, "    ⏰ Next run: Check 'Next Scheduled Time' section below")
-                        Log.d(TAG, "    💡 WorkManager will run at approximately your preferred time")
-                        Log.d(TAG, "    💡 Exact time may vary ±30 minutes (flex window)")
-                    }
-                    WorkInfo.State.RUNNING -> {
-                        Log.d(TAG, "    🏃 Work is currently running")
-                    }
-                    WorkInfo.State.SUCCEEDED -> {
-                        Log.d(TAG, "    ✅ Last run succeeded")
-                    }
-                    WorkInfo.State.FAILED -> {
-                        Log.d(TAG, "    ❌ Work failed")
-                        Log.d(TAG, "    → Check worker logs for errors")
-                    }
-                    WorkInfo.State.BLOCKED -> {
-                        Log.d(TAG, "    ⏸️ Work is blocked")
-                        Log.d(TAG, "    → Check constraints (battery, network)")
-                    }
-                    WorkInfo.State.CANCELLED -> {
-                        Log.d(TAG, "    ⛔ Work was cancelled")
-                    }
-                }
-
-                // Print output data if available
-                if (workInfo.outputData.keyValueMap.isNotEmpty()) {
-                    Log.d(TAG, "    📤 Output Data:")
-                    workInfo.outputData.keyValueMap.forEach { (key, value) ->
-                        Log.d(TAG, "      - $key: $value")
-                    }
-                }
-            }
-
-        } catch (e: Exception) {
-            Log.e(TAG, "  ❌ Error checking WorkManager: ${e.message}")
+        } else {
+            Log.d(TAG, "  ✅ Android < 12, no special permission needed")
         }
     }
 
     private suspend fun printNextScheduledTime() {
-        Log.d(TAG, "\n⏰ NEXT SCHEDULED TIME (Calculated):")
+        Log.d(TAG, "\n📅 NEXT SCHEDULED TIME:")
 
         val nextTime = notificationScheduler.getNextNotificationTime()
 
         if (nextTime == null) {
-            Log.d(TAG, "  ❌ No scheduled time (notifications disabled?)")
+            Log.d(TAG, "  ❌ No notification scheduled!")
+            Log.d(TAG, "  → Notifications might be disabled")
             return
         }
 
@@ -152,7 +110,7 @@ class NotificationDebugHelper @Inject constructor(
             Log.d(TAG, "  → This shouldn't happen. Try toggling notifications OFF/ON")
         } else {
             Log.d(TAG, "  ✅ Notification scheduled properly")
-            Log.d(TAG, "  💡 Note: Actual notification may arrive ±30 minutes due to flex window")
+            Log.d(TAG, "  💡 Note: AlarmManager provides exact timing (not flexible like WorkManager)")
         }
     }
 
@@ -182,20 +140,10 @@ class NotificationDebugHelper @Inject constructor(
             issues.add("Bildirimler ayarlardan kapalı")
         }
 
-        // Check 2: WorkManager
-        val workManager = WorkManager.getInstance(context)
-        val workInfos = workManager
-            .getWorkInfosForUniqueWork(DailyNotificationWorker.WORK_NAME)
-            .get()
-
-        if (workInfos.isEmpty()) {
-            issues.add("WorkManager'da bildirim zamanlanmamış")
-        } else {
-            val activeWork = workInfos.any {
-                it.state == WorkInfo.State.ENQUEUED || it.state == WorkInfo.State.RUNNING
-            }
-            if (!activeWork) {
-                issues.add("WorkManager'da aktif iş yok (state: ${workInfos.first().state})")
+        // Check 2: AlarmManager permission (Android 12+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!alarmScheduler.canScheduleAlarm()) {
+                issues.add("SCHEDULE_EXACT_ALARM izni verilmemiş")
             }
         }
 
@@ -208,7 +156,7 @@ class NotificationDebugHelper @Inject constructor(
         }
 
         return if (issues.isEmpty()) {
-            "✅ Bildirimler düzgün çalışmalı\n💡 Bildirimler ±30 dakika esneklik penceresi ile gelir"
+            "✅ Bildirimler düzgün çalışmalı\n💡 AlarmManager ile tam zamanında gelecek"
         } else {
             "⚠️ Sorunlar:\n" + issues.joinToString("\n") { "• $it" }
         }
@@ -216,13 +164,21 @@ class NotificationDebugHelper @Inject constructor(
 
     /**
      * Force trigger notification for testing
-     * (You can call this manually from Profile screen)
+     * This manually triggers the alarm receiver
      */
-    suspend fun triggerTestNotification() {
+    fun triggerTestNotification() {
         Log.d(TAG, "🧪 TRIGGERING TEST NOTIFICATION")
-        // This would need to be implemented in the Worker
-        // For now, just log
-        Log.d(TAG, "  Note: Implement manual trigger in DailyNotificationWorker if needed")
+        Log.d(TAG, "  Note: Manually sending broadcast to receiver...")
+
+        try {
+            val intent = android.content.Intent(context, DailyNotificationReceiver::class.java).apply {
+                action = DailyNotificationReceiver.ACTION_DAILY_NOTIFICATION
+            }
+            context.sendBroadcast(intent)
+            Log.d(TAG, "  ✅ Test broadcast sent")
+        } catch (e: Exception) {
+            Log.e(TAG, "  ❌ Error triggering test: ${e.message}")
+        }
     }
 
     // Helper functions

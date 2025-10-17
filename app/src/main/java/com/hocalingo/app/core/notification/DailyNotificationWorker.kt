@@ -10,15 +10,28 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.text.SimpleDateFormat
 import java.util.*
-import androidx.work.ListenableWorker
 
 /**
- * Daily Notification Worker
- * ✅ Runs once per day at scheduled time
- * ✅ Selects a word and sends notification
- * ✅ Handles errors gracefully
- * ✅ DEBUG LOGS: Enhanced logging to track execution
+ * Daily Notification Worker - DEPRECATED
+ * ⚠️ This class is now DEPRECATED and replaced by AlarmManager approach
+ * ⚠️ Keeping it for backwards compatibility but it's no longer used
+ *
+ * NEW APPROACH:
+ * - DailyNotificationReceiver (BroadcastReceiver)
+ * - AlarmScheduler (AlarmManager wrapper)
+ *
+ * WHY CHANGED?
+ * - WorkManager's PeriodicWorkRequest has 15-minute minimum interval
+ * - WorkManager doesn't guarantee exact timing
+ * - AlarmManager provides exact alarm scheduling
+ *
+ * Package: app/src/main/java/com/hocalingo/app/core/notification/
  */
+@Deprecated(
+    message = "Use AlarmManager with DailyNotificationReceiver instead",
+    replaceWith = ReplaceWith("DailyNotificationReceiver"),
+    level = DeprecationLevel.WARNING
+)
 @HiltWorker
 class DailyNotificationWorker @AssistedInject constructor(
     @Assisted context: Context,
@@ -35,10 +48,10 @@ class DailyNotificationWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         Log.d(TAG, "========================================")
-        Log.d(TAG, "🔔 DAILY NOTIFICATION WORKER STARTED")
+        Log.d(TAG, "⚠️ DEPRECATED WORKER EXECUTED")
         Log.d(TAG, "========================================")
+        Log.d(TAG, "This worker is deprecated. Use AlarmManager instead.")
         Log.d(TAG, "Run time: ${formatTimestamp(System.currentTimeMillis())}")
-        Log.d(TAG, "Run attempt: ${runAttemptCount + 1}")
 
         return try {
             // Check if notifications are enabled
