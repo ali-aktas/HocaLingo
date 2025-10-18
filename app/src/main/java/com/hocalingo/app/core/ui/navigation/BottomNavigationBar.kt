@@ -197,7 +197,7 @@ private fun FixedNavItem(
 
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(0.dp))
             .background(backgroundColor)
             .clickable(onClick = onClick)
             .padding(
@@ -248,6 +248,7 @@ fun shouldShowBottomNavigation(currentRoute: String?): Boolean {
         currentRoute == null -> false
         currentRoute.startsWith(HocaRoutes.SPLASH) -> false
         currentRoute.startsWith(HocaRoutes.AUTH) -> false
+        currentRoute.startsWith(HocaRoutes.ONBOARDING_INTRO) -> false // ✅ YENİ: Intro eklendi
         currentRoute.startsWith(HocaRoutes.ONBOARDING_LANGUAGE) -> false
         currentRoute.startsWith(HocaRoutes.ONBOARDING_LEVEL) -> false
         currentRoute.startsWith(HocaRoutes.WORD_SELECTION) -> false

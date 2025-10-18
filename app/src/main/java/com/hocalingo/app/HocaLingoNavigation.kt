@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.hocalingo.app.feature.auth.AuthScreen
 import com.hocalingo.app.feature.home.HomeScreen
+import com.hocalingo.app.feature.onboarding.OnboardingIntroScreen
 import com.hocalingo.app.feature.onboarding.PackageSelectionScreen
 import com.hocalingo.app.feature.selection.WordSelectionScreen
 import com.hocalingo.app.feature.splash.SplashScreen
@@ -30,13 +31,14 @@ import com.hocalingo.app.feature.ai.AIAssistantScreen
 import com.hocalingo.app.feature.profile.ProfileScreen
 
 /**
- * Enhanced HocaLingo Navigation Routes - With Profile Feature
- * ✅ Real ProfileScreen implementation added
+ * Enhanced HocaLingo Navigation Routes
+ * ✅ Onboarding Intro (3 pages) added
  */
 object HocaRoutes {
     // Onboarding Flow
     const val SPLASH = "splash"
     const val AUTH = "auth"
+    const val ONBOARDING_INTRO = "onboarding_intro" // ✅ NEW: 3-page intro
     const val ONBOARDING_LANGUAGE = "onboarding_language"
     const val ONBOARDING_LEVEL = "onboarding_level"
     const val PACKAGE_SELECTION = "package_selection"
@@ -48,14 +50,15 @@ object HocaRoutes {
     const val ADD_WORD = "add_word"
     const val AI_ASSISTANT = "ai_assistant"
     const val PROFILE = "profile"
-    const val WORDS_LIST = "words_list" // ✅ NEW: For "View All Words"
+    const val WORDS_LIST = "words_list"
 
     // Settings and other screens
     const val SETTINGS = "settings"
 }
 
 /**
- * Main Navigation Composable - Enhanced with Profile
+ * Main Navigation Composable
+ * Updated Flow: SPLASH → AUTH → ONBOARDING_INTRO → PACKAGE_SELECTION → WORD_SELECTION → HOME
  */
 @Composable
 fun HocaLingoNavigation(
@@ -78,7 +81,7 @@ fun HocaLingoNavigation(
                     }
                 },
                 onNavigateToOnboarding = {
-                    navController.navigate(HocaRoutes.ONBOARDING_LEVEL) {
+                    navController.navigate(HocaRoutes.ONBOARDING_INTRO) { // ✅ CHANGED: INTRO first
                         popUpTo(HocaRoutes.SPLASH) { inclusive = true }
                     }
                 },
@@ -94,8 +97,19 @@ fun HocaLingoNavigation(
         composable(route = HocaRoutes.AUTH) {
             AuthScreen(
                 onNavigateToOnboarding = {
-                    navController.navigate(HocaRoutes.ONBOARDING_LEVEL) {
+                    navController.navigate(HocaRoutes.ONBOARDING_INTRO) { // ✅ CHANGED: INTRO first
                         popUpTo(HocaRoutes.AUTH) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        // ✅ NEW: Onboarding Intro Screen (3 pages)
+        composable(route = HocaRoutes.ONBOARDING_INTRO) {
+            OnboardingIntroScreen(
+                onNavigateToPackageSelection = {
+                    navController.navigate(HocaRoutes.ONBOARDING_LEVEL) {
+                        popUpTo(HocaRoutes.ONBOARDING_INTRO) { inclusive = true }
                     }
                 }
             )
@@ -238,14 +252,14 @@ fun HocaLingoNavigation(
             )
         }
 
-        // Settings Screen (Future Feature)
+        // Settings Screen (Placeholder)
         composable(route = HocaRoutes.SETTINGS) {
             PlaceholderScreen(
                 title = "⚙️ ${stringResource(R.string.settings_title)}",
-                subtitle = "Uygulama tercihleri ve seçenekleri\nBildirimler, sesler, tema, hesap yönetimi, dil değiştirme",
-                buttonText = stringResource(R.string.close),
+                subtitle = "Tema, bildirimler, dil ayarları\nYakında eklenecek",
+                buttonText = "Ana Ekran",
                 onNavigate = {
-                    navController.popBackStack()
+                    navController.navigate(HocaRoutes.HOME)
                 }
             )
         }
@@ -253,53 +267,38 @@ fun HocaLingoNavigation(
 }
 
 /**
- * Enhanced placeholder screen with better design
+ * Placeholder Screen for future features
  */
 @Composable
 private fun PlaceholderScreen(
     title: String,
-    subtitle: String = "",
-    buttonText: String = stringResource(R.string.next),
-    onNavigate: () -> Unit = {}
+    subtitle: String,
+    buttonText: String,
+    onNavigate: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary
+            style = MaterialTheme.typography.headlineMedium
         )
-
-        if (subtitle.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                lineHeight = MaterialTheme.typography.bodyLarge.lineHeight
-            )
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Button(
-            onClick = onNavigate,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
-            Text(buttonText)
-        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "🚧 Geçici Ekran - Yakında implement edilecek",
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.outline
+            text = subtitle,
+            style = MaterialTheme.typography.bodyLarge
         )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Button(onClick = onNavigate) {
+            Text(buttonText)
+        }
     }
 }
