@@ -27,6 +27,13 @@ sealed interface ProfileEvent {
     data class UpdateNotifications(val enabled: Boolean) : ProfileEvent
     data class UpdateNotificationTime(val hour: Int) : ProfileEvent
     data class UpdateDailyGoal(val goal: Int) : ProfileEvent
+
+    // Legal & Support Events
+    data object OpenPrivacyPolicy : ProfileEvent
+    data object OpenTermsOfService : ProfileEvent
+    data object OpenPlayStore : ProfileEvent
+    data object OpenSupport : ProfileEvent
+
 }
 
 /**
@@ -53,4 +60,8 @@ sealed interface ProfileEffect {
     data object ShowWordsBottomSheet : ProfileEffect
     data object HideWordsBottomSheet : ProfileEffect
     data class ShowWordsLoadError(val error: String) : ProfileEffect
+
+    // Legal & Support Effects
+    data class OpenUrl(val url: String) : ProfileEffect
+
 }

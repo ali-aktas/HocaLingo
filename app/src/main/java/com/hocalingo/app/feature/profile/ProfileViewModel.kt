@@ -72,6 +72,13 @@ class ProfileViewModel @Inject constructor(
             is ProfileEvent.UpdateNotifications -> updateNotifications(event.enabled)
             is ProfileEvent.UpdateNotificationTime -> updateNotificationTime(event.hour)
             is ProfileEvent.UpdateDailyGoal -> updateDailyGoal(event.goal)
+
+            // Legal & Support Events
+            ProfileEvent.OpenPrivacyPolicy -> openUrl("https://sites.google.com/view/hocalingoprivacypolicy/ana-sayfa")
+            ProfileEvent.OpenTermsOfService -> openUrl("https://sites.google.com/view/hocalingo-kullanicisozlesmesi/ana-sayfa")
+            ProfileEvent.OpenPlayStore -> openUrl("https://play.google.com/store/apps/details?id=com.hocalingo.app")
+            ProfileEvent.OpenSupport -> openUrl("mailto:support@hocalingo.com")
+
         }
     }
 
@@ -354,6 +361,15 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(notificationsEnabled = false) }
             _effect.emit(ProfileEffect.ShowError("Bildirim izni verilmedi"))
+        }
+    }
+
+    /**
+     * Open URL in browser
+     */
+    private fun openUrl(url: String) {
+        viewModelScope.launch {
+            _effect.emit(ProfileEffect.OpenUrl(url))
         }
     }
 

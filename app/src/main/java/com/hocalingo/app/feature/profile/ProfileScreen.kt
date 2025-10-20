@@ -1,6 +1,8 @@
 package com.hocalingo.app.feature.profile
 
 import android.Manifest
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,6 +35,8 @@ import com.hocalingo.app.core.common.ThemeMode
 import com.hocalingo.app.core.ui.components.HocaSnackbarHost
 import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import kotlinx.coroutines.flow.collectLatest
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.material3.HorizontalDivider
 
 // Poppins font family - enhanced with Black weight
 private val PoppinsFontFamily = FontFamily(
@@ -64,6 +68,8 @@ fun ProfileScreen(
     onNavigateToWordsList: () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -131,6 +137,15 @@ fun ProfileScreen(
                         "Bildirimler açıldı! Bir sonraki bildirim: ${effect.time}"
                     )
                 }
+                // Legal & Support Effects
+                is ProfileEffect.OpenUrl -> {
+                    try {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(effect.url))
+                        context.startActivity(intent)
+                    } catch (e: Exception) {
+                        snackbarHostState.showSnackbar("Link açılamadı")
+                    }
+                }
             }
         }
     }
@@ -186,6 +201,14 @@ fun ProfileScreen(
                     words = uiState.selectedWordsPreview,
                     totalCount = uiState.totalWordsCount,
                     onViewAllClick = { viewModel.onEvent(ProfileEvent.ShowWordsBottomSheet) },
+                    isDarkTheme = isDarkTheme
+                )
+            }
+
+            // Legal and Support Card
+            item {
+                LegalAndSupportCard(
+                    onEvent = viewModel::onEvent,
                     isDarkTheme = isDarkTheme
                 )
             }
@@ -1020,5 +1043,135 @@ private fun GradientStatCard(
                 )
             }
         }
+    }
+}
+
+/**
+ * Legal and Support Card
+ * Links to privacy policy, terms, play store and support
+ */
+@Composable
+private fun LegalAndSupportCard(
+    onEvent: (ProfileEvent) -> Unit,
+    isDarkTheme: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isDarkTheme) {
+                Color(0xFF1E1E2E)
+            } else {
+                Color(0xFFFAFAFA)
+            }
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Header
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = "Hakkında & Destek",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+
+            // Privacy Policy
+            LegalSupportItem(
+                icon = Icons.Default.Lock,
+                title = "Gizlilik Politikası",
+                onClick = { onEvent(ProfileEvent.OpenPrivacyPolicy) },
+                isDarkTheme = isDarkTheme
+            )
+
+            // Terms of Service
+            LegalSupportItem(
+                icon = Icons.Default.Description,
+                title = "Kullanım Sözleşmesi",
+                onClick = { onEvent(ProfileEvent.OpenTermsOfService) },
+                isDarkTheme = isDarkTheme
+            )
+
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+
+            // Rate on Play Store
+            LegalSupportItem(
+                icon = Icons.Default.Star,
+                title = "Uygulamayı Değerlendir",
+                onClick = { onEvent(ProfileEvent.OpenPlayStore) },
+                isDarkTheme = isDarkTheme
+            )
+
+            // Contact Support
+            LegalSupportItem(
+                icon = Icons.Default.Email,
+                title = "Destek İletişim",
+                onClick = { onEvent(ProfileEvent.OpenSupport) },
+                isDarkTheme = isDarkTheme
+            )
+        }
+    }
+}
+
+/**
+ * Legal Support Item - Single row item
+ */
+@Composable
+private fun LegalSupportItem(
+    icon: ImageVector,
+    title: String,
+    onClick: () -> Unit,
+    isDarkTheme: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = if (isDarkTheme) Color(0xFF9CA3AF) else Color(0xFF6B7280),
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Text(
+            text = title,
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 15.sp,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.weight(1f)
+        )
+        Icon(
+            imageVector = Icons.Default.ChevronRight,
+            contentDescription = null,
+            tint = if (isDarkTheme) Color(0xFF6B7280) else Color(0xFF9CA3AF),
+            modifier = Modifier.size(20.dp)
+        )
     }
 }
