@@ -319,7 +319,7 @@ private fun CompactSelectedWordsCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "📚 Seçili Kelimeler",
+                        text = "Seçili Kelimeler",
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
@@ -456,9 +456,9 @@ private fun ModernSettingsCard(
                 .background(
                     brush = Brush.linearGradient(
                         colors = if (isDarkTheme) {
-                            listOf(Color(0xFF570A7D), Color(0xFF123C50))
+                            listOf(Color(0xFF52355F), Color(0xFF634371))
                         } else {
-                            listOf(Color(0xFF11998e), Color(0xFF38ef7d))
+                            listOf(Color(0xFF246149), Color(0xFF36764E))
                         }
                     )
                 )
@@ -466,7 +466,7 @@ private fun ModernSettingsCard(
         ) {
             Column {
                 Text(
-                    text = "⚙️ Ayarlar",
+                    text = "Ayarlar",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
