@@ -46,6 +46,8 @@ class FirebaseWordPackageDataSource @Inject constructor(
 
     /**
      * Get package metadata from Firestore
+     *
+     * ✨ UPDATED: wordIds field'ını da okuyor
      */
     suspend fun getPackageMetadata(packageId: String): Result<PackageMetadata> = withContext(Dispatchers.IO) {
         try {
@@ -60,18 +62,24 @@ class FirebaseWordPackageDataSource @Inject constructor(
                 return@withContext Result.Error(AppError.NotFound)
             }
 
+            // ✨ YENİ: wordIds array'ini oku (List<Long> olarak gelir, Int'e çeviriyoruz)
+            @Suppress("UNCHECKED_CAST")
+            val wordIdsRaw = document.get("wordIds") as? List<Long>
+            val wordIds = wordIdsRaw?.map { it.toInt() }
+
             val metadata = PackageMetadata(
                 packageId = document.getString("packageId") ?: packageId,
                 version = document.getString("version") ?: "1.0.0",
                 level = document.getString("level") ?: "A1",
                 languagePair = document.getString("languagePair") ?: "en_tr",
                 totalWords = document.getLong("totalWords")?.toInt() ?: 0,
+                wordIds = wordIds,  // ✨ YENİ: wordIds eklendi
                 storageUrl = document.getString("storageUrl") ?: "",
                 requiresPremium = document.getBoolean("requiresPremium") ?: false,
                 description = document.getString("description")
             )
 
-            DebugHelper.logSuccess("Metadata alındı: ${metadata.totalWords} kelime")
+            DebugHelper.logSuccess("Metadata alındı: ${metadata.totalWords} kelime, wordIds: ${wordIds?.size ?: 0}")
             Result.Success(metadata)
 
         } catch (e: Exception) {
@@ -216,6 +224,7 @@ data class PackageMetadata(
     val level: String,
     val languagePair: String,
     val totalWords: Int,
+    val wordIds: List<Int>? = null,
     val storageUrl: String,
     val requiresPremium: Boolean,
     val description: String?

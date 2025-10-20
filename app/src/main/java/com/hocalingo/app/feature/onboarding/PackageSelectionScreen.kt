@@ -30,6 +30,7 @@ import com.hocalingo.app.core.ui.components.HocaErrorState
 import com.hocalingo.app.core.ui.components.HocaLoadingIndicator
 import com.hocalingo.app.core.ui.components.HocaSnackbarHost
 import com.hocalingo.app.core.ui.theme.ThemeViewModel
+import com.hocalingo.app.data.PackageDownloadStatus
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -61,6 +62,9 @@ fun PackageSelectionScreen(
     val themeViewModel: ThemeViewModel = hiltViewModel()
     val isDarkTheme = themeViewModel.shouldUseDarkTheme()
 
+    var showLoadingDialog by remember { mutableStateOf(false) }
+    var loadingPackageId by remember { mutableStateOf<String?>(null) }
+
     // Handle effects
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
@@ -74,8 +78,24 @@ fun PackageSelectionScreen(
                 is PackageSelectionEffect.ShowMessage -> {
                     snackbarHostState.showSnackbar(effect.message)
                 }
+                is PackageSelectionEffect.ShowLoadingAnimation -> {
+                    loadingPackageId = effect.packageId
+                    showLoadingDialog = true
+                }
             }
         }
+    }
+
+    if (showLoadingDialog && loadingPackageId != null) {
+        LoadingAnimationDialog(
+            onDismiss = {
+                showLoadingDialog = false
+                // 3 saniye sonra navigation
+                onNavigateToWordSelection(loadingPackageId!!)
+                loadingPackageId = null
+            },
+            isDarkTheme = isDarkTheme
+        )
     }
 
     Scaffold(
@@ -224,15 +244,12 @@ private fun PackageSelectionContent(
     }
 }
 
-/**
- * UPDATED Colorful Package Card with Level-Based Gradients
- * ✅ A1: Orange/Yellow
- * ✅ A2: Green/Teal
- * ✅ B1: Blue/Purple
- * ✅ B2: Purple/Pink
- * ✅ C1: Red/Orange
- * ✅ C2: Pink/Purple
- */
+// ColorfulPackageCard - UPDATED WITH DOWNLOAD STATUS BADGE
+// Bu composable PackageSelectionScreen.kt dosyasının içindeki mevcut fonksiyonu güncelleyecek
+
+// ColorfulPackageCard - UPDATED WITH DOWNLOAD STATUS BADGE
+// Bu composable PackageSelectionScreen.kt dosyasının içindeki mevcut fonksiyonu güncelleyecek
+
 @Composable
 private fun ColorfulPackageCard(
     packageInfo: PackageInfo,
@@ -243,40 +260,40 @@ private fun ColorfulPackageCard(
     val isDownloaded = packageInfo.isDownloaded
     val downloadProgress = packageInfo.downloadProgress
 
-    // UPDATED: Level-based gradient colors
+    // Level-based gradient colors (aynı kalıyor)
     val gradientColors = when (packageInfo.level) {
         "A1" -> if (isDarkTheme) {
-            listOf(Color(0xFFFF8A65), Color(0xFFFFB74D)) // Dark: Soft orange to yellow
+            listOf(Color(0xFFFF8A65), Color(0xFFFFB74D))
         } else {
-            listOf(Color(0xFFFF9800), Color(0xFFFFC107)) // Light: Orange to yellow
+            listOf(Color(0xFFFF9800), Color(0xFFFFC107))
         }
         "A2" -> if (isDarkTheme) {
-            listOf(Color(0xFF66BB6A), Color(0xFF26A69A)) // Dark: Green to teal
+            listOf(Color(0xFF66BB6A), Color(0xFF26A69A))
         } else {
-            listOf(Color(0xFF4CAF50), Color(0xFF009688)) // Light: Green to teal
+            listOf(Color(0xFF4CAF50), Color(0xFF009688))
         }
         "B1" -> if (isDarkTheme) {
-            listOf(Color(0xFF42A5F5), Color(0xFF7E57C2)) // Dark: Blue to purple
+            listOf(Color(0xFF42A5F5), Color(0xFF7E57C2))
         } else {
-            listOf(Color(0xFF2196F3), Color(0xFF9C27B0)) // Light: Blue to purple
+            listOf(Color(0xFF2196F3), Color(0xFF9C27B0))
         }
         "B2" -> if (isDarkTheme) {
-            listOf(Color(0xFFAB47BC), Color(0xFFEC407A)) // Dark: Purple to pink
+            listOf(Color(0xFFAB47BC), Color(0xFFEC407A))
         } else {
-            listOf(Color(0xFF9C27B0), Color(0xFFE91E63)) // Light: Purple to pink
+            listOf(Color(0xFF9C27B0), Color(0xFFE91E63))
         }
         "C1" -> if (isDarkTheme) {
-            listOf(Color(0xFFEF5350), Color(0xFFFF7043)) // Dark: Red to orange
+            listOf(Color(0xFFEF5350), Color(0xFFFF7043))
         } else {
-            listOf(Color(0xFFF44336), Color(0xFFFF5722)) // Light: Red to orange
+            listOf(Color(0xFFF44336), Color(0xFFFF5722))
         }
         "C2" -> if (isDarkTheme) {
-            listOf(Color(0xFFEC407A), Color(0xFFBA68C8)) // Dark: Pink to purple
+            listOf(Color(0xFFEC407A), Color(0xFFBA68C8))
         } else {
-            listOf(Color(0xFFE91E63), Color(0xFFAB47BC)) // Light: Pink to purple
+            listOf(Color(0xFFE91E63), Color(0xFFAB47BC))
         }
         else -> if (isDarkTheme) {
-            listOf(Color(0xFF78909C), Color(0xFF607D8B)) // Default gray
+            listOf(Color(0xFF78909C), Color(0xFF607D8B))
         } else {
             listOf(Color(0xFF90A4AE), Color(0xFF78909C))
         }
@@ -309,26 +326,38 @@ private fun ColorfulPackageCard(
                     shape = RoundedCornerShape(20.dp)
                 )
         ) {
-            // Selection indicator
-            if (isSelected) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(12.dp)
-                        .size(32.dp)
-                        .background(Color.White, CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "Selected",
-                        tint = gradientColors.first(),
-                        modifier = Modifier.size(20.dp)
-                    )
+            // ✨ YENİ: Download Status Badge (sağ üst köşe)
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(12.dp)
+            ) {
+                when (packageInfo.downloadStatus) {
+                    is PackageDownloadStatus.NotDownloaded -> {
+                        DownloadBadge(
+                            text = "İndir",
+                            backgroundColor = Color.White.copy(alpha = 0.95f),
+                            textColor = gradientColors.first()
+                        )
+                    }
+                    is PackageDownloadStatus.FullyDownloaded -> {
+                        DownloadBadge(
+                            text = "İndirildi ✓",
+                            backgroundColor = Color(0xFF4CAF50),
+                            textColor = Color.White
+                        )
+                    }
+                    is PackageDownloadStatus.HasNewWords -> {
+                        DownloadBadge(
+                            text = "${packageInfo.newWordsCount} Yeni",
+                            backgroundColor = Color(0xFFFF9800),
+                            textColor = Color.White
+                        )
+                    }
                 }
             }
 
-            // Content
+            // Content (aynı kalıyor)
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -336,101 +365,118 @@ private fun ColorfulPackageCard(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 // Level badge
-                Box(
-                    modifier = Modifier
-                        .background(
-                            Color.White.copy(alpha = 0.25f),
-                            RoundedCornerShape(12.dp)
-                        )
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                Surface(
+                    color = Color.White.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier.width(60.dp)
                 ) {
                     Text(
                         text = packageInfo.level,
                         fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
-                        color = Color.White
+                        fontWeight = FontWeight.Black,
+                        fontSize = 16.sp,
+                        color = Color.White,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(vertical = 4.dp)
                     )
                 }
 
+                // Package name
+                Text(
+                    text = packageInfo.name,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    color = Color.White
+                )
+
+                // Description & word count
                 Column {
-                    Text(
-                        text = packageInfo.name,
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        color = Color.White
-                    )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
                     Text(
                         text = packageInfo.description,
                         fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Medium,
+                        fontWeight = FontWeight.Normal,
                         fontSize = 14.sp,
                         color = Color.White.copy(alpha = 0.9f)
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
-                    // Word count
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            imageVector = Icons.Default.AutoStories,
-                            contentDescription = null,
+                            imageVector = Icons.Default.Book,
+                            contentDescription = "Words",
                             tint = Color.White,
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(16.dp)
                         )
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = "${packageInfo.wordCount} kelime",
                             fontFamily = PoppinsFontFamily,
                             fontWeight = FontWeight.Medium,
                             fontSize = 13.sp,
-                            color = Color.White.copy(alpha = 0.95f)
+                            color = Color.White
                         )
                     }
+                }
+            }
 
-                    // Download status
-                    if (isDownloaded) {
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.CheckCircle,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(16.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "İndirildi",
-                                fontFamily = PoppinsFontFamily,
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 12.sp,
-                                color = Color.White
-                            )
-                        }
-                    }
-
-                    // Download progress
-                    if (downloadProgress > 0 && downloadProgress < 100) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        LinearProgressIndicator(
+            // Download progress overlay (aynı kalıyor)
+            if (downloadProgress > 0 && downloadProgress < 100) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.7f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator(
                             progress = downloadProgress / 100f,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(4.dp),
+                            modifier = Modifier.size(48.dp),
                             color = Color.White,
-                            trackColor = Color.White.copy(alpha = 0.3f)
+                            strokeWidth = 4.dp
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "$downloadProgress%",
+                            fontFamily = PoppinsFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = Color.White
                         )
                     }
                 }
             }
         }
+    }
+}
+
+/**
+ * ✨ YENİ: Download Badge Component
+ * Küçük, yuvarlak badge - indirme durumunu gösterir
+ */
+@Composable
+private fun DownloadBadge(
+    text: String,
+    backgroundColor: Color,
+    textColor: Color
+) {
+    Surface(
+        color = backgroundColor,
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier.wrapContentSize()
+    ) {
+        Text(
+            text = text,
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 11.sp,
+            color = textColor,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+        )
     }
 }

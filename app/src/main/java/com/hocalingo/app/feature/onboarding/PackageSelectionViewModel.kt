@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hocalingo.app.core.common.DebugHelper
 import com.hocalingo.app.core.base.Result
+import com.hocalingo.app.data.PackageDownloadStatus
 import com.hocalingo.app.data.WordPackageDownloadState
 import com.hocalingo.app.data.WordPackageRepository
-import com.hocalingo.app.data.toProgressPercentage
 import com.hocalingo.app.database.JsonLoader
 import com.hocalingo.app.database.MainDatabaseSeeder
 import com.hocalingo.app.database.HocaLingoDatabase
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * PackageSelectionViewModel - FIREBASE VERSION
+ * PackageSelectionViewModel - FIREBASE VERSION + DOWNLOAD STATUS
  *
  * Package: app/src/main/java/com/hocalingo/app/feature/onboarding/
  *
@@ -31,13 +31,14 @@ import javax.inject.Inject
  * ✅ Progress tracking eklendi (0-100%)
  * ✅ WordPackageRepository kullanılıyor
  * ✅ JsonLoader backward compatibility korundu
+ * ✨ YENİ: Package download status tracking (badge için)
  */
 @HiltViewModel
 class PackageSelectionViewModel @Inject constructor(
     private val jsonLoader: JsonLoader,
     private val database: HocaLingoDatabase,
     private val databaseSeeder: MainDatabaseSeeder,
-    private val packageRepository: WordPackageRepository // ✅ YENİ: Firebase repository
+    private val packageRepository: WordPackageRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PackageSelectionUiState())
@@ -66,31 +67,37 @@ class PackageSelectionViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, error = null) }
 
             try {
-                // Check which packages are downloaded
-                val downloadedPackages = database.wordPackageDao().getActivePackages()
-                val downloadedIds = downloadedPackages.map { it.packageId }.toSet()
+                // Create default package list
+                val packages = createDefaultPackages()
 
-                DebugHelper.log("İndirilen paketler: $downloadedIds")
+                // ✨ YENİ: Her paket için download status'ü hesapla
+                val packagesWithStatus = packages.map { pkg ->
+                    val status = packageRepository.getPackageDownloadStatus(pkg.id)
 
-                // Create package list with download status
-                val packages = createDefaultPackages().map { pkg ->
+                    val newWordsCount = when (status) {
+                        is PackageDownloadStatus.HasNewWords -> status.newWordsCount
+                        else -> 0
+                    }
+
                     pkg.copy(
-                        isDownloaded = downloadedIds.contains(pkg.id),
-                        downloadProgress = if (downloadedIds.contains(pkg.id)) 100 else 0
+                        downloadStatus = status,
+                        newWordsCount = newWordsCount,
+                        isDownloaded = status is PackageDownloadStatus.FullyDownloaded, // Backward compatibility
+                        downloadProgress = if (status is PackageDownloadStatus.FullyDownloaded) 100 else 0
                     )
                 }
 
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        packages = packages
+                        packages = packagesWithStatus
                     )
                 }
 
-                DebugHelper.log("Packages yüklendi: ${packages.size} paket")
+                DebugHelper.log("Packages yüklendi: ${packagesWithStatus.size} paket")
 
             } catch (e: Exception) {
-                DebugHelper.logError("Packages yükleme hatası", e)
+                DebugHelper.logError("Package loading hatası", e)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -98,105 +105,52 @@ class PackageSelectionViewModel @Inject constructor(
                     )
                 }
             }
-        }
-    }
 
-    private fun createDefaultPackages(): List<PackageInfo> {
-        return listOf(
-            PackageInfo(
-                id = "a1_en_tr_test_v1",
-                level = "A1",
-                name = "Başlangıç",
-                description = "Temel kelimeler ve günlük ifadeler",
-                wordCount = 50,
-                isDownloaded = false,
-                downloadProgress = 0,
-                color = "#4CAF50"
-            ),
-            PackageInfo(
-                id = "a2_en_tr_v1",
-                level = "A2",
-                name = "Temel",
-                description = "Günlük rutinler ve basit konuşmalar",
-                wordCount = 150,
-                isDownloaded = false,
-                downloadProgress = 0,
-                color = "#2196F3"
-            ),
-            PackageInfo(
-                id = "b1_en_tr_v1",
-                level = "B1",
-                name = "Orta",
-                description = "İş ve seyahat konuları",
-                wordCount = 200,
-                isDownloaded = false,
-                downloadProgress = 0,
-                color = "#FF9800"
-            ),
-            PackageInfo(
-                id = "b2_en_tr_v1",
-                level = "B2",
-                name = "Orta Üstü",
-                description = "Soyut konular ve detaylı tartışmalar",
-                wordCount = 250,
-                isDownloaded = false,
-                downloadProgress = 0,
-                color = "#FF5722"
-            ),
-            PackageInfo(
-                id = "c1_en_tr_v1",
-                level = "C1",
-                name = "İleri",
-                description = "Karmaşık konular ve deyimler",
-                wordCount = 500,
-                isDownloaded = false,
-                downloadProgress = 0,
-                color = "#9C27B0"
-            ),
-            PackageInfo(
-                id = "c2_en_tr_v1",
-                level = "C2",
-                name = "Uzman",
-                description = "Ana dil seviyesi kelime hazinesi",
-                wordCount = 300,
-                isDownloaded = false,
-                downloadProgress = 0,
-                color = "#673AB7"
-            )
-        )
+            DebugHelper.log("=== PACKAGES YÜKLEME TAMAMLANDI ===")
+        }
     }
 
     private fun selectPackage(packageId: String) {
-        viewModelScope.launch {
-            DebugHelper.log("=== PAKET SEÇİLDİ: $packageId ===")
-
-            // State'i güncelle
-            _uiState.update { it.copy(selectedPackageId = packageId) }
-
-            val selectedPackage = _uiState.value.packages.find { it.id == packageId }
-            DebugHelper.log("Seçilen paket: $selectedPackage")
-
-            if (selectedPackage?.isDownloaded == true) {
-                DebugHelper.log("Paket indirilmiş, kelime seçimine geçiliyor")
-                _effect.emit(PackageSelectionEffect.NavigateToWordSelection(packageId))
-            } else {
-                DebugHelper.log("Paket indirilmemiş, state sadece güncellendi")
-            }
-        }
+        DebugHelper.log("Paket seçildi: $packageId")
+        _uiState.update { it.copy(selectedPackageId = packageId) }
     }
 
     private fun downloadPackage(packageId: String) {
         viewModelScope.launch {
             DebugHelper.log("=== PAKET İNDİRME BAŞLADI: $packageId ===")
 
-            // Sadece A1 paketi mevcut (şimdilik)
-            if (packageId != "a1_en_tr_test_v1") {
+            val selectedPackage = _uiState.value.packages.find { it.id == packageId }
+            if (selectedPackage == null) {
                 _effect.emit(
                     PackageSelectionEffect.ShowMessage(
-                        "Bu paket yakında eklenecek! A1 paketi ile devam edebilirsiniz."
+                        "Lütfen önce bir paket seçin."
                     )
                 )
                 return@launch
+            }
+
+            // ✨ YENİ: Eğer paket zaten indirilmişse, direkt loading animation göster
+            if (selectedPackage.isDownloaded) {
+                DebugHelper.log("Paket zaten indirilmiş, direkt açılıyor...")
+                _effect.emit(PackageSelectionEffect.ShowLoadingAnimation(packageId))
+                return@launch
+            }
+
+            // Eğer ilk paket değilse ve test paketi indirilmemişse, uyar
+            if (packageId != "a1_en_tr_test_v1") {
+                val testPackageDownloaded = when (packageRepository.isPackageDownloaded("a1_en_tr_test_v1")) {
+                    is Result.Success -> (packageRepository.isPackageDownloaded("a1_en_tr_test_v1") as Result.Success).data
+                    else -> false
+                }
+
+                if (!testPackageDownloaded) {
+                    _effect.emit(
+                        PackageSelectionEffect.ShowMessage(
+                            "Lütfen önce A1 paketi ile devam edebilirsiniz."
+                        )
+                    )
+                    return@launch
+                }
             }
 
             try {
@@ -208,7 +162,7 @@ class PackageSelectionViewModel @Inject constructor(
                     return@launch
                 }
 
-                // ✅ YENİ: Firebase Repository ile progress tracking
+                // Firebase Repository ile progress tracking
                 packageRepository.downloadPackageWithProgress(packageId).collect { state ->
                     when (state) {
                         is WordPackageDownloadState.Idle -> {
@@ -237,8 +191,8 @@ class PackageSelectionViewModel @Inject constructor(
                         is WordPackageDownloadState.Success -> {
                             DebugHelper.logSuccess("🎉 DOWNLOAD BAŞARILI: ${state.wordCount} kelime!")
 
-                            // Paketleri yeniden yükle
-                            loadPackages()
+                            // ✨ YENİ: Sadece ilgili paketin status'ünü güncelle (yanıp sönme yok!)
+                            updateSinglePackageStatus(packageId)
 
                             _effect.emit(
                                 PackageSelectionEffect.ShowMessage(
@@ -246,8 +200,8 @@ class PackageSelectionViewModel @Inject constructor(
                                 )
                             )
 
-                            // Kelime seçimine geç
-                            _effect.emit(PackageSelectionEffect.NavigateToWordSelection(packageId))
+                            // ✨ YENİ: 3 saniye loading animation göster
+                            _effect.emit(PackageSelectionEffect.ShowLoadingAnimation(packageId))
                         }
 
                         is WordPackageDownloadState.Error -> {
@@ -279,6 +233,52 @@ class PackageSelectionViewModel @Inject constructor(
             DebugHelper.log("=== PAKET İNDİRME BİTTİ ===")
         }
     }
+
+    /**
+     * ✨ YENİ: Tek bir paketin status'ünü güncelle (yanıp sönme olmadan)
+     */
+    private fun updateSinglePackageStatus(packageId: String) {
+        viewModelScope.launch {
+            val status = packageRepository.getPackageDownloadStatus(packageId)
+
+            val newWordsCount = when (status) {
+                is PackageDownloadStatus.HasNewWords -> status.newWordsCount
+                else -> 0
+            }
+
+            val packages = _uiState.value.packages.toMutableList()
+            val index = packages.indexOfFirst { it.id == packageId }
+
+            if (index != -1) {
+                packages[index] = packages[index].copy(
+                    downloadStatus = status,
+                    newWordsCount = newWordsCount,
+                    isDownloaded = status is PackageDownloadStatus.FullyDownloaded,
+                    downloadProgress = if (status is PackageDownloadStatus.FullyDownloaded) 100 else 0
+                )
+
+                _uiState.update { it.copy(packages = packages) }
+                DebugHelper.log("✅ Paket status güncellendi: $packageId")
+            }
+        }
+    }
+
+    private fun createDefaultPackages(): List<PackageInfo> {
+        return listOf(
+            PackageInfo(
+                id = "a1_en_tr_test_v1",
+                level = "A1",
+                name = "Başlangıç", // Türkçe
+                description = "Temel seviye kelimeler",
+                wordCount = 50,
+                isDownloaded = false,
+                color = "#4CAF50"
+            )
+            // Diğer paketler Firebase Storage'a eklenince buraya eklenecek:
+            // PackageInfo(id = "a2_en_tr_v1", level = "A2", name = "Temel", ...),
+            // PackageInfo(id = "b1_en_tr_v1", level = "B1", name = "Orta Seviye", ...),
+        )
+    }
 }
 
 // UI State
@@ -298,7 +298,10 @@ data class PackageInfo(
     val wordCount: Int,
     val isDownloaded: Boolean,
     val downloadProgress: Int = 0,
-    val color: String
+    val color: String,
+    // ✨ YENİ: Download status fields
+    val downloadStatus: PackageDownloadStatus = PackageDownloadStatus.NotDownloaded,
+    val newWordsCount: Int = 0  // Kaç yeni kelime var
 )
 
 // Events
@@ -313,4 +316,5 @@ sealed interface PackageSelectionEffect {
     data class NavigateToWordSelection(val packageId: String) : PackageSelectionEffect
     data class ShowDownloadDialog(val packageId: String) : PackageSelectionEffect
     data class ShowMessage(val message: String) : PackageSelectionEffect
+    data class ShowLoadingAnimation(val packageId: String) : PackageSelectionEffect // ✨ YENİ
 }

@@ -220,7 +220,7 @@ private fun FreeUserContent(
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Default.Lock,
+                imageVector = Icons.Default.AutoAwesome,
                 contentDescription = null,
                 tint = Color(0xFFFF9800),
                 modifier = Modifier.size(50.dp)

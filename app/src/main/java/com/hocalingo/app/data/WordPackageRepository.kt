@@ -22,6 +22,7 @@ import javax.inject.Singleton
  * - Firebase DataSource ile koordinasyon
  * - Database işlemleri
  * - Progress tracking relay
+ * - Package download status check (NEW)
  */
 @Singleton
 class WordPackageRepository @Inject constructor(
@@ -49,6 +50,71 @@ class WordPackageRepository @Inject constructor(
         } catch (e: Exception) {
             DebugHelper.logError("Package check hatası", e)
             Result.Error(AppError.Unknown(e))
+        }
+    }
+
+    /**
+     * ✨ NEW: Get package download status for badge display
+     *
+     * Compares Firebase word IDs with local downloaded word IDs to determine status.
+     *
+     * @param packageId The package to check
+     * @return PackageDownloadStatus indicating what badge to show
+     */
+    suspend fun getPackageDownloadStatus(packageId: String): PackageDownloadStatus = withContext(Dispatchers.IO) {
+        try {
+            DebugHelper.log("📊 Checking download status for: $packageId")
+
+            // 1. Get Firebase metadata (includes wordIds array)
+            val metadataResult = firebaseDataSource.getPackageMetadata(packageId)
+            if (metadataResult !is Result.Success) {
+                DebugHelper.logError("Metadata alınamadı, default NotDownloaded dönülüyor")
+                return@withContext PackageDownloadStatus.NotDownloaded
+            }
+
+            val metadata = metadataResult.data
+            val firebaseWordIds = metadata.wordIds?.toSet() ?: emptySet()
+
+            if (firebaseWordIds.isEmpty()) {
+                DebugHelper.logError("⚠️ Firebase'de wordIds bulunamadı! Firestore'a wordIds array'i eklemen gerekiyor.")
+                return@withContext PackageDownloadStatus.NotDownloaded
+            }
+
+            DebugHelper.log("Firebase word IDs: ${firebaseWordIds.size} kelime")
+
+            // 2. Get local downloaded word IDs
+            val localConcepts = database.conceptDao().getConceptsByPackage(packageId)
+            val localWordIds = localConcepts.map { it.id }.toSet()
+
+            DebugHelper.log("Local downloaded IDs: ${localWordIds.size} kelime")
+
+            // 3. Compare and determine status
+            return@withContext when {
+                localWordIds.isEmpty() -> {
+                    // No words downloaded
+                    DebugHelper.log("Status: NOT_DOWNLOADED")
+                    PackageDownloadStatus.NotDownloaded
+                }
+
+                firebaseWordIds == localWordIds -> {
+                    // All words downloaded
+                    DebugHelper.log("Status: FULLY_DOWNLOADED")
+                    PackageDownloadStatus.FullyDownloaded
+                }
+
+                else -> {
+                    // Some words not downloaded (can be old or new)
+                    val missingWordIds = firebaseWordIds - localWordIds
+                    val newWordsCount = missingWordIds.size
+                    DebugHelper.log("Status: HAS_NEW_WORDS ($newWordsCount kelime eksik)")
+                    PackageDownloadStatus.HasNewWords(newWordsCount)
+                }
+            }
+
+        } catch (e: Exception) {
+            DebugHelper.logError("Download status kontrolü hatası", e)
+            // Return NotDownloaded as fallback
+            PackageDownloadStatus.NotDownloaded
         }
     }
 
