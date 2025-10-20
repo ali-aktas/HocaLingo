@@ -197,7 +197,7 @@ class WordSelectionViewModel @Inject constructor(
 
             try {
                 // ✅ PHASE 1: Animation delay
-                delay(100)
+                delay(50)
 
                 // 1. Select in database
                 repository.selectWord(conceptId, packageId)
@@ -218,7 +218,7 @@ class WordSelectionViewModel @Inject constructor(
                 }
 
                 // ✅ PHASE 1: Render delay
-                delay(50)
+                delay(20)
 
                 // 5. Next word
                 moveToNextWord()
@@ -242,7 +242,7 @@ class WordSelectionViewModel @Inject constructor(
             _uiState.update { it.copy(isProcessingSwipe = true) }
 
             try {
-                delay(100)
+                delay(50)
 
                 // Hide in database
                 repository.hideWord(conceptId, packageId)
@@ -258,7 +258,7 @@ class WordSelectionViewModel @Inject constructor(
                     )
                 }
 
-                delay(50)
+                delay(20)
 
                 moveToNextWord()
 
@@ -313,29 +313,50 @@ class WordSelectionViewModel @Inject constructor(
             DebugHelper.logWordSelection("Undoing: ${lastAction.conceptId} - ${lastAction.status}")
 
             try {
-                // Delete selection
+                // 1. Delete selection from database
                 repository.deleteSelection(lastAction.conceptId)
 
-                // Update counts
+                // 2. Update counts
                 when (lastAction.status) {
                     SelectionStatus.SELECTED -> {
                         _uiState.update {
                             it.copy(
                                 selectedCount = (it.selectedCount - 1).coerceAtLeast(0),
-                                todaySelectionCount = (it.todaySelectionCount - 1).coerceAtLeast(0)
+                                todaySelectionCount = (it.todaySelectionCount - 1).coerceAtLeast(0),
+                                processedWords = (it.processedWords - 1).coerceAtLeast(0)
                             )
                         }
                     }
                     SelectionStatus.HIDDEN -> {
                         _uiState.update {
-                            it.copy(hiddenCount = (it.hiddenCount - 1).coerceAtLeast(0))
+                            it.copy(
+                                hiddenCount = (it.hiddenCount - 1).coerceAtLeast(0),
+                                processedWords = (it.processedWords - 1).coerceAtLeast(0)
+                            )
                         }
                     }
                     else -> {}
                 }
 
-                _effect.emit(WordSelectionEffect.ShowUndoMessage)
-                loadWords()
+                // 3. Bring back the card
+                val currentState = _uiState.value
+                val previousIndex = (currentState.currentWordIndex - 1).coerceAtLeast(0)
+
+                val undoneWord = currentState.remainingWords.find { it.id == lastAction.conceptId }
+
+                if (undoneWord != null) {
+                    _uiState.update {
+                        it.copy(
+                            currentWordIndex = previousIndex,
+                            currentWord = undoneWord,
+                            isCompleted = false
+                        )
+                    }
+                    DebugHelper.logWordSelection("Card restored: ${undoneWord.english}")
+                }
+
+                // 4. Show undo message
+                _uiState.update { it.copy(isProcessingSwipe = false) }
 
             } catch (e: Exception) {
                 DebugHelper.logError("Undo error", e)

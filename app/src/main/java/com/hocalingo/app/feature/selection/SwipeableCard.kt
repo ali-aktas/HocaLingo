@@ -1,9 +1,6 @@
 package com.hocalingo.app.feature.selection
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
@@ -19,7 +16,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.Font
@@ -42,18 +38,15 @@ private val PoppinsFontFamily = FontFamily(
 )
 
 /**
- * SwipeableCard - PHASE 2 COMPLETE
+ * SwipeableCard.kt
  *
- * ✅ Threshold reduced: 25% → 15% (Tinder-level comfort)
- * ✅ Animation duration: 300ms → 500ms (smooth completion)
- * ✅ FastOutSlowInEasing for natural feel
- * ✅ Velocity-based auto-complete (1000px/s threshold)
- * ✅ Cards exit at 180% screen width (fully visible until off-screen)
- * ✅ VelocityTracker for fast swipe detection
- * ✅ Smooth rotation synced with animation
- * ✅ Progressive visual feedback with indicators
+ * Package: app/src/main/java/com/hocalingo/app/feature/selection/
  *
- * Package: feature/selection/
+ * ✅ SORUNLAR ÇÖZÜLdü:
+ * - Her kart için state reset ediliyor
+ * - Direction yazıları düzgün kaybolup gösteriliyor
+ * - Tüm kartların yazıları görünüyor
+ * - Kaydırma her yönde düzgün çalışıyor
  */
 @Composable
 fun SwipeableCard(
@@ -70,71 +63,40 @@ fun SwipeableCard(
     val screenWidth = configuration.screenWidthDp.dp
     val density = LocalDensity.current
 
-    // ✅ PHASE 2: Reduced threshold from 25% to 15%
     val swipeThreshold = with(density) { (screenWidth.toPx() * 0.15f) }
 
-    // ✅ PHASE 2: Velocity threshold for auto-complete (fast swipe)
-    val velocityThreshold = 1000f // px/sec
+    // ✅ FIX: Her kart için benzersiz key
+    val cardKey = remember(word, translation) { "$word-$translation-${System.currentTimeMillis()}" }
 
-    val cardKey = "$word-$translation"
+    // ✅ FIX: State'ler her kart için sıfırlanıyor
     val offsetX = remember(cardKey) { Animatable(0f) }
     val offsetY = remember(cardKey) { Animatable(0f) }
     val rotation = remember(cardKey) { Animatable(0f) }
-    val scale = remember(cardKey) { Animatable(1f) }
 
     val scope = rememberCoroutineScope()
 
+    // ✅ FIX: Her kart için sıfırlanan flag
+    var isSwipeTriggered by remember(cardKey) { mutableStateOf(false) }
     var isDragging by remember(cardKey) { mutableStateOf(false) }
-    var hasTriggeredAction by remember(cardKey) { mutableStateOf(false) }
 
-    // ✅ PHASE 2: Velocity tracker for fast swipe detection
-    val velocityTracker = remember(cardKey) { VelocityTracker() }
+    // ✅ FIX: Alpha değerleri basitleştirildi - derivedStateOf kaldırıldı
+    val leftIndicatorAlpha: Float = if (offsetX.value < 0 && !isSwipeTriggered) {
+        (abs(offsetX.value) / swipeThreshold).coerceIn(0f, 1f)
+    } else 0f
 
-    // Progressive indicators
-    val leftIndicatorAlpha: Float by remember {
-        derivedStateOf {
-            if (offsetX.value < 0) {
-                (abs(offsetX.value) / swipeThreshold).coerceIn(0f, 1f)
-            } else 0f
-        }
-    }
+    val rightIndicatorAlpha: Float = if (offsetX.value > 0 && !isSwipeTriggered) {
+        (offsetX.value / swipeThreshold).coerceIn(0f, 1f)
+    } else 0f
 
-    val rightIndicatorAlpha: Float by remember {
-        derivedStateOf {
-            if (offsetX.value > 0) {
-                (offsetX.value / swipeThreshold).coerceIn(0f, 1f)
-            } else 0f
-        }
-    }
+    val cardScale: Float = 1f - (abs(offsetX.value) / with(density) { screenWidth.toPx() } * 0.05f).coerceIn(0f, 0.1f)
 
-    val cardScale: Float by remember {
-        derivedStateOf {
-            with(density) {
-                1f - (abs(offsetX.value) / (screenWidth.toPx() * 2)) * 0.1f
-            }
-        }
-    }
-
-    val cardContentAlpha: Float by remember {
-        derivedStateOf {
-            if (hasTriggeredAction) {
-                val screenWidthPx = with(density) { screenWidth.toPx() }
-                val fadeProgress = (abs(offsetX.value) / (screenWidthPx * 0.3f)).coerceIn(0f, 1f)
-                1f - fadeProgress
-            } else {
-                1f
-            }
-        }
-    }
-
-    // Reset on card change
+    // ✅ FIX: Kart değişince tüm state'ler sıfırlanıyor
     LaunchedEffect(cardKey) {
         offsetX.snapTo(0f)
         offsetY.snapTo(0f)
         rotation.snapTo(0f)
-        scale.snapTo(1f)
+        isSwipeTriggered = false
         isDragging = false
-        hasTriggeredAction = false
     }
 
     Box(
@@ -142,7 +104,7 @@ fun SwipeableCard(
             .fillMaxWidth()
             .height(420.dp)
     ) {
-        // Background card preview
+        // Background card (next card preview)
         if (nextWord != null && nextTranslation != null) {
             Card(
                 modifier = Modifier
@@ -173,7 +135,8 @@ fun SwipeableCard(
                             fontFamily = PoppinsFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 32.sp,
-                            color = Color.White.copy(alpha = 0.7f)
+                            color = Color.White.copy(alpha = 0.7f),
+                            textAlign = TextAlign.Center
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
@@ -181,7 +144,8 @@ fun SwipeableCard(
                             fontFamily = PoppinsFontFamily,
                             fontWeight = FontWeight.Medium,
                             fontSize = 20.sp,
-                            color = Color.White.copy(alpha = 0.6f)
+                            color = Color.White.copy(alpha = 0.6f),
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
@@ -202,8 +166,8 @@ fun SwipeableCard(
                 }
                 .graphicsLayer {
                     rotationZ = rotation.value
-                    scaleX = scale.value * cardScale
-                    scaleY = scale.value * cardScale
+                    scaleX = cardScale
+                    scaleY = cardScale
                 }
                 .shadow(
                     elevation = 16.dp,
@@ -211,145 +175,59 @@ fun SwipeableCard(
                 )
                 .pointerInput(cardKey) {
                     detectDragGestures(
-                        onDragStart = { offset ->
+                        onDragStart = {
                             isDragging = true
-                            hasTriggeredAction = false
-                            velocityTracker.resetTracking()
                         },
                         onDragEnd = {
-                            scope.launch {
-                                isDragging = false
+                            isDragging = false
 
-                                // ✅ PHASE 2: Calculate velocity
-                                val velocity = velocityTracker.calculateVelocity()
-                                val velocityX = velocity.x
+                            // ✅ FIX: Threshold kontrolü basitleştirildi
+                            if (!isSwipeTriggered) {
+                                if (abs(offsetX.value) >= swipeThreshold) {
+                                    // Swipe completed
+                                    isSwipeTriggered = true
 
-                                when {
-                                    // ✅ PHASE 2: Fast swipe right (velocity-based)
-                                    velocityX > velocityThreshold && !hasTriggeredAction -> {
-                                        hasTriggeredAction = true
+                                    scope.launch {
+                                        // Animate off screen
+                                        val targetX = if (offsetX.value > 0) {
+                                            with(density) { screenWidth.toPx() * 1.5f }
+                                        } else {
+                                            with(density) { -screenWidth.toPx() * 1.5f }
+                                        }
+
                                         launch {
-                                            // ✅ PHASE 2: Exit at 180% with 500ms smooth animation
                                             offsetX.animateTo(
-                                                targetValue = size.width.toFloat() * 1.8f,
-                                                animationSpec = tween(
-                                                    durationMillis = 500,
-                                                    easing = FastOutSlowInEasing
-                                                )
+                                                targetValue = targetX,
+                                                animationSpec = tween(300)
                                             )
                                         }
+
                                         launch {
+                                            val targetRotation = if (offsetX.value > 0) 25f else -25f
                                             rotation.animateTo(
-                                                targetValue = 35f,
-                                                animationSpec = tween(
-                                                    durationMillis = 500,
-                                                    easing = FastOutSlowInEasing
-                                                )
+                                                targetValue = targetRotation,
+                                                animationSpec = tween(300)
                                             )
                                         }
-                                        onSwipeRight()
+
+                                        // ✅ FIX: Callback doğru yönde çağrılıyor
+                                        if (offsetX.value > 0) {
+                                            onSwipeRight()
+                                        } else {
+                                            onSwipeLeft()
+                                        }
                                     }
-
-                                    // ✅ PHASE 2: Fast swipe left (velocity-based)
-                                    velocityX < -velocityThreshold && !hasTriggeredAction -> {
-                                        hasTriggeredAction = true
+                                } else {
+                                    // Return to center
+                                    scope.launch {
                                         launch {
-                                            offsetX.animateTo(
-                                                targetValue = -size.width.toFloat() * 1.8f,
-                                                animationSpec = tween(
-                                                    durationMillis = 500,
-                                                    easing = FastOutSlowInEasing
-                                                )
-                                            )
+                                            offsetX.animateTo(0f, animationSpec = tween(300))
                                         }
                                         launch {
-                                            rotation.animateTo(
-                                                targetValue = -35f,
-                                                animationSpec = tween(
-                                                    durationMillis = 500,
-                                                    easing = FastOutSlowInEasing
-                                                )
-                                            )
-                                        }
-                                        onSwipeLeft()
-                                    }
-
-                                    // ✅ PHASE 2: Threshold-based right swipe (15%)
-                                    offsetX.value > swipeThreshold && !hasTriggeredAction -> {
-                                        hasTriggeredAction = true
-                                        launch {
-                                            offsetX.animateTo(
-                                                targetValue = size.width.toFloat() * 1.8f,
-                                                animationSpec = tween(
-                                                    durationMillis = 500,
-                                                    easing = FastOutSlowInEasing
-                                                )
-                                            )
+                                            offsetY.animateTo(0f, animationSpec = tween(300))
                                         }
                                         launch {
-                                            rotation.animateTo(
-                                                targetValue = 35f,
-                                                animationSpec = tween(
-                                                    durationMillis = 500,
-                                                    easing = FastOutSlowInEasing
-                                                )
-                                            )
-                                        }
-                                        onSwipeRight()
-                                    }
-
-                                    // ✅ PHASE 2: Threshold-based left swipe (15%)
-                                    offsetX.value < -swipeThreshold && !hasTriggeredAction -> {
-                                        hasTriggeredAction = true
-                                        launch {
-                                            offsetX.animateTo(
-                                                targetValue = -size.width.toFloat() * 1.8f,
-                                                animationSpec = tween(
-                                                    durationMillis = 500,
-                                                    easing = FastOutSlowInEasing
-                                                )
-                                            )
-                                        }
-                                        launch {
-                                            rotation.animateTo(
-                                                targetValue = -35f,
-                                                animationSpec = tween(
-                                                    durationMillis = 500,
-                                                    easing = FastOutSlowInEasing
-                                                )
-                                            )
-                                        }
-                                        onSwipeLeft()
-                                    }
-
-                                    else -> {
-                                        // Return to center with spring
-                                        launch {
-                                            offsetX.animateTo(
-                                                0f,
-                                                spring(
-                                                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                                                    stiffness = Spring.StiffnessLow
-                                                )
-                                            )
-                                        }
-                                        launch {
-                                            offsetY.animateTo(
-                                                0f,
-                                                spring(
-                                                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                                                    stiffness = Spring.StiffnessLow
-                                                )
-                                            )
-                                        }
-                                        launch {
-                                            rotation.animateTo(
-                                                0f,
-                                                spring(
-                                                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                                                    stiffness = Spring.StiffnessLow
-                                                )
-                                            )
+                                            rotation.animateTo(0f, animationSpec = tween(300))
                                         }
                                     }
                                 }
@@ -358,19 +236,12 @@ fun SwipeableCard(
                         onDrag = { change, dragAmount ->
                             change.consume()
 
-                            // ✅ PHASE 2: Update velocity tracker
-                            velocityTracker.addPosition(
-                                change.uptimeMillis,
-                                change.position
-                            )
-
-                            if (!hasTriggeredAction) {
+                            if (!isSwipeTriggered) {
                                 scope.launch {
-                                    // Update position
                                     offsetX.snapTo(offsetX.value + dragAmount.x)
                                     offsetY.snapTo(offsetY.value + dragAmount.y * 0.3f)
 
-                                    // ✅ PHASE 2: Smooth rotation based on offset
+                                    // Smooth rotation
                                     val targetRotation = (offsetX.value / swipeThreshold * 15f).coerceIn(-15f, 15f)
                                     rotation.snapTo(targetRotation)
                                 }
@@ -387,44 +258,43 @@ fun SwipeableCard(
             )
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .alpha(cardContentAlpha), // ✅ EKLENEN SATIR
+                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                // Left indicator (Geç)
+                // ✅ FIX: Direction indicators - alpha dinamik
                 Text(
                     text = "Geç",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.ExtraBold,
-                    fontSize = 40.sp,
-                    color = Color(0xFFEF5350),
+                    fontSize = 32.sp,
+                    color = Color(0xFFDC2C29),
                     modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(start = 32.dp)
+                        .align(Alignment.TopStart)
+                        .padding(top = 24.dp)
+                        .padding(start = 42.dp)
                         .alpha(leftIndicatorAlpha)
                         .graphicsLayer {
-                            rotationZ = -15f
+                            rotationZ = -10f
                         }
                 )
 
-                // Right indicator (Öğren)
                 Text(
                     text = "Öğren",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.ExtraBold,
-                    fontSize = 40.sp,
-                    color = Color(0xFF66BB6A),
+                    fontSize = 32.sp,
+                    color = Color(0xFF14EA1F),
                     modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 32.dp)
+                        .align(Alignment.TopEnd)
+                        .padding(top = 24.dp)
+                        .padding(end = 42.dp)
                         .alpha(rightIndicatorAlpha)
                         .graphicsLayer {
-                            rotationZ = 15f
+                            rotationZ = 10f
                         }
                 )
 
-                // Word content
+                // ✅ FIX: Content her zaman görünür
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
@@ -449,19 +319,6 @@ fun SwipeableCard(
                         color = Color.White.copy(alpha = 0.9f),
                         textAlign = TextAlign.Center
                     )
-
-                    if (!example.isNullOrBlank()) {
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Text(
-                            text = example,
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp,
-                            color = Color.White.copy(alpha = 0.8f),
-                            textAlign = TextAlign.Center,
-                            lineHeight = 20.sp
-                        )
-                    }
                 }
             }
         }

@@ -1,6 +1,8 @@
 package com.hocalingo.app.feature.selection
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -8,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -60,12 +63,11 @@ fun WordSelectionScreen(
                 WordSelectionEffect.ShowCompletionMessage -> {
                     snackbarHostState.showSnackbar("Tebrikler! Kelimeler seçildi.")
                 }
-                WordSelectionEffect.ShowUndoMessage -> {
-                    snackbarHostState.showSnackbar("Geri alındı")
-                }
                 is WordSelectionEffect.ShowMessage -> {
                     snackbarHostState.showSnackbar(effect.message)
                 }
+
+                WordSelectionEffect.ShowUndoMessage -> TODO()
             }
         }
     }
@@ -196,8 +198,6 @@ private fun WordSelectionContent(
                 SwipeableCard(
                     word = currentWord.english,
                     translation = currentWord.turkish,
-                    // ✅ FIXED: exampleSentence → exampleEn
-                    example = currentWord.exampleEn,
                     nextWord = nextWord?.english,
                     nextTranslation = nextWord?.turkish,
                     onSwipeLeft = { onSwipeLeft(currentWord.id) },
@@ -213,16 +213,16 @@ private fun WordSelectionContent(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 24.dp), // ✅ 32dp → 24dp (4 buton için)
+                .padding(horizontal = 24.dp, vertical = 24.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // ✅ YENİ: Home button (solda)
+            // ✅ Home button (sol)
             SmallActionButton(
                 icon = Icons.Default.Home,
                 backgroundColor = Color(0xFF9C27B0), // Purple
                 contentDescription = "Home",
-                onClick = onNavigateToHome,
+                onClick = onNavigateToHome, // ✅ Direkt callback
                 enabled = !uiState.isProcessingSwipe
             )
 
@@ -230,7 +230,7 @@ private fun WordSelectionContent(
             ActionButton(
                 icon = Icons.Default.Close,
                 label = "Geç",
-                backgroundColor = if (isDarkTheme) Color(0xFFEF5350) else Color(0xFFEF5350),
+                backgroundColor = Color(0xFFEF5350),
                 contentDescription = "Skip",
                 onClick = {
                     uiState.currentWord?.let { word ->
@@ -244,7 +244,7 @@ private fun WordSelectionContent(
             ActionButton(
                 icon = Icons.Default.Check,
                 label = "Öğren",
-                backgroundColor = if (isDarkTheme) Color(0xFF66BB6A) else Color(0xFF66BB6A),
+                backgroundColor = Color(0xFF66C66A),
                 contentDescription = "Learn",
                 onClick = {
                     uiState.currentWord?.let { word ->
@@ -254,14 +254,89 @@ private fun WordSelectionContent(
                 enabled = !uiState.isProcessingSwipe
             )
 
-            // Undo button (sağda)
+            // ✅ Undo button (sağ)
             SmallActionButton(
                 icon = Icons.Default.Undo,
-                backgroundColor = if (isDarkTheme) Color(0xFF2196F3) else Color(0xFF2196F3),
+                backgroundColor = Color(0xFF2196F3),
                 contentDescription = "Undo",
                 onClick = onUndo,
                 enabled = uiState.canUndo && !uiState.isProcessingSwipe
             )
+        }
+
+// NOT: Eğer SmallActionButton ve ActionButton fonksiyonları yoksa, aşağıdaki kodları ekle:
+
+        @Composable
+        fun ActionButton(
+            icon: ImageVector,
+            label: String,
+            backgroundColor: Color,
+            contentDescription: String,
+            onClick: () -> Unit,
+            enabled: Boolean = true,
+            modifier: Modifier = Modifier
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = modifier
+            ) {
+                IconButton(
+                    onClick = onClick,
+                    enabled = enabled,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .background(
+                            color = if (enabled) backgroundColor else backgroundColor.copy(alpha = 0.5f),
+                            shape = CircleShape
+                        )
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = contentDescription,
+                        tint = Color.White,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = label,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    color = if (enabled) {
+                        MaterialTheme.colorScheme.onBackground
+                    } else {
+                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+                    }
+                )
+            }
+        }
+
+        @Composable
+        fun SmallActionButton(
+            icon: ImageVector,
+            backgroundColor: Color,
+            contentDescription: String,
+            onClick: () -> Unit,
+            enabled: Boolean = true
+        ) {
+            IconButton(
+                onClick = onClick,
+                enabled = enabled,
+                modifier = Modifier
+                    .size(56.dp)
+                    .background(
+                        color = if (enabled) backgroundColor else backgroundColor.copy(alpha = 0.5f),
+                        shape = CircleShape
+                    )
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = contentDescription,
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))

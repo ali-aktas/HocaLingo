@@ -53,7 +53,7 @@ fun LoadingAnimationDialog(
     var progress by remember { mutableStateOf(0f) }
 
     LaunchedEffect(Unit) {
-        val duration = 3000L // 3 saniye
+        val duration = 2000L // 2 saniye
         val steps = 60 // 60 FPS
         val delayTime = duration / steps
         val increment = 1f / steps
