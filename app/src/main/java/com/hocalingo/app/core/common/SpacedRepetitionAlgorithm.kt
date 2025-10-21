@@ -129,7 +129,7 @@ object SpacedRepetitionAlgorithm {
                     repetitions = currentProgress.repetitions + 1,
                     intervalDays = 0f, // Same day
                     easeFactor = max(MIN_EASE_FACTOR, currentProgress.easeFactor - 0.2f),
-                    nextReviewAt = currentTime + (10 * 60 * 1000),
+                    nextReviewAt = currentTime + (1 * 60 * 1000),
                     lastReviewAt = currentTime,
                     learningPhase = true,
                     sessionPosition = currentSessionMaxPosition + HARD_POSITION_INCREMENT,
@@ -202,10 +202,8 @@ object SpacedRepetitionAlgorithm {
      * ✅ Graduation criteria check
      */
     private fun shouldGraduate(successfulReviews: Int, hardPresses: Int): Boolean {
-        return successfulReviews >= MIN_SUCCESSFUL_REVIEWS &&
-                hardPresses <= MAX_HARD_PRESSES_TO_GRADUATE
+        return successfulReviews >= 3  // Sadece 3 successful yeterli
     }
-
     /**
      * ✅ Graduate to Review Phase
      */
