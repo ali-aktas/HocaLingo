@@ -334,11 +334,21 @@ class StudyViewModel @Inject constructor(
                         // 3. Increment AdMob study word counter
                         adMobManager.incrementStudyWordCount()
 
-                        // 4. INCREMENT INDEX (single place - always)
+                        // 4. QUEUE REORDERING for learning phase words
+                        if (updatedProgress.learningPhase && updatedProgress.sessionPosition != null) {
+                            // Word is still in learning - reinsert in queue based on difficulty
+                            DebugHelper.log("🔄 Learning phase word - reinserting with sessionPos=${updatedProgress.sessionPosition}")
+                            reinsertWordInQueue(currentQueueIndex, updatedProgress.sessionPosition!!)
+                        } else {
+                            // Word graduated or in review phase - remove from queue permanently
+                            DebugHelper.log("🎓 Graduated/Review word - removing from current queue")
+                        }
+
+                        // 5. INCREMENT INDEX (always move to next card)
                         currentQueueIndex++
                         DebugHelper.log("🔵 Index incremented: $currentQueueIndex / ${studyQueue.size}")
 
-                        // 5. Check rewarded ad (25 words)
+                        // 6. Check rewarded ad (25 words)
                         val shouldShowAd = adMobManager.shouldShowStudyRewardedAd()
                         val isAdLoaded = adMobManager.studyRewardedAdState.value is AdState.Loaded
 
@@ -358,21 +368,48 @@ class StudyViewModel @Inject constructor(
                             }
                         }
 
-                        // 6. Check queue completion
+                        // 7. Check queue completion
                         if (currentQueueIndex >= studyQueue.size) {
-                            DebugHelper.log("✅ All words completed!")
-                            _uiState.update {
-                                it.copy(
-                                    currentConcept = null,
-                                    showEmptyQueueMessage = true,
-                                    isCardFlipped = false
-                                )
+                            // Filter out graduated words, keep only learning phase words
+                            val learningWords = studyQueue.filter { word ->
+                                val progress = studyRepository.getCurrentProgress(word.id, direction)
+                                when (progress) {
+                                    is Result.Success -> progress.data?.learningPhase == true
+                                    is Result.Error -> false
+                                }
                             }
-                            completeSession()
+
+                            if (learningWords.isNotEmpty()) {
+                                // Update queue with only learning words
+                                studyQueue = learningWords
+                                currentQueueIndex = 0
+
+                                DebugHelper.log("🔄 Queue filtered: ${studyQueue.size} learning words remain (${learningWords.map { it.english }})")
+
+                                _uiState.update {
+                                    it.copy(
+                                        totalWordsInQueue = studyQueue.size,
+                                        remainingCards = studyQueue.size
+                                    )
+                                }
+
+                                loadNextWord()
+                            } else {
+                                // All words graduated - complete session
+                                DebugHelper.log("✅ All words completed and graduated!")
+                                _uiState.update {
+                                    it.copy(
+                                        currentConcept = null,
+                                        showEmptyQueueMessage = true,
+                                        isCardFlipped = false
+                                    )
+                                }
+                                completeSession()
+                            }
                             return@launch
                         }
 
-                        // 7. Check native ad (every 10 words)
+                        // 8. Check native ad (every 10 words)
                         if (currentQueueIndex > 0 && currentQueueIndex % 10 == 0) {
                             DebugHelper.log("🎯 10 words completed - showing native ad")
                             _uiState.update { it.copy(showNativeAd = true) }
@@ -380,7 +417,7 @@ class StudyViewModel @Inject constructor(
                             return@launch
                         }
 
-                        // 8. Load next word
+                        // 9. Load next word
                         loadNextWord()
                     }
 
@@ -556,6 +593,42 @@ class StudyViewModel @Inject constructor(
     }
 
     // ========== HELPER METHODS ==========
+
+    /**
+     * Reinserts a word in the queue based on session position using percentage-based spacing
+     * HARD (0-99):     45% of remaining queue
+     * MEDIUM (200-299): 75% of remaining queue
+     * EASY (300-399):  100% of remaining queue (end)
+     */
+    private fun reinsertWordInQueue(currentIndex: Int, sessionPosition: Int) {
+        if (currentIndex >= studyQueue.size) return
+
+        val word = studyQueue[currentIndex]
+        val mutableQueue = studyQueue.toMutableList()
+
+        // Remove word from current position
+        mutableQueue.removeAt(currentIndex)
+
+        // Calculate remaining queue size after removal
+        val remainingSize = mutableQueue.size
+
+        // Calculate offset based on session position percentage
+        val offsetPercentage = when {
+            sessionPosition < 100 -> 0.45f      // HARD: 45% of queue
+            sessionPosition in 200..299 -> 0.75f // MEDIUM: 75% of queue
+            else -> 1.0f                         // EASY: 100% (end of queue)
+        }
+
+        // Calculate new index (rounded down)
+        val offset = (remainingSize * offsetPercentage).toInt()
+        val newIndex = offset.coerceIn(0, remainingSize)
+
+        // Insert word at new position
+        mutableQueue.add(newIndex, word)
+        studyQueue = mutableQueue
+
+        DebugHelper.log("🔄 Reordered: ${word.english} | Queue: $remainingSize cards | Offset: ${offsetPercentage * 100}% = $offset cards | Position: $currentIndex → $newIndex")
+    }
 
     private fun createDefaultProgress(conceptId: Int, direction: StudyDirection) =
         WordProgressEntity(
