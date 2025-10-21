@@ -77,7 +77,7 @@ class ProfileViewModel @Inject constructor(
             ProfileEvent.OpenPrivacyPolicy -> openUrl("https://sites.google.com/view/hocalingoprivacypolicy/ana-sayfa")
             ProfileEvent.OpenTermsOfService -> openUrl("https://sites.google.com/view/hocalingo-kullanicisozlesmesi/ana-sayfa")
             ProfileEvent.OpenPlayStore -> openUrl("https://play.google.com/store/apps/details?id=com.hocalingo.app")
-            ProfileEvent.OpenSupport -> openUrl("mailto:support@hocalingo.com")
+            ProfileEvent.OpenSupport -> openUrl("mailto:aliaktasofficial@gmail.com")
 
         }
     }
