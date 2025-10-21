@@ -47,7 +47,7 @@ android {
     buildTypes {
         debug {
             isDebuggable = true
-            applicationIdSuffix = ".debug"
+            //applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
 
             // Debug için minify kapalı

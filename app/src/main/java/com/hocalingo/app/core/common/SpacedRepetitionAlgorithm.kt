@@ -6,7 +6,7 @@ import kotlin.math.min
 import com.hocalingo.app.database.entities.StudyDirection
 
 /**
- * ✅ FIXED SM-2 Spaced Repetition Algorithm - TRUE LEARNING VERSION
+ * ✅ OPTIMIZED SM-2 Spaced Repetition Algorithm - PRODUCTION READY
  *
  * Package: app/src/main/java/com/hocalingo/app/core/common/
  *
@@ -16,10 +16,14 @@ import com.hocalingo.app.database.entities.StudyDirection
  * 3. Session position = Aynı gün içinde sıralama (başa/ortaya/sona)
  * 4. Review phase = Gerçekten öğrenilmiş kelimeler için
  *
- * 🔥 SORUN GİDERİLDİ:
- * - ❌ İlk EASY'de 3 gün sonra → ✅ İlk EASY'de aynı gün sona
- * - ❌ 2 EASY yeterli → ✅ En az 3-4 başarılı deneme gerekli
- * - ❌ Kelime queue'dan çıkıyor → ✅ Learning'de kalıyor
+ * 🔥 V2 IMPROVEMENTS:
+ * - ✅ Review MEDIUM: Adaptive multiplier (interval-based behavior)
+ *   - 0-3 gün: 1.5x progression (gentle growth)
+ *   - 4-7 gün: 1.2x progression (moderate growth)
+ *   - 8-21 gün: 0.85x reduction (slight decrease)
+ *   - 21+ gün: 0.5x reduction (significant decrease)
+ * - ✅ Learning MEDIUM: +0.05 EaseFactor bonus
+ * - ✅ Semantically correct: "Zorlandım" = daha sık görmek istiyorum
  */
 object SpacedRepetitionAlgorithm {
 
@@ -57,7 +61,7 @@ object SpacedRepetitionAlgorithm {
     // ==================== MAIN ALGORITHM ====================
 
     /**
-     * ✅ FIXED: Calculate next review with proper learning phase handling
+     * ✅ OPTIMIZED: Calculate next review with adaptive MEDIUM behavior
      */
     fun calculateNextReview(
         currentProgress: WordProgressEntity,
@@ -68,7 +72,7 @@ object SpacedRepetitionAlgorithm {
         val todayEnd = getTodayEndTime(currentTime) // ✅ Bugünün sonu
 
         DebugHelper.log(
-            "🔥 SM-2 FIXED: quality=$quality, reps=${currentProgress.repetitions}, " +
+            "🔥 SM-2 V2: quality=$quality, reps=${currentProgress.repetitions}, " +
                     "learningPhase=${currentProgress.learningPhase}, " +
                     "hardPresses=${currentProgress.hardPresses ?: 0}, " +
                     "successfulReviews=${currentProgress.successfulReviews ?: 0}"
@@ -91,7 +95,7 @@ object SpacedRepetitionAlgorithm {
         val timeText = getTimeUntilReview(result.nextReviewAt)
         DebugHelper.log(
             "✅ RESULT: $phaseText, reps=${result.repetitions}, " +
-                    "interval=${result.intervalDays}d, next='$timeText'"
+                    "interval=${result.intervalDays}d, EF=${result.easeFactor}, next='$timeText'"
         )
 
         return result
@@ -104,7 +108,7 @@ object SpacedRepetitionAlgorithm {
      *
      * Mantık:
      * - HARD → En başa (position = current + 1), hardPresses++
-     * - MEDIUM → Ortaya (position = current + 5), successfulReviews++
+     * - MEDIUM → Ortaya (position = current + 5), successfulReviews++, hafif EF bonusu
      * - EASY → Sona (position = current + 10), successfulReviews++
      * - Graduation check: 3+ başarılı VE max 1 HARD
      * - nextReviewAt = Bugünün sonu (aynı gün içinde review)
@@ -125,7 +129,7 @@ object SpacedRepetitionAlgorithm {
                     repetitions = currentProgress.repetitions + 1,
                     intervalDays = 0f, // Same day
                     easeFactor = max(MIN_EASE_FACTOR, currentProgress.easeFactor - 0.2f),
-                    nextReviewAt = todayEnd, // ✅ Bugünün sonu
+                    nextReviewAt = currentTime + (10 * 60 * 1000),
                     lastReviewAt = currentTime,
                     learningPhase = true,
                     sessionPosition = currentSessionMaxPosition + HARD_POSITION_INCREMENT,
@@ -151,8 +155,8 @@ object SpacedRepetitionAlgorithm {
                     currentProgress.copy(
                         repetitions = newReps,
                         intervalDays = 0f, // Same day
-                        easeFactor = currentProgress.easeFactor, // No change
-                        nextReviewAt = todayEnd, // ✅ Bugünün sonu
+                        easeFactor = min(MAX_EASE_FACTOR, currentProgress.easeFactor + 0.05f), // ✅ FIX: Hafif bonus
+                        nextReviewAt = currentTime + (10 * 60 * 1000), // 10 dk sonra
                         lastReviewAt = currentTime,
                         learningPhase = true,
                         sessionPosition = currentSessionMaxPosition + MEDIUM_POSITION_INCREMENT,
@@ -179,7 +183,7 @@ object SpacedRepetitionAlgorithm {
                         repetitions = newReps,
                         intervalDays = 0f, // Same day
                         easeFactor = min(MAX_EASE_FACTOR, currentProgress.easeFactor + 0.1f),
-                        nextReviewAt = todayEnd, // ✅ Bugünün sonu
+                        nextReviewAt = currentTime + (60 * 60 * 1000), // 1 saat sonra
                         lastReviewAt = currentTime,
                         learningPhase = true,
                         sessionPosition = currentSessionMaxPosition + EASY_POSITION_INCREMENT,
@@ -226,7 +230,9 @@ object SpacedRepetitionAlgorithm {
     // ==================== REVIEW PHASE ====================
 
     /**
-     * ✅ Review Phase: Gerçek spaced repetition (SM-2)
+     * ✅ OPTIMIZED Review Phase: Gerçek spaced repetition (SM-2 + Adaptive MEDIUM)
+     *
+     * 🔧 V2: MEDIUM artık adaptive multiplier kullanıyor
      */
     private fun handleReviewPhase(
         currentProgress: WordProgressEntity,
@@ -257,16 +263,28 @@ object SpacedRepetitionAlgorithm {
             }
 
             QUALITY_MEDIUM -> {
-                DebugHelper.log("🟡 REVIEW MEDIUM: Moderate progression")
+                DebugHelper.log("🟡 REVIEW MEDIUM: Adaptive progression/reduction")
 
                 val newReps = currentProgress.repetitions + 1
                 val baseInterval = max(1f, currentProgress.intervalDays)
+                val newEaseFactor = updateEaseFactor(currentProgress.easeFactor, 4) // SM-2 quality 4
 
-                // ✅ Moderate multiplier (1.5x)
-                val calculatedInterval = baseInterval * 1.5f
+                // ✅ ADAPTIVE MULTIPLIER: Interval'a göre dinamik davranış
+                // "Zorlandım" semantiği: Küçük interval'da ilerlet, büyük interval'da geri çek
+                val mediumMultiplier = when {
+                    baseInterval <= 3f -> 1.5f      // 0-3 gün: Gentle progression (1→1.5, 3→4.5)
+                    baseInterval <= 7f -> 1.2f      // 4-7 gün: Hafif progression (5→6, 7→8.4)
+                    baseInterval <= 21f -> 0.85f    // 8-21 gün: Hafif reduction (14→11.9, 21→17.85)
+                    else -> 0.5f                     // 21+ gün: Ciddi reduction (30→15, 60→30)
+                }
+
+                val calculatedInterval = baseInterval * mediumMultiplier
                 val finalInterval = min(calculatedInterval, MAX_INTERVAL_DAYS)
 
-                val newEaseFactor = updateEaseFactor(currentProgress.easeFactor, 4) // SM-2 quality 4
+                DebugHelper.log(
+                    "🔧 MEDIUM: baseInterval=${baseInterval}d, multiplier=${mediumMultiplier}, " +
+                            "EF=${newEaseFactor}, finalInterval=${finalInterval}d"
+                )
 
                 currentProgress.copy(
                     repetitions = newReps,
