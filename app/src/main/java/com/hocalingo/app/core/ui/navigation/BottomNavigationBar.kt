@@ -3,10 +3,8 @@ package com.hocalingo.app.core.ui.navigation
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -16,7 +14,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -35,7 +32,6 @@ import com.hocalingo.app.HocaRoutes
 import com.hocalingo.app.R
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
 
-// Poppins font family
 private val PoppinsFontFamily = FontFamily(
     Font(R.font.poppins_regular, FontWeight.Normal),
     Font(R.font.poppins_medium, FontWeight.Medium),
@@ -43,16 +39,18 @@ private val PoppinsFontFamily = FontFamily(
 )
 
 /**
- * Professional Bottom Navigation - API 35 Compatible
+ * Professional Bottom Navigation - Fixed for All Devices
  *
- * ✅ Fixed gesture bar overlap with navigationBarsPadding()
- * ✅ Beautiful gradient maintained
- * ✅ Smooth animations
- * ✅ Rounded top corners
+ * ✅ Gesture navigation (swipe) - Works perfectly
+ * ✅ Button navigation (3 buttons) - No overlap, no shrinking
+ * ✅ Content height: 70dp (always consistent)
+ * ✅ Total height: 70dp + system bar padding (automatic)
  *
- * CRITICAL CHANGE:
- * - Added .navigationBarsPadding() to handle system gesture bar
- * - Prevents overlap with 3-button/gesture navigation
+ * CRITICAL FIX:
+ * - Card uses wrapContentHeight() instead of fixed height
+ * - Box inside Card has navigationBarsPadding()
+ * - Content (Row) has fixed 70dp height
+ * - Result: Content stays 70dp, total height adapts to system bars
  */
 @Composable
 fun HocaBottomNavigationBar(
@@ -62,7 +60,6 @@ fun HocaBottomNavigationBar(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination?.route
 
-    // Navigation items
     val bottomNavItems = remember {
         listOf(
             BottomNavItem(
@@ -97,20 +94,21 @@ fun HocaBottomNavigationBar(
         )
     }
 
-    // ✅ CRITICAL FIX: navigationBarsPadding() added
-    // This prevents overlap with system navigation bar (gesture/3-button)
+    // ✅ CRITICAL FIX:
+    // - Card height is wrapContentHeight (adapts to content)
+    // - Box inside has navigationBarsPadding() for system bars
+    // - Row has fixed 70dp height for consistent UI
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(70.dp)
-            .navigationBarsPadding(), // 🎯 KEY CHANGE: Handles gesture bar
+            .wrapContentHeight(), // 🎯 Adapts to content + system bars
         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
@@ -121,33 +119,23 @@ fun HocaBottomNavigationBar(
                     ),
                     shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
                 )
-                .border(
-                    width = 1.dp,
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            Color.White.copy(alpha = 0.3f),
-                            Color.White.copy(alpha = 0.1f),
-                            Color.White.copy(alpha = 0.3f)
-                        )
-                    ),
-                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-                )
+                .navigationBarsPadding() // 🎯 Handles system navigation bars
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
+                    .fillMaxWidth()
+                    .height(70.dp) // 🎯 Fixed content height - always 70dp
+                    .padding(horizontal = 8.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 bottomNavItems.forEach { item ->
-                    val isSelected = currentDestination?.startsWith(item.route) == true
-
-                    FixedNavItem(
+                    val isSelected = currentDestination == item.route
+                    BottomNavigationItem(
                         item = item,
                         isSelected = isSelected,
                         onClick = {
-                            if (!isSelected) {
+                            if (currentDestination != item.route) {
                                 navController.navigate(item.route) {
                                     popUpTo(navController.graph.startDestinationId) {
                                         saveState = true
@@ -165,15 +153,18 @@ fun HocaBottomNavigationBar(
 }
 
 @Composable
-private fun FixedNavItem(
+private fun BottomNavigationItem(
     item: BottomNavItem,
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scale by animateFloatAsState(
-        targetValue = if (isSelected) 1.2f else 1f,
-        animationSpec = tween(200),
+        targetValue = if (isSelected && item.isMainAction) 1.1f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
         label = "scale"
     )
 
@@ -248,7 +239,7 @@ fun shouldShowBottomNavigation(currentRoute: String?): Boolean {
         currentRoute == null -> false
         currentRoute.startsWith(HocaRoutes.SPLASH) -> false
         currentRoute.startsWith(HocaRoutes.AUTH) -> false
-        currentRoute.startsWith(HocaRoutes.ONBOARDING_INTRO) -> false // ✅ YENİ: Intro eklendi
+        currentRoute.startsWith(HocaRoutes.ONBOARDING_INTRO) -> false
         currentRoute.startsWith(HocaRoutes.ONBOARDING_LANGUAGE) -> false
         currentRoute.startsWith(HocaRoutes.ONBOARDING_LEVEL) -> false
         currentRoute.startsWith(HocaRoutes.WORD_SELECTION) -> false
