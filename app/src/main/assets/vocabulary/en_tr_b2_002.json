@@ -1,0 +1,1414 @@
+{
+  "package_info": {
+    "id": "en_tr_b2_002",
+    "version": "1.0.0",
+    "level": "B2",
+    "language_pair": "en_tr",
+    "total_words": 100,
+    "updated_at": "2025-10-24",
+    "description": "B2 level English-Turkish vocabulary package 2 - Advanced vocabulary",
+    "attribution": "HocaLingo vocabulary database"
+  },
+  "words": [
+    {
+      "id": 4100,
+      "english": "compensate",
+      "turkish": "telafi etmek",
+      "example": {
+        "en": "They will compensate you for the damage",
+        "tr": "Hasarı sana telafi edecekler"
+      },
+      "pronunciation": "ˈkɒmpenseɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4101,
+      "english": "compile",
+      "turkish": "derlemek",
+      "example": {
+        "en": "I need to compile all the data",
+        "tr": "Tüm verileri derlemem gerekiyor"
+      },
+      "pronunciation": "kəmˈpaɪl",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4102,
+      "english": "complement",
+      "turkish": "tamamlamak",
+      "example": {
+        "en": "This wine complements the meal",
+        "tr": "Bu şarap yemeği tamamlıyor"
+      },
+      "pronunciation": "ˈkɒmplɪment",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4103,
+      "english": "complex",
+      "turkish": "karmaşık",
+      "example": {
+        "en": "This is a complex problem",
+        "tr": "Bu karmaşık bir problem"
+      },
+      "pronunciation": "ˈkɒmpleks",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4104,
+      "english": "complicate",
+      "turkish": "karmaşıklaştırmak",
+      "example": {
+        "en": "Don't complicate things unnecessarily",
+        "tr": "İşleri gereksiz yere karmaşıklaştırma"
+      },
+      "pronunciation": "ˈkɒmplɪkeɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4105,
+      "english": "comply",
+      "turkish": "uymak",
+      "example": {
+        "en": "You must comply with the rules",
+        "tr": "Kurallara uymalısın"
+      },
+      "pronunciation": "kəmˈplaɪ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4106,
+      "english": "component",
+      "turkish": "bileşen",
+      "example": {
+        "en": "This is a key component",
+        "tr": "Bu önemli bir bileşen"
+      },
+      "pronunciation": "kəmˈpəʊnənt",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4107,
+      "english": "compose",
+      "turkish": "oluşturmak",
+      "example": {
+        "en": "Mozart composed many symphonies",
+        "tr": "Mozart birçok senfoni besteledi"
+      },
+      "pronunciation": "kəmˈpəʊz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4108,
+      "english": "compound",
+      "turkish": "bileşik",
+      "example": {
+        "en": "Water is a compound substance",
+        "tr": "Su bileşik bir maddedir"
+      },
+      "pronunciation": "ˈkɒmpaʊnd",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4109,
+      "english": "comprehend",
+      "turkish": "anlamak",
+      "example": {
+        "en": "I cannot comprehend this concept",
+        "tr": "Bu kavramı anlayamıyorum"
+      },
+      "pronunciation": "ˌkɒmprɪˈhend",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4110,
+      "english": "comprehensive",
+      "turkish": "kapsamlı",
+      "example": {
+        "en": "This is a comprehensive guide",
+        "tr": "Bu kapsamlı bir rehber"
+      },
+      "pronunciation": "ˌkɒmprɪˈhensɪv",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4111,
+      "english": "comprise",
+      "turkish": "içermek",
+      "example": {
+        "en": "The team comprises ten members",
+        "tr": "Ekip on üyeden oluşuyor"
+      },
+      "pronunciation": "kəmˈpraɪz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4112,
+      "english": "compromise",
+      "turkish": "uzlaşma",
+      "example": {
+        "en": "We reached a good compromise",
+        "tr": "İyi bir uzlaşmaya vardık"
+      },
+      "pronunciation": "ˈkɒmprəmaɪz",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4113,
+      "english": "conceal",
+      "turkish": "gizlemek",
+      "example": {
+        "en": "He tried to conceal the truth",
+        "tr": "Gerçeği gizlemeye çalıştı"
+      },
+      "pronunciation": "kənˈsiːl",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4114,
+      "english": "conceive",
+      "turkish": "tasarlamak",
+      "example": {
+        "en": "She conceived a brilliant plan",
+        "tr": "Parlak bir plan tasarladı"
+      },
+      "pronunciation": "kənˈsiːv",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4115,
+      "english": "concentrate",
+      "turkish": "konsantre olmak",
+      "example": {
+        "en": "I need to concentrate on my work",
+        "tr": "İşime konsantre olmam gerekiyor"
+      },
+      "pronunciation": "ˈkɒnsntreɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4116,
+      "english": "condemn",
+      "turkish": "kınamak",
+      "example": {
+        "en": "The world condemned the attack",
+        "tr": "Dünya saldırıyı kınadı"
+      },
+      "pronunciation": "kənˈdem",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4117,
+      "english": "conduct",
+      "turkish": "yürütmek",
+      "example": {
+        "en": "They conduct research at the university",
+        "tr": "Üniversitede araştırma yürütüyorlar"
+      },
+      "pronunciation": "kənˈdʌkt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4118,
+      "english": "confer",
+      "turkish": "danışmak",
+      "example": {
+        "en": "I need to confer with my lawyer",
+        "tr": "Avukatımla danışmam gerekiyor"
+      },
+      "pronunciation": "kənˈfɜː(r)",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4119,
+      "english": "confess",
+      "turkish": "itiraf etmek",
+      "example": {
+        "en": "He confessed to the crime",
+        "tr": "Suçu itiraf etti"
+      },
+      "pronunciation": "kənˈfes",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4120,
+      "english": "confident",
+      "turkish": "kendinden emin",
+      "example": {
+        "en": "She feels confident about the exam",
+        "tr": "Sınav konusunda kendinden emin hissediyor"
+      },
+      "pronunciation": "ˈkɒnfɪdənt",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4121,
+      "english": "confine",
+      "turkish": "hapsetmek",
+      "example": {
+        "en": "Don't confine yourself to one option",
+        "tr": "Kendini tek seçenekle sınırlama"
+      },
+      "pronunciation": "kənˈfaɪn",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4122,
+      "english": "confront",
+      "turkish": "yüzleşmek",
+      "example": {
+        "en": "You must confront your fears",
+        "tr": "Korkularınla yüzleşmelisin"
+      },
+      "pronunciation": "kənˈfrʌnt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4123,
+      "english": "confuse",
+      "turkish": "karıştırmak",
+      "example": {
+        "en": "Don't confuse me with facts",
+        "tr": "Beni gerçeklerle karıştırma"
+      },
+      "pronunciation": "kənˈfjuːz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4124,
+      "english": "conquer",
+      "turkish": "fethetmek",
+      "example": {
+        "en": "They conquered the mountain",
+        "tr": "Dağı fethettiler"
+      },
+      "pronunciation": "ˈkɒŋkə(r)",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4125,
+      "english": "conscience",
+      "turkish": "vicdan",
+      "example": {
+        "en": "My conscience is clear",
+        "tr": "Vicdanım rahat"
+      },
+      "pronunciation": "ˈkɒnʃəns",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4126,
+      "english": "conscious",
+      "turkish": "bilinçli",
+      "example": {
+        "en": "Make a conscious effort to improve",
+        "tr": "Gelişmek için bilinçli bir çaba göster"
+      },
+      "pronunciation": "ˈkɒnʃəs",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4127,
+      "english": "consecutive",
+      "turkish": "ardışık",
+      "example": {
+        "en": "She won three consecutive matches",
+        "tr": "Üç ardışık maç kazandı"
+      },
+      "pronunciation": "kənˈsekjətɪv",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4128,
+      "english": "consensus",
+      "turkish": "uzlaşı",
+      "example": {
+        "en": "We need to reach a consensus",
+        "tr": "Bir uzlaşıya varmamız gerekiyor"
+      },
+      "pronunciation": "kənˈsensəs",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4129,
+      "english": "consent",
+      "turkish": "onay",
+      "example": {
+        "en": "You need parental consent",
+        "tr": "Ebeveyn onayına ihtiyacın var"
+      },
+      "pronunciation": "kənˈsent",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4130,
+      "english": "conserve",
+      "turkish": "korumak",
+      "example": {
+        "en": "We must conserve natural resources",
+        "tr": "Doğal kaynakları korumalıyız"
+      },
+      "pronunciation": "kənˈsɜːv",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4131,
+      "english": "considerable",
+      "turkish": "önemli",
+      "example": {
+        "en": "There is considerable doubt",
+        "tr": "Önemli bir şüphe var"
+      },
+      "pronunciation": "kənˈsɪdərəbl",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4132,
+      "english": "consistent",
+      "turkish": "tutarlı",
+      "example": {
+        "en": "Be consistent in your approach",
+        "tr": "Yaklaşımında tutarlı ol"
+      },
+      "pronunciation": "kənˈsɪstənt",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4133,
+      "english": "consolidate",
+      "turkish": "pekiştirmek",
+      "example": {
+        "en": "We need to consolidate our position",
+        "tr": "Konumumuzu pekiştirmemiz gerekiyor"
+      },
+      "pronunciation": "kənˈsɒlɪdeɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4134,
+      "english": "constant",
+      "turkish": "sürekli",
+      "example": {
+        "en": "There is constant noise outside",
+        "tr": "Dışarıda sürekli gürültü var"
+      },
+      "pronunciation": "ˈkɒnstənt",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4135,
+      "english": "constitute",
+      "turkish": "oluşturmak",
+      "example": {
+        "en": "This constitutes a serious problem",
+        "tr": "Bu ciddi bir problem oluşturuyor"
+      },
+      "pronunciation": "ˈkɒnstɪtjuːt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4136,
+      "english": "constrain",
+      "turkish": "kısıtlamak",
+      "example": {
+        "en": "Budget constraints limit our options",
+        "tr": "Bütçe kısıtlamaları seçeneklerimizi sınırlıyor"
+      },
+      "pronunciation": "kənˈstreɪn",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4137,
+      "english": "construct",
+      "turkish": "inşa etmek",
+      "example": {
+        "en": "They will construct a new building",
+        "tr": "Yeni bir bina inşa edecekler"
+      },
+      "pronunciation": "kənˈstrʌkt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4138,
+      "english": "consult",
+      "turkish": "danışmak",
+      "example": {
+        "en": "You should consult a doctor",
+        "tr": "Bir doktora danışmalısın"
+      },
+      "pronunciation": "kənˈsʌlt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4139,
+      "english": "consume",
+      "turkish": "tüketmek",
+      "example": {
+        "en": "We consume too much energy",
+        "tr": "Çok fazla enerji tüketiyoruz"
+      },
+      "pronunciation": "kənˈsjuːm",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4140,
+      "english": "contemporary",
+      "turkish": "çağdaş",
+      "example": {
+        "en": "This is contemporary art",
+        "tr": "Bu çağdaş sanat"
+      },
+      "pronunciation": "kənˈtemprəri",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4141,
+      "english": "contempt",
+      "turkish": "küçümseme",
+      "example": {
+        "en": "He showed contempt for the rules",
+        "tr": "Kurallara karşı küçümseme gösterdi"
+      },
+      "pronunciation": "kənˈtempt",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4142,
+      "english": "contend",
+      "turkish": "iddia etmek",
+      "example": {
+        "en": "I contend that this is wrong",
+        "tr": "Bunun yanlış olduğunu iddia ediyorum"
+      },
+      "pronunciation": "kənˈtend",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4143,
+      "english": "contradict",
+      "turkish": "çelişmek",
+      "example": {
+        "en": "Your actions contradict your words",
+        "tr": "Eylemlerin sözlerinle çelişiyor"
+      },
+      "pronunciation": "ˌkɒntrəˈdɪkt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4144,
+      "english": "contrary",
+      "turkish": "aksine",
+      "example": {
+        "en": "On the contrary, I agree with you",
+        "tr": "Aksine, seninle aynı fikirdeyim"
+      },
+      "pronunciation": "ˈkɒntrəri",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4145,
+      "english": "contribute",
+      "turkish": "katkıda bulunmak",
+      "example": {
+        "en": "Everyone should contribute to the project",
+        "tr": "Herkes projeye katkıda bulunmalı"
+      },
+      "pronunciation": "kənˈtrɪbjuːt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4146,
+      "english": "controversial",
+      "turkish": "tartışmalı",
+      "example": {
+        "en": "This is a controversial topic",
+        "tr": "Bu tartışmalı bir konu"
+      },
+      "pronunciation": "ˌkɒntrəˈvɜːʃl",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4147,
+      "english": "convenient",
+      "turkish": "uygun",
+      "example": {
+        "en": "Is this time convenient for you",
+        "tr": "Bu saat senin için uygun mu"
+      },
+      "pronunciation": "kənˈviːniənt",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4148,
+      "english": "conventional",
+      "turkish": "geleneksel",
+      "example": {
+        "en": "He follows conventional methods",
+        "tr": "Geleneksel yöntemleri izliyor"
+      },
+      "pronunciation": "kənˈvenʃənl",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4149,
+      "english": "converge",
+      "turkish": "birleşmek",
+      "example": {
+        "en": "The two roads converge here",
+        "tr": "İki yol burada birleşiyor"
+      },
+      "pronunciation": "kənˈvɜːdʒ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4150,
+      "english": "convert",
+      "turkish": "dönüştürmek",
+      "example": {
+        "en": "Convert the file to PDF format",
+        "tr": "Dosyayı PDF formatına dönüştür"
+      },
+      "pronunciation": "kənˈvɜːt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4151,
+      "english": "convey",
+      "turkish": "iletmek",
+      "example": {
+        "en": "Words cannot convey my feelings",
+        "tr": "Kelimeler duygularımı iletemiyor"
+      },
+      "pronunciation": "kənˈveɪ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4152,
+      "english": "convince",
+      "turkish": "ikna etmek",
+      "example": {
+        "en": "I couldn't convince him to stay",
+        "tr": "Onu kalmaya ikna edemedim"
+      },
+      "pronunciation": "kənˈvɪns",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4153,
+      "english": "cooperate",
+      "turkish": "işbirliği yapmak",
+      "example": {
+        "en": "We need to cooperate with each other",
+        "tr": "Birbirimizle işbirliği yapmamız gerekiyor"
+      },
+      "pronunciation": "kəʊˈɒpəreɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4154,
+      "english": "coordinate",
+      "turkish": "koordine etmek",
+      "example": {
+        "en": "She coordinates all team activities",
+        "tr": "Tüm takım faaliyetlerini koordine ediyor"
+      },
+      "pronunciation": "kəʊˈɔːdɪneɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4155,
+      "english": "cope",
+      "turkish": "başa çıkmak",
+      "example": {
+        "en": "How do you cope with stress",
+        "tr": "Stresle nasıl başa çıkıyorsun"
+      },
+      "pronunciation": "kəʊp",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4156,
+      "english": "core",
+      "turkish": "çekirdek",
+      "example": {
+        "en": "This is the core of the problem",
+        "tr": "Bu problemin çekirdeği"
+      },
+      "pronunciation": "kɔː(r)",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4157,
+      "english": "corporate",
+      "turkish": "kurumsal",
+      "example": {
+        "en": "She works in corporate finance",
+        "tr": "Kurumsal finansta çalışıyor"
+      },
+      "pronunciation": "ˈkɔːpərət",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4158,
+      "english": "correspond",
+      "turkish": "karşılık gelmek",
+      "example": {
+        "en": "These numbers don't correspond",
+        "tr": "Bu rakamlar karşılık gelmiyor"
+      },
+      "pronunciation": "ˌkɒrəˈspɒnd",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4159,
+      "english": "corruption",
+      "turkish": "yolsuzluk",
+      "example": {
+        "en": "Political corruption is a serious issue",
+        "tr": "Siyasi yolsuzluk ciddi bir sorun"
+      },
+      "pronunciation": "kəˈrʌpʃn",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4160,
+      "english": "counsel",
+      "turkish": "öğüt",
+      "example": {
+        "en": "I need your wise counsel",
+        "tr": "Bilge öğütlerine ihtiyacım var"
+      },
+      "pronunciation": "ˈkaʊnsl",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4161,
+      "english": "counter",
+      "turkish": "karşı koymak",
+      "example": {
+        "en": "We must counter these arguments",
+        "tr": "Bu argümanlara karşı koymalıyız"
+      },
+      "pronunciation": "ˈkaʊntə(r)",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4162,
+      "english": "courtesy",
+      "turkish": "nezaket",
+      "example": {
+        "en": "Please show some courtesy",
+        "tr": "Lütfen biraz nezaket göster"
+      },
+      "pronunciation": "ˈkɜːtəsi",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4163,
+      "english": "craft",
+      "turkish": "zanaat",
+      "example": {
+        "en": "Pottery is a traditional craft",
+        "tr": "Çömlekçilik geleneksel bir zanaat"
+      },
+      "pronunciation": "krɑːft",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4164,
+      "english": "crash",
+      "turkish": "çarpışma",
+      "example": {
+        "en": "There was a car crash yesterday",
+        "tr": "Dün bir araba kazası oldu"
+      },
+      "pronunciation": "kræʃ",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4165,
+      "english": "credible",
+      "turkish": "güvenilir",
+      "example": {
+        "en": "This is a credible source",
+        "tr": "Bu güvenilir bir kaynak"
+      },
+      "pronunciation": "ˈkredəbl",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4166,
+      "english": "crucial",
+      "turkish": "kritik",
+      "example": {
+        "en": "This is a crucial decision",
+        "tr": "Bu kritik bir karar"
+      },
+      "pronunciation": "ˈkruːʃl",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4167,
+      "english": "crude",
+      "turkish": "kaba",
+      "example": {
+        "en": "That was a crude joke",
+        "tr": "Bu kaba bir şakaydı"
+      },
+      "pronunciation": "kruːd",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4168,
+      "english": "crush",
+      "turkish": "ezmek",
+      "example": {
+        "en": "Don't crush the flowers",
+        "tr": "Çiçekleri ezme"
+      },
+      "pronunciation": "krʌʃ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4169,
+      "english": "cultivate",
+      "turkish": "yetiştirmek",
+      "example": {
+        "en": "They cultivate vegetables in their garden",
+        "tr": "Bahçelerinde sebze yetiştiriyorlar"
+      },
+      "pronunciation": "ˈkʌltɪveɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4170,
+      "english": "curious",
+      "turkish": "meraklı",
+      "example": {
+        "en": "I'm curious about your decision",
+        "tr": "Kararın hakkında meraklıyım"
+      },
+      "pronunciation": "ˈkjʊəriəs",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4171,
+      "english": "curriculum",
+      "turkish": "müfredat",
+      "example": {
+        "en": "The school changed its curriculum",
+        "tr": "Okul müfredatını değiştirdi"
+      },
+      "pronunciation": "kəˈrɪkjələm",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4172,
+      "english": "curve",
+      "turkish": "eğri",
+      "example": {
+        "en": "The road has a sharp curve",
+        "tr": "Yolda keskin bir viraj var"
+      },
+      "pronunciation": "kɜːv",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4173,
+      "english": "custom",
+      "turkish": "gelenek",
+      "example": {
+        "en": "This is an old custom",
+        "tr": "Bu eski bir gelenek"
+      },
+      "pronunciation": "ˈkʌstəm",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4174,
+      "english": "cycle",
+      "turkish": "döngü",
+      "example": {
+        "en": "The cycle of life continues",
+        "tr": "Yaşam döngüsü devam ediyor"
+      },
+      "pronunciation": "ˈsaɪkl",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4175,
+      "english": "decent",
+      "turkish": "düzgün",
+      "example": {
+        "en": "He's a decent person",
+        "tr": "Düzgün bir insan"
+      },
+      "pronunciation": "ˈdiːsnt",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4176,
+      "english": "decline",
+      "turkish": "reddetmek",
+      "example": {
+        "en": "I must decline your offer",
+        "tr": "Teklifinizi reddetmeliyim"
+      },
+      "pronunciation": "dɪˈklaɪn",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4177,
+      "english": "dedicate",
+      "turkish": "adamak",
+      "example": {
+        "en": "She dedicated her life to science",
+        "tr": "Hayatını bilime adadı"
+      },
+      "pronunciation": "ˈdedɪkeɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4178,
+      "english": "deduce",
+      "turkish": "çıkarım yapmak",
+      "example": {
+        "en": "What can we deduce from this",
+        "tr": "Bundan ne çıkarabiliriz"
+      },
+      "pronunciation": "dɪˈdjuːs",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4179,
+      "english": "defect",
+      "turkish": "kusur",
+      "example": {
+        "en": "The product has a serious defect",
+        "tr": "Üründe ciddi bir kusur var"
+      },
+      "pronunciation": "ˈdiːfekt",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4180,
+      "english": "defend",
+      "turkish": "savunmak",
+      "example": {
+        "en": "Soldiers defend their country",
+        "tr": "Askerler ülkelerini savunur"
+      },
+      "pronunciation": "dɪˈfend",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4181,
+      "english": "deficiency",
+      "turkish": "eksiklik",
+      "example": {
+        "en": "Vitamin deficiency causes problems",
+        "tr": "Vitamin eksikliği sorunlara neden olur"
+      },
+      "pronunciation": "dɪˈfɪʃnsi",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4182,
+      "english": "define",
+      "turkish": "tanımlamak",
+      "example": {
+        "en": "How would you define success",
+        "tr": "Başarıyı nasıl tanımlarsın"
+      },
+      "pronunciation": "dɪˈfaɪn",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4183,
+      "english": "definite",
+      "turkish": "kesin",
+      "example": {
+        "en": "There's no definite answer",
+        "tr": "Kesin bir cevap yok"
+      },
+      "pronunciation": "ˈdefɪnət",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4184,
+      "english": "defy",
+      "turkish": "meydan okumak",
+      "example": {
+        "en": "Don't defy your parents",
+        "tr": "Ailene meydan okuma"
+      },
+      "pronunciation": "dɪˈfaɪ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4185,
+      "english": "deliberate",
+      "turkish": "kasıtlı",
+      "example": {
+        "en": "It was a deliberate decision",
+        "tr": "Kasıtlı bir karardı"
+      },
+      "pronunciation": "dɪˈlɪbərət",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4186,
+      "english": "delicate",
+      "turkish": "hassas",
+      "example": {
+        "en": "Handle this with delicate care",
+        "tr": "Bunu nazikçe idare et"
+      },
+      "pronunciation": "ˈdelɪkət",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4187,
+      "english": "delight",
+      "turkish": "zevk",
+      "example": {
+        "en": "Children bring us great delight",
+        "tr": "Çocuklar bize büyük zevk veriyor"
+      },
+      "pronunciation": "dɪˈlaɪt",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4188,
+      "english": "demonstrate",
+      "turkish": "göstermek",
+      "example": {
+        "en": "Let me demonstrate how it works",
+        "tr": "Nasıl çalıştığını göstereyim"
+      },
+      "pronunciation": "ˈdemənstreɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4189,
+      "english": "deny",
+      "turkish": "inkar etmek",
+      "example": {
+        "en": "He denied all accusations",
+        "tr": "Tüm suçlamaları reddetti"
+      },
+      "pronunciation": "dɪˈnaɪ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4190,
+      "english": "depart",
+      "turkish": "ayrılmak",
+      "example": {
+        "en": "The train will depart at noon",
+        "tr": "Tren öğlen kalkacak"
+      },
+      "pronunciation": "dɪˈpɑːt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4191,
+      "english": "depict",
+      "turkish": "betimlemek",
+      "example": {
+        "en": "The painting depicts a landscape",
+        "tr": "Tablo bir manzara betimliyor"
+      },
+      "pronunciation": "dɪˈpɪkt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4192,
+      "english": "deploy",
+      "turkish": "konuşlandırmak",
+      "example": {
+        "en": "They deployed troops to the border",
+        "tr": "Sınıra asker konuşlandırdılar"
+      },
+      "pronunciation": "dɪˈplɔɪ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4193,
+      "english": "deposit",
+      "turkish": "depozito",
+      "example": {
+        "en": "You need to pay a deposit",
+        "tr": "Depozito ödemen gerekiyor"
+      },
+      "pronunciation": "dɪˈpɒzɪt",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4194,
+      "english": "depress",
+      "turkish": "bunaltmak",
+      "example": {
+        "en": "This news really depressed me",
+        "tr": "Bu haber gerçekten beni bunalttı"
+      },
+      "pronunciation": "dɪˈpres",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4195,
+      "english": "deprive",
+      "turkish": "mahrum etmek",
+      "example": {
+        "en": "Don't deprive yourself of sleep",
+        "tr": "Kendini uykudan mahrum etme"
+      },
+      "pronunciation": "dɪˈpraɪv",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4196,
+      "english": "derive",
+      "turkish": "türetmek",
+      "example": {
+        "en": "This word derives from Latin",
+        "tr": "Bu kelime Latinceden türemiş"
+      },
+      "pronunciation": "dɪˈraɪv",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4197,
+      "english": "descend",
+      "turkish": "inmek",
+      "example": {
+        "en": "The plane began to descend",
+        "tr": "Uçak inmeye başladı"
+      },
+      "pronunciation": "dɪˈsend",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4198,
+      "english": "designate",
+      "turkish": "belirlemek",
+      "example": {
+        "en": "They designated him as leader",
+        "tr": "Onu lider olarak belirlediler"
+      },
+      "pronunciation": "ˈdezɪɡneɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4199,
+      "english": "desperate",
+      "turkish": "çaresiz",
+      "example": {
+        "en": "She felt desperate and alone",
+        "tr": "Çaresiz ve yalnız hissediyordu"
+      },
+      "pronunciation": "ˈdespərət",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    }
+  ]
+}

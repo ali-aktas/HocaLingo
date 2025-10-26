@@ -1,0 +1,1414 @@
+{
+  "package_info": {
+    "id": "en_tr_b1_003",
+    "version": "1.0.0",
+    "level": "B1",
+    "language_pair": "en_tr",
+    "total_words": 100,
+    "updated_at": "2025-10-24",
+    "description": "B1 level English-Turkish vocabulary package 3 - Common nouns",
+    "attribution": "HocaLingo vocabulary database"
+  },
+  "words": [
+    {
+      "id": 3200,
+      "english": "complaint",
+      "turkish": "şikayet",
+      "example": {
+        "en": "The manager received many complaints",
+        "tr": "Müdür birçok şikayet aldı"
+      },
+      "pronunciation": "kəmˈpleɪnt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3201,
+      "english": "concept",
+      "turkish": "kavram",
+      "example": {
+        "en": "This is a difficult concept",
+        "tr": "Bu zor bir kavram"
+      },
+      "pronunciation": "ˈkɒnsept",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3202,
+      "english": "concern",
+      "turkish": "endişe",
+      "example": {
+        "en": "Health is my main concern",
+        "tr": "Sağlık benim ana endişem"
+      },
+      "pronunciation": "kənˈsɜːn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3203,
+      "english": "conclusion",
+      "turkish": "sonuç",
+      "example": {
+        "en": "We reached a positive conclusion",
+        "tr": "Olumlu bir sonuca vardık"
+      },
+      "pronunciation": "kənˈkluːʒn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3204,
+      "english": "condition",
+      "turkish": "durum",
+      "example": {
+        "en": "The car is in good condition",
+        "tr": "Araba iyi durumda"
+      },
+      "pronunciation": "kənˈdɪʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3205,
+      "english": "confidence",
+      "turkish": "güven",
+      "example": {
+        "en": "She has great confidence",
+        "tr": "Büyük bir güvene sahip"
+      },
+      "pronunciation": "ˈkɒnfɪdəns",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3206,
+      "english": "conflict",
+      "turkish": "çatışma",
+      "example": {
+        "en": "There is a conflict between them",
+        "tr": "Aralarında bir çatışma var"
+      },
+      "pronunciation": "ˈkɒnflɪkt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3207,
+      "english": "connection",
+      "turkish": "bağlantı",
+      "example": {
+        "en": "Check your internet connection",
+        "tr": "İnternet bağlantını kontrol et"
+      },
+      "pronunciation": "kəˈnekʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3208,
+      "english": "consequence",
+      "turkish": "sonuç",
+      "example": {
+        "en": "Every action has consequences",
+        "tr": "Her eylemin sonuçları vardır"
+      },
+      "pronunciation": "ˈkɒnsɪkwəns",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3209,
+      "english": "contact",
+      "turkish": "iletişim",
+      "example": {
+        "en": "Keep in contact with me",
+        "tr": "Benimle iletişimde kal"
+      },
+      "pronunciation": "ˈkɒntækt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3210,
+      "english": "content",
+      "turkish": "içerik",
+      "example": {
+        "en": "The website has great content",
+        "tr": "Web sitesinin harika içeriği var"
+      },
+      "pronunciation": "ˈkɒntent",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3211,
+      "english": "context",
+      "turkish": "bağlam",
+      "example": {
+        "en": "You need to understand the context",
+        "tr": "Bağlamı anlamalısın"
+      },
+      "pronunciation": "ˈkɒntekst",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3212,
+      "english": "contract",
+      "turkish": "sözleşme",
+      "example": {
+        "en": "Please sign the contract",
+        "tr": "Lütfen sözleşmeyi imzalayın"
+      },
+      "pronunciation": "ˈkɒntrækt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3213,
+      "english": "contrast",
+      "turkish": "tezat",
+      "example": {
+        "en": "There's a big contrast between them",
+        "tr": "Aralarında büyük bir tezat var"
+      },
+      "pronunciation": "ˈkɒntrɑːst",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3214,
+      "english": "contribution",
+      "turkish": "katkı",
+      "example": {
+        "en": "Thank you for your contribution",
+        "tr": "Katkınız için teşekkürler"
+      },
+      "pronunciation": "ˌkɒntrɪˈbjuːʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3215,
+      "english": "conversation",
+      "turkish": "konuşma",
+      "example": {
+        "en": "We had a long conversation",
+        "tr": "Uzun bir konuşma yaptık"
+      },
+      "pronunciation": "ˌkɒnvəˈseɪʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3216,
+      "english": "copy",
+      "turkish": "kopya",
+      "example": {
+        "en": "Make a copy of this document",
+        "tr": "Bu belgenin bir kopyasını çıkar"
+      },
+      "pronunciation": "ˈkɒpi",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3217,
+      "english": "corner",
+      "turkish": "köşe",
+      "example": {
+        "en": "The shop is on the corner",
+        "tr": "Dükkan köşede"
+      },
+      "pronunciation": "ˈkɔːnə(r)",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3218,
+      "english": "cost",
+      "turkish": "maliyet",
+      "example": {
+        "en": "What's the cost of this service",
+        "tr": "Bu hizmetin maliyeti nedir"
+      },
+      "pronunciation": "kɒst",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3219,
+      "english": "couple",
+      "turkish": "çift",
+      "example": {
+        "en": "A young couple moved in",
+        "tr": "Genç bir çift taşındı"
+      },
+      "pronunciation": "ˈkʌpl",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3220,
+      "english": "courage",
+      "turkish": "cesaret",
+      "example": {
+        "en": "It takes courage to do that",
+        "tr": "Bunu yapmak cesaret ister"
+      },
+      "pronunciation": "ˈkʌrɪdʒ",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3221,
+      "english": "course",
+      "turkish": "kurs",
+      "example": {
+        "en": "I'm taking an English course",
+        "tr": "İngilizce kursu alıyorum"
+      },
+      "pronunciation": "kɔːs",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3222,
+      "english": "creation",
+      "turkish": "yaratı",
+      "example": {
+        "en": "This is his latest creation",
+        "tr": "Bu onun en son yaratısı"
+      },
+      "pronunciation": "kriˈeɪʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3223,
+      "english": "credit",
+      "turkish": "kredi",
+      "example": {
+        "en": "I paid with my credit card",
+        "tr": "Kredi kartımla ödedim"
+      },
+      "pronunciation": "ˈkredɪt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3224,
+      "english": "crime",
+      "turkish": "suç",
+      "example": {
+        "en": "Crime rates are falling",
+        "tr": "Suç oranları düşüyor"
+      },
+      "pronunciation": "kraɪm",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3225,
+      "english": "crisis",
+      "turkish": "kriz",
+      "example": {
+        "en": "The country faces an economic crisis",
+        "tr": "Ülke ekonomik krizle karşı karşıya"
+      },
+      "pronunciation": "ˈkraɪsɪs",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3226,
+      "english": "crowd",
+      "turkish": "kalabalık",
+      "example": {
+        "en": "A large crowd gathered",
+        "tr": "Büyük bir kalabalık toplandı"
+      },
+      "pronunciation": "kraʊd",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3227,
+      "english": "culture",
+      "turkish": "kültür",
+      "example": {
+        "en": "Turkish culture is very rich",
+        "tr": "Türk kültürü çok zengin"
+      },
+      "pronunciation": "ˈkʌltʃə(r)",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3228,
+      "english": "customer",
+      "turkish": "müşteri",
+      "example": {
+        "en": "The customer is always right",
+        "tr": "Müşteri her zaman haklıdır"
+      },
+      "pronunciation": "ˈkʌstəmə(r)",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3229,
+      "english": "debate",
+      "turkish": "tartışma",
+      "example": {
+        "en": "There was a heated debate",
+        "tr": "Hararetli bir tartışma vardı"
+      },
+      "pronunciation": "dɪˈbeɪt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3230,
+      "english": "debt",
+      "turkish": "borç",
+      "example": {
+        "en": "He has a lot of debt",
+        "tr": "Çok borcu var"
+      },
+      "pronunciation": "det",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3231,
+      "english": "decision",
+      "turkish": "karar",
+      "example": {
+        "en": "It was a difficult decision",
+        "tr": "Zor bir karardı"
+      },
+      "pronunciation": "dɪˈsɪʒn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3232,
+      "english": "decline",
+      "turkish": "düşüş",
+      "example": {
+        "en": "There's been a decline in sales",
+        "tr": "Satışlarda bir düşüş oldu"
+      },
+      "pronunciation": "dɪˈklaɪn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3233,
+      "english": "decoration",
+      "turkish": "süsleme",
+      "example": {
+        "en": "Christmas decorations are beautiful",
+        "tr": "Noel süslemeleri güzel"
+      },
+      "pronunciation": "ˌdekəˈreɪʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3234,
+      "english": "degree",
+      "turkish": "derece",
+      "example": {
+        "en": "It's thirty degrees outside",
+        "tr": "Dışarıda otuz derece"
+      },
+      "pronunciation": "dɪˈɡriː",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3235,
+      "english": "delay",
+      "turkish": "gecikme",
+      "example": {
+        "en": "The flight had a two-hour delay",
+        "tr": "Uçuşun iki saatlik gecikmesi vardı"
+      },
+      "pronunciation": "dɪˈleɪ",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3236,
+      "english": "delivery",
+      "turkish": "teslimat",
+      "example": {
+        "en": "Free delivery for orders over fifty",
+        "tr": "Elli üzeri siparişler için ücretsiz teslimat"
+      },
+      "pronunciation": "dɪˈlɪvəri",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3237,
+      "english": "demand",
+      "turkish": "talep",
+      "example": {
+        "en": "There's high demand for this product",
+        "tr": "Bu ürüne yüksek talep var"
+      },
+      "pronunciation": "dɪˈmɑːnd",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3238,
+      "english": "department",
+      "turkish": "bölüm",
+      "example": {
+        "en": "Which department do you work in",
+        "tr": "Hangi bölümde çalışıyorsun"
+      },
+      "pronunciation": "dɪˈpɑːtmənt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3239,
+      "english": "departure",
+      "turkish": "kalkış",
+      "example": {
+        "en": "The departure time is eight am",
+        "tr": "Kalkış saati sabah sekiz"
+      },
+      "pronunciation": "dɪˈpɑːtʃə(r)",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3240,
+      "english": "description",
+      "turkish": "açıklama",
+      "example": {
+        "en": "Please write a brief description",
+        "tr": "Lütfen kısa bir açıklama yaz"
+      },
+      "pronunciation": "dɪˈskrɪpʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3241,
+      "english": "design",
+      "turkish": "tasarım",
+      "example": {
+        "en": "I love the design of this building",
+        "tr": "Bu binanın tasarımını seviyorum"
+      },
+      "pronunciation": "dɪˈzaɪn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3242,
+      "english": "desire",
+      "turkish": "arzu",
+      "example": {
+        "en": "She has a strong desire to learn",
+        "tr": "Güçlü bir öğrenme arzusu var"
+      },
+      "pronunciation": "dɪˈzaɪə(r)",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3243,
+      "english": "destination",
+      "turkish": "hedef",
+      "example": {
+        "en": "Paris is our final destination",
+        "tr": "Paris bizim son hedefimiz"
+      },
+      "pronunciation": "ˌdestɪˈneɪʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3244,
+      "english": "detail",
+      "turkish": "detay",
+      "example": {
+        "en": "Pay attention to every detail",
+        "tr": "Her detaya dikkat et"
+      },
+      "pronunciation": "ˈdiːteɪl",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3245,
+      "english": "device",
+      "turkish": "cihaz",
+      "example": {
+        "en": "This device is very useful",
+        "tr": "Bu cihaz çok kullanışlı"
+      },
+      "pronunciation": "dɪˈvaɪs",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3246,
+      "english": "diet",
+      "turkish": "diyet",
+      "example": {
+        "en": "I'm on a healthy diet",
+        "tr": "Sağlıklı bir diyetteyim"
+      },
+      "pronunciation": "ˈdaɪət",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3247,
+      "english": "direction",
+      "turkish": "yön",
+      "example": {
+        "en": "Which direction should we go",
+        "tr": "Hangi yöne gitmeliyiz"
+      },
+      "pronunciation": "dəˈrekʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3248,
+      "english": "discount",
+      "turkish": "indirim",
+      "example": {
+        "en": "There's a twenty percent discount",
+        "tr": "Yüzde yirmi indirim var"
+      },
+      "pronunciation": "ˈdɪskaʊnt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3249,
+      "english": "discussion",
+      "turkish": "tartışma",
+      "example": {
+        "en": "We had an interesting discussion",
+        "tr": "İlginç bir tartışma yaptık"
+      },
+      "pronunciation": "dɪˈskʌʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3250,
+      "english": "distance",
+      "turkish": "mesafe",
+      "example": {
+        "en": "What's the distance to the station",
+        "tr": "İstasyona mesafe ne kadar"
+      },
+      "pronunciation": "ˈdɪstəns",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3251,
+      "english": "distribution",
+      "turkish": "dağıtım",
+      "example": {
+        "en": "The distribution system is efficient",
+        "tr": "Dağıtım sistemi verimli"
+      },
+      "pronunciation": "ˌdɪstrɪˈbjuːʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3252,
+      "english": "district",
+      "turkish": "bölge",
+      "example": {
+        "en": "I live in the business district",
+        "tr": "İş bölgesinde yaşıyorum"
+      },
+      "pronunciation": "ˈdɪstrɪkt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3253,
+      "english": "document",
+      "turkish": "belge",
+      "example": {
+        "en": "Please bring all necessary documents",
+        "tr": "Lütfen tüm gerekli belgeleri getirin"
+      },
+      "pronunciation": "ˈdɒkjumənt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3254,
+      "english": "donation",
+      "turkish": "bağış",
+      "example": {
+        "en": "They made a generous donation",
+        "tr": "Cömert bir bağış yaptılar"
+      },
+      "pronunciation": "dəʊˈneɪʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3255,
+      "english": "doubt",
+      "turkish": "şüphe",
+      "example": {
+        "en": "I have no doubt about it",
+        "tr": "Bunun hakkında hiç şüphem yok"
+      },
+      "pronunciation": "daʊt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3256,
+      "english": "drama",
+      "turkish": "drama",
+      "example": {
+        "en": "She studies drama at university",
+        "tr": "Üniversitede drama okuyor"
+      },
+      "pronunciation": "ˈdrɑːmə",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3257,
+      "english": "duty",
+      "turkish": "görev",
+      "example": {
+        "en": "It's my duty to help you",
+        "tr": "Sana yardım etmek benim görevim"
+      },
+      "pronunciation": "ˈdjuːti",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3258,
+      "english": "economy",
+      "turkish": "ekonomi",
+      "example": {
+        "en": "The economy is growing",
+        "tr": "Ekonomi büyüyor"
+      },
+      "pronunciation": "ɪˈkɒnəmi",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3259,
+      "english": "effect",
+      "turkish": "etki",
+      "example": {
+        "en": "The medicine had no effect",
+        "tr": "İlacın etkisi olmadı"
+      },
+      "pronunciation": "ɪˈfekt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3260,
+      "english": "effort",
+      "turkish": "çaba",
+      "example": {
+        "en": "It requires a lot of effort",
+        "tr": "Çok fazla çaba gerektiriyor"
+      },
+      "pronunciation": "ˈefət",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3261,
+      "english": "election",
+      "turkish": "seçim",
+      "example": {
+        "en": "The election results surprised everyone",
+        "tr": "Seçim sonuçları herkesi şaşırttı"
+      },
+      "pronunciation": "ɪˈlekʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3262,
+      "english": "element",
+      "turkish": "öğe",
+      "example": {
+        "en": "Water is an essential element",
+        "tr": "Su temel bir öğedir"
+      },
+      "pronunciation": "ˈelɪmənt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3263,
+      "english": "emergency",
+      "turkish": "acil durum",
+      "example": {
+        "en": "Call me in case of emergency",
+        "tr": "Acil durumda beni ara"
+      },
+      "pronunciation": "ɪˈmɜːdʒənsi",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3264,
+      "english": "employment",
+      "turkish": "istihdam",
+      "example": {
+        "en": "Employment rates are rising",
+        "tr": "İstihdam oranları artıyor"
+      },
+      "pronunciation": "ɪmˈplɔɪmənt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3265,
+      "english": "energy",
+      "turkish": "enerji",
+      "example": {
+        "en": "I have no energy today",
+        "tr": "Bugün hiç enerjim yok"
+      },
+      "pronunciation": "ˈenədʒi",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3266,
+      "english": "engine",
+      "turkish": "motor",
+      "example": {
+        "en": "The car engine is broken",
+        "tr": "Araba motoru bozuk"
+      },
+      "pronunciation": "ˈendʒɪn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3267,
+      "english": "entertainment",
+      "turkish": "eğlence",
+      "example": {
+        "en": "The hotel offers great entertainment",
+        "tr": "Otel harika eğlence sunuyor"
+      },
+      "pronunciation": "ˌentəˈteɪnmənt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3268,
+      "english": "entrance",
+      "turkish": "giriş",
+      "example": {
+        "en": "The entrance is on the left",
+        "tr": "Giriş sol tarafta"
+      },
+      "pronunciation": "ˈentrəns",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3269,
+      "english": "entry",
+      "turkish": "giriş",
+      "example": {
+        "en": "Entry is free for children",
+        "tr": "Çocuklar için giriş ücretsiz"
+      },
+      "pronunciation": "ˈentri",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3270,
+      "english": "environment",
+      "turkish": "çevre",
+      "example": {
+        "en": "We must protect the environment",
+        "tr": "Çevreyi korumalıyız"
+      },
+      "pronunciation": "ɪnˈvaɪrənmənt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3271,
+      "english": "equipment",
+      "turkish": "ekipman",
+      "example": {
+        "en": "We need new sports equipment",
+        "tr": "Yeni spor ekipmanına ihtiyacımız var"
+      },
+      "pronunciation": "ɪˈkwɪpmənt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3272,
+      "english": "error",
+      "turkish": "hata",
+      "example": {
+        "en": "There's an error in your calculation",
+        "tr": "Hesaplamanda bir hata var"
+      },
+      "pronunciation": "ˈerə(r)",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3273,
+      "english": "escape",
+      "turkish": "kaçış",
+      "example": {
+        "en": "The prisoner made his escape",
+        "tr": "Mahkum kaçışını yaptı"
+      },
+      "pronunciation": "ɪˈskeɪp",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3274,
+      "english": "estimate",
+      "turkish": "tahmin",
+      "example": {
+        "en": "Can you give me a cost estimate",
+        "tr": "Bana bir maliyet tahmini verebilir misin"
+      },
+      "pronunciation": "ˈestɪmət",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3275,
+      "english": "event",
+      "turkish": "olay",
+      "example": {
+        "en": "This was an important event",
+        "tr": "Bu önemli bir olaydı"
+      },
+      "pronunciation": "ɪˈvent",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3276,
+      "english": "evidence",
+      "turkish": "kanıt",
+      "example": {
+        "en": "The police found new evidence",
+        "tr": "Polis yeni kanıt buldu"
+      },
+      "pronunciation": "ˈevɪdəns",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3277,
+      "english": "exchange",
+      "turkish": "değişim",
+      "example": {
+        "en": "Cultural exchange is important",
+        "tr": "Kültürel değişim önemlidir"
+      },
+      "pronunciation": "ɪksˈtʃeɪndʒ",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3278,
+      "english": "exhibition",
+      "turkish": "sergi",
+      "example": {
+        "en": "There's an art exhibition downtown",
+        "tr": "Şehir merkezinde bir sanat sergisi var"
+      },
+      "pronunciation": "ˌeksɪˈbɪʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3279,
+      "english": "exit",
+      "turkish": "çıkış",
+      "example": {
+        "en": "Where is the emergency exit",
+        "tr": "Acil çıkış nerede"
+      },
+      "pronunciation": "ˈeksɪt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3280,
+      "english": "experiment",
+      "turkish": "deney",
+      "example": {
+        "en": "The science experiment was successful",
+        "tr": "Bilim deneyi başarılıydı"
+      },
+      "pronunciation": "ɪkˈsperɪmənt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3281,
+      "english": "expert",
+      "turkish": "uzman",
+      "example": {
+        "en": "She's an expert in mathematics",
+        "tr": "Matematikten uzman"
+      },
+      "pronunciation": "ˈekspɜːt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3282,
+      "english": "explanation",
+      "turkish": "açıklama",
+      "example": {
+        "en": "I need a clear explanation",
+        "tr": "Net bir açıklamaya ihtiyacım var"
+      },
+      "pronunciation": "ˌekspləˈneɪʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3283,
+      "english": "explosion",
+      "turkish": "patlama",
+      "example": {
+        "en": "We heard a loud explosion",
+        "tr": "Yüksek sesli bir patlama duyduk"
+      },
+      "pronunciation": "ɪkˈspləʊʒn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3284,
+      "english": "expression",
+      "turkish": "ifade",
+      "example": {
+        "en": "Freedom of expression is vital",
+        "tr": "İfade özgürlüğü hayatidir"
+      },
+      "pronunciation": "ɪkˈspreʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3285,
+      "english": "extension",
+      "turkish": "uzantı",
+      "example": {
+        "en": "What's your phone extension",
+        "tr": "Telefon uzantınız kaç"
+      },
+      "pronunciation": "ɪkˈstenʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3286,
+      "english": "extent",
+      "turkish": "ölçü",
+      "example": {
+        "en": "To what extent is this true",
+        "tr": "Bu ne ölçüde doğru"
+      },
+      "pronunciation": "ɪkˈstent",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3287,
+      "english": "facility",
+      "turkish": "tesis",
+      "example": {
+        "en": "The sports facility is modern",
+        "tr": "Spor tesisi modern"
+      },
+      "pronunciation": "fəˈsɪləti",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3288,
+      "english": "factor",
+      "turkish": "faktör",
+      "example": {
+        "en": "Price is an important factor",
+        "tr": "Fiyat önemli bir faktör"
+      },
+      "pronunciation": "ˈfæktə(r)",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3289,
+      "english": "failure",
+      "turkish": "başarısızlık",
+      "example": {
+        "en": "Failure is part of learning",
+        "tr": "Başarısızlık öğrenmenin bir parçası"
+      },
+      "pronunciation": "ˈfeɪljə(r)",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3290,
+      "english": "faith",
+      "turkish": "inanç",
+      "example": {
+        "en": "Keep faith in yourself",
+        "tr": "Kendine olan inancını koru"
+      },
+      "pronunciation": "feɪθ",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3291,
+      "english": "fashion",
+      "turkish": "moda",
+      "example": {
+        "en": "She follows the latest fashion",
+        "tr": "En son modayı takip ediyor"
+      },
+      "pronunciation": "ˈfæʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3292,
+      "english": "fault",
+      "turkish": "hata",
+      "example": {
+        "en": "It's not your fault",
+        "tr": "Senin hatan değil"
+      },
+      "pronunciation": "fɔːlt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3293,
+      "english": "feature",
+      "turkish": "özellik",
+      "example": {
+        "en": "This phone has many features",
+        "tr": "Bu telefonun birçok özelliği var"
+      },
+      "pronunciation": "ˈfiːtʃə(r)",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3294,
+      "english": "feedback",
+      "turkish": "geri bildirim",
+      "example": {
+        "en": "We appreciate your feedback",
+        "tr": "Geri bildiriminiz için teşekkürler"
+      },
+      "pronunciation": "ˈfiːdbæk",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3295,
+      "english": "figure",
+      "turkish": "rakam",
+      "example": {
+        "en": "Look at these sales figures",
+        "tr": "Şu satış rakamlarına bak"
+      },
+      "pronunciation": "ˈfɪɡə(r)",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3296,
+      "english": "finance",
+      "turkish": "finans",
+      "example": {
+        "en": "He works in finance",
+        "tr": "Finans alanında çalışıyor"
+      },
+      "pronunciation": "ˈfaɪnæns",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3297,
+      "english": "finding",
+      "turkish": "bulgu",
+      "example": {
+        "en": "The research findings are interesting",
+        "tr": "Araştırma bulguları ilginç"
+      },
+      "pronunciation": "ˈfaɪndɪŋ",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3298,
+      "english": "flight",
+      "turkish": "uçuş",
+      "example": {
+        "en": "My flight leaves at noon",
+        "tr": "Uçuşum öğlen kalkıyor"
+      },
+      "pronunciation": "flaɪt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3299,
+      "english": "flow",
+      "turkish": "akış",
+      "example": {
+        "en": "The river has a strong flow",
+        "tr": "Nehrin güçlü bir akışı var"
+      },
+      "pronunciation": "fləʊ",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    }
+  ]
+}

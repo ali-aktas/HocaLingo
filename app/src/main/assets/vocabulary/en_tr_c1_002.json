@@ -1,0 +1,1414 @@
+{
+  "package_info": {
+    "id": "en_tr_c1_002",
+    "version": "1.0.0",
+    "level": "C1",
+    "language_pair": "en_tr",
+    "total_words": 100,
+    "updated_at": "2025-10-24",
+    "description": "C1 level English-Turkish vocabulary package 2 - Advanced proficient vocabulary continued",
+    "attribution": "HocaLingo vocabulary database"
+  },
+  "words": [
+    {
+      "id": 5100,
+      "english": "ascend",
+      "turkish": "çıkmak",
+      "example": {
+        "en": "They ascended the mountain slowly",
+        "tr": "Dağa yavaşça tırmandılar"
+      },
+      "pronunciation": "əˈsend",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5101,
+      "english": "ascertain",
+      "turkish": "belirlemek",
+      "example": {
+        "en": "We need to ascertain the facts",
+        "tr": "Gerçekleri belirlememiz gerekiyor"
+      },
+      "pronunciation": "ˌæsəˈteɪn",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5102,
+      "english": "ascribe",
+      "turkish": "atfetmek",
+      "example": {
+        "en": "They ascribe the success to teamwork",
+        "tr": "Başarıyı takım çalışmasına atfediyorlar"
+      },
+      "pronunciation": "əˈskraɪb",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5103,
+      "english": "aspiration",
+      "turkish": "özlem",
+      "example": {
+        "en": "He has aspirations to be a doctor",
+        "tr": "Doktor olma özlemi var"
+      },
+      "pronunciation": "ˌæspəˈreɪʃn",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5104,
+      "english": "aspire",
+      "turkish": "arzulamak",
+      "example": {
+        "en": "She aspires to greatness",
+        "tr": "Büyüklük arzuluyor"
+      },
+      "pronunciation": "əˈspaɪə(r)",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5105,
+      "english": "assail",
+      "turkish": "saldırmak",
+      "example": {
+        "en": "Critics assailed the new policy",
+        "tr": "Eleştirmenler yeni politikaya saldırdı"
+      },
+      "pronunciation": "əˈseɪl",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5106,
+      "english": "assassinate",
+      "turkish": "suikast düzenlemek",
+      "example": {
+        "en": "They attempted to assassinate the president",
+        "tr": "Cumhurbaşkanına suikast düzenlemeye çalıştılar"
+      },
+      "pronunciation": "əˈsæsɪneɪt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5107,
+      "english": "assault",
+      "turkish": "saldırı",
+      "example": {
+        "en": "He was charged with assault",
+        "tr": "Saldırıdan suçlandı"
+      },
+      "pronunciation": "əˈsɔːlt",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5108,
+      "english": "assemble",
+      "turkish": "toplamak",
+      "example": {
+        "en": "The crowd assembled in the square",
+        "tr": "Kalabalık meydanda toplandı"
+      },
+      "pronunciation": "əˈsembl",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5109,
+      "english": "assent",
+      "turkish": "onay",
+      "example": {
+        "en": "She nodded her assent",
+        "tr": "Onayını başıyla gösterdi"
+      },
+      "pronunciation": "əˈsent",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5110,
+      "english": "asset",
+      "turkish": "varlık",
+      "example": {
+        "en": "He is a valuable asset to the company",
+        "tr": "Şirket için değerli bir varlık"
+      },
+      "pronunciation": "ˈæset",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5111,
+      "english": "assiduous",
+      "turkish": "gayretli",
+      "example": {
+        "en": "She is an assiduous student",
+        "tr": "Gayretli bir öğrenci"
+      },
+      "pronunciation": "əˈsɪdjuəs",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5112,
+      "english": "assimilate",
+      "turkish": "özümsemek",
+      "example": {
+        "en": "Immigrants gradually assimilate",
+        "tr": "Göçmenler yavaş yavaş özümsenir"
+      },
+      "pronunciation": "əˈsɪməleɪt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5113,
+      "english": "assuage",
+      "turkish": "yatıştırmak",
+      "example": {
+        "en": "Nothing could assuage his grief",
+        "tr": "Hiçbir şey kederini yatıştıramadı"
+      },
+      "pronunciation": "əˈsweɪdʒ",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5114,
+      "english": "asteroid",
+      "turkish": "asteroid",
+      "example": {
+        "en": "An asteroid passed near Earth",
+        "tr": "Bir asteroid Dünya'nın yakınından geçti"
+      },
+      "pronunciation": "ˈæstərɔɪd",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5115,
+      "english": "astound",
+      "turkish": "şaşırtmak",
+      "example": {
+        "en": "His performance astounded everyone",
+        "tr": "Performansı herkesi şaşırttı"
+      },
+      "pronunciation": "əˈstaʊnd",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5116,
+      "english": "astute",
+      "turkish": "zeki",
+      "example": {
+        "en": "She made an astute observation",
+        "tr": "Zekice bir gözlem yaptı"
+      },
+      "pronunciation": "əˈstjuːt",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5117,
+      "english": "asylum",
+      "turkish": "sığınma",
+      "example": {
+        "en": "He sought political asylum",
+        "tr": "Siyasi sığınma talebinde bulundu"
+      },
+      "pronunciation": "əˈsaɪləm",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5118,
+      "english": "atheist",
+      "turkish": "ateist",
+      "example": {
+        "en": "He identifies as an atheist",
+        "tr": "Kendini ateist olarak tanımlıyor"
+      },
+      "pronunciation": "ˈeɪθiɪst",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5119,
+      "english": "atlas",
+      "turkish": "atlas",
+      "example": {
+        "en": "Consult the atlas for the location",
+        "tr": "Konum için atlasa bak"
+      },
+      "pronunciation": "ˈætləs",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5120,
+      "english": "atrocity",
+      "turkish": "vahşet",
+      "example": {
+        "en": "War atrocities shocked the world",
+        "tr": "Savaş vahşetleri dünyayı şoke etti"
+      },
+      "pronunciation": "əˈtrɒsəti",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5121,
+      "english": "attain",
+      "turkish": "ulaşmak",
+      "example": {
+        "en": "She attained her goal",
+        "tr": "Hedefine ulaştı"
+      },
+      "pronunciation": "əˈteɪn",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5122,
+      "english": "attainment",
+      "turkish": "başarı",
+      "example": {
+        "en": "Academic attainment is important",
+        "tr": "Akademik başarı önemlidir"
+      },
+      "pronunciation": "əˈteɪnmənt",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5123,
+      "english": "attentive",
+      "turkish": "dikkatli",
+      "example": {
+        "en": "The students were very attentive",
+        "tr": "Öğrenciler çok dikkatliydiler"
+      },
+      "pronunciation": "əˈtentɪv",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5124,
+      "english": "attest",
+      "turkish": "kanıtlamak",
+      "example": {
+        "en": "His success attests to his hard work",
+        "tr": "Başarısı çok çalışmasını kanıtlıyor"
+      },
+      "pronunciation": "əˈtest",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5125,
+      "english": "attire",
+      "turkish": "kıyafet",
+      "example": {
+        "en": "Formal attire is required",
+        "tr": "Resmi kıyafet gereklidir"
+      },
+      "pronunciation": "əˈtaɪə(r)",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5126,
+      "english": "attorney",
+      "turkish": "avukat",
+      "example": {
+        "en": "She hired an attorney",
+        "tr": "Bir avukat tuttu"
+      },
+      "pronunciation": "əˈtɜːni",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5127,
+      "english": "audacious",
+      "turkish": "cesur",
+      "example": {
+        "en": "It was an audacious plan",
+        "tr": "Cesur bir plandı"
+      },
+      "pronunciation": "ɔːˈdeɪʃəs",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5128,
+      "english": "audit",
+      "turkish": "denetim",
+      "example": {
+        "en": "The company underwent an audit",
+        "tr": "Şirket denetim geçirdi"
+      },
+      "pronunciation": "ˈɔːdɪt",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5129,
+      "english": "augment",
+      "turkish": "artırmak",
+      "example": {
+        "en": "They need to augment their income",
+        "tr": "Gelirlerini artırmaları gerekiyor"
+      },
+      "pronunciation": "ɔːɡˈment",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5130,
+      "english": "auspicious",
+      "turkish": "uğurlu",
+      "example": {
+        "en": "It was an auspicious beginning",
+        "tr": "Uğurlu bir başlangıçtı"
+      },
+      "pronunciation": "ɔːˈspɪʃəs",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5131,
+      "english": "austere",
+      "turkish": "sade",
+      "example": {
+        "en": "He lived an austere life",
+        "tr": "Sade bir hayat yaşadı"
+      },
+      "pronunciation": "ɒˈstɪə(r)",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5132,
+      "english": "authenticate",
+      "turkish": "doğrulamak",
+      "example": {
+        "en": "Experts authenticated the painting",
+        "tr": "Uzmanlar resmi doğruladı"
+      },
+      "pronunciation": "ɔːˈθentɪkeɪt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5133,
+      "english": "authoritarian",
+      "turkish": "otoriter",
+      "example": {
+        "en": "The government became authoritarian",
+        "tr": "Hükümet otoriter hale geldi"
+      },
+      "pronunciation": "ɔːˌθɒrɪˈteəriən",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5134,
+      "english": "autonomy",
+      "turkish": "özerklik",
+      "example": {
+        "en": "The region gained autonomy",
+        "tr": "Bölge özerklik kazandı"
+      },
+      "pronunciation": "ɔːˈtɒnəmi",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5135,
+      "english": "auxiliary",
+      "turkish": "yardımcı",
+      "example": {
+        "en": "This is an auxiliary verb",
+        "tr": "Bu yardımcı bir fiil"
+      },
+      "pronunciation": "ɔːɡˈzɪliəri",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5136,
+      "english": "avalanche",
+      "turkish": "çığ",
+      "example": {
+        "en": "An avalanche blocked the road",
+        "tr": "Bir çığ yolu kapattı"
+      },
+      "pronunciation": "ˈævəlɑːnʃ",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5137,
+      "english": "averse",
+      "turkish": "isteksiz",
+      "example": {
+        "en": "He is averse to change",
+        "tr": "Değişime isteksiz"
+      },
+      "pronunciation": "əˈvɜːs",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5138,
+      "english": "avert",
+      "turkish": "önlemek",
+      "example": {
+        "en": "They averted a disaster",
+        "tr": "Bir felaketi önlediler"
+      },
+      "pronunciation": "əˈvɜːt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5139,
+      "english": "avid",
+      "turkish": "hevesli",
+      "example": {
+        "en": "She's an avid reader",
+        "tr": "Hevesli bir okuyucu"
+      },
+      "pronunciation": "ˈævɪd",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5140,
+      "english": "avow",
+      "turkish": "itiraf etmek",
+      "example": {
+        "en": "He avowed his love for her",
+        "tr": "Ona olan aşkını itiraf etti"
+      },
+      "pronunciation": "əˈvaʊ",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5141,
+      "english": "await",
+      "turkish": "beklemek",
+      "example": {
+        "en": "A surprise awaits you",
+        "tr": "Seni bir sürpriz bekliyor"
+      },
+      "pronunciation": "əˈweɪt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5142,
+      "english": "awaken",
+      "turkish": "uyandırmak",
+      "example": {
+        "en": "The noise awakened me",
+        "tr": "Gürültü beni uyandırdı"
+      },
+      "pronunciation": "əˈweɪkən",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5143,
+      "english": "awe",
+      "turkish": "hayranlık",
+      "example": {
+        "en": "They watched in awe",
+        "tr": "Hayranlıkla izlediler"
+      },
+      "pronunciation": "ɔː",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5144,
+      "english": "awesome",
+      "turkish": "harika",
+      "example": {
+        "en": "The view was awesome",
+        "tr": "Manzara harikaydı"
+      },
+      "pronunciation": "ˈɔːsəm",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5145,
+      "english": "awhile",
+      "turkish": "bir süre",
+      "example": {
+        "en": "Stay awhile longer",
+        "tr": "Biraz daha kal"
+      },
+      "pronunciation": "əˈwaɪl",
+      "level": "C1",
+      "category": "adverbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5146,
+      "english": "awkward",
+      "turkish": "beceriksiz",
+      "example": {
+        "en": "There was an awkward silence",
+        "tr": "Garip bir sessizlik oldu"
+      },
+      "pronunciation": "ˈɔːkwəd",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5147,
+      "english": "axiom",
+      "turkish": "aksiyom",
+      "example": {
+        "en": "This is a mathematical axiom",
+        "tr": "Bu matematiksel bir aksiyom"
+      },
+      "pronunciation": "ˈæksiəm",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5148,
+      "english": "axis",
+      "turkish": "eksen",
+      "example": {
+        "en": "The Earth rotates on its axis",
+        "tr": "Dünya kendi ekseni etrafında döner"
+      },
+      "pronunciation": "ˈæksɪs",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5149,
+      "english": "bachelor",
+      "turkish": "bekar",
+      "example": {
+        "en": "He's still a bachelor",
+        "tr": "Hala bekar"
+      },
+      "pronunciation": "ˈbætʃələ(r)",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5150,
+      "english": "backdrop",
+      "turkish": "fon",
+      "example": {
+        "en": "The mountains formed a beautiful backdrop",
+        "tr": "Dağlar güzel bir fon oluşturdu"
+      },
+      "pronunciation": "ˈbækdrɒp",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5151,
+      "english": "backfire",
+      "turkish": "geri tepmek",
+      "example": {
+        "en": "The plan backfired badly",
+        "tr": "Plan kötü bir şekilde geri tepti"
+      },
+      "pronunciation": "ˌbækˈfaɪə(r)",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5152,
+      "english": "backdrop",
+      "turkish": "arka plan",
+      "example": {
+        "en": "The story has a historical backdrop",
+        "tr": "Hikayenin tarihi bir arka planı var"
+      },
+      "pronunciation": "ˈbækdrɒp",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5153,
+      "english": "baffle",
+      "turkish": "şaşırtmak",
+      "example": {
+        "en": "The mystery baffled everyone",
+        "tr": "Gizem herkesi şaşırttı"
+      },
+      "pronunciation": "ˈbæfl",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5154,
+      "english": "bail",
+      "turkish": "kefalet",
+      "example": {
+        "en": "He was released on bail",
+        "tr": "Kefaletle serbest bırakıldı"
+      },
+      "pronunciation": "beɪl",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5155,
+      "english": "bait",
+      "turkish": "yem",
+      "example": {
+        "en": "Use worms as bait",
+        "tr": "Yem olarak solucan kullan"
+      },
+      "pronunciation": "beɪt",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5156,
+      "english": "ballot",
+      "turkish": "oy pusulası",
+      "example": {
+        "en": "Cast your ballot in the election",
+        "tr": "Seçimde oy pusulasını kullan"
+      },
+      "pronunciation": "ˈbælət",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5157,
+      "english": "ban",
+      "turkish": "yasak",
+      "example": {
+        "en": "There's a ban on smoking",
+        "tr": "Sigara içme yasağı var"
+      },
+      "pronunciation": "bæn",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5158,
+      "english": "banal",
+      "turkish": "sıradan",
+      "example": {
+        "en": "His comments were banal",
+        "tr": "Yorumları sıradandı"
+      },
+      "pronunciation": "bəˈnɑːl",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5159,
+      "english": "banish",
+      "turkish": "sürgün etmek",
+      "example": {
+        "en": "The king banished him from the kingdom",
+        "tr": "Kral onu krallıktan sürgün etti"
+      },
+      "pronunciation": "ˈbænɪʃ",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5160,
+      "english": "bankrupt",
+      "turkish": "iflas etmiş",
+      "example": {
+        "en": "The company went bankrupt",
+        "tr": "Şirket iflas etti"
+      },
+      "pronunciation": "ˈbæŋkrʌpt",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5161,
+      "english": "banner",
+      "turkish": "afiş",
+      "example": {
+        "en": "They hung a banner on the wall",
+        "tr": "Duvara bir afiş astılar"
+      },
+      "pronunciation": "ˈbænə(r)",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5162,
+      "english": "banquet",
+      "turkish": "ziyafet",
+      "example": {
+        "en": "They held a grand banquet",
+        "tr": "Görkemli bir ziyafet verdiler"
+      },
+      "pronunciation": "ˈbæŋkwɪt",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5163,
+      "english": "banter",
+      "turkish": "şaka",
+      "example": {
+        "en": "They engaged in friendly banter",
+        "tr": "Dostça şakalaştılar"
+      },
+      "pronunciation": "ˈbæntə(r)",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5164,
+      "english": "barbaric",
+      "turkish": "barbar",
+      "example": {
+        "en": "It was a barbaric act",
+        "tr": "Barbarca bir hareketti"
+      },
+      "pronunciation": "bɑːˈbærɪk",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5165,
+      "english": "bare",
+      "turkish": "çıplak",
+      "example": {
+        "en": "The room was bare",
+        "tr": "Oda bomboştu"
+      },
+      "pronunciation": "beə(r)",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5166,
+      "english": "bargain",
+      "turkish": "pazarlık",
+      "example": {
+        "en": "Let's make a bargain",
+        "tr": "Hadi pazarlık yapalım"
+      },
+      "pronunciation": "ˈbɑːɡən",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5167,
+      "english": "barrage",
+      "turkish": "bombardıman",
+      "example": {
+        "en": "A barrage of questions followed",
+        "tr": "Ardından bir soru yağmuru geldi"
+      },
+      "pronunciation": "ˈbærɑːʒ",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5168,
+      "english": "barren",
+      "turkish": "kısır",
+      "example": {
+        "en": "The land is barren",
+        "tr": "Arazi kısır"
+      },
+      "pronunciation": "ˈbærən",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5169,
+      "english": "barrier",
+      "turkish": "engel",
+      "example": {
+        "en": "Language is a barrier",
+        "tr": "Dil bir engeldir"
+      },
+      "pronunciation": "ˈbæriə(r)",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5170,
+      "english": "barter",
+      "turkish": "takas",
+      "example": {
+        "en": "They barter goods for services",
+        "tr": "Mal karşılığında hizmet takası yapıyorlar"
+      },
+      "pronunciation": "ˈbɑːtə(r)",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5171,
+      "english": "bask",
+      "turkish": "ısınmak",
+      "example": {
+        "en": "He basked in the sun",
+        "tr": "Güneşte ısındı"
+      },
+      "pronunciation": "bɑːsk",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5172,
+      "english": "bastion",
+      "turkish": "kale",
+      "example": {
+        "en": "The castle was a bastion of defense",
+        "tr": "Kale bir savunma kalesiydi"
+      },
+      "pronunciation": "ˈbæstiən",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5173,
+      "english": "batter",
+      "turkish": "vurmak",
+      "example": {
+        "en": "Waves battered the shore",
+        "tr": "Dalgalar kıyıyı dövdü"
+      },
+      "pronunciation": "ˈbætə(r)",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5174,
+      "english": "beacon",
+      "turkish": "işaret",
+      "example": {
+        "en": "The lighthouse is a beacon",
+        "tr": "Deniz feneri bir işarettir"
+      },
+      "pronunciation": "ˈbiːkən",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5175,
+      "english": "beam",
+      "turkish": "kiriş",
+      "example": {
+        "en": "The wooden beam supports the roof",
+        "tr": "Ahşap kiriş çatıyı destekliyor"
+      },
+      "pronunciation": "biːm",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5176,
+      "english": "beast",
+      "turkish": "canavar",
+      "example": {
+        "en": "The beast roamed the forest",
+        "tr": "Canavar ormanda dolaşıyordu"
+      },
+      "pronunciation": "biːst",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5177,
+      "english": "beckon",
+      "turkish": "işaret etmek",
+      "example": {
+        "en": "She beckoned me to follow",
+        "tr": "Takip etmem için işaret etti"
+      },
+      "pronunciation": "ˈbekən",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5178,
+      "english": "befall",
+      "turkish": "başına gelmek",
+      "example": {
+        "en": "A tragedy befell the family",
+        "tr": "Ailenin başına bir trajedi geldi"
+      },
+      "pronunciation": "bɪˈfɔːl",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5179,
+      "english": "befriend",
+      "turkish": "arkadaş olmak",
+      "example": {
+        "en": "She befriended the new student",
+        "tr": "Yeni öğrenciyle arkadaş oldu"
+      },
+      "pronunciation": "bɪˈfrend",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5180,
+      "english": "beg",
+      "turkish": "yalvarmak",
+      "example": {
+        "en": "I beg you to reconsider",
+        "tr": "Yeniden düşünmen için yalvarıyorum"
+      },
+      "pronunciation": "beɡ",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5181,
+      "english": "beget",
+      "turkish": "doğurmak",
+      "example": {
+        "en": "Violence begets more violence",
+        "tr": "Şiddet daha fazla şiddeti doğurur"
+      },
+      "pronunciation": "bɪˈɡet",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5182,
+      "english": "begrudge",
+      "turkish": "çekememek",
+      "example": {
+        "en": "I don't begrudge her success",
+        "tr": "Başarısını çekemiyorum"
+      },
+      "pronunciation": "bɪˈɡrʌdʒ",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5183,
+      "english": "beguile",
+      "turkish": "aldatmak",
+      "example": {
+        "en": "He beguiled her with promises",
+        "tr": "Vaatlerle onu kandırdı"
+      },
+      "pronunciation": "bɪˈɡaɪl",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5184,
+      "english": "behalf",
+      "turkish": "adına",
+      "example": {
+        "en": "I speak on behalf of the team",
+        "tr": "Ekip adına konuşuyorum"
+      },
+      "pronunciation": "bɪˈhɑːf",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5185,
+      "english": "behold",
+      "turkish": "bakmak",
+      "example": {
+        "en": "Behold the beauty of nature",
+        "tr": "Doğanın güzelliğine bakın"
+      },
+      "pronunciation": "bɪˈhəʊld",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5186,
+      "english": "belated",
+      "turkish": "geç kalmış",
+      "example": {
+        "en": "A belated happy birthday",
+        "tr": "Geç kalmış mutlu yıllar"
+      },
+      "pronunciation": "bɪˈleɪtɪd",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5187,
+      "english": "beleaguer",
+      "turkish": "kuşatmak",
+      "example": {
+        "en": "The city was beleaguered by enemies",
+        "tr": "Şehir düşmanlar tarafından kuşatıldı"
+      },
+      "pronunciation": "bɪˈliːɡə(r)",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5188,
+      "english": "belie",
+      "turkish": "yalan çıkarmak",
+      "example": {
+        "en": "His smile belied his anger",
+        "tr": "Gülümsemesi öfkesini gizledi"
+      },
+      "pronunciation": "bɪˈlaɪ",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5189,
+      "english": "belittle",
+      "turkish": "küçümsemek",
+      "example": {
+        "en": "Don't belittle his achievements",
+        "tr": "Başarılarını küçümseme"
+      },
+      "pronunciation": "bɪˈlɪtl",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5190,
+      "english": "bellicose",
+      "turkish": "kavgacı",
+      "example": {
+        "en": "His bellicose attitude caused problems",
+        "tr": "Kavgacı tavrı sorunlara neden oldu"
+      },
+      "pronunciation": "ˈbelɪkəʊs",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5191,
+      "english": "belligerent",
+      "turkish": "savaşçı",
+      "example": {
+        "en": "The belligerent nation attacked",
+        "tr": "Savaşçı ulus saldırdı"
+      },
+      "pronunciation": "bəˈlɪdʒərənt",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5192,
+      "english": "bemoan",
+      "turkish": "yakınmak",
+      "example": {
+        "en": "She bemoaned her bad luck",
+        "tr": "Kötü şansından yakındı"
+      },
+      "pronunciation": "bɪˈməʊn",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5193,
+      "english": "benevolent",
+      "turkish": "hayırsever",
+      "example": {
+        "en": "He was known for his benevolent deeds",
+        "tr": "Hayırsever işleriyle tanınıyordu"
+      },
+      "pronunciation": "bəˈnevələnt",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5194,
+      "english": "benign",
+      "turkish": "iyi huylu",
+      "example": {
+        "en": "The tumor was benign",
+        "tr": "Tümör iyi huyluydu"
+      },
+      "pronunciation": "bɪˈnaɪn",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5195,
+      "english": "bequeath",
+      "turkish": "miras bırakmak",
+      "example": {
+        "en": "He bequeathed his fortune to charity",
+        "tr": "Servetini hayır kurumuna miras bıraktı"
+      },
+      "pronunciation": "bɪˈkwiːð",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5196,
+      "english": "bereave",
+      "turkish": "mahrum bırakmak",
+      "example": {
+        "en": "War bereaved many families",
+        "tr": "Savaş birçok aileyi evlatlarından mahrum bıraktı"
+      },
+      "pronunciation": "bɪˈriːv",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5197,
+      "english": "beseech",
+      "turkish": "yalvarmak",
+      "example": {
+        "en": "I beseech you to help me",
+        "tr": "Bana yardım etmen için yalvarıyorum"
+      },
+      "pronunciation": "bɪˈsiːtʃ",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5198,
+      "english": "besiege",
+      "turkish": "kuşatmak",
+      "example": {
+        "en": "The army besieged the fortress",
+        "tr": "Ordu kaleyi kuşattı"
+      },
+      "pronunciation": "bɪˈsiːdʒ",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5199,
+      "english": "bestow",
+      "turkish": "bahşetmek",
+      "example": {
+        "en": "The king bestowed honors upon him",
+        "tr": "Kral ona onurlar bahşetti"
+      },
+      "pronunciation": "bɪˈstəʊ",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    }
+  ]
+}

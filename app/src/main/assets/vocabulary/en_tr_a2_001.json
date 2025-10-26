@@ -1,0 +1,1414 @@
+{
+  "package_info": {
+    "id": "en_tr_a2_001",
+    "version": "1.0.0",
+    "level": "A2",
+    "language_pair": "en_tr",
+    "total_words": 100,
+    "updated_at": "2025-10-23",
+    "description": "A2 level English-Turkish vocabulary package 1",
+    "attribution": "HocaLingo vocabulary database"
+  },
+  "words": [
+    {
+      "id": 2000,
+      "english": "write",
+      "turkish": "yazmak",
+      "example": {
+        "en": "I write a letter",
+        "tr": "Mektup yazarım"
+      },
+      "pronunciation": "raɪt",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2001,
+      "english": "buy",
+      "turkish": "satın almak",
+      "example": {
+        "en": "I buy groceries every week",
+        "tr": "Her hafta market alışverişi yaparım"
+      },
+      "pronunciation": "baɪ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2002,
+      "english": "sell",
+      "turkish": "satmak",
+      "example": {
+        "en": "They sell fresh vegetables",
+        "tr": "Taze sebze satıyorlar"
+      },
+      "pronunciation": "sɛl",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2003,
+      "english": "pay",
+      "turkish": "ödemek",
+      "example": {
+        "en": "I pay by credit card",
+        "tr": "Kredi kartıyla öderim"
+      },
+      "pronunciation": "peɪ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2004,
+      "english": "cost",
+      "turkish": "mal olmak",
+      "example": {
+        "en": "How much does it cost?",
+        "tr": "Ne kadar tutar?"
+      },
+      "pronunciation": "kɔst",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2005,
+      "english": "spend",
+      "turkish": "harcamak",
+      "example": {
+        "en": "I spend too much money",
+        "tr": "Çok fazla para harcıyorum"
+      },
+      "pronunciation": "spɛnd",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2006,
+      "english": "save",
+      "turkish": "biriktirmek",
+      "example": {
+        "en": "I save money every month",
+        "tr": "Her ay para biriktiririm"
+      },
+      "pronunciation": "seɪv",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2007,
+      "english": "bring",
+      "turkish": "getirmek",
+      "example": {
+        "en": "Bring your book tomorrow",
+        "tr": "Yarın kitabını getir"
+      },
+      "pronunciation": "brɪŋ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2008,
+      "english": "carry",
+      "turkish": "taşımak",
+      "example": {
+        "en": "I carry my bag",
+        "tr": "Çantamı taşırım"
+      },
+      "pronunciation": "ˈkæri",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2009,
+      "english": "send",
+      "turkish": "göndermek",
+      "example": {
+        "en": "I send an email",
+        "tr": "E-posta gönderiyorum"
+      },
+      "pronunciation": "sɛnd",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2010,
+      "english": "receive",
+      "turkish": "almak",
+      "example": {
+        "en": "I receive a package",
+        "tr": "Bir paket alıyorum"
+      },
+      "pronunciation": "rɪˈsiːv",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2011,
+      "english": "find",
+      "turkish": "bulmak",
+      "example": {
+        "en": "I can't find my keys",
+        "tr": "Anahtarlarımı bulamıyorum"
+      },
+      "pronunciation": "faɪnd",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2012,
+      "english": "lose",
+      "turkish": "kaybetmek",
+      "example": {
+        "en": "Don't lose your ticket",
+        "tr": "Biletini kaybetme"
+      },
+      "pronunciation": "luːz",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2013,
+      "english": "forget",
+      "turkish": "unutmak",
+      "example": {
+        "en": "I always forget names",
+        "tr": "İsimleri hep unuturum"
+      },
+      "pronunciation": "fərˈɡɛt",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2014,
+      "english": "remember",
+      "turkish": "hatırlamak",
+      "example": {
+        "en": "I remember you",
+        "tr": "Seni hatırlıyorum"
+      },
+      "pronunciation": "rɪˈmɛmbər",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2015,
+      "english": "learn",
+      "turkish": "öğrenmek",
+      "example": {
+        "en": "I learn English",
+        "tr": "İngilizce öğreniyorum"
+      },
+      "pronunciation": "lɜrn",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2016,
+      "english": "teach",
+      "turkish": "öğretmek",
+      "example": {
+        "en": "She teaches math",
+        "tr": "Matematik öğretiyor"
+      },
+      "pronunciation": "tiːtʃ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2017,
+      "english": "study",
+      "turkish": "çalışmak",
+      "example": {
+        "en": "I study for the exam",
+        "tr": "Sınav için çalışıyorum"
+      },
+      "pronunciation": "ˈstʌdi",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2018,
+      "english": "try",
+      "turkish": "denemek",
+      "example": {
+        "en": "Try this food",
+        "tr": "Bu yemeği dene"
+      },
+      "pronunciation": "traɪ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2019,
+      "english": "choose",
+      "turkish": "seçmek",
+      "example": {
+        "en": "Choose a color",
+        "tr": "Bir renk seç"
+      },
+      "pronunciation": "tʃuːz",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2020,
+      "english": "decide",
+      "turkish": "karar vermek",
+      "example": {
+        "en": "I can't decide",
+        "tr": "Karar veremiyorum"
+      },
+      "pronunciation": "dɪˈsaɪd",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2021,
+      "english": "change",
+      "turkish": "değiştirmek",
+      "example": {
+        "en": "I want to change my job",
+        "tr": "İşimi değiştirmek istiyorum"
+      },
+      "pronunciation": "tʃeɪndʒ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2022,
+      "english": "start",
+      "turkish": "başlamak",
+      "example": {
+        "en": "Let's start the meeting",
+        "tr": "Toplantıyı başlatalım"
+      },
+      "pronunciation": "stɑrt",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2023,
+      "english": "begin",
+      "turkish": "başlamak",
+      "example": {
+        "en": "The movie begins at 8",
+        "tr": "Film 8'de başlıyor"
+      },
+      "pronunciation": "bɪˈɡɪn",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2024,
+      "english": "finish",
+      "turkish": "bitirmek",
+      "example": {
+        "en": "I finish work at 5",
+        "tr": "İşi 5'te bitiririm"
+      },
+      "pronunciation": "ˈfɪnɪʃ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2025,
+      "english": "stop",
+      "turkish": "durmak",
+      "example": {
+        "en": "Stop talking please",
+        "tr": "Lütfen konuşmayı kes"
+      },
+      "pronunciation": "stɑp",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2026,
+      "english": "continue",
+      "turkish": "devam etmek",
+      "example": {
+        "en": "Continue reading",
+        "tr": "Okumaya devam et"
+      },
+      "pronunciation": "kənˈtɪnjuː",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2027,
+      "english": "wait",
+      "turkish": "beklemek",
+      "example": {
+        "en": "Wait for me",
+        "tr": "Beni bekle"
+      },
+      "pronunciation": "weɪt",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2028,
+      "english": "meet",
+      "turkish": "tanışmak",
+      "example": {
+        "en": "Nice to meet you",
+        "tr": "Tanıştığımıza memnun oldum"
+      },
+      "pronunciation": "miːt",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2029,
+      "english": "visit",
+      "turkish": "ziyaret etmek",
+      "example": {
+        "en": "I visit my grandparents",
+        "tr": "Büyükanne ve büyükbabamı ziyaret ederim"
+      },
+      "pronunciation": "ˈvɪzɪt",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2030,
+      "english": "travel",
+      "turkish": "seyahat etmek",
+      "example": {
+        "en": "I love to travel",
+        "tr": "Seyahat etmeyi severim"
+      },
+      "pronunciation": "ˈtrævəl",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2031,
+      "english": "arrive",
+      "turkish": "varmak",
+      "example": {
+        "en": "We arrive at noon",
+        "tr": "Öğlen varıyoruz"
+      },
+      "pronunciation": "əˈraɪv",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2032,
+      "english": "leave",
+      "turkish": "ayrılmak",
+      "example": {
+        "en": "I leave at 8 am",
+        "tr": "Sabah 8'de ayrılıyorum"
+      },
+      "pronunciation": "liːv",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2033,
+      "english": "return",
+      "turkish": "dönmek",
+      "example": {
+        "en": "I return home",
+        "tr": "Eve dönüyorum"
+      },
+      "pronunciation": "rɪˈtɜrn",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2034,
+      "english": "follow",
+      "turkish": "takip etmek",
+      "example": {
+        "en": "Follow me",
+        "tr": "Beni takip et"
+      },
+      "pronunciation": "ˈfɑloʊ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2035,
+      "english": "turn",
+      "turkish": "dönmek",
+      "example": {
+        "en": "Turn right here",
+        "tr": "Buradan sağa dön"
+      },
+      "pronunciation": "tɜrn",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2036,
+      "english": "cross",
+      "turkish": "geçmek",
+      "example": {
+        "en": "Cross the street carefully",
+        "tr": "Caddeyi dikkatli geç"
+      },
+      "pronunciation": "krɔs",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2037,
+      "english": "pass",
+      "turkish": "geçmek",
+      "example": {
+        "en": "Pass me the salt",
+        "tr": "Tuzu uzat"
+      },
+      "pronunciation": "pæs",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2038,
+      "english": "move",
+      "turkish": "hareket etmek",
+      "example": {
+        "en": "Don't move",
+        "tr": "Hareket etme"
+      },
+      "pronunciation": "muːv",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2039,
+      "english": "dance",
+      "turkish": "dans etmek",
+      "example": {
+        "en": "I love to dance",
+        "tr": "Dans etmeyi severim"
+      },
+      "pronunciation": "dæns",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2040,
+      "english": "swim",
+      "turkish": "yüzmek",
+      "example": {
+        "en": "I swim in summer",
+        "tr": "Yazın yüzerim"
+      },
+      "pronunciation": "swɪm",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2041,
+      "english": "fly",
+      "turkish": "uçmak",
+      "example": {
+        "en": "Birds can fly",
+        "tr": "Kuşlar uçabilir"
+      },
+      "pronunciation": "flaɪ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2042,
+      "english": "drive",
+      "turkish": "sürmek",
+      "example": {
+        "en": "I drive to work",
+        "tr": "İşe araba sürerek giderim"
+      },
+      "pronunciation": "draɪv",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2043,
+      "english": "ride",
+      "turkish": "binmek",
+      "example": {
+        "en": "I ride a bike",
+        "tr": "Bisiklete binerim"
+      },
+      "pronunciation": "raɪd",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2044,
+      "english": "wear",
+      "turkish": "giymek",
+      "example": {
+        "en": "I wear glasses",
+        "tr": "Gözlük takarım"
+      },
+      "pronunciation": "wɛr",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2045,
+      "english": "put on",
+      "turkish": "giymek",
+      "example": {
+        "en": "Put on your coat",
+        "tr": "Paltonu giy"
+      },
+      "pronunciation": "pʊt ɑn",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2046,
+      "english": "take off",
+      "turkish": "çıkarmak",
+      "example": {
+        "en": "Take off your shoes",
+        "tr": "Ayakkabılarını çıkar"
+      },
+      "pronunciation": "teɪk ɔf",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2047,
+      "english": "wash",
+      "turkish": "yıkamak",
+      "example": {
+        "en": "Wash your hands",
+        "tr": "Ellerini yıka"
+      },
+      "pronunciation": "wɑʃ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2048,
+      "english": "clean",
+      "turkish": "temizlemek",
+      "example": {
+        "en": "I clean my room",
+        "tr": "Odamı temizlerim"
+      },
+      "pronunciation": "kliːn",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2049,
+      "english": "cook",
+      "turkish": "pişirmek",
+      "example": {
+        "en": "I cook dinner",
+        "tr": "Akşam yemeği pişiririm"
+      },
+      "pronunciation": "kʊk",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2050,
+      "english": "cut",
+      "turkish": "kesmek",
+      "example": {
+        "en": "Cut the bread",
+        "tr": "Ekmeği kes"
+      },
+      "pronunciation": "kʌt",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2051,
+      "english": "break",
+      "turkish": "kırmak",
+      "example": {
+        "en": "Don't break the glass",
+        "tr": "Bardağı kırma"
+      },
+      "pronunciation": "breɪk",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2052,
+      "english": "fix",
+      "turkish": "onarmak",
+      "example": {
+        "en": "Can you fix this?",
+        "tr": "Bunu tamir edebilir misin?"
+      },
+      "pronunciation": "fɪks",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2053,
+      "english": "build",
+      "turkish": "inşa etmek",
+      "example": {
+        "en": "They build houses",
+        "tr": "Ev inşa ediyorlar"
+      },
+      "pronunciation": "bɪld",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2054,
+      "english": "draw",
+      "turkish": "çizmek",
+      "example": {
+        "en": "I draw pictures",
+        "tr": "Resim çizerim"
+      },
+      "pronunciation": "drɔ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2055,
+      "english": "paint",
+      "turkish": "boyamak",
+      "example": {
+        "en": "I paint the wall",
+        "tr": "Duvarı boyarım"
+      },
+      "pronunciation": "peɪnt",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2056,
+      "english": "sing",
+      "turkish": "şarkı söylemek",
+      "example": {
+        "en": "She sings beautifully",
+        "tr": "Güzel şarkı söylüyor"
+      },
+      "pronunciation": "sɪŋ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2057,
+      "english": "laugh",
+      "turkish": "gülmek",
+      "example": {
+        "en": "The joke makes me laugh",
+        "tr": "Şaka beni güldürüyor"
+      },
+      "pronunciation": "læf",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2058,
+      "english": "smile",
+      "turkish": "gülümsemek",
+      "example": {
+        "en": "She always smiles",
+        "tr": "Her zaman gülümser"
+      },
+      "pronunciation": "smaɪl",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2059,
+      "english": "cry",
+      "turkish": "ağlamak",
+      "example": {
+        "en": "The baby is crying",
+        "tr": "Bebek ağlıyor"
+      },
+      "pronunciation": "kraɪ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2060,
+      "english": "shout",
+      "turkish": "bağırmak",
+      "example": {
+        "en": "Don't shout at me",
+        "tr": "Bana bağırma"
+      },
+      "pronunciation": "ʃaʊt",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2061,
+      "english": "call",
+      "turkish": "aramak",
+      "example": {
+        "en": "Call me later",
+        "tr": "Beni sonra ara"
+      },
+      "pronunciation": "kɔl",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2062,
+      "english": "answer",
+      "turkish": "cevap vermek",
+      "example": {
+        "en": "Answer the phone",
+        "tr": "Telefona cevap ver"
+      },
+      "pronunciation": "ˈænsər",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2063,
+      "english": "open",
+      "turkish": "açmak",
+      "example": {
+        "en": "Open the window",
+        "tr": "Pencereyi aç"
+      },
+      "pronunciation": "ˈoʊpən",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2064,
+      "english": "close",
+      "turkish": "kapatmak",
+      "example": {
+        "en": "Close the door",
+        "tr": "Kapıyı kapat"
+      },
+      "pronunciation": "kloʊz",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2065,
+      "english": "pull",
+      "turkish": "çekmek",
+      "example": {
+        "en": "Pull the door",
+        "tr": "Kapıyı çek"
+      },
+      "pronunciation": "pʊl",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2066,
+      "english": "push",
+      "turkish": "itmek",
+      "example": {
+        "en": "Push the button",
+        "tr": "Düğmeye bas"
+      },
+      "pronunciation": "pʊʃ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2067,
+      "english": "throw",
+      "turkish": "atmak",
+      "example": {
+        "en": "Throw the ball",
+        "tr": "Topu at"
+      },
+      "pronunciation": "θroʊ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2068,
+      "english": "catch",
+      "turkish": "yakalamak",
+      "example": {
+        "en": "Catch the ball",
+        "tr": "Topu yakala"
+      },
+      "pronunciation": "kætʃ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2069,
+      "english": "hold",
+      "turkish": "tutmak",
+      "example": {
+        "en": "Hold my hand",
+        "tr": "Elimi tut"
+      },
+      "pronunciation": "hoʊld",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2070,
+      "english": "touch",
+      "turkish": "dokunmak",
+      "example": {
+        "en": "Don't touch that",
+        "tr": "Ona dokunma"
+      },
+      "pronunciation": "tʌtʃ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2071,
+      "english": "feel",
+      "turkish": "hissetmek",
+      "example": {
+        "en": "I feel cold",
+        "tr": "Üşüyorum"
+      },
+      "pronunciation": "fiːl",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2072,
+      "english": "smell",
+      "turkish": "koklamak",
+      "example": {
+        "en": "Smell the flowers",
+        "tr": "Çiçekleri kokla"
+      },
+      "pronunciation": "smɛl",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2073,
+      "english": "taste",
+      "turkish": "tatmak",
+      "example": {
+        "en": "Taste the soup",
+        "tr": "Çorbayı tat"
+      },
+      "pronunciation": "teɪst",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2074,
+      "english": "worry",
+      "turkish": "endişelenmek",
+      "example": {
+        "en": "Don't worry",
+        "tr": "Endişelenme"
+      },
+      "pronunciation": "ˈwɜri",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2075,
+      "english": "hope",
+      "turkish": "ümit etmek",
+      "example": {
+        "en": "I hope you are well",
+        "tr": "Umarım iyisindir"
+      },
+      "pronunciation": "hoʊp",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2076,
+      "english": "believe",
+      "turkish": "inanmak",
+      "example": {
+        "en": "I believe you",
+        "tr": "Sana inanıyorum"
+      },
+      "pronunciation": "bɪˈliːv",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2077,
+      "english": "guess",
+      "turkish": "tahmin etmek",
+      "example": {
+        "en": "Guess my age",
+        "tr": "Yaşımı tahmin et"
+      },
+      "pronunciation": "ɡɛs",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2078,
+      "english": "plan",
+      "turkish": "planlamak",
+      "example": {
+        "en": "I plan my trip",
+        "tr": "Gezimi planlıyorum"
+      },
+      "pronunciation": "plæn",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2079,
+      "english": "agree",
+      "turkish": "anlaşmak",
+      "example": {
+        "en": "I agree with you",
+        "tr": "Seninle hemfikirim"
+      },
+      "pronunciation": "əˈɡriː",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2080,
+      "english": "disagree",
+      "turkish": "anlaşamamak",
+      "example": {
+        "en": "I disagree",
+        "tr": "Katılmıyorum"
+      },
+      "pronunciation": "ˌdɪsəˈɡriː",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2081,
+      "english": "explain",
+      "turkish": "açıklamak",
+      "example": {
+        "en": "Please explain",
+        "tr": "Lütfen açıkla"
+      },
+      "pronunciation": "ɪkˈspleɪn",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2082,
+      "english": "describe",
+      "turkish": "tanımlamak",
+      "example": {
+        "en": "Describe your room",
+        "tr": "Odanı tanımla"
+      },
+      "pronunciation": "dɪˈskraɪb",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2083,
+      "english": "discuss",
+      "turkish": "tartışmak",
+      "example": {
+        "en": "Let's discuss this",
+        "tr": "Bunu tartışalım"
+      },
+      "pronunciation": "dɪˈskʌs",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2084,
+      "english": "argue",
+      "turkish": "tartışmak",
+      "example": {
+        "en": "They always argue",
+        "tr": "Hep tartışırlar"
+      },
+      "pronunciation": "ˈɑrɡjuː",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2085,
+      "english": "invite",
+      "turkish": "davet etmek",
+      "example": {
+        "en": "I invite you to dinner",
+        "tr": "Seni yemeğe davet ediyorum"
+      },
+      "pronunciation": "ɪnˈvaɪt",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2086,
+      "english": "accept",
+      "turkish": "kabul etmek",
+      "example": {
+        "en": "I accept your offer",
+        "tr": "Teklifini kabul ediyorum"
+      },
+      "pronunciation": "əkˈsɛpt",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2087,
+      "english": "refuse",
+      "turkish": "reddetmek",
+      "example": {
+        "en": "I refuse to do this",
+        "tr": "Bunu yapmayı reddediyorum"
+      },
+      "pronunciation": "rɪˈfjuːz",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2088,
+      "english": "allow",
+      "turkish": "izin vermek",
+      "example": {
+        "en": "My parents allow me",
+        "tr": "Ailem bana izin veriyor"
+      },
+      "pronunciation": "əˈlaʊ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2089,
+      "english": "join",
+      "turkish": "katılmak",
+      "example": {
+        "en": "Join our team",
+        "tr": "Takımımıza katıl"
+      },
+      "pronunciation": "dʒɔɪn",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2090,
+      "english": "suggest",
+      "turkish": "önermek",
+      "example": {
+        "en": "I suggest a break",
+        "tr": "Mola öneriyorum"
+      },
+      "pronunciation": "səɡˈdʒɛst",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2091,
+      "english": "recommend",
+      "turkish": "tavsiye etmek",
+      "example": {
+        "en": "I recommend this restaurant",
+        "tr": "Bu restoranı tavsiye ederim"
+      },
+      "pronunciation": "ˌrɛkəˈmɛnd",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2092,
+      "english": "promise",
+      "turkish": "söz vermek",
+      "example": {
+        "en": "I promise to come",
+        "tr": "Geleceğime söz veriyorum"
+      },
+      "pronunciation": "ˈprɑmɪs",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2093,
+      "english": "surprise",
+      "turkish": "şaşırtmak",
+      "example": {
+        "en": "Don't surprise me",
+        "tr": "Beni şaşırtma"
+      },
+      "pronunciation": "sərˈpraɪz",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2094,
+      "english": "imagine",
+      "turkish": "hayal etmek",
+      "example": {
+        "en": "I can't imagine",
+        "tr": "Hayal edemiyorum"
+      },
+      "pronunciation": "ɪˈmædʒɪn",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2095,
+      "english": "dream",
+      "turkish": "rüya görmek",
+      "example": {
+        "en": "I dream every night",
+        "tr": "Her gece rüya görürüm"
+      },
+      "pronunciation": "driːm",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2096,
+      "english": "rain",
+      "turkish": "yağmur yağmak",
+      "example": {
+        "en": "It's raining",
+        "tr": "Yağmur yağıyor"
+      },
+      "pronunciation": "reɪn",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2097,
+      "english": "snow",
+      "turkish": "kar yağmak",
+      "example": {
+        "en": "It snows in winter",
+        "tr": "Kışın kar yağar"
+      },
+      "pronunciation": "snoʊ",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2098,
+      "english": "shine",
+      "turkish": "parlamak",
+      "example": {
+        "en": "The sun shines",
+        "tr": "Güneş parlıyor"
+      },
+      "pronunciation": "ʃaɪn",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2099,
+      "english": "world",
+      "turkish": "dünya",
+      "example": {
+        "en": "The world is beautiful",
+        "tr": "Dünya güzel"
+      },
+      "pronunciation": "wɜrld",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    }
+  ]
+}

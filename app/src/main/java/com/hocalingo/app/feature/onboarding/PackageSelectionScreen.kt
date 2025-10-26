@@ -66,6 +66,9 @@ fun PackageSelectionScreen(
     var loadingPackageId by remember { mutableStateOf<String?>(null) }
 
     // Handle effects
+    // PackageSelectionScreen.kt
+// LaunchedEffect içindeki effect handler'ı bununla değiştir
+
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
@@ -79,8 +82,15 @@ fun PackageSelectionScreen(
                     snackbarHostState.showSnackbar(effect.message)
                 }
                 is PackageSelectionEffect.ShowLoadingAnimation -> {
+                    // ✅ Animasyon göster ve 2 saniye sonra WordSelection'a git
                     loadingPackageId = effect.packageId
                     showLoadingDialog = true
+
+                    kotlinx.coroutines.delay(2000)  // 2 saniye bekle
+
+                    showLoadingDialog = false
+                    onNavigateToWordSelection(effect.packageId)
+                    loadingPackageId = null
                 }
             }
         }
@@ -137,13 +147,25 @@ fun PackageSelectionScreen(
                             viewModel.onEvent(PackageSelectionEvent.SelectPackage(packageId))
                         },
                         onContinue = { packageId ->
-                            // A1 paketi için doğrudan indirme
-                            if (packageId == "a1_en_tr_test_v1") {
-                                viewModel.onEvent(PackageSelectionEvent.DownloadPackage(packageId))
+                            // Seçili paketin bilgilerini al
+                            val selectedPackage = uiState.packages.find { it.id == packageId }
+
+                            if (selectedPackage != null) {
+                                if (selectedPackage.isDownloaded) {
+                                    // ✅ Paket zaten yüklü, direkt WordSelection'a git
+                                    viewModel.onEvent(PackageSelectionEvent.DownloadPackage(packageId))
+                                } else {
+                                    // ❌ Paket henüz yüklenmedi
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            "Bu paket henüz yüklenmedi. Lütfen önce paketi indirin."
+                                        )
+                                    }
+                                }
                             } else {
-                                // Diğer paketler için mesaj
+                                // Hata durumu
                                 coroutineScope.launch {
-                                    snackbarHostState.showSnackbar("Bu paket yakında eklenecek! A1 paketi ile devam edebilirsiniz.")
+                                    snackbarHostState.showSnackbar("Lütfen bir paket seçin.")
                                 }
                             }
                         }

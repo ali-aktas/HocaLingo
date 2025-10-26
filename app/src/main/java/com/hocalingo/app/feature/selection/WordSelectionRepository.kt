@@ -22,11 +22,16 @@ class WordSelectionRepository @Inject constructor(
     private val database: HocaLingoDatabase
 ) {
 
-    /**
-     * Load all concepts for a package
-     */
     suspend fun loadConceptsByPackage(packageId: String): List<ConceptEntity> {
-        return database.conceptDao().getConceptsByPackage(packageId)
+        return try {
+            // Level'ı çıkar
+            val level = packageId.substringBefore("_").uppercase()
+
+            // Level'a göre tüm kelimeleri getir
+            database.conceptDao().getConceptsByLevel(level)
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
 
     /**
@@ -192,11 +197,20 @@ class WordSelectionRepository @Inject constructor(
         }
     }
 
-    /**
-     * Validate package exists
-     */
+
     suspend fun validatePackage(packageId: String): Boolean {
-        val packageInfo = database.wordPackageDao().getPackageById(packageId)
-        return packageInfo != null
+        return try {
+            // Firebase formatı: a1_en_tr_test_v1, b2_en_tr_v1
+            // Assets formatı: en_tr_a1_001, en_tr_b2_001
+
+            // Level'ı çıkar (örn: "b2_en_tr_v1" -> "B2")
+            val level = packageId.substringBefore("_").uppercase()
+
+            // Level'a göre kelime var mı kontrol et
+            val concepts = database.conceptDao().getConceptsByLevel(level)
+            concepts.isNotEmpty()
+        } catch (e: Exception) {
+            false
+        }
     }
 }

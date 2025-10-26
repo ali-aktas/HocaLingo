@@ -1,0 +1,1414 @@
+{
+  "package_info": {
+    "id": "en_tr_c2_002",
+    "version": "1.0.0",
+    "level": "C2",
+    "language_pair": "en_tr",
+    "total_words": 100,
+    "updated_at": "2025-10-24",
+    "description": "C2 level English-Turkish vocabulary package 2 - Mastery level vocabulary continued - FINAL PACKAGE!",
+    "attribution": "HocaLingo vocabulary database"
+  },
+  "words": [
+    {
+      "id": 6100,
+      "english": "burst",
+      "turkish": "patlamak",
+      "example": {
+        "en": "The balloon burst suddenly",
+        "tr": "Balon aniden patladı"
+      },
+      "pronunciation": "bɜːst",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6101,
+      "english": "bustle",
+      "turkish": "koşuşturmak",
+      "example": {
+        "en": "The city bustles with activity",
+        "tr": "Şehir hareketlilikle koşuşturuyor"
+      },
+      "pronunciation": "ˈbʌsl",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6102,
+      "english": "buttress",
+      "turkish": "payanda",
+      "example": {
+        "en": "The wall needs a buttress",
+        "tr": "Duvara payanda lazım"
+      },
+      "pronunciation": "ˈbʌtrəs",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6103,
+      "english": "bygone",
+      "turkish": "geçmiş",
+      "example": {
+        "en": "Those are bygone days",
+        "tr": "Bunlar geçmiş günler"
+      },
+      "pronunciation": "ˈbaɪɡɒn",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6104,
+      "english": "bypass",
+      "turkish": "atlatmak",
+      "example": {
+        "en": "They built a bypass around the city",
+        "tr": "Şehir etrafında çevre yolu yaptılar"
+      },
+      "pronunciation": "ˈbaɪpɑːs",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6105,
+      "english": "byproduct",
+      "turkish": "yan ürün",
+      "example": {
+        "en": "Pollution is a byproduct of industry",
+        "tr": "Kirlilik endüstrinin yan ürünü"
+      },
+      "pronunciation": "ˈbaɪprɒdʌkt",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6106,
+      "english": "bystander",
+      "turkish": "seyirci",
+      "example": {
+        "en": "A bystander witnessed the accident",
+        "tr": "Bir seyirci kazaya tanık oldu"
+      },
+      "pronunciation": "ˈbaɪstændə(r)",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6107,
+      "english": "cabal",
+      "turkish": "gizli topluluk",
+      "example": {
+        "en": "They formed a secret cabal",
+        "tr": "Gizli bir topluluk oluşturdular"
+      },
+      "pronunciation": "kəˈbæl",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6108,
+      "english": "cache",
+      "turkish": "gizli depo",
+      "example": {
+        "en": "They discovered a weapons cache",
+        "tr": "Silah deposu keşfettiler"
+      },
+      "pronunciation": "kæʃ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6109,
+      "english": "cacophony",
+      "turkish": "kakofoni",
+      "example": {
+        "en": "The traffic created a cacophony",
+        "tr": "Trafik bir kakofoni yarattı"
+      },
+      "pronunciation": "kəˈkɒfəni",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6110,
+      "english": "cadaver",
+      "turkish": "ceset",
+      "example": {
+        "en": "Medical students study cadavers",
+        "tr": "Tıp öğrencileri ceset çalışır"
+      },
+      "pronunciation": "kəˈdævə(r)",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6111,
+      "english": "cadence",
+      "turkish": "ritim",
+      "example": {
+        "en": "The music has a pleasant cadence",
+        "tr": "Müziğin hoş bir ritmi var"
+      },
+      "pronunciation": "ˈkeɪdns",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6112,
+      "english": "cajole",
+      "turkish": "kandırmak",
+      "example": {
+        "en": "She cajoled him into helping",
+        "tr": "Onu yardım etmesi için kandırdı"
+      },
+      "pronunciation": "kəˈdʒəʊl",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6113,
+      "english": "calamity",
+      "turkish": "felaket",
+      "example": {
+        "en": "The earthquake was a calamity",
+        "tr": "Deprem bir felaketti"
+      },
+      "pronunciation": "kəˈlæməti",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6114,
+      "english": "caliber",
+      "turkish": "kalite",
+      "example": {
+        "en": "He is of high caliber",
+        "tr": "Yüksek kalitede biri"
+      },
+      "pronunciation": "ˈkælɪbə(r)",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6115,
+      "english": "calibrate",
+      "turkish": "ayarlamak",
+      "example": {
+        "en": "Calibrate the instrument carefully",
+        "tr": "Aleti dikkatlice ayarla"
+      },
+      "pronunciation": "ˈkælɪbreɪt",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6116,
+      "english": "calligraphy",
+      "turkish": "hat sanatı",
+      "example": {
+        "en": "He practices Arabic calligraphy",
+        "tr": "Arap hat sanatı çalışıyor"
+      },
+      "pronunciation": "kəˈlɪɡrəfi",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6117,
+      "english": "callous",
+      "turkish": "duygusuz",
+      "example": {
+        "en": "His callous remarks hurt her",
+        "tr": "Duygusuz sözleri onu incitti"
+      },
+      "pronunciation": "ˈkæləs",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6118,
+      "english": "callow",
+      "turkish": "acemi",
+      "example": {
+        "en": "He's still a callow youth",
+        "tr": "Hala acemi bir genç"
+      },
+      "pronunciation": "ˈkæləʊ",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6119,
+      "english": "callus",
+      "turkish": "nasır",
+      "example": {
+        "en": "He has calluses on his hands",
+        "tr": "Ellerinde nasır var"
+      },
+      "pronunciation": "ˈkæləs",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6120,
+      "english": "calumny",
+      "turkish": "iftira",
+      "example": {
+        "en": "She spread calumny about him",
+        "tr": "Hakkında iftira yaydı"
+      },
+      "pronunciation": "ˈkæləmni",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6121,
+      "english": "camaraderie",
+      "turkish": "yoldaşlık",
+      "example": {
+        "en": "There's strong camaraderie in the team",
+        "tr": "Takımda güçlü yoldaşlık var"
+      },
+      "pronunciation": "ˌkæməˈrɑːdəri",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6122,
+      "english": "camouflage",
+      "turkish": "kamuflaj",
+      "example": {
+        "en": "Soldiers wear camouflage",
+        "tr": "Askerler kamuflaj giyer"
+      },
+      "pronunciation": "ˈkæməflɑːʒ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6123,
+      "english": "candid",
+      "turkish": "samimi",
+      "example": {
+        "en": "She gave a candid interview",
+        "tr": "Samimi bir röportaj verdi"
+      },
+      "pronunciation": "ˈkændɪd",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6124,
+      "english": "candor",
+      "turkish": "samimiyet",
+      "example": {
+        "en": "I appreciate your candor",
+        "tr": "Samimiyetinizi takdir ediyorum"
+      },
+      "pronunciation": "ˈkændə(r)",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6125,
+      "english": "canine",
+      "turkish": "köpek",
+      "example": {
+        "en": "Canine teeth are sharp",
+        "tr": "Köpek dişleri keskindir"
+      },
+      "pronunciation": "ˈkeɪnaɪn",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6126,
+      "english": "canopy",
+      "turkish": "gölgelik",
+      "example": {
+        "en": "They sat under a canopy",
+        "tr": "Gölgeliğin altında oturdular"
+      },
+      "pronunciation": "ˈkænəpi",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6127,
+      "english": "cant",
+      "turkish": "ikiyüzlülük",
+      "example": {
+        "en": "Political cant disgusts me",
+        "tr": "Siyasi ikiyüzlülük beni iğrendiriyor"
+      },
+      "pronunciation": "kænt",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6128,
+      "english": "cantankerous",
+      "turkish": "huysuz",
+      "example": {
+        "en": "He's a cantankerous old man",
+        "tr": "Huysuz bir yaşlı adam"
+      },
+      "pronunciation": "kænˈtæŋkərəs",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6129,
+      "english": "canvas",
+      "turkish": "tuval",
+      "example": {
+        "en": "The artist painted on canvas",
+        "tr": "Sanatçı tuval üzerine resim yaptı"
+      },
+      "pronunciation": "ˈkænvəs",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6130,
+      "english": "canvass",
+      "turkish": "araştırmak",
+      "example": {
+        "en": "They canvassed the neighborhood",
+        "tr": "Mahalleyi araştırdılar"
+      },
+      "pronunciation": "ˈkænvəs",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6131,
+      "english": "canyon",
+      "turkish": "kanyon",
+      "example": {
+        "en": "The Grand Canyon is magnificent",
+        "tr": "Büyük Kanyon muhteşem"
+      },
+      "pronunciation": "ˈkænjən",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6132,
+      "english": "capitalism",
+      "turkish": "kapitalizm",
+      "example": {
+        "en": "Capitalism is an economic system",
+        "tr": "Kapitalizm bir ekonomik sistemdir"
+      },
+      "pronunciation": "ˈkæpɪtəlɪzəm",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6133,
+      "english": "capitulate",
+      "turkish": "teslim olmak",
+      "example": {
+        "en": "The army refused to capitulate",
+        "tr": "Ordu teslim olmayı reddetti"
+      },
+      "pronunciation": "kəˈpɪtʃuleɪt",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6134,
+      "english": "capricious",
+      "turkish": "kararsız",
+      "example": {
+        "en": "The weather is capricious",
+        "tr": "Hava kararsız"
+      },
+      "pronunciation": "kəˈprɪʃəs",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6135,
+      "english": "capsize",
+      "turkish": "alabora olmak",
+      "example": {
+        "en": "The boat capsized in the storm",
+        "tr": "Tekne fırtınada alabora oldu"
+      },
+      "pronunciation": "kæpˈsaɪz",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6136,
+      "english": "capsule",
+      "turkish": "kapsül",
+      "example": {
+        "en": "Take one capsule daily",
+        "tr": "Günde bir kapsül al"
+      },
+      "pronunciation": "ˈkæpsjuːl",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6137,
+      "english": "caption",
+      "turkish": "başlık",
+      "example": {
+        "en": "Read the photo caption",
+        "tr": "Fotoğraf başlığını oku"
+      },
+      "pronunciation": "ˈkæpʃn",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6138,
+      "english": "captivate",
+      "turkish": "büyülemek",
+      "example": {
+        "en": "Her performance captivated the audience",
+        "tr": "Performansı izleyiciyi büyüledi"
+      },
+      "pronunciation": "ˈkæptɪveɪt",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6139,
+      "english": "caravan",
+      "turkish": "kervan",
+      "example": {
+        "en": "The caravan crossed the desert",
+        "tr": "Kervan çölü geçti"
+      },
+      "pronunciation": "ˈkærəvæn",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6140,
+      "english": "cardinal",
+      "turkish": "ana",
+      "example": {
+        "en": "This is a cardinal rule",
+        "tr": "Bu ana kural"
+      },
+      "pronunciation": "ˈkɑːdɪnl",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6141,
+      "english": "carefree",
+      "turkish": "kaygısız",
+      "example": {
+        "en": "She lives a carefree life",
+        "tr": "Kaygısız bir hayat yaşıyor"
+      },
+      "pronunciation": "ˈkeəfriː",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6142,
+      "english": "cargo",
+      "turkish": "kargo",
+      "example": {
+        "en": "The ship carries cargo",
+        "tr": "Gemi kargo taşıyor"
+      },
+      "pronunciation": "ˈkɑːɡəʊ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6143,
+      "english": "caricature",
+      "turkish": "karikatür",
+      "example": {
+        "en": "He drew a caricature",
+        "tr": "Bir karikatür çizdi"
+      },
+      "pronunciation": "ˈkærɪkətʃʊə(r)",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6144,
+      "english": "carnage",
+      "turkish": "katliam",
+      "example": {
+        "en": "The battle resulted in carnage",
+        "tr": "Savaş katliamla sonuçlandı"
+      },
+      "pronunciation": "ˈkɑːnɪdʒ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6145,
+      "english": "carnal",
+      "turkish": "şehvetli",
+      "example": {
+        "en": "Carnal desires consumed him",
+        "tr": "Şehvetli arzular onu tüketti"
+      },
+      "pronunciation": "ˈkɑːnl",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6146,
+      "english": "carnivore",
+      "turkish": "etçil",
+      "example": {
+        "en": "Lions are carnivores",
+        "tr": "Aslanlar etçildir"
+      },
+      "pronunciation": "ˈkɑːnɪvɔː(r)",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6147,
+      "english": "carousel",
+      "turkish": "atlıkarınca",
+      "example": {
+        "en": "Children rode the carousel",
+        "tr": "Çocuklar atlıkarıncaya bindi"
+      },
+      "pronunciation": "ˌkærəˈsel",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6148,
+      "english": "carp",
+      "turkish": "sızlanmak",
+      "example": {
+        "en": "Stop carping about everything",
+        "tr": "Her şey hakkında sızlanmayı kes"
+      },
+      "pronunciation": "kɑːp",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6149,
+      "english": "carriage",
+      "turkish": "araba",
+      "example": {
+        "en": "They traveled by horse carriage",
+        "tr": "At arabasıyla seyahat ettiler"
+      },
+      "pronunciation": "ˈkærɪdʒ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6150,
+      "english": "carrion",
+      "turkish": "leş",
+      "example": {
+        "en": "Vultures feed on carrion",
+        "tr": "Akbabalar leşle beslenir"
+      },
+      "pronunciation": "ˈkæriən",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6151,
+      "english": "carte blanche",
+      "turkish": "tam yetki",
+      "example": {
+        "en": "He was given carte blanche",
+        "tr": "Ona tam yetki verildi"
+      },
+      "pronunciation": "ˌkɑːt ˈblɑːnʃ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6152,
+      "english": "cartel",
+      "turkish": "kartel",
+      "example": {
+        "en": "The drug cartel was powerful",
+        "tr": "Uyuşturucu karteli güçlüydü"
+      },
+      "pronunciation": "kɑːˈtel",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6153,
+      "english": "cartography",
+      "turkish": "haritacılık",
+      "example": {
+        "en": "He studied cartography",
+        "tr": "Haritacılık okudu"
+      },
+      "pronunciation": "kɑːˈtɒɡrəfi",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6154,
+      "english": "carve",
+      "turkish": "oymak",
+      "example": {
+        "en": "He carved his name in the tree",
+        "tr": "Adını ağaca oydu"
+      },
+      "pronunciation": "kɑːv",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6155,
+      "english": "cascade",
+      "turkish": "şelale",
+      "example": {
+        "en": "Water cascaded down the rocks",
+        "tr": "Su kayalardan şelale gibi aktı"
+      },
+      "pronunciation": "kæˈskeɪd",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6156,
+      "english": "caste",
+      "turkish": "kast",
+      "example": {
+        "en": "The caste system divides society",
+        "tr": "Kast sistemi toplumu böler"
+      },
+      "pronunciation": "kɑːst",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6157,
+      "english": "castigate",
+      "turkish": "cezalandırmak",
+      "example": {
+        "en": "He was castigated for his behavior",
+        "tr": "Davranışı için cezalandırıldı"
+      },
+      "pronunciation": "ˈkæstɪɡeɪt",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6158,
+      "english": "casual",
+      "turkish": "gündelik",
+      "example": {
+        "en": "Wear casual clothes",
+        "tr": "Gündelik kıyafet giy"
+      },
+      "pronunciation": "ˈkæʒuəl",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6159,
+      "english": "casualty",
+      "turkish": "kayıp",
+      "example": {
+        "en": "There were many casualties",
+        "tr": "Birçok kayıp vardı"
+      },
+      "pronunciation": "ˈkæʒuəlti",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6160,
+      "english": "catalyst",
+      "turkish": "katalizör",
+      "example": {
+        "en": "The event was a catalyst for change",
+        "tr": "Olay değişim için bir katalizördü"
+      },
+      "pronunciation": "ˈkætəlɪst",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6161,
+      "english": "catastrophe",
+      "turkish": "felaket",
+      "example": {
+        "en": "The flood was a catastrophe",
+        "tr": "Sel bir felaketti"
+      },
+      "pronunciation": "kəˈtæstrəfi",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6162,
+      "english": "catharsis",
+      "turkish": "arınma",
+      "example": {
+        "en": "The play provided catharsis",
+        "tr": "Oyun arınma sağladı"
+      },
+      "pronunciation": "kəˈθɑːsɪs",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6163,
+      "english": "cathedral",
+      "turkish": "katedral",
+      "example": {
+        "en": "We visited the cathedral",
+        "tr": "Katedrali ziyaret ettik"
+      },
+      "pronunciation": "kəˈθiːdrəl",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6164,
+      "english": "catholic",
+      "turkish": "evrensel",
+      "example": {
+        "en": "He has catholic tastes",
+        "tr": "Evrensel zevkleri var"
+      },
+      "pronunciation": "ˈkæθlɪk",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6165,
+      "english": "caucus",
+      "turkish": "toplantı",
+      "example": {
+        "en": "They held a party caucus",
+        "tr": "Parti toplantısı yaptılar"
+      },
+      "pronunciation": "ˈkɔːkəs",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6166,
+      "english": "causal",
+      "turkish": "nedensel",
+      "example": {
+        "en": "There's a causal relationship",
+        "tr": "Nedensel bir ilişki var"
+      },
+      "pronunciation": "ˈkɔːzl",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6167,
+      "english": "caustic",
+      "turkish": "yakıcı",
+      "example": {
+        "en": "His caustic remarks hurt",
+        "tr": "Yakıcı sözleri incitti"
+      },
+      "pronunciation": "ˈkɔːstɪk",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6168,
+      "english": "cauterize",
+      "turkish": "dağlamak",
+      "example": {
+        "en": "The doctor cauterized the wound",
+        "tr": "Doktor yarayı dağladı"
+      },
+      "pronunciation": "ˈkɔːtəraɪz",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6169,
+      "english": "cavalier",
+      "turkish": "şövalye",
+      "example": {
+        "en": "He has a cavalier attitude",
+        "tr": "Umursamaz bir tavrı var"
+      },
+      "pronunciation": "ˌkævəˈlɪə(r)",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6170,
+      "english": "cavalry",
+      "turkish": "süvari",
+      "example": {
+        "en": "The cavalry charged forward",
+        "tr": "Süvari ileri hücum etti"
+      },
+      "pronunciation": "ˈkævlri",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6171,
+      "english": "caveat",
+      "turkish": "uyarı",
+      "example": {
+        "en": "One important caveat remains",
+        "tr": "Önemli bir uyarı kalıyor"
+      },
+      "pronunciation": "ˈkæviæt",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6172,
+      "english": "cavern",
+      "turkish": "mağara",
+      "example": {
+        "en": "They explored the dark cavern",
+        "tr": "Karanlık mağarayı keşfettiler"
+      },
+      "pronunciation": "ˈkævən",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6173,
+      "english": "cavity",
+      "turkish": "boşluk",
+      "example": {
+        "en": "The dentist filled the cavity",
+        "tr": "Diş hekimi boşluğu doldurdu"
+      },
+      "pronunciation": "ˈkævəti",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6174,
+      "english": "cavort",
+      "turkish": "hoplamak",
+      "example": {
+        "en": "Children cavorted in the park",
+        "tr": "Çocuklar parkta zıpladılar"
+      },
+      "pronunciation": "kəˈvɔːt",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6175,
+      "english": "cede",
+      "turkish": "terk etmek",
+      "example": {
+        "en": "They ceded territory to the enemy",
+        "tr": "Toprakları düşmana teslim ettiler"
+      },
+      "pronunciation": "siːd",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6176,
+      "english": "ceiling",
+      "turkish": "tavan",
+      "example": {
+        "en": "Paint the ceiling white",
+        "tr": "Tavanı beyaz boya"
+      },
+      "pronunciation": "ˈsiːlɪŋ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6177,
+      "english": "celebrity",
+      "turkish": "ünlü",
+      "example": {
+        "en": "She's a famous celebrity",
+        "tr": "Ünlü bir şöhret"
+      },
+      "pronunciation": "səˈlebrəti",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6178,
+      "english": "celerity",
+      "turkish": "çeviklik",
+      "example": {
+        "en": "He moved with celerity",
+        "tr": "Çeviklikle hareket etti"
+      },
+      "pronunciation": "səˈlerəti",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6179,
+      "english": "celestial",
+      "turkish": "göksel",
+      "example": {
+        "en": "They studied celestial bodies",
+        "tr": "Gök cisimlerini incelediler"
+      },
+      "pronunciation": "səˈlestiəl",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6180,
+      "english": "celibacy",
+      "turkish": "bekarlık",
+      "example": {
+        "en": "Priests take a vow of celibacy",
+        "tr": "Rahipler bekarlık yemini eder"
+      },
+      "pronunciation": "ˈselɪbəsi",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6181,
+      "english": "cell",
+      "turkish": "hücre",
+      "example": {
+        "en": "Blood cells are microscopic",
+        "tr": "Kan hücreleri mikroskobiktir"
+      },
+      "pronunciation": "sel",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6182,
+      "english": "cellar",
+      "turkish": "bodrum",
+      "example": {
+        "en": "Wine is stored in the cellar",
+        "tr": "Şarap bodrumda saklanır"
+      },
+      "pronunciation": "ˈselə(r)",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6183,
+      "english": "cement",
+      "turkish": "çimento",
+      "example": {
+        "en": "Mix the cement with water",
+        "tr": "Çimentoyu suyla karıştır"
+      },
+      "pronunciation": "sɪˈment",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6184,
+      "english": "cemetery",
+      "turkish": "mezarlık",
+      "example": {
+        "en": "He visits the cemetery often",
+        "tr": "Mezarlığı sık sık ziyaret eder"
+      },
+      "pronunciation": "ˈseməteri",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6185,
+      "english": "censor",
+      "turkish": "sansürlemek",
+      "example": {
+        "en": "The government censored the news",
+        "tr": "Hükümet haberi sansürledi"
+      },
+      "pronunciation": "ˈsensə(r)",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6186,
+      "english": "censure",
+      "turkish": "kınamak",
+      "example": {
+        "en": "The committee censured his actions",
+        "tr": "Komite eylemlerini kınadı"
+      },
+      "pronunciation": "ˈsenʃə(r)",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6187,
+      "english": "census",
+      "turkish": "nüfus sayımı",
+      "example": {
+        "en": "The census is conducted every ten years",
+        "tr": "Nüfus sayımı her on yılda bir yapılır"
+      },
+      "pronunciation": "ˈsensəs",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6188,
+      "english": "centennial",
+      "turkish": "yüzüncü yıl",
+      "example": {
+        "en": "They celebrated the centennial",
+        "tr": "Yüzüncü yılı kutladılar"
+      },
+      "pronunciation": "senˈteniəl",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6189,
+      "english": "centigrade",
+      "turkish": "santigrat",
+      "example": {
+        "en": "The temperature is 20 degrees centigrade",
+        "tr": "Sıcaklık 20 santigrat derece"
+      },
+      "pronunciation": "ˈsentɪɡreɪd",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6190,
+      "english": "central",
+      "turkish": "merkezi",
+      "example": {
+        "en": "This is a central issue",
+        "tr": "Bu merkezi bir mesele"
+      },
+      "pronunciation": "ˈsentrəl",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6191,
+      "english": "centrifugal",
+      "turkish": "merkezkaç",
+      "example": {
+        "en": "Centrifugal force pushes outward",
+        "tr": "Merkezkaç kuvvet dışarı iter"
+      },
+      "pronunciation": "ˌsentrɪˈfjuːɡl",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6192,
+      "english": "centripetal",
+      "turkish": "merkezcil",
+      "example": {
+        "en": "Centripetal force pulls inward",
+        "tr": "Merkezcil kuvvet içe çeker"
+      },
+      "pronunciation": "ˌsentrɪˈpiːtl",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6193,
+      "english": "cerebral",
+      "turkish": "beyinsel",
+      "example": {
+        "en": "He suffered a cerebral injury",
+        "tr": "Beyin yaralanması geçirdi"
+      },
+      "pronunciation": "səˈriːbrəl",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6194,
+      "english": "ceremonial",
+      "turkish": "törensel",
+      "example": {
+        "en": "They wore ceremonial robes",
+        "tr": "Tören kıyafetleri giydiler"
+      },
+      "pronunciation": "ˌserɪˈməʊniəl",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6195,
+      "english": "ceremony",
+      "turkish": "tören",
+      "example": {
+        "en": "They attended the wedding ceremony",
+        "tr": "Düğün törenine katıldılar"
+      },
+      "pronunciation": "ˈserəməni",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6196,
+      "english": "certainty",
+      "turkish": "kesinlik",
+      "example": {
+        "en": "I can say with certainty",
+        "tr": "Kesinlikle söyleyebilirim"
+      },
+      "pronunciation": "ˈsɜːtnti",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6197,
+      "english": "certificate",
+      "turkish": "sertifika",
+      "example": {
+        "en": "He received a certificate",
+        "tr": "Bir sertifika aldı"
+      },
+      "pronunciation": "səˈtɪfɪkət",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6198,
+      "english": "certitude",
+      "turkish": "kesinlik",
+      "example": {
+        "en": "He spoke with certitude",
+        "tr": "Kesinlikle konuştu"
+      },
+      "pronunciation": "ˈsɜːtɪtjuːd",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6199,
+      "english": "cessation",
+      "turkish": "durma",
+      "example": {
+        "en": "They called for a cessation of hostilities",
+        "tr": "Düşmanlıkların durması için çağrıda bulundular"
+      },
+      "pronunciation": "seˈseɪʃn",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    }
+  ]
+}

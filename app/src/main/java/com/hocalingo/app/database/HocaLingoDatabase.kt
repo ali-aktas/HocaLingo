@@ -75,50 +75,47 @@ abstract class HocaLingoDatabase : RoomDatabase() {
         /**
          * 🔥 MIGRATION 1 → 2: Add Hybrid Learning System Fields
          *
-         * Adds learning_phase and session_position columns to word_progress table
-         * for session-based learning + time-based review system
+         * ✅ Public yapıldı - artık DatabaseModule'den erişilebilir
          */
         val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 try {
-                    // Add learning_phase column (default: true = learning phase)
+                    // Add learning_phase column
                     database.execSQL("""
-                        ALTER TABLE word_progress 
-                        ADD COLUMN learning_phase INTEGER NOT NULL DEFAULT 1
-                    """)
+                    ALTER TABLE word_progress 
+                    ADD COLUMN learning_phase INTEGER NOT NULL DEFAULT 1
+                """)
 
-                    // Add session_position column (nullable for review cards)
+                    // Add session_position column
                     database.execSQL("""
-                        ALTER TABLE word_progress 
-                        ADD COLUMN session_position INTEGER
-                    """)
+                    ALTER TABLE word_progress 
+                    ADD COLUMN session_position INTEGER
+                """)
 
-                    // Create indexes for new columns to improve query performance
+                    // Create indexes
                     database.execSQL("""
-                        CREATE INDEX IF NOT EXISTS index_word_progress_learning_phase 
-                        ON word_progress(learning_phase)
-                    """)
+                    CREATE INDEX IF NOT EXISTS index_word_progress_learning_phase 
+                    ON word_progress(learning_phase)
+                """)
 
                     database.execSQL("""
-                        CREATE INDEX IF NOT EXISTS index_word_progress_session_position 
-                        ON word_progress(session_position)
-                    """)
+                    CREATE INDEX IF NOT EXISTS index_word_progress_session_position 
+                    ON word_progress(session_position)
+                """)
 
-                    // Set initial session positions for existing cards
-                    // All existing cards start in learning phase with incremental positions
+                    // Initialize session positions
                     database.execSQL("""
-                        UPDATE word_progress 
-                        SET session_position = (
-                            SELECT COUNT(*) + 1 
-                            FROM word_progress p2 
-                            WHERE p2.direction = word_progress.direction 
-                            AND p2.rowid < word_progress.rowid
-                        )
-                        WHERE learning_phase = 1
-                    """)
+                    UPDATE word_progress 
+                    SET session_position = (
+                        SELECT COUNT(*) + 1 
+                        FROM word_progress p2 
+                        WHERE p2.direction = word_progress.direction 
+                        AND p2.rowid < word_progress.rowid
+                    )
+                    WHERE learning_phase = 1
+                """)
 
-                    Log.d("HocaLingoDatabase", "✅ Migration 1→2 completed successfully")
-
+                    Log.d("HocaLingoDatabase", "✅ Migration 1→2 completed")
                 } catch (e: Exception) {
                     Log.e("HocaLingoDatabase", "❌ Migration 1→2 failed", e)
                     throw e
@@ -127,7 +124,49 @@ abstract class HocaLingoDatabase : RoomDatabase() {
         }
 
         /**
-         * Get database instance with singleton pattern - UPDATED WITH MIGRATION
+         * 🔥 MIGRATION 2 → 3: Add Enhanced Spaced Repetition Tracking
+         *
+         * ✅ Public yapıldı - artık DatabaseModule'den erişilebilir
+         */
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                try {
+                    // Add hard_presses column
+                    database.execSQL("""
+                    ALTER TABLE word_progress 
+                    ADD COLUMN hard_presses INTEGER DEFAULT 0
+                """)
+
+                    // Add successful_reviews column
+                    database.execSQL("""
+                    ALTER TABLE word_progress 
+                    ADD COLUMN successful_reviews INTEGER DEFAULT 0
+                """)
+
+                    // Initialize values
+                    database.execSQL("""
+                    UPDATE word_progress 
+                    SET hard_presses = 0, 
+                        successful_reviews = CASE 
+                            WHEN learning_phase = 0 THEN 3 
+                            ELSE repetitions 
+                        END
+                """)
+
+                    Log.d("HocaLingoDatabase", "✅ Migration 2→3 completed")
+                } catch (e: Exception) {
+                    Log.e("HocaLingoDatabase", "❌ Migration 2→3 failed", e)
+                    throw e
+                }
+            }
+        }
+
+        /**
+         * Get database instance with singleton pattern
+         *
+         * ⚠️ BU METOD ŞİMDİLİK KULLANILMIYOR!
+         * DatabaseModule Hilt ile database oluşturuyor.
+         * Ama ileride manuel initialization için kullanılabilir.
          */
         fun getDatabase(context: Context): HocaLingoDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -136,7 +175,8 @@ abstract class HocaLingoDatabase : RoomDatabase() {
                     HocaLingoDatabase::class.java,
                     DATABASE_NAME
                 )
-                    .addMigrations(MIGRATION_1_2) // 🔥 ADD MIGRATION HERE
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance

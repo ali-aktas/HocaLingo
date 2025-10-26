@@ -1,0 +1,1414 @@
+{
+  "package_info": {
+    "id": "en_tr_a2_003",
+    "version": "1.0.0",
+    "level": "A2",
+    "language_pair": "en_tr",
+    "total_words": 100,
+    "updated_at": "2025-10-23",
+    "description": "A2 level English-Turkish vocabulary package 3",
+    "attribution": "HocaLingo vocabulary database"
+  },
+  "words": [
+    {
+      "id": 2200,
+      "english": "movie",
+      "turkish": "film",
+      "example": {
+        "en": "I like this movie",
+        "tr": "Bu filmi beğendim"
+      },
+      "pronunciation": "ˈmuːvi",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2201,
+      "english": "game",
+      "turkish": "oyun",
+      "example": {
+        "en": "Let's play a game",
+        "tr": "Oyun oynayalım"
+      },
+      "pronunciation": "ɡeɪm",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2202,
+      "english": "sport",
+      "turkish": "spor",
+      "example": {
+        "en": "My favorite sport",
+        "tr": "En sevdiğim spor"
+      },
+      "pronunciation": "spɔrt",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2203,
+      "english": "team",
+      "turkish": "takım",
+      "example": {
+        "en": "Our team won",
+        "tr": "Takımımız kazandı"
+      },
+      "pronunciation": "tiːm",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2204,
+      "english": "player",
+      "turkish": "oyuncu",
+      "example": {
+        "en": "He is a good player",
+        "tr": "O iyi bir oyuncu"
+      },
+      "pronunciation": "ˈpleɪər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2205,
+      "english": "ball",
+      "turkish": "top",
+      "example": {
+        "en": "Kick the ball",
+        "tr": "Topu tekele"
+      },
+      "pronunciation": "bɔl",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2206,
+      "english": "match",
+      "turkish": "maç",
+      "example": {
+        "en": "Watch the match",
+        "tr": "Maçı izle"
+      },
+      "pronunciation": "mætʃ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2207,
+      "english": "win",
+      "turkish": "kazanmak",
+      "example": {
+        "en": "We want to win",
+        "tr": "Kazanmak istiyoruz"
+      },
+      "pronunciation": "wɪn",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2208,
+      "english": "lose",
+      "turkish": "kaybetmek",
+      "example": {
+        "en": "Don't lose hope",
+        "tr": "Umudunu kaybetme"
+      },
+      "pronunciation": "luːz",
+      "level": "A2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2209,
+      "english": "hobby",
+      "turkish": "hobi",
+      "example": {
+        "en": "Reading is my hobby",
+        "tr": "Okumak benim hobim"
+      },
+      "pronunciation": "ˈhɑbi",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2210,
+      "english": "party",
+      "turkish": "parti",
+      "example": {
+        "en": "Come to my party",
+        "tr": "Partimesel"
+      },
+      "pronunciation": "ˈpɑrti",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2211,
+      "english": "birthday",
+      "turkish": "doğum günü",
+      "example": {
+        "en": "Happy birthday",
+        "tr": "Doğum günün kutlu olsun"
+      },
+      "pronunciation": "ˈbɜrθdeɪ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2212,
+      "english": "holiday",
+      "turkish": "tatil",
+      "example": {
+        "en": "I need a holiday",
+        "tr": "Tatile ihtiyacım var"
+      },
+      "pronunciation": "ˈhɑlədeɪ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2213,
+      "english": "vacation",
+      "turkish": "tatil",
+      "example": {
+        "en": "Summer vacation",
+        "tr": "Yaz tatili"
+      },
+      "pronunciation": "veɪˈkeɪʃən",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2214,
+      "english": "trip",
+      "turkish": "gezi",
+      "example": {
+        "en": "A school trip",
+        "tr": "Okul gezisi"
+      },
+      "pronunciation": "trɪp",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2215,
+      "english": "tour",
+      "turkish": "tur",
+      "example": {
+        "en": "City tour",
+        "tr": "Şehir turu"
+      },
+      "pronunciation": "tʊr",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2216,
+      "english": "adventure",
+      "turkish": "macera",
+      "example": {
+        "en": "An exciting adventure",
+        "tr": "Heyecanlı bir macera"
+      },
+      "pronunciation": "ədˈvɛntʃər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2217,
+      "english": "experience",
+      "turkish": "deneyim",
+      "example": {
+        "en": "Good experience",
+        "tr": "İyi deneyim"
+      },
+      "pronunciation": "ɪkˈspɪriəns",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2218,
+      "english": "memory",
+      "turkish": "anı",
+      "example": {
+        "en": "Beautiful memories",
+        "tr": "Güzel anılar"
+      },
+      "pronunciation": "ˈmɛməri",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2219,
+      "english": "story",
+      "turkish": "hikaye",
+      "example": {
+        "en": "Tell me a story",
+        "tr": "Bana bir hikaye anlat"
+      },
+      "pronunciation": "ˈstɔri",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2220,
+      "english": "joke",
+      "turkish": "şaka",
+      "example": {
+        "en": "That's a funny joke",
+        "tr": "Bu komik bir şaka"
+      },
+      "pronunciation": "dʒoʊk",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2221,
+      "english": "smile",
+      "turkish": "gülümseme",
+      "example": {
+        "en": "A beautiful smile",
+        "tr": "Güzel bir gülümseme"
+      },
+      "pronunciation": "smaɪl",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2222,
+      "english": "laugh",
+      "turkish": "kahkaha",
+      "example": {
+        "en": "I heard a laugh",
+        "tr": "Kahkaha duydum"
+      },
+      "pronunciation": "læf",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2223,
+      "english": "idea",
+      "turkish": "fikir",
+      "example": {
+        "en": "That's a good idea",
+        "tr": "Bu iyi bir fikir"
+      },
+      "pronunciation": "aɪˈdiːə",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2224,
+      "english": "thought",
+      "turkish": "düşünce",
+      "example": {
+        "en": "Share your thoughts",
+        "tr": "Düşüncelerini paylaş"
+      },
+      "pronunciation": "θɔt",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2225,
+      "english": "feeling",
+      "turkish": "duygu",
+      "example": {
+        "en": "Express your feelings",
+        "tr": "Duygularını ifade et"
+      },
+      "pronunciation": "ˈfiːlɪŋ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2226,
+      "english": "emotion",
+      "turkish": "his",
+      "example": {
+        "en": "Strong emotions",
+        "tr": "Güçlü hisler"
+      },
+      "pronunciation": "ɪˈmoʊʃən",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2227,
+      "english": "love",
+      "turkish": "aşk",
+      "example": {
+        "en": "True love",
+        "tr": "Gerçek aşk"
+      },
+      "pronunciation": "lʌv",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2228,
+      "english": "hate",
+      "turkish": "nefret",
+      "example": {
+        "en": "I hate lies",
+        "tr": "Yalanlardan nefret ederim"
+      },
+      "pronunciation": "heɪt",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2229,
+      "english": "fear",
+      "turkish": "korku",
+      "example": {
+        "en": "I have no fear",
+        "tr": "Korkum yok"
+      },
+      "pronunciation": "fɪr",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2230,
+      "english": "surprise",
+      "turkish": "sürpriz",
+      "example": {
+        "en": "What a surprise",
+        "tr": "Ne sürpriz"
+      },
+      "pronunciation": "sərˈpraɪz",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2231,
+      "english": "anger",
+      "turkish": "öfke",
+      "example": {
+        "en": "Control your anger",
+        "tr": "Öfkeni kontrol et"
+      },
+      "pronunciation": "ˈæŋɡər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2232,
+      "english": "joy",
+      "turkish": "neşe",
+      "example": {
+        "en": "Tears of joy",
+        "tr": "Neşe gözyaşları"
+      },
+      "pronunciation": "dʒɔɪ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2233,
+      "english": "sad",
+      "turkish": "hüzünlü",
+      "example": {
+        "en": "A sad story",
+        "tr": "Hüzünlü bir hikaye"
+      },
+      "pronunciation": "sæd",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2234,
+      "english": "excited",
+      "turkish": "heyecanlı",
+      "example": {
+        "en": "I'm excited",
+        "tr": "Heyecanlıyım"
+      },
+      "pronunciation": "ɪkˈsaɪtɪd",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2235,
+      "english": "bored",
+      "turkish": "sıkılmış",
+      "example": {
+        "en": "I'm bored",
+        "tr": "Sıkıldım"
+      },
+      "pronunciation": "bɔrd",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2236,
+      "english": "interested",
+      "turkish": "ilgili",
+      "example": {
+        "en": "I'm interested in art",
+        "tr": "Sanatla ilgileniyorum"
+      },
+      "pronunciation": "ˈɪntrəstɪd",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2237,
+      "english": "surprised",
+      "turkish": "şaşırmış",
+      "example": {
+        "en": "I was surprised",
+        "tr": "Şaşırdım"
+      },
+      "pronunciation": "sərˈpraɪzd",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2238,
+      "english": "worried",
+      "turkish": "endişeli",
+      "example": {
+        "en": "I'm worried about you",
+        "tr": "Senin için endişeliyim"
+      },
+      "pronunciation": "ˈwɜrid",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2239,
+      "english": "nervous",
+      "turkish": "gergin",
+      "example": {
+        "en": "I feel nervous",
+        "tr": "Gergin hissediyorum"
+      },
+      "pronunciation": "ˈnɜrvəs",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2240,
+      "english": "relaxed",
+      "turkish": "rahat",
+      "example": {
+        "en": "I feel relaxed",
+        "tr": "Rahat hissediyorum"
+      },
+      "pronunciation": "rɪˈlækst",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2241,
+      "english": "comfortable",
+      "turkish": "rahat",
+      "example": {
+        "en": "This chair is comfortable",
+        "tr": "Bu sandalye rahat"
+      },
+      "pronunciation": "ˈkʌmftəbəl",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2242,
+      "english": "uncomfortable",
+      "turkish": "rahatsız",
+      "example": {
+        "en": "I feel uncomfortable",
+        "tr": "Kendimi rahatsız hissediyorum"
+      },
+      "pronunciation": "ʌnˈkʌmftəbəl",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2243,
+      "english": "strange",
+      "turkish": "garip",
+      "example": {
+        "en": "That's strange",
+        "tr": "Bu garip"
+      },
+      "pronunciation": "streɪndʒ",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2244,
+      "english": "normal",
+      "turkish": "normal",
+      "example": {
+        "en": "This is normal",
+        "tr": "Bu normal"
+      },
+      "pronunciation": "ˈnɔrməl",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2245,
+      "english": "usual",
+      "turkish": "olağan",
+      "example": {
+        "en": "As usual",
+        "tr": "Her zamanki gibi"
+      },
+      "pronunciation": "ˈjuːʒuəl",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2246,
+      "english": "unusual",
+      "turkish": "olağandışı",
+      "example": {
+        "en": "That's unusual",
+        "tr": "Bu olağandışı"
+      },
+      "pronunciation": "ʌnˈjuːʒuəl",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2247,
+      "english": "special",
+      "turkish": "özel",
+      "example": {
+        "en": "A special day",
+        "tr": "Özel bir gün"
+      },
+      "pronunciation": "ˈspɛʃəl",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2248,
+      "english": "perfect",
+      "turkish": "mükemmel",
+      "example": {
+        "en": "Perfect weather",
+        "tr": "Mükemmel hava"
+      },
+      "pronunciation": "ˈpɜrfɪkt",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2249,
+      "english": "terrible",
+      "turkish": "korkunç",
+      "example": {
+        "en": "Terrible weather",
+        "tr": "Korkunç hava"
+      },
+      "pronunciation": "ˈtɛrəbəl",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2250,
+      "english": "wonderful",
+      "turkish": "harika",
+      "example": {
+        "en": "A wonderful day",
+        "tr": "Harika bir gün"
+      },
+      "pronunciation": "ˈwʌndərfəl",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2251,
+      "english": "excellent",
+      "turkish": "mükemmel",
+      "example": {
+        "en": "Excellent work",
+        "tr": "Mükemmel iş"
+      },
+      "pronunciation": "ˈɛksələnt",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2252,
+      "english": "great",
+      "turkish": "harika",
+      "example": {
+        "en": "That's great",
+        "tr": "Bu harika"
+      },
+      "pronunciation": "ɡreɪt",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2253,
+      "english": "fine",
+      "turkish": "iyi",
+      "example": {
+        "en": "Everything is fine",
+        "tr": "Her şey iyi"
+      },
+      "pronunciation": "faɪn",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2254,
+      "english": "awful",
+      "turkish": "berbat",
+      "example": {
+        "en": "Awful food",
+        "tr": "Berbat yemek"
+      },
+      "pronunciation": "ˈɔfəl",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2255,
+      "english": "horrible",
+      "turkish": "korkunç",
+      "example": {
+        "en": "A horrible accident",
+        "tr": "Korkunç bir kaza"
+      },
+      "pronunciation": "ˈhɔrəbəl",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2256,
+      "english": "favorite",
+      "turkish": "favori",
+      "example": {
+        "en": "My favorite color",
+        "tr": "Benim favori rengim"
+      },
+      "pronunciation": "ˈfeɪvərɪt",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2257,
+      "english": "popular",
+      "turkish": "popüler",
+      "example": {
+        "en": "A popular singer",
+        "tr": "Popüler bir şarkıcı"
+      },
+      "pronunciation": "ˈpɑpjələr",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2258,
+      "english": "famous",
+      "turkish": "ünlü",
+      "example": {
+        "en": "A famous actor",
+        "tr": "Ünlü bir aktör"
+      },
+      "pronunciation": "ˈfeɪməs",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2259,
+      "english": "modern",
+      "turkish": "modern",
+      "example": {
+        "en": "Modern technology",
+        "tr": "Modern teknoloji"
+      },
+      "pronunciation": "ˈmɑdərn",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2260,
+      "english": "traditional",
+      "turkish": "geleneksel",
+      "example": {
+        "en": "Traditional food",
+        "tr": "Geleneksel yemek"
+      },
+      "pronunciation": "trəˈdɪʃənəl",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2261,
+      "english": "natural",
+      "turkish": "doğal",
+      "example": {
+        "en": "Natural beauty",
+        "tr": "Doğal güzellik"
+      },
+      "pronunciation": "ˈnætʃərəl",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2262,
+      "english": "fresh",
+      "turkish": "taze",
+      "example": {
+        "en": "Fresh bread",
+        "tr": "Taze ekmek"
+      },
+      "pronunciation": "frɛʃ",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2263,
+      "english": "dry",
+      "turkish": "kuru",
+      "example": {
+        "en": "Dry weather",
+        "tr": "Kuru hava"
+      },
+      "pronunciation": "draɪ",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2264,
+      "english": "wet",
+      "turkish": "ıslak",
+      "example": {
+        "en": "Wet clothes",
+        "tr": "Islak giysiler"
+      },
+      "pronunciation": "wɛt",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2265,
+      "english": "sharp",
+      "turkish": "keskin",
+      "example": {
+        "en": "A sharp knife",
+        "tr": "Keskin bir bıçak"
+      },
+      "pronunciation": "ʃɑrp",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2266,
+      "english": "dull",
+      "turkish": "kör",
+      "example": {
+        "en": "A dull knife",
+        "tr": "Kör bir bıçak"
+      },
+      "pronunciation": "dʌl",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2267,
+      "english": "bright",
+      "turkish": "parlak",
+      "example": {
+        "en": "Bright colors",
+        "tr": "Parlak renkler"
+      },
+      "pronunciation": "braɪt",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2268,
+      "english": "dark",
+      "turkish": "koyu",
+      "example": {
+        "en": "Dark blue",
+        "tr": "Koyu mavi"
+      },
+      "pronunciation": "dɑrk",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2269,
+      "english": "light",
+      "turkish": "açık",
+      "example": {
+        "en": "Light green",
+        "tr": "Açık yeşil"
+      },
+      "pronunciation": "laɪt",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2270,
+      "english": "heavy",
+      "turkish": "ağır",
+      "example": {
+        "en": "A heavy box",
+        "tr": "Ağır bir kutu"
+      },
+      "pronunciation": "ˈhɛvi",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2271,
+      "english": "thick",
+      "turkish": "kalın",
+      "example": {
+        "en": "A thick book",
+        "tr": "Kalın bir kitap"
+      },
+      "pronunciation": "θɪk",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2272,
+      "english": "thin",
+      "turkish": "ince",
+      "example": {
+        "en": "Thin paper",
+        "tr": "İnce kağıt"
+      },
+      "pronunciation": "θɪn",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2273,
+      "english": "wide",
+      "turkish": "geniş",
+      "example": {
+        "en": "A wide street",
+        "tr": "Geniş bir sokak"
+      },
+      "pronunciation": "waɪd",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2274,
+      "english": "narrow",
+      "turkish": "dar",
+      "example": {
+        "en": "A narrow road",
+        "tr": "Dar bir yol"
+      },
+      "pronunciation": "ˈnæroʊ",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2275,
+      "english": "deep",
+      "turkish": "derin",
+      "example": {
+        "en": "Deep water",
+        "tr": "Derin su"
+      },
+      "pronunciation": "diːp",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2276,
+      "english": "shallow",
+      "turkish": "sığ",
+      "example": {
+        "en": "Shallow water",
+        "tr": "Sığ su"
+      },
+      "pronunciation": "ˈʃæloʊ",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2277,
+      "english": "flat",
+      "turkish": "düz",
+      "example": {
+        "en": "A flat surface",
+        "tr": "Düz bir yüzey"
+      },
+      "pronunciation": "flæt",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2278,
+      "english": "round",
+      "turkish": "yuvarlak",
+      "example": {
+        "en": "A round table",
+        "tr": "Yuvarlak bir masa"
+      },
+      "pronunciation": "raʊnd",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2279,
+      "english": "square",
+      "turkish": "kare",
+      "example": {
+        "en": "A square box",
+        "tr": "Kare bir kutu"
+      },
+      "pronunciation": "skwɛr",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2280,
+      "english": "straight",
+      "turkish": "düz",
+      "example": {
+        "en": "A straight line",
+        "tr": "Düz bir çizgi"
+      },
+      "pronunciation": "streɪt",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2281,
+      "english": "wide",
+      "turkish": "geniş",
+      "example": {
+        "en": "Wide open",
+        "tr": "Tamamen açık"
+      },
+      "pronunciation": "waɪd",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2282,
+      "english": "strong",
+      "turkish": "güçlü",
+      "example": {
+        "en": "A strong man",
+        "tr": "Güçlü bir adam"
+      },
+      "pronunciation": "strɔŋ",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2283,
+      "english": "weak",
+      "turkish": "zayıf",
+      "example": {
+        "en": "I feel weak",
+        "tr": "Kendimi zayıf hissediyorum"
+      },
+      "pronunciation": "wiːk",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2284,
+      "english": "brave",
+      "turkish": "cesur",
+      "example": {
+        "en": "A brave soldier",
+        "tr": "Cesur bir asker"
+      },
+      "pronunciation": "breɪv",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2285,
+      "english": "careful",
+      "turkish": "dikkatli",
+      "example": {
+        "en": "Be careful",
+        "tr": "Dikkatli ol"
+      },
+      "pronunciation": "ˈkɛrfəl",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2286,
+      "english": "kind",
+      "turkish": "nazik",
+      "example": {
+        "en": "A kind person",
+        "tr": "Nazik bir insan"
+      },
+      "pronunciation": "kaɪnd",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2287,
+      "english": "friendly",
+      "turkish": "arkadaş canlısı",
+      "example": {
+        "en": "Friendly people",
+        "tr": "Arkadaş canlısı insanlar"
+      },
+      "pronunciation": "ˈfrɛndli",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2288,
+      "english": "polite",
+      "turkish": "kibar",
+      "example": {
+        "en": "Be polite",
+        "tr": "Kibar ol"
+      },
+      "pronunciation": "pəˈlaɪt",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2289,
+      "english": "rude",
+      "turkish": "kaba",
+      "example": {
+        "en": "Don't be rude",
+        "tr": "Kaba olma"
+      },
+      "pronunciation": "ruːd",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2290,
+      "english": "honest",
+      "turkish": "dürüst",
+      "example": {
+        "en": "An honest person",
+        "tr": "Dürüst bir insan"
+      },
+      "pronunciation": "ˈɑnəst",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2291,
+      "english": "clever",
+      "turkish": "akıllı",
+      "example": {
+        "en": "A clever idea",
+        "tr": "Akıllı bir fikir"
+      },
+      "pronunciation": "ˈklɛvər",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2292,
+      "english": "stupid",
+      "turkish": "aptal",
+      "example": {
+        "en": "A stupid mistake",
+        "tr": "Aptalca bir hata"
+      },
+      "pronunciation": "ˈstuːpɪd",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2293,
+      "english": "funny",
+      "turkish": "komik",
+      "example": {
+        "en": "A funny movie",
+        "tr": "Komik bir film"
+      },
+      "pronunciation": "ˈfʌni",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2294,
+      "english": "serious",
+      "turkish": "ciddi",
+      "example": {
+        "en": "A serious problem",
+        "tr": "Ciddi bir sorun"
+      },
+      "pronunciation": "ˈsɪriəs",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2295,
+      "english": "lazy",
+      "turkish": "tembel",
+      "example": {
+        "en": "Don't be lazy",
+        "tr": "Tembel olma"
+      },
+      "pronunciation": "ˈleɪzi",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2296,
+      "english": "active",
+      "turkish": "aktif",
+      "example": {
+        "en": "Stay active",
+        "tr": "Aktif kal"
+      },
+      "pronunciation": "ˈæktɪv",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2297,
+      "english": "quiet",
+      "turkish": "sakin",
+      "example": {
+        "en": "A quiet place",
+        "tr": "Sakin bir yer"
+      },
+      "pronunciation": "ˈkwaɪət",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2298,
+      "english": "patient",
+      "turkish": "sabırlı",
+      "example": {
+        "en": "Be patient",
+        "tr": "Sabırlı ol"
+      },
+      "pronunciation": "ˈpeɪʃənt",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2299,
+      "english": "lucky",
+      "turkish": "şanslı",
+      "example": {
+        "en": "I'm so lucky",
+        "tr": "Çok şanslıyım"
+      },
+      "pronunciation": "ˈlʌki",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    }
+  ]
+}

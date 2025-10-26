@@ -1,0 +1,1414 @@
+{
+  "package_info": {
+    "id": "en_tr_b1_002",
+    "version": "1.0.0",
+    "level": "B1",
+    "language_pair": "en_tr",
+    "total_words": 100,
+    "updated_at": "2025-10-24",
+    "description": "B1 level English-Turkish vocabulary package 2 - Verbs continued",
+    "attribution": "HocaLingo vocabulary database"
+  },
+  "words": [
+    {
+      "id": 3100,
+      "english": "realize",
+      "turkish": "fark etmek",
+      "example": {
+        "en": "I didn't realize you were here",
+        "tr": "Burada olduğunu fark etmemiştim"
+      },
+      "pronunciation": "ˈrɪəlaɪz",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3101,
+      "english": "recognize",
+      "turkish": "tanımak",
+      "example": {
+        "en": "Do you recognize this person",
+        "tr": "Bu kişiyi tanıyor musun"
+      },
+      "pronunciation": "ˈrekəɡnaɪz",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3102,
+      "english": "reduce",
+      "turkish": "azaltmak",
+      "example": {
+        "en": "We need to reduce waste",
+        "tr": "İsrafı azaltmamız gerekiyor"
+      },
+      "pronunciation": "rɪˈdjuːs",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3103,
+      "english": "refer",
+      "turkish": "atıfta bulunmak",
+      "example": {
+        "en": "He referred to an old study",
+        "tr": "Eski bir çalışmaya atıfta bulundu"
+      },
+      "pronunciation": "rɪˈfɜː(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3104,
+      "english": "refuse",
+      "turkish": "reddetmek",
+      "example": {
+        "en": "She refused to answer the question",
+        "tr": "Soruyu cevaplamayı reddetti"
+      },
+      "pronunciation": "rɪˈfjuːz",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3105,
+      "english": "regret",
+      "turkish": "pişman olmak",
+      "example": {
+        "en": "I regret not studying harder",
+        "tr": "Daha çok çalışmadığıma pişmanım"
+      },
+      "pronunciation": "rɪˈɡret",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3106,
+      "english": "reject",
+      "turkish": "reddetmek",
+      "example": {
+        "en": "They rejected my application",
+        "tr": "Başvurumu reddettiler"
+      },
+      "pronunciation": "rɪˈdʒekt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3107,
+      "english": "relate",
+      "turkish": "ilişkilendirmek",
+      "example": {
+        "en": "I can relate to your feelings",
+        "tr": "Duygularını anlayabiliyorum"
+      },
+      "pronunciation": "rɪˈleɪt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3108,
+      "english": "relax",
+      "turkish": "rahatlamak",
+      "example": {
+        "en": "Just relax and breathe deeply",
+        "tr": "Sadece rahatla ve derin nefes al"
+      },
+      "pronunciation": "rɪˈlæks",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3109,
+      "english": "release",
+      "turkish": "serbest bırakmak",
+      "example": {
+        "en": "They will release the prisoners tomorrow",
+        "tr": "Mahkumları yarın serbest bırakacaklar"
+      },
+      "pronunciation": "rɪˈliːs",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3110,
+      "english": "rely",
+      "turkish": "güvenmek",
+      "example": {
+        "en": "You can rely on me",
+        "tr": "Bana güvenebilirsin"
+      },
+      "pronunciation": "rɪˈlaɪ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3111,
+      "english": "remain",
+      "turkish": "kalmak",
+      "example": {
+        "en": "Please remain seated during the flight",
+        "tr": "Uçuş boyunca lütfen oturur vaziyette kalın"
+      },
+      "pronunciation": "rɪˈmeɪn",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3112,
+      "english": "remind",
+      "turkish": "hatırlatmak",
+      "example": {
+        "en": "Can you remind me about the meeting",
+        "tr": "Bana toplantıyı hatırlatabilir misin"
+      },
+      "pronunciation": "rɪˈmaɪnd",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3113,
+      "english": "remove",
+      "turkish": "kaldırmak",
+      "example": {
+        "en": "Please remove your shoes",
+        "tr": "Lütfen ayakkabılarını çıkar"
+      },
+      "pronunciation": "rɪˈmuːv",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3114,
+      "english": "repair",
+      "turkish": "tamir etmek",
+      "example": {
+        "en": "The mechanic will repair your car",
+        "tr": "Tamirci arabanı tamir edecek"
+      },
+      "pronunciation": "rɪˈpeə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3115,
+      "english": "repeat",
+      "turkish": "tekrar etmek",
+      "example": {
+        "en": "Could you repeat that please",
+        "tr": "Bunu tekrar edebilir misiniz lütfen"
+      },
+      "pronunciation": "rɪˈpiːt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3116,
+      "english": "replace",
+      "turkish": "değiştirmek",
+      "example": {
+        "en": "We need to replace the old computer",
+        "tr": "Eski bilgisayarı değiştirmemiz gerekiyor"
+      },
+      "pronunciation": "rɪˈpleɪs",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3117,
+      "english": "reply",
+      "turkish": "cevap vermek",
+      "example": {
+        "en": "She didn't reply to my message",
+        "tr": "Mesajıma cevap vermedi"
+      },
+      "pronunciation": "rɪˈplaɪ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3118,
+      "english": "report",
+      "turkish": "rapor etmek",
+      "example": {
+        "en": "You must report any problems",
+        "tr": "Herhangi bir sorunu bildirmelisin"
+      },
+      "pronunciation": "rɪˈpɔːt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3119,
+      "english": "represent",
+      "turkish": "temsil etmek",
+      "example": {
+        "en": "This symbol represents peace",
+        "tr": "Bu sembol barışı temsil eder"
+      },
+      "pronunciation": "ˌreprɪˈzent",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3120,
+      "english": "request",
+      "turkish": "rica etmek",
+      "example": {
+        "en": "I request a window seat",
+        "tr": "Pencere kenarı koltuk rica ediyorum"
+      },
+      "pronunciation": "rɪˈkwest",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3121,
+      "english": "require",
+      "turkish": "gerektirmek",
+      "example": {
+        "en": "This job requires experience",
+        "tr": "Bu iş deneyim gerektiriyor"
+      },
+      "pronunciation": "rɪˈkwaɪə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3122,
+      "english": "rescue",
+      "turkish": "kurtarmak",
+      "example": {
+        "en": "Firefighters rescued the family",
+        "tr": "İtfaiyeciler aileyi kurtardı"
+      },
+      "pronunciation": "ˈreskjuː",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3123,
+      "english": "reserve",
+      "turkish": "rezerve etmek",
+      "example": {
+        "en": "I want to reserve a table",
+        "tr": "Bir masa rezerve etmek istiyorum"
+      },
+      "pronunciation": "rɪˈzɜːv",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3124,
+      "english": "respect",
+      "turkish": "saygı duymak",
+      "example": {
+        "en": "We respect your decision",
+        "tr": "Kararına saygı duyuyoruz"
+      },
+      "pronunciation": "rɪˈspekt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3125,
+      "english": "respond",
+      "turkish": "cevap vermek",
+      "example": {
+        "en": "How did he respond to the news",
+        "tr": "Habere nasıl tepki verdi"
+      },
+      "pronunciation": "rɪˈspɒnd",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3126,
+      "english": "reveal",
+      "turkish": "açığa çıkarmak",
+      "example": {
+        "en": "They will reveal the truth",
+        "tr": "Gerçeği açığa çıkaracaklar"
+      },
+      "pronunciation": "rɪˈviːl",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3127,
+      "english": "risk",
+      "turkish": "risk almak",
+      "example": {
+        "en": "Don't risk your health",
+        "tr": "Sağlığını riske atma"
+      },
+      "pronunciation": "rɪsk",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3128,
+      "english": "rush",
+      "turkish": "acele etmek",
+      "example": {
+        "en": "There's no need to rush",
+        "tr": "Acele etmeye gerek yok"
+      },
+      "pronunciation": "rʌʃ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3129,
+      "english": "satisfy",
+      "turkish": "tatmin etmek",
+      "example": {
+        "en": "This result will satisfy everyone",
+        "tr": "Bu sonuç herkesi tatmin edecek"
+      },
+      "pronunciation": "ˈsætɪsfaɪ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3130,
+      "english": "search",
+      "turkish": "aramak",
+      "example": {
+        "en": "I'm searching for my keys",
+        "tr": "Anahtarlarımı arıyorum"
+      },
+      "pronunciation": "sɜːtʃ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3131,
+      "english": "select",
+      "turkish": "seçmek",
+      "example": {
+        "en": "Please select your preferred option",
+        "tr": "Lütfen tercih ettiğiniz seçeneği seçin"
+      },
+      "pronunciation": "sɪˈlekt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3132,
+      "english": "separate",
+      "turkish": "ayırmak",
+      "example": {
+        "en": "Let's separate the white clothes",
+        "tr": "Beyaz kıyafetleri ayıralım"
+      },
+      "pronunciation": "ˈsepəreɪt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3133,
+      "english": "serve",
+      "turkish": "hizmet etmek",
+      "example": {
+        "en": "This restaurant serves Italian food",
+        "tr": "Bu restoran İtalyan yemekleri sunuyor"
+      },
+      "pronunciation": "sɜːv",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3134,
+      "english": "settle",
+      "turkish": "yerleşmek",
+      "example": {
+        "en": "They decided to settle in the countryside",
+        "tr": "Kırsala yerleşmeye karar verdiler"
+      },
+      "pronunciation": "ˈsetl",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3135,
+      "english": "share",
+      "turkish": "paylaşmak",
+      "example": {
+        "en": "Let's share the pizza",
+        "tr": "Pizzayı paylaşalım"
+      },
+      "pronunciation": "ʃeə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3136,
+      "english": "shift",
+      "turkish": "kaydırmak",
+      "example": {
+        "en": "Can you help me shift this table",
+        "tr": "Bu masayı kaydırmama yardım edebilir misin"
+      },
+      "pronunciation": "ʃɪft",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3137,
+      "english": "solve",
+      "turkish": "çözmek",
+      "example": {
+        "en": "We need to solve this problem",
+        "tr": "Bu sorunu çözmemiz gerekiyor"
+      },
+      "pronunciation": "sɒlv",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3138,
+      "english": "sort",
+      "turkish": "sıralamak",
+      "example": {
+        "en": "Sort the files by date",
+        "tr": "Dosyaları tarihe göre sırala"
+      },
+      "pronunciation": "sɔːt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3139,
+      "english": "spread",
+      "turkish": "yaymak",
+      "example": {
+        "en": "The news spread quickly",
+        "tr": "Haber hızla yayıldı"
+      },
+      "pronunciation": "spred",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3140,
+      "english": "state",
+      "turkish": "belirtmek",
+      "example": {
+        "en": "Please state your name clearly",
+        "tr": "Lütfen adınızı açıkça belirtin"
+      },
+      "pronunciation": "steɪt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3141,
+      "english": "stretch",
+      "turkish": "uzatmak",
+      "example": {
+        "en": "Stretch your arms before exercise",
+        "tr": "Egzersizden önce kollarını esnet"
+      },
+      "pronunciation": "stretʃ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3142,
+      "english": "struggle",
+      "turkish": "mücadele etmek",
+      "example": {
+        "en": "Many people struggle with this task",
+        "tr": "Birçok insan bu görevle mücadele ediyor"
+      },
+      "pronunciation": "ˈstrʌɡl",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3143,
+      "english": "succeed",
+      "turkish": "başarılı olmak",
+      "example": {
+        "en": "I know you will succeed",
+        "tr": "Başarılı olacağını biliyorum"
+      },
+      "pronunciation": "səkˈsiːd",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3144,
+      "english": "suffer",
+      "turkish": "acı çekmek",
+      "example": {
+        "en": "She suffers from allergies",
+        "tr": "Alerjilerden dolayı acı çekiyor"
+      },
+      "pronunciation": "ˈsʌfə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3145,
+      "english": "suit",
+      "turkish": "uymak",
+      "example": {
+        "en": "This color suits you perfectly",
+        "tr": "Bu renk sana çok yakışıyor"
+      },
+      "pronunciation": "suːt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3146,
+      "english": "supply",
+      "turkish": "tedarik etmek",
+      "example": {
+        "en": "They supply fresh vegetables daily",
+        "tr": "Her gün taze sebze tedarik ediyorlar"
+      },
+      "pronunciation": "səˈplaɪ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3147,
+      "english": "support",
+      "turkish": "desteklemek",
+      "example": {
+        "en": "Thank you for supporting me",
+        "tr": "Beni desteklediğin için teşekkürler"
+      },
+      "pronunciation": "səˈpɔːt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3148,
+      "english": "suppose",
+      "turkish": "varsaymak",
+      "example": {
+        "en": "I suppose you're right",
+        "tr": "Sanırım haklısın"
+      },
+      "pronunciation": "səˈpəʊz",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3149,
+      "english": "survive",
+      "turkish": "hayatta kalmak",
+      "example": {
+        "en": "Only the strongest survive",
+        "tr": "Sadece en güçlüler hayatta kalır"
+      },
+      "pronunciation": "səˈvaɪv",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3150,
+      "english": "attempt",
+      "turkish": "denemek",
+      "example": {
+        "en": "He attempted to climb the mountain",
+        "tr": "Dağa tırmanmayı denedi"
+      },
+      "pronunciation": "əˈtempt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3151,
+      "english": "ability",
+      "turkish": "yetenek",
+      "example": {
+        "en": "She has great artistic ability",
+        "tr": "Büyük sanatsal yeteneği var"
+      },
+      "pronunciation": "əˈbɪləti",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3152,
+      "english": "advantage",
+      "turkish": "avantaj",
+      "example": {
+        "en": "This gives us a big advantage",
+        "tr": "Bu bize büyük avantaj sağlıyor"
+      },
+      "pronunciation": "ədˈvɑːntɪdʒ",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3153,
+      "english": "advice",
+      "turkish": "tavsiye",
+      "example": {
+        "en": "Can you give me some advice",
+        "tr": "Bana biraz tavsiye verebilir misin"
+      },
+      "pronunciation": "ədˈvaɪs",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3154,
+      "english": "affair",
+      "turkish": "iş",
+      "example": {
+        "en": "This is a serious affair",
+        "tr": "Bu ciddi bir iş"
+      },
+      "pronunciation": "əˈfeə(r)",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3155,
+      "english": "age",
+      "turkish": "yaş",
+      "example": {
+        "en": "What is your age",
+        "tr": "Yaşın kaç"
+      },
+      "pronunciation": "eɪdʒ",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3156,
+      "english": "agreement",
+      "turkish": "anlaşma",
+      "example": {
+        "en": "We reached an agreement",
+        "tr": "Bir anlaşmaya vardık"
+      },
+      "pronunciation": "əˈɡriːmənt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3157,
+      "english": "aim",
+      "turkish": "amaç",
+      "example": {
+        "en": "Our aim is to help people",
+        "tr": "Amacımız insanlara yardım etmek"
+      },
+      "pronunciation": "eɪm",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3158,
+      "english": "alarm",
+      "turkish": "alarm",
+      "example": {
+        "en": "The alarm went off at six",
+        "tr": "Alarm saat altıda çaldı"
+      },
+      "pronunciation": "əˈlɑːm",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3159,
+      "english": "amount",
+      "turkish": "miktar",
+      "example": {
+        "en": "A large amount of money",
+        "tr": "Büyük miktarda para"
+      },
+      "pronunciation": "əˈmaʊnt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3160,
+      "english": "anxiety",
+      "turkish": "endişe",
+      "example": {
+        "en": "She felt anxiety before the exam",
+        "tr": "Sınavdan önce endişe hissetti"
+      },
+      "pronunciation": "æŋˈzaɪəti",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3161,
+      "english": "appearance",
+      "turkish": "görünüş",
+      "example": {
+        "en": "Don't judge by appearance",
+        "tr": "Görünüşe göre yargılama"
+      },
+      "pronunciation": "əˈpɪərəns",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3162,
+      "english": "appointment",
+      "turkish": "randevu",
+      "example": {
+        "en": "I have a doctor's appointment",
+        "tr": "Doktor randevum var"
+      },
+      "pronunciation": "əˈpɔɪntmənt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3163,
+      "english": "argument",
+      "turkish": "tartışma",
+      "example": {
+        "en": "They had a big argument",
+        "tr": "Büyük bir tartışma yaşadılar"
+      },
+      "pronunciation": "ˈɑːɡjumənt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3164,
+      "english": "arrival",
+      "turkish": "varış",
+      "example": {
+        "en": "The train's arrival is delayed",
+        "tr": "Trenin varışı gecikti"
+      },
+      "pronunciation": "əˈraɪvl",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3165,
+      "english": "art",
+      "turkish": "sanat",
+      "example": {
+        "en": "She studies modern art",
+        "tr": "Modern sanat okuyor"
+      },
+      "pronunciation": "ɑːt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3166,
+      "english": "attention",
+      "turkish": "dikkat",
+      "example": {
+        "en": "Pay attention to the teacher",
+        "tr": "Öğretmene dikkat et"
+      },
+      "pronunciation": "əˈtenʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3167,
+      "english": "attitude",
+      "turkish": "tutum",
+      "example": {
+        "en": "He has a positive attitude",
+        "tr": "Pozitif bir tutumu var"
+      },
+      "pronunciation": "ˈætɪtjuːd",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3168,
+      "english": "average",
+      "turkish": "ortalama",
+      "example": {
+        "en": "The average temperature is twenty degrees",
+        "tr": "Ortalama sıcaklık yirmi derece"
+      },
+      "pronunciation": "ˈævərɪdʒ",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3169,
+      "english": "awareness",
+      "turkish": "farkındalık",
+      "example": {
+        "en": "We need more environmental awareness",
+        "tr": "Daha fazla çevre bilincine ihtiyacımız var"
+      },
+      "pronunciation": "əˈweənəs",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3170,
+      "english": "background",
+      "turkish": "geçmiş",
+      "example": {
+        "en": "Tell me about your background",
+        "tr": "Bana geçmişinden bahset"
+      },
+      "pronunciation": "ˈbækɡraʊnd",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3171,
+      "english": "balance",
+      "turkish": "denge",
+      "example": {
+        "en": "You need work-life balance",
+        "tr": "İş-yaşam dengesine ihtiyacın var"
+      },
+      "pronunciation": "ˈbæləns",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3172,
+      "english": "base",
+      "turkish": "temel",
+      "example": {
+        "en": "This theory has no base",
+        "tr": "Bu teorinin temeli yok"
+      },
+      "pronunciation": "beɪs",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3173,
+      "english": "basis",
+      "turkish": "dayanak",
+      "example": {
+        "en": "What's the basis of your claim",
+        "tr": "İddianın dayanağı nedir"
+      },
+      "pronunciation": "ˈbeɪsɪs",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3174,
+      "english": "battle",
+      "turkish": "savaş",
+      "example": {
+        "en": "They won the battle",
+        "tr": "Savaşı kazandılar"
+      },
+      "pronunciation": "ˈbætl",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3175,
+      "english": "behavior",
+      "turkish": "davranış",
+      "example": {
+        "en": "His behavior is strange",
+        "tr": "Davranışı garip"
+      },
+      "pronunciation": "bɪˈheɪvjə(r)",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3176,
+      "english": "benefit",
+      "turkish": "fayda",
+      "example": {
+        "en": "Exercise has many benefits",
+        "tr": "Egzersizin birçok faydası var"
+      },
+      "pronunciation": "ˈbenɪfɪt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3177,
+      "english": "bit",
+      "turkish": "parça",
+      "example": {
+        "en": "Can I have a bit of sugar",
+        "tr": "Biraz şeker alabilir miyim"
+      },
+      "pronunciation": "bɪt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3178,
+      "english": "border",
+      "turkish": "sınır",
+      "example": {
+        "en": "We crossed the border yesterday",
+        "tr": "Dün sınırı geçtik"
+      },
+      "pronunciation": "ˈbɔːdə(r)",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3179,
+      "english": "branch",
+      "turkish": "dal",
+      "example": {
+        "en": "The bird sat on a branch",
+        "tr": "Kuş bir dala kondu"
+      },
+      "pronunciation": "brɑːntʃ",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3180,
+      "english": "button",
+      "turkish": "düğme",
+      "example": {
+        "en": "Press the red button",
+        "tr": "Kırmızı düğmeye bas"
+      },
+      "pronunciation": "ˈbʌtn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3181,
+      "english": "campaign",
+      "turkish": "kampanya",
+      "example": {
+        "en": "The advertising campaign was successful",
+        "tr": "Reklam kampanyası başarılıydı"
+      },
+      "pronunciation": "kæmˈpeɪn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3182,
+      "english": "career",
+      "turkish": "kariyer",
+      "example": {
+        "en": "She has a successful career",
+        "tr": "Başarılı bir kariyeri var"
+      },
+      "pronunciation": "kəˈrɪə(r)",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3183,
+      "english": "case",
+      "turkish": "durum",
+      "example": {
+        "en": "In this case I agree",
+        "tr": "Bu durumda katılıyorum"
+      },
+      "pronunciation": "keɪs",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3184,
+      "english": "cash",
+      "turkish": "nakit",
+      "example": {
+        "en": "Do you accept cash",
+        "tr": "Nakit kabul ediyor musunuz"
+      },
+      "pronunciation": "kæʃ",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3185,
+      "english": "cause",
+      "turkish": "sebep",
+      "example": {
+        "en": "What's the cause of the problem",
+        "tr": "Sorunun sebebi nedir"
+      },
+      "pronunciation": "kɔːz",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3186,
+      "english": "chain",
+      "turkish": "zincir",
+      "example": {
+        "en": "The bike has a broken chain",
+        "tr": "Bisikletin zinciri kırık"
+      },
+      "pronunciation": "tʃeɪn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3187,
+      "english": "chance",
+      "turkish": "şans",
+      "example": {
+        "en": "Give me one more chance",
+        "tr": "Bana bir şans daha ver"
+      },
+      "pronunciation": "tʃɑːns",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3188,
+      "english": "character",
+      "turkish": "karakter",
+      "example": {
+        "en": "He has a strong character",
+        "tr": "Güçlü bir karakteri var"
+      },
+      "pronunciation": "ˈkærəktə(r)",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3189,
+      "english": "charge",
+      "turkish": "ücret",
+      "example": {
+        "en": "There's no charge for delivery",
+        "tr": "Teslimat ücretsiz"
+      },
+      "pronunciation": "tʃɑːdʒ",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3190,
+      "english": "choice",
+      "turkish": "seçim",
+      "example": {
+        "en": "You made the right choice",
+        "tr": "Doğru seçimi yaptın"
+      },
+      "pronunciation": "tʃɔɪs",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3191,
+      "english": "claim",
+      "turkish": "iddia",
+      "example": {
+        "en": "His claim is not true",
+        "tr": "Onun iddiası doğru değil"
+      },
+      "pronunciation": "kleɪm",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3192,
+      "english": "client",
+      "turkish": "müşteri",
+      "example": {
+        "en": "We have many satisfied clients",
+        "tr": "Birçok memnun müşterimiz var"
+      },
+      "pronunciation": "ˈklaɪənt",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3193,
+      "english": "climate",
+      "turkish": "iklim",
+      "example": {
+        "en": "The climate is changing",
+        "tr": "İklim değişiyor"
+      },
+      "pronunciation": "ˈklaɪmət",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3194,
+      "english": "coast",
+      "turkish": "kıyı",
+      "example": {
+        "en": "We live near the coast",
+        "tr": "Kıyıya yakın yaşıyoruz"
+      },
+      "pronunciation": "kəʊst",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3195,
+      "english": "code",
+      "turkish": "kod",
+      "example": {
+        "en": "Enter the access code",
+        "tr": "Erişim kodunu girin"
+      },
+      "pronunciation": "kəʊd",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3196,
+      "english": "collection",
+      "turkish": "koleksiyon",
+      "example": {
+        "en": "She has a stamp collection",
+        "tr": "Pul koleksiyonu var"
+      },
+      "pronunciation": "kəˈlekʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3197,
+      "english": "comment",
+      "turkish": "yorum",
+      "example": {
+        "en": "Do you have any comments",
+        "tr": "Herhangi bir yorumun var mı"
+      },
+      "pronunciation": "ˈkɒment",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3198,
+      "english": "community",
+      "turkish": "topluluk",
+      "example": {
+        "en": "We live in a friendly community",
+        "tr": "Dostça bir toplulukta yaşıyoruz"
+      },
+      "pronunciation": "kəˈmjuːnəti",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3199,
+      "english": "competition",
+      "turkish": "yarışma",
+      "example": {
+        "en": "She won the swimming competition",
+        "tr": "Yüzme yarışmasını kazandı"
+      },
+      "pronunciation": "ˌkɒmpəˈtɪʃn",
+      "level": "B1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    }
+  ]
+}

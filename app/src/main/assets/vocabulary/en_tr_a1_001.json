@@ -1,0 +1,1414 @@
+{
+  "package_info": {
+    "id": "en_tr_a1_001",
+    "version": "1.0.0",
+    "level": "A1",
+    "language_pair": "en_tr",
+    "total_words": 100,
+    "updated_at": "2025-10-23",
+    "description": "A1 level English-Turkish vocabulary package 1",
+    "attribution": "HocaLingo vocabulary database"
+  },
+  "words": [
+    {
+      "id": 1000,
+      "english": "hello",
+      "turkish": "merhaba",
+      "example": {
+        "en": "Hello, how are you?",
+        "tr": "Merhaba, nasılsın?"
+      },
+      "pronunciation": "həˈloʊ",
+      "level": "A1",
+      "category": "greetings",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1001,
+      "english": "goodbye",
+      "turkish": "hoşçakal",
+      "example": {
+        "en": "Goodbye, see you later",
+        "tr": "Hoşçakal, sonra görüşürüz"
+      },
+      "pronunciation": "ɡʊdˈbaɪ",
+      "level": "A1",
+      "category": "greetings",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1002,
+      "english": "yes",
+      "turkish": "evet",
+      "example": {
+        "en": "Yes, I agree",
+        "tr": "Evet, katılıyorum"
+      },
+      "pronunciation": "jɛs",
+      "level": "A1",
+      "category": "basic",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1003,
+      "english": "no",
+      "turkish": "hayır",
+      "example": {
+        "en": "No, I don't want",
+        "tr": "Hayır, istemiyorum"
+      },
+      "pronunciation": "noʊ",
+      "level": "A1",
+      "category": "basic",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1004,
+      "english": "please",
+      "turkish": "lütfen",
+      "example": {
+        "en": "Please help me",
+        "tr": "Lütfen bana yardım et"
+      },
+      "pronunciation": "pliːz",
+      "level": "A1",
+      "category": "greetings",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1005,
+      "english": "thank you",
+      "turkish": "teşekkür ederim",
+      "example": {
+        "en": "Thank you very much",
+        "tr": "Çok teşekkür ederim"
+      },
+      "pronunciation": "θæŋk juː",
+      "level": "A1",
+      "category": "greetings",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1006,
+      "english": "sorry",
+      "turkish": "üzgünüm",
+      "example": {
+        "en": "I am sorry",
+        "tr": "Üzgünüm"
+      },
+      "pronunciation": "ˈsɑri",
+      "level": "A1",
+      "category": "greetings",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1007,
+      "english": "excuse me",
+      "turkish": "affedersiniz",
+      "example": {
+        "en": "Excuse me, where is the station?",
+        "tr": "Affedersiniz, istasyon nerede?"
+      },
+      "pronunciation": "ɪkˈskjuːz miː",
+      "level": "A1",
+      "category": "greetings",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1008,
+      "english": "I",
+      "turkish": "ben",
+      "example": {
+        "en": "I am a student",
+        "tr": "Ben bir öğrenciyim"
+      },
+      "pronunciation": "aɪ",
+      "level": "A1",
+      "category": "pronouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1009,
+      "english": "you",
+      "turkish": "sen",
+      "example": {
+        "en": "You are my friend",
+        "tr": "Sen benim arkadaşımsın"
+      },
+      "pronunciation": "juː",
+      "level": "A1",
+      "category": "pronouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1010,
+      "english": "he",
+      "turkish": "o (erkek)",
+      "example": {
+        "en": "He is a teacher",
+        "tr": "O bir öğretmen"
+      },
+      "pronunciation": "hiː",
+      "level": "A1",
+      "category": "pronouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1011,
+      "english": "she",
+      "turkish": "o (kadın)",
+      "example": {
+        "en": "She is my sister",
+        "tr": "O benim kız kardeşim"
+      },
+      "pronunciation": "ʃiː",
+      "level": "A1",
+      "category": "pronouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1012,
+      "english": "we",
+      "turkish": "biz",
+      "example": {
+        "en": "We are friends",
+        "tr": "Biz arkadaşız"
+      },
+      "pronunciation": "wiː",
+      "level": "A1",
+      "category": "pronouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1013,
+      "english": "they",
+      "turkish": "onlar",
+      "example": {
+        "en": "They are students",
+        "tr": "Onlar öğrenci"
+      },
+      "pronunciation": "ðeɪ",
+      "level": "A1",
+      "category": "pronouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1014,
+      "english": "what",
+      "turkish": "ne",
+      "example": {
+        "en": "What is your name?",
+        "tr": "Adın ne?"
+      },
+      "pronunciation": "wɑt",
+      "level": "A1",
+      "category": "questions",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1015,
+      "english": "where",
+      "turkish": "nerede",
+      "example": {
+        "en": "Where do you live?",
+        "tr": "Nerede yaşıyorsun?"
+      },
+      "pronunciation": "wɛr",
+      "level": "A1",
+      "category": "questions",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1016,
+      "english": "when",
+      "turkish": "ne zaman",
+      "example": {
+        "en": "When is the meeting?",
+        "tr": "Toplantı ne zaman?"
+      },
+      "pronunciation": "wɛn",
+      "level": "A1",
+      "category": "questions",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1017,
+      "english": "who",
+      "turkish": "kim",
+      "example": {
+        "en": "Who is that person?",
+        "tr": "O kişi kim?"
+      },
+      "pronunciation": "huː",
+      "level": "A1",
+      "category": "questions",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1018,
+      "english": "why",
+      "turkish": "neden",
+      "example": {
+        "en": "Why are you late?",
+        "tr": "Neden geç kaldın?"
+      },
+      "pronunciation": "waɪ",
+      "level": "A1",
+      "category": "questions",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1019,
+      "english": "how",
+      "turkish": "nasıl",
+      "example": {
+        "en": "How are you today?",
+        "tr": "Bugün nasılsın?"
+      },
+      "pronunciation": "haʊ",
+      "level": "A1",
+      "category": "questions",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1020,
+      "english": "this",
+      "turkish": "bu",
+      "example": {
+        "en": "This is my book",
+        "tr": "Bu benim kitabım"
+      },
+      "pronunciation": "ðɪs",
+      "level": "A1",
+      "category": "demonstratives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1021,
+      "english": "that",
+      "turkish": "şu",
+      "example": {
+        "en": "That is your pen",
+        "tr": "Şu senin kalemin"
+      },
+      "pronunciation": "ðæt",
+      "level": "A1",
+      "category": "demonstratives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1022,
+      "english": "here",
+      "turkish": "burada",
+      "example": {
+        "en": "I am here",
+        "tr": "Ben buradayım"
+      },
+      "pronunciation": "hɪr",
+      "level": "A1",
+      "category": "location",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1023,
+      "english": "there",
+      "turkish": "orada",
+      "example": {
+        "en": "The shop is there",
+        "tr": "Dükkan orada"
+      },
+      "pronunciation": "ðɛr",
+      "level": "A1",
+      "category": "location",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1024,
+      "english": "now",
+      "turkish": "şimdi",
+      "example": {
+        "en": "I need it now",
+        "tr": "Şimdi ihtiyacım var"
+      },
+      "pronunciation": "naʊ",
+      "level": "A1",
+      "category": "time",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1025,
+      "english": "today",
+      "turkish": "bugün",
+      "example": {
+        "en": "Today is Monday",
+        "tr": "Bugün Pazartesi"
+      },
+      "pronunciation": "təˈdeɪ",
+      "level": "A1",
+      "category": "time",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1026,
+      "english": "tomorrow",
+      "turkish": "yarın",
+      "example": {
+        "en": "See you tomorrow",
+        "tr": "Yarın görüşürüz"
+      },
+      "pronunciation": "təˈmɑroʊ",
+      "level": "A1",
+      "category": "time",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1027,
+      "english": "yesterday",
+      "turkish": "dün",
+      "example": {
+        "en": "I saw him yesterday",
+        "tr": "Onu dün gördüm"
+      },
+      "pronunciation": "ˈjɛstərdeɪ",
+      "level": "A1",
+      "category": "time",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1028,
+      "english": "morning",
+      "turkish": "sabah",
+      "example": {
+        "en": "Good morning",
+        "tr": "Günaydın"
+      },
+      "pronunciation": "ˈmɔrnɪŋ",
+      "level": "A1",
+      "category": "time",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1029,
+      "english": "afternoon",
+      "turkish": "öğleden sonra",
+      "example": {
+        "en": "I will call you this afternoon",
+        "tr": "Seni bu öğleden sonra ararım"
+      },
+      "pronunciation": "ˌæftərˈnuːn",
+      "level": "A1",
+      "category": "time",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1030,
+      "english": "evening",
+      "turkish": "akşam",
+      "example": {
+        "en": "Good evening",
+        "tr": "İyi akşamlar"
+      },
+      "pronunciation": "ˈiːvnɪŋ",
+      "level": "A1",
+      "category": "time",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1031,
+      "english": "night",
+      "turkish": "gece",
+      "example": {
+        "en": "Good night",
+        "tr": "İyi geceler"
+      },
+      "pronunciation": "naɪt",
+      "level": "A1",
+      "category": "time",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1032,
+      "english": "day",
+      "turkish": "gün",
+      "example": {
+        "en": "Have a nice day",
+        "tr": "İyi günler"
+      },
+      "pronunciation": "deɪ",
+      "level": "A1",
+      "category": "time",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1033,
+      "english": "week",
+      "turkish": "hafta",
+      "example": {
+        "en": "I work five days a week",
+        "tr": "Haftada beş gün çalışırım"
+      },
+      "pronunciation": "wiːk",
+      "level": "A1",
+      "category": "time",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1034,
+      "english": "month",
+      "turkish": "ay",
+      "example": {
+        "en": "January is the first month",
+        "tr": "Ocak ilk aydır"
+      },
+      "pronunciation": "mʌnθ",
+      "level": "A1",
+      "category": "time",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1035,
+      "english": "year",
+      "turkish": "yıl",
+      "example": {
+        "en": "Happy new year",
+        "tr": "Yeni yılınız kutlu olsun"
+      },
+      "pronunciation": "jɪr",
+      "level": "A1",
+      "category": "time",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1036,
+      "english": "time",
+      "turkish": "zaman",
+      "example": {
+        "en": "What time is it?",
+        "tr": "Saat kaç?"
+      },
+      "pronunciation": "taɪm",
+      "level": "A1",
+      "category": "time",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1037,
+      "english": "hour",
+      "turkish": "saat",
+      "example": {
+        "en": "The lesson is one hour",
+        "tr": "Ders bir saat"
+      },
+      "pronunciation": "aʊr",
+      "level": "A1",
+      "category": "time",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1038,
+      "english": "minute",
+      "turkish": "dakika",
+      "example": {
+        "en": "Wait a minute",
+        "tr": "Bir dakika bekle"
+      },
+      "pronunciation": "ˈmɪnɪt",
+      "level": "A1",
+      "category": "time",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1039,
+      "english": "second",
+      "turkish": "saniye",
+      "example": {
+        "en": "Just a second",
+        "tr": "Bir saniye"
+      },
+      "pronunciation": "ˈsɛkənd",
+      "level": "A1",
+      "category": "time",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1040,
+      "english": "name",
+      "turkish": "isim",
+      "example": {
+        "en": "What is your name?",
+        "tr": "Adın ne?"
+      },
+      "pronunciation": "neɪm",
+      "level": "A1",
+      "category": "personal",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1041,
+      "english": "man",
+      "turkish": "adam",
+      "example": {
+        "en": "He is a tall man",
+        "tr": "O uzun boylu bir adam"
+      },
+      "pronunciation": "mæn",
+      "level": "A1",
+      "category": "people",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1042,
+      "english": "woman",
+      "turkish": "kadın",
+      "example": {
+        "en": "She is a kind woman",
+        "tr": "O nazik bir kadın"
+      },
+      "pronunciation": "ˈwʊmən",
+      "level": "A1",
+      "category": "people",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1043,
+      "english": "boy",
+      "turkish": "erkek çocuk",
+      "example": {
+        "en": "The boy is playing",
+        "tr": "Erkek çocuk oynuyor"
+      },
+      "pronunciation": "bɔɪ",
+      "level": "A1",
+      "category": "people",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1044,
+      "english": "girl",
+      "turkish": "kız çocuk",
+      "example": {
+        "en": "The girl is reading",
+        "tr": "Kız çocuk kitap okuyor"
+      },
+      "pronunciation": "ɡɜrl",
+      "level": "A1",
+      "category": "people",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1045,
+      "english": "child",
+      "turkish": "çocuk",
+      "example": {
+        "en": "I have one child",
+        "tr": "Bir çocuğum var"
+      },
+      "pronunciation": "tʃaɪld",
+      "level": "A1",
+      "category": "people",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1046,
+      "english": "baby",
+      "turkish": "bebek",
+      "example": {
+        "en": "The baby is sleeping",
+        "tr": "Bebek uyuyor"
+      },
+      "pronunciation": "ˈbeɪbi",
+      "level": "A1",
+      "category": "people",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1047,
+      "english": "friend",
+      "turkish": "arkadaş",
+      "example": {
+        "en": "She is my best friend",
+        "tr": "O benim en iyi arkadaşım"
+      },
+      "pronunciation": "frɛnd",
+      "level": "A1",
+      "category": "people",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1048,
+      "english": "family",
+      "turkish": "aile",
+      "example": {
+        "en": "I love my family",
+        "tr": "Ailemi seviyorum"
+      },
+      "pronunciation": "ˈfæməli",
+      "level": "A1",
+      "category": "people",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1049,
+      "english": "mother",
+      "turkish": "anne",
+      "example": {
+        "en": "My mother is a doctor",
+        "tr": "Annem bir doktor"
+      },
+      "pronunciation": "ˈmʌðər",
+      "level": "A1",
+      "category": "family",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1050,
+      "english": "father",
+      "turkish": "baba",
+      "example": {
+        "en": "My father works in a bank",
+        "tr": "Babam bir bankada çalışıyor"
+      },
+      "pronunciation": "ˈfɑðər",
+      "level": "A1",
+      "category": "family",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1051,
+      "english": "brother",
+      "turkish": "erkek kardeş",
+      "example": {
+        "en": "I have one brother",
+        "tr": "Bir erkek kardeşim var"
+      },
+      "pronunciation": "ˈbrʌðər",
+      "level": "A1",
+      "category": "family",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1052,
+      "english": "sister",
+      "turkish": "kız kardeş",
+      "example": {
+        "en": "My sister is younger than me",
+        "tr": "Kız kardeşim benden küçük"
+      },
+      "pronunciation": "ˈsɪstər",
+      "level": "A1",
+      "category": "family",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1053,
+      "english": "son",
+      "turkish": "oğul",
+      "example": {
+        "en": "He is my son",
+        "tr": "O benim oğlum"
+      },
+      "pronunciation": "sʌn",
+      "level": "A1",
+      "category": "family",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1054,
+      "english": "daughter",
+      "turkish": "kız",
+      "example": {
+        "en": "She is my daughter",
+        "tr": "O benim kızım"
+      },
+      "pronunciation": "ˈdɔtər",
+      "level": "A1",
+      "category": "family",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1055,
+      "english": "husband",
+      "turkish": "koca",
+      "example": {
+        "en": "He is my husband",
+        "tr": "O benim kocam"
+      },
+      "pronunciation": "ˈhʌzbənd",
+      "level": "A1",
+      "category": "family",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1056,
+      "english": "wife",
+      "turkish": "eş (kadın)",
+      "example": {
+        "en": "She is my wife",
+        "tr": "O benim eşim"
+      },
+      "pronunciation": "waɪf",
+      "level": "A1",
+      "category": "family",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1057,
+      "english": "person",
+      "turkish": "kişi",
+      "example": {
+        "en": "There is one person here",
+        "tr": "Burada bir kişi var"
+      },
+      "pronunciation": "ˈpɜrsən",
+      "level": "A1",
+      "category": "people",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1058,
+      "english": "people",
+      "turkish": "insanlar",
+      "example": {
+        "en": "Many people are here",
+        "tr": "Burada çok insan var"
+      },
+      "pronunciation": "ˈpipəl",
+      "level": "A1",
+      "category": "people",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1059,
+      "english": "country",
+      "turkish": "ülke",
+      "example": {
+        "en": "Turkey is a beautiful country",
+        "tr": "Türkiye güzel bir ülke"
+      },
+      "pronunciation": "ˈkʌntri",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1060,
+      "english": "city",
+      "turkish": "şehir",
+      "example": {
+        "en": "Istanbul is a big city",
+        "tr": "İstanbul büyük bir şehir"
+      },
+      "pronunciation": "ˈsɪti",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1061,
+      "english": "town",
+      "turkish": "kasaba",
+      "example": {
+        "en": "I live in a small town",
+        "tr": "Küçük bir kasabada yaşıyorum"
+      },
+      "pronunciation": "taʊn",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1062,
+      "english": "street",
+      "turkish": "sokak",
+      "example": {
+        "en": "The street is very busy",
+        "tr": "Sokak çok kalabalık"
+      },
+      "pronunciation": "striːt",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1063,
+      "english": "house",
+      "turkish": "ev",
+      "example": {
+        "en": "I have a big house",
+        "tr": "Büyük bir evim var"
+      },
+      "pronunciation": "haʊs",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1064,
+      "english": "home",
+      "turkish": "yuva",
+      "example": {
+        "en": "I am going home",
+        "tr": "Eve gidiyorum"
+      },
+      "pronunciation": "hoʊm",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1065,
+      "english": "room",
+      "turkish": "oda",
+      "example": {
+        "en": "My room is clean",
+        "tr": "Odam temiz"
+      },
+      "pronunciation": "ruːm",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1066,
+      "english": "door",
+      "turkish": "kapı",
+      "example": {
+        "en": "Please close the door",
+        "tr": "Lütfen kapıyı kapat"
+      },
+      "pronunciation": "dɔr",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1067,
+      "english": "window",
+      "turkish": "pencere",
+      "example": {
+        "en": "Open the window please",
+        "tr": "Lütfen pencereyi aç"
+      },
+      "pronunciation": "ˈwɪndoʊ",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1068,
+      "english": "table",
+      "turkish": "masa",
+      "example": {
+        "en": "The book is on the table",
+        "tr": "Kitap masanın üzerinde"
+      },
+      "pronunciation": "ˈteɪbəl",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1069,
+      "english": "chair",
+      "turkish": "sandalye",
+      "example": {
+        "en": "Sit on the chair",
+        "tr": "Sandalyeye otur"
+      },
+      "pronunciation": "tʃɛr",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1070,
+      "english": "bed",
+      "turkish": "yatak",
+      "example": {
+        "en": "I sleep in my bed",
+        "tr": "Yatağımda uyurum"
+      },
+      "pronunciation": "bɛd",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1071,
+      "english": "telephone",
+      "turkish": "telefon",
+      "example": {
+        "en": "The telephone is ringing",
+        "tr": "Telefon çalıyor"
+      },
+      "pronunciation": "ˈtɛləfoʊn",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1072,
+      "english": "television",
+      "turkish": "televizyon",
+      "example": {
+        "en": "I watch television every day",
+        "tr": "Her gün televizyon izlerim"
+      },
+      "pronunciation": "ˈtɛləvɪʒən",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1073,
+      "english": "computer",
+      "turkish": "bilgisayar",
+      "example": {
+        "en": "I work on my computer",
+        "tr": "Bilgisayarımda çalışırım"
+      },
+      "pronunciation": "kəmˈpjutər",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1074,
+      "english": "book",
+      "turkish": "kitap",
+      "example": {
+        "en": "I am reading a book",
+        "tr": "Kitap okuyorum"
+      },
+      "pronunciation": "bʊk",
+      "level": "A1",
+      "category": "education",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1075,
+      "english": "pen",
+      "turkish": "kalem",
+      "example": {
+        "en": "I need a pen",
+        "tr": "Bir kaleme ihtiyacım var"
+      },
+      "pronunciation": "pɛn",
+      "level": "A1",
+      "category": "education",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1076,
+      "english": "paper",
+      "turkish": "kağıt",
+      "example": {
+        "en": "Write on the paper",
+        "tr": "Kağıda yaz"
+      },
+      "pronunciation": "ˈpeɪpər",
+      "level": "A1",
+      "category": "education",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1077,
+      "english": "school",
+      "turkish": "okul",
+      "example": {
+        "en": "I go to school every day",
+        "tr": "Her gün okula giderim"
+      },
+      "pronunciation": "skuːl",
+      "level": "A1",
+      "category": "education",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1078,
+      "english": "student",
+      "turkish": "öğrenci",
+      "example": {
+        "en": "I am a student",
+        "tr": "Ben bir öğrenciyim"
+      },
+      "pronunciation": "ˈstuːdənt",
+      "level": "A1",
+      "category": "education",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1079,
+      "english": "teacher",
+      "turkish": "öğretmen",
+      "example": {
+        "en": "My teacher is very kind",
+        "tr": "Öğretmenim çok nazik"
+      },
+      "pronunciation": "ˈtiːtʃər",
+      "level": "A1",
+      "category": "education",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1080,
+      "english": "class",
+      "turkish": "sınıf",
+      "example": {
+        "en": "I am in class now",
+        "tr": "Şimdi sınıftayım"
+      },
+      "pronunciation": "klæs",
+      "level": "A1",
+      "category": "education",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1081,
+      "english": "lesson",
+      "turkish": "ders",
+      "example": {
+        "en": "The lesson starts at 9",
+        "tr": "Ders saat 9'da başlar"
+      },
+      "pronunciation": "ˈlɛsən",
+      "level": "A1",
+      "category": "education",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1082,
+      "english": "test",
+      "turkish": "test",
+      "example": {
+        "en": "We have a test today",
+        "tr": "Bugün bir testimiz var"
+      },
+      "pronunciation": "tɛst",
+      "level": "A1",
+      "category": "education",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1083,
+      "english": "question",
+      "turkish": "soru",
+      "example": {
+        "en": "Can I ask a question?",
+        "tr": "Bir soru sorabilir miyim?"
+      },
+      "pronunciation": "ˈkwɛstʃən",
+      "level": "A1",
+      "category": "education",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1084,
+      "english": "answer",
+      "turkish": "cevap",
+      "example": {
+        "en": "I know the answer",
+        "tr": "Cevabı biliyorum"
+      },
+      "pronunciation": "ˈænsər",
+      "level": "A1",
+      "category": "education",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1085,
+      "english": "work",
+      "turkish": "iş",
+      "example": {
+        "en": "I have a lot of work",
+        "tr": "Çok işim var"
+      },
+      "pronunciation": "wɜrk",
+      "level": "A1",
+      "category": "work",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1086,
+      "english": "job",
+      "turkish": "meslek",
+      "example": {
+        "en": "I need a new job",
+        "tr": "Yeni bir mesleğe ihtiyacım var"
+      },
+      "pronunciation": "dʒɑb",
+      "level": "A1",
+      "category": "work",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1087,
+      "english": "office",
+      "turkish": "ofis",
+      "example": {
+        "en": "I work in an office",
+        "tr": "Bir ofiste çalışırım"
+      },
+      "pronunciation": "ˈɔfɪs",
+      "level": "A1",
+      "category": "work",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1088,
+      "english": "company",
+      "turkish": "şirket",
+      "example": {
+        "en": "He works for a big company",
+        "tr": "Büyük bir şirkette çalışıyor"
+      },
+      "pronunciation": "ˈkʌmpəni",
+      "level": "A1",
+      "category": "work",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1089,
+      "english": "shop",
+      "turkish": "dükkan",
+      "example": {
+        "en": "The shop opens at 10",
+        "tr": "Dükkan saat 10'da açılır"
+      },
+      "pronunciation": "ʃɑp",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1090,
+      "english": "store",
+      "turkish": "mağaza",
+      "example": {
+        "en": "I go to the store",
+        "tr": "Mağazaya giderim"
+      },
+      "pronunciation": "stɔr",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1091,
+      "english": "market",
+      "turkish": "market",
+      "example": {
+        "en": "I buy food at the market",
+        "tr": "Marketten yemek alırım"
+      },
+      "pronunciation": "ˈmɑrkɪt",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1092,
+      "english": "restaurant",
+      "turkish": "restoran",
+      "example": {
+        "en": "Let's eat at a restaurant",
+        "tr": "Bir restoranda yiyelim"
+      },
+      "pronunciation": "ˈrɛstərɑnt",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1093,
+      "english": "hotel",
+      "turkish": "otel",
+      "example": {
+        "en": "We stay in a hotel",
+        "tr": "Bir otelde kalıyoruz"
+      },
+      "pronunciation": "hoʊˈtɛl",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1094,
+      "english": "hospital",
+      "turkish": "hastane",
+      "example": {
+        "en": "He is in the hospital",
+        "tr": "O hastanede"
+      },
+      "pronunciation": "ˈhɑspɪtəl",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1095,
+      "english": "bank",
+      "turkish": "banka",
+      "example": {
+        "en": "I go to the bank",
+        "tr": "Bankaya giderim"
+      },
+      "pronunciation": "bæŋk",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1096,
+      "english": "post office",
+      "turkish": "postane",
+      "example": {
+        "en": "Where is the post office?",
+        "tr": "Postane nerede?"
+      },
+      "pronunciation": "poʊst ˈɔfɪs",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1097,
+      "english": "airport",
+      "turkish": "havalimanı",
+      "example": {
+        "en": "I am at the airport",
+        "tr": "Havalimanındayım"
+      },
+      "pronunciation": "ˈɛrpɔrt",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1098,
+      "english": "station",
+      "turkish": "istasyon",
+      "example": {
+        "en": "The train station is here",
+        "tr": "Tren istasyonu burada"
+      },
+      "pronunciation": "ˈsteɪʃən",
+      "level": "A1",
+      "category": "places",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1099,
+      "english": "bus",
+      "turkish": "otobüs",
+      "example": {
+        "en": "I take the bus to work",
+        "tr": "İşe otobüsle giderim"
+      },
+      "pronunciation": "bʌs",
+      "level": "A1",
+      "category": "transport",
+      "reversible": true,
+      "userAdded": false
+    }
+  ]
+}

@@ -1,0 +1,1414 @@
+{
+  "package_info": {
+    "id": "en_tr_c1_001",
+    "version": "1.0.0",
+    "level": "C1",
+    "language_pair": "en_tr",
+    "total_words": 100,
+    "updated_at": "2025-10-24",
+    "description": "C1 level English-Turkish vocabulary package 1 - Advanced proficient vocabulary",
+    "attribution": "HocaLingo vocabulary database"
+  },
+  "words": [
+    {
+      "id": 5000,
+      "english": "abide",
+      "turkish": "uymak",
+      "example": {
+        "en": "We must abide by the rules",
+        "tr": "Kurallara uymalıyız"
+      },
+      "pronunciation": "əˈbaɪd",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5001,
+      "english": "abdicate",
+      "turkish": "vazgeçmek",
+      "example": {
+        "en": "The king abdicated his throne",
+        "tr": "Kral tahtından vazgeçti"
+      },
+      "pronunciation": "ˈæbdɪkeɪt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5002,
+      "english": "abhor",
+      "turkish": "nefret etmek",
+      "example": {
+        "en": "I abhor violence of any kind",
+        "tr": "Her türlü şiddetten nefret ederim"
+      },
+      "pronunciation": "əbˈhɔː(r)",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5003,
+      "english": "abject",
+      "turkish": "sefil",
+      "example": {
+        "en": "They lived in abject poverty",
+        "tr": "Sefil bir yoksulluk içinde yaşıyorlardı"
+      },
+      "pronunciation": "ˈæbdʒekt",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5004,
+      "english": "abound",
+      "turkish": "bol olmak",
+      "example": {
+        "en": "Opportunities abound in this city",
+        "tr": "Bu şehirde fırsatlar bol"
+      },
+      "pronunciation": "əˈbaʊnd",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5005,
+      "english": "abridge",
+      "turkish": "kısaltmak",
+      "example": {
+        "en": "They abridged the novel for students",
+        "tr": "Romanı öğrenciler için kısalttılar"
+      },
+      "pronunciation": "əˈbrɪdʒ",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5006,
+      "english": "absolve",
+      "turkish": "aff etmek",
+      "example": {
+        "en": "The court absolved him of all charges",
+        "tr": "Mahkeme onu tüm suçlamalardan akladı"
+      },
+      "pronunciation": "əbˈzɒlv",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5007,
+      "english": "abstain",
+      "turkish": "çekinmek",
+      "example": {
+        "en": "He abstained from voting",
+        "tr": "Oy vermekten çekindi"
+      },
+      "pronunciation": "əbˈsteɪn",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5008,
+      "english": "abundant",
+      "turkish": "bol",
+      "example": {
+        "en": "The region has abundant natural resources",
+        "tr": "Bölgede bol doğal kaynaklar var"
+      },
+      "pronunciation": "əˈbʌndənt",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5009,
+      "english": "acclaim",
+      "turkish": "alkışlamak",
+      "example": {
+        "en": "The film received critical acclaim",
+        "tr": "Film eleştirmenlerce alkışlandı"
+      },
+      "pronunciation": "əˈkleɪm",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5010,
+      "english": "accolade",
+      "turkish": "onur",
+      "example": {
+        "en": "She received many accolades for her work",
+        "tr": "İşi için birçok onur aldı"
+      },
+      "pronunciation": "ˈækəleɪd",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5011,
+      "english": "accommodate",
+      "turkish": "barındırmak",
+      "example": {
+        "en": "The hotel can accommodate 200 guests",
+        "tr": "Otel 200 misafir barındırabilir"
+      },
+      "pronunciation": "əˈkɒmədeɪt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5012,
+      "english": "accord",
+      "turkish": "uyum",
+      "example": {
+        "en": "The two countries reached an accord",
+        "tr": "İki ülke bir anlaşmaya vardı"
+      },
+      "pronunciation": "əˈkɔːd",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5013,
+      "english": "accrue",
+      "turkish": "birikmek",
+      "example": {
+        "en": "Interest accrues on the account monthly",
+        "tr": "Hesapta aylık faiz birikiyor"
+      },
+      "pronunciation": "əˈkruː",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5014,
+      "english": "acumen",
+      "turkish": "anlayış",
+      "example": {
+        "en": "She has great business acumen",
+        "tr": "Harika bir iş anlayışı var"
+      },
+      "pronunciation": "əˈkjuːmən",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5015,
+      "english": "adamant",
+      "turkish": "kararlı",
+      "example": {
+        "en": "He was adamant about his decision",
+        "tr": "Kararı konusunda kararlıydı"
+      },
+      "pronunciation": "ˈædəmənt",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5016,
+      "english": "adept",
+      "turkish": "usta",
+      "example": {
+        "en": "She is adept at solving problems",
+        "tr": "Problem çözmede ustadır"
+      },
+      "pronunciation": "əˈdept",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5017,
+      "english": "adhere",
+      "turkish": "yapışmak",
+      "example": {
+        "en": "The tape adheres to any surface",
+        "tr": "Bant her yüzeye yapışır"
+      },
+      "pronunciation": "ədˈhɪə(r)",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5018,
+      "english": "adjacent",
+      "turkish": "bitişik",
+      "example": {
+        "en": "The house is adjacent to the park",
+        "tr": "Ev parka bitişik"
+      },
+      "pronunciation": "əˈdʒeɪsnt",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5019,
+      "english": "adjourn",
+      "turkish": "ertelemek",
+      "example": {
+        "en": "The meeting was adjourned until tomorrow",
+        "tr": "Toplantı yarına ertelendi"
+      },
+      "pronunciation": "əˈdʒɜːn",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5020,
+      "english": "adjunct",
+      "turkish": "ek",
+      "example": {
+        "en": "This is an adjunct to the main course",
+        "tr": "Bu ana kursa ektir"
+      },
+      "pronunciation": "ˈædʒʌŋkt",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5021,
+      "english": "adversary",
+      "turkish": "düşman",
+      "example": {
+        "en": "He faced a formidable adversary",
+        "tr": "Zorlu bir rakiple karşılaştı"
+      },
+      "pronunciation": "ˈædvəsəri",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5022,
+      "english": "adverse",
+      "turkish": "olumsuz",
+      "example": {
+        "en": "The drug has adverse effects",
+        "tr": "İlacın olumsuz etkileri var"
+      },
+      "pronunciation": "ˈædvɜːs",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5023,
+      "english": "adversity",
+      "turkish": "zorluk",
+      "example": {
+        "en": "They overcame great adversity",
+        "tr": "Büyük zorlukların üstesinden geldiler"
+      },
+      "pronunciation": "ədˈvɜːsəti",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5024,
+      "english": "aesthetic",
+      "turkish": "estetik",
+      "example": {
+        "en": "The building has great aesthetic appeal",
+        "tr": "Binanın büyük estetik çekiciliği var"
+      },
+      "pronunciation": "iːsˈθetɪk",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5025,
+      "english": "affable",
+      "turkish": "güler yüzlü",
+      "example": {
+        "en": "He has an affable personality",
+        "tr": "Güler yüzlü bir kişiliği var"
+      },
+      "pronunciation": "ˈæfəbl",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5026,
+      "english": "affiliate",
+      "turkish": "bağlı olmak",
+      "example": {
+        "en": "The company is affiliated with a larger corporation",
+        "tr": "Şirket daha büyük bir şirkete bağlı"
+      },
+      "pronunciation": "əˈfɪlieɪt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5027,
+      "english": "affinity",
+      "turkish": "yakınlık",
+      "example": {
+        "en": "She has an affinity for languages",
+        "tr": "Dillere karşı yakınlığı var"
+      },
+      "pronunciation": "əˈfɪnəti",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5028,
+      "english": "affirm",
+      "turkish": "onaylamak",
+      "example": {
+        "en": "The court affirmed the lower court's decision",
+        "tr": "Mahkeme alt mahkemenin kararını onayladı"
+      },
+      "pronunciation": "əˈfɜːm",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5029,
+      "english": "affluent",
+      "turkish": "zengin",
+      "example": {
+        "en": "They live in an affluent neighborhood",
+        "tr": "Zengin bir mahallede yaşıyorlar"
+      },
+      "pronunciation": "ˈæfluənt",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5030,
+      "english": "agenda",
+      "turkish": "gündem",
+      "example": {
+        "en": "What's on the agenda for today",
+        "tr": "Bugünün gündemi nedir"
+      },
+      "pronunciation": "əˈdʒendə",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5031,
+      "english": "aggregate",
+      "turkish": "toplam",
+      "example": {
+        "en": "The aggregate cost is quite high",
+        "tr": "Toplam maliyet oldukça yüksek"
+      },
+      "pronunciation": "ˈæɡrɪɡət",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5032,
+      "english": "akin",
+      "turkish": "benzer",
+      "example": {
+        "en": "His approach is akin to mine",
+        "tr": "Onun yaklaşımı benimkine benzer"
+      },
+      "pronunciation": "əˈkɪn",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5033,
+      "english": "alacrity",
+      "turkish": "isteklilik",
+      "example": {
+        "en": "She accepted the offer with alacrity",
+        "tr": "Teklifi istekle kabul etti"
+      },
+      "pronunciation": "əˈlækrəti",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5034,
+      "english": "albeit",
+      "turkish": "rağmen",
+      "example": {
+        "en": "It was successful, albeit expensive",
+        "tr": "Pahalı olmasına rağmen başarılıydı"
+      },
+      "pronunciation": "ɔːlˈbiːɪt",
+      "level": "C1",
+      "category": "conjunctions",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5035,
+      "english": "alienate",
+      "turkish": "yabancılaştırmak",
+      "example": {
+        "en": "His behavior alienated his friends",
+        "tr": "Davranışları arkadaşlarını yabancılaştırdı"
+      },
+      "pronunciation": "ˈeɪliəneɪt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5036,
+      "english": "alleviate",
+      "turkish": "hafifletmek",
+      "example": {
+        "en": "This medicine will alleviate the pain",
+        "tr": "Bu ilaç ağrıyı hafifletecek"
+      },
+      "pronunciation": "əˈliːvieɪt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5037,
+      "english": "allot",
+      "turkish": "tahsis etmek",
+      "example": {
+        "en": "Each student is allotted one hour",
+        "tr": "Her öğrenciye bir saat tahsis edilmiştir"
+      },
+      "pronunciation": "əˈlɒt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5038,
+      "english": "allude",
+      "turkish": "ima etmek",
+      "example": {
+        "en": "He alluded to some problems",
+        "tr": "Bazı sorunlara ima etti"
+      },
+      "pronunciation": "əˈluːd",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5039,
+      "english": "allure",
+      "turkish": "cazibe",
+      "example": {
+        "en": "The city has a certain allure",
+        "tr": "Şehrin belirli bir cazibesi var"
+      },
+      "pronunciation": "əˈlʊə(r)",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5040,
+      "english": "ally",
+      "turkish": "müttefik",
+      "example": {
+        "en": "France is a longtime ally",
+        "tr": "Fransa uzun zamandır müttefik"
+      },
+      "pronunciation": "ˈælaɪ",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5041,
+      "english": "aloof",
+      "turkish": "soğuk",
+      "example": {
+        "en": "He remained aloof from the discussion",
+        "tr": "Tartışmadan uzak durdu"
+      },
+      "pronunciation": "əˈluːf",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5042,
+      "english": "ambiguous",
+      "turkish": "belirsiz",
+      "example": {
+        "en": "His answer was ambiguous",
+        "tr": "Cevabı belirsizdi"
+      },
+      "pronunciation": "æmˈbɪɡjuəs",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5043,
+      "english": "ambivalent",
+      "turkish": "kararsız",
+      "example": {
+        "en": "She feels ambivalent about the job",
+        "tr": "İş konusunda kararsız hissediyor"
+      },
+      "pronunciation": "æmˈbɪvələnt",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5044,
+      "english": "ameliorate",
+      "turkish": "iyileştirmek",
+      "example": {
+        "en": "We must ameliorate these conditions",
+        "tr": "Bu koşulları iyileştirmeliyiz"
+      },
+      "pronunciation": "əˈmiːliəreɪt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5045,
+      "english": "amend",
+      "turkish": "değiştirmek",
+      "example": {
+        "en": "They amended the constitution",
+        "tr": "Anayasayı değiştirdiler"
+      },
+      "pronunciation": "əˈmend",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5046,
+      "english": "amiable",
+      "turkish": "cana yakın",
+      "example": {
+        "en": "He has an amiable disposition",
+        "tr": "Cana yakın bir mizacı var"
+      },
+      "pronunciation": "ˈeɪmiəbl",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5047,
+      "english": "amicable",
+      "turkish": "dostane",
+      "example": {
+        "en": "They reached an amicable agreement",
+        "tr": "Dostane bir anlaşmaya vardılar"
+      },
+      "pronunciation": "ˈæmɪkəbl",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5048,
+      "english": "amnesty",
+      "turkish": "af",
+      "example": {
+        "en": "The government granted amnesty",
+        "tr": "Hükümet af ilan etti"
+      },
+      "pronunciation": "ˈæmnəsti",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5049,
+      "english": "amorphous",
+      "turkish": "biçimsiz",
+      "example": {
+        "en": "The organization has an amorphous structure",
+        "tr": "Organizasyonun biçimsiz bir yapısı var"
+      },
+      "pronunciation": "əˈmɔːfəs",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5050,
+      "english": "ample",
+      "turkish": "bol",
+      "example": {
+        "en": "There is ample time to finish",
+        "tr": "Bitirmek için bol zaman var"
+      },
+      "pronunciation": "ˈæmpl",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5051,
+      "english": "analogous",
+      "turkish": "benzer",
+      "example": {
+        "en": "This situation is analogous to ours",
+        "tr": "Bu durum bizimkine benzer"
+      },
+      "pronunciation": "əˈnæləɡəs",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5052,
+      "english": "anarchist",
+      "turkish": "anarşist",
+      "example": {
+        "en": "He was known as an anarchist",
+        "tr": "Anarşist olarak biliniyordu"
+      },
+      "pronunciation": "ˈænəkɪst",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5053,
+      "english": "anarchy",
+      "turkish": "anarşi",
+      "example": {
+        "en": "The country descended into anarchy",
+        "tr": "Ülke anarşiye sürüklendi"
+      },
+      "pronunciation": "ˈænəki",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5054,
+      "english": "ancestor",
+      "turkish": "ata",
+      "example": {
+        "en": "My ancestors came from Turkey",
+        "tr": "Atalarım Türkiye'den geldi"
+      },
+      "pronunciation": "ˈænsestə(r)",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5055,
+      "english": "anchor",
+      "turkish": "çapa",
+      "example": {
+        "en": "The ship dropped its anchor",
+        "tr": "Gemi çapasını attı"
+      },
+      "pronunciation": "ˈæŋkə(r)",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5056,
+      "english": "anecdote",
+      "turkish": "anekdot",
+      "example": {
+        "en": "He told an amusing anecdote",
+        "tr": "Eğlenceli bir anekdot anlattı"
+      },
+      "pronunciation": "ˈænɪkdəʊt",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5057,
+      "english": "animate",
+      "turkish": "canlandırmak",
+      "example": {
+        "en": "The story animated their imagination",
+        "tr": "Hikaye hayal güçlerini canlandırdı"
+      },
+      "pronunciation": "ˈænɪmeɪt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5058,
+      "english": "animosity",
+      "turkish": "düşmanlık",
+      "example": {
+        "en": "There is animosity between the two groups",
+        "tr": "İki grup arasında düşmanlık var"
+      },
+      "pronunciation": "ˌænɪˈmɒsəti",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5059,
+      "english": "annex",
+      "turkish": "eklemek",
+      "example": {
+        "en": "The country annexed the territory",
+        "tr": "Ülke toprakları ilhak etti"
+      },
+      "pronunciation": "əˈneks",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5060,
+      "english": "annotate",
+      "turkish": "açıklama eklemek",
+      "example": {
+        "en": "Please annotate the text carefully",
+        "tr": "Lütfen metne dikkatlice açıklama ekle"
+      },
+      "pronunciation": "ˈænəteɪt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5061,
+      "english": "annul",
+      "turkish": "iptal etmek",
+      "example": {
+        "en": "The court annulled the marriage",
+        "tr": "Mahkeme evliliği iptal etti"
+      },
+      "pronunciation": "əˈnʌl",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5062,
+      "english": "anomaly",
+      "turkish": "anormallik",
+      "example": {
+        "en": "This data shows an anomaly",
+        "tr": "Bu veri bir anormallik gösteriyor"
+      },
+      "pronunciation": "əˈnɒməli",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5063,
+      "english": "anonymous",
+      "turkish": "anonim",
+      "example": {
+        "en": "The donation was anonymous",
+        "tr": "Bağış anonimdi"
+      },
+      "pronunciation": "əˈnɒnɪməs",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5064,
+      "english": "antagonist",
+      "turkish": "düşman",
+      "example": {
+        "en": "He played the antagonist in the movie",
+        "tr": "Filmde kötü adamı oynadı"
+      },
+      "pronunciation": "ænˈtæɡənɪst",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5065,
+      "english": "antecedent",
+      "turkish": "önceki",
+      "example": {
+        "en": "Study the antecedent events",
+        "tr": "Önceki olayları inceleyin"
+      },
+      "pronunciation": "ˌæntɪˈsiːdnt",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5066,
+      "english": "anthology",
+      "turkish": "antoloji",
+      "example": {
+        "en": "This is an anthology of poetry",
+        "tr": "Bu bir şiir antolojisi"
+      },
+      "pronunciation": "ænˈθɒlədʒi",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5067,
+      "english": "antique",
+      "turkish": "antika",
+      "example": {
+        "en": "She collects antique furniture",
+        "tr": "Antika mobilya topluyor"
+      },
+      "pronunciation": "ænˈtiːk",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5068,
+      "english": "antiquity",
+      "turkish": "antikçağ",
+      "example": {
+        "en": "These ruins date from antiquity",
+        "tr": "Bu kalıntılar antikçağdan kalma"
+      },
+      "pronunciation": "ænˈtɪkwəti",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5069,
+      "english": "apathy",
+      "turkish": "ilgisizlik",
+      "example": {
+        "en": "Political apathy is widespread",
+        "tr": "Siyasi ilgisizlik yaygın"
+      },
+      "pronunciation": "ˈæpəθi",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5070,
+      "english": "apex",
+      "turkish": "zirve",
+      "example": {
+        "en": "She reached the apex of her career",
+        "tr": "Kariyerinin zirvesine ulaştı"
+      },
+      "pronunciation": "ˈeɪpeks",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5071,
+      "english": "apology",
+      "turkish": "özür",
+      "example": {
+        "en": "I owe you an apology",
+        "tr": "Sana bir özür borçluyum"
+      },
+      "pronunciation": "əˈpɒlədʒi",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5072,
+      "english": "appall",
+      "turkish": "dehşete düşürmek",
+      "example": {
+        "en": "The news appalled everyone",
+        "tr": "Haber herkesi dehşete düşürdü"
+      },
+      "pronunciation": "əˈpɔːl",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5073,
+      "english": "apparatus",
+      "turkish": "cihaz",
+      "example": {
+        "en": "The laboratory has modern apparatus",
+        "tr": "Laboratuvarda modern cihazlar var"
+      },
+      "pronunciation": "ˌæpəˈreɪtəs",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5074,
+      "english": "apparent",
+      "turkish": "açık",
+      "example": {
+        "en": "It became apparent that he was lying",
+        "tr": "Yalan söylediği açık hale geldi"
+      },
+      "pronunciation": "əˈpærənt",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5075,
+      "english": "appendix",
+      "turkish": "ek",
+      "example": {
+        "en": "See the appendix for more details",
+        "tr": "Daha fazla detay için eke bakın"
+      },
+      "pronunciation": "əˈpendɪks",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5076,
+      "english": "applause",
+      "turkish": "alkış",
+      "example": {
+        "en": "The speech was met with applause",
+        "tr": "Konuşma alkışla karşılandı"
+      },
+      "pronunciation": "əˈplɔːz",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5077,
+      "english": "applicable",
+      "turkish": "uygulanabilir",
+      "example": {
+        "en": "This rule is applicable to everyone",
+        "tr": "Bu kural herkese uygulanabilir"
+      },
+      "pronunciation": "əˈplɪkəbl",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5078,
+      "english": "appoint",
+      "turkish": "atamak",
+      "example": {
+        "en": "They appointed her as manager",
+        "tr": "Onu müdür olarak atadılar"
+      },
+      "pronunciation": "əˈpɔɪnt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5079,
+      "english": "apprehend",
+      "turkish": "kavramak",
+      "example": {
+        "en": "I failed to apprehend his meaning",
+        "tr": "Anlamını kavrayamadım"
+      },
+      "pronunciation": "ˌæprɪˈhend",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5080,
+      "english": "apprehension",
+      "turkish": "endişe",
+      "example": {
+        "en": "She felt apprehension about the test",
+        "tr": "Sınav konusunda endişe hissetti"
+      },
+      "pronunciation": "ˌæprɪˈhenʃn",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5081,
+      "english": "apt",
+      "turkish": "uygun",
+      "example": {
+        "en": "This is an apt description",
+        "tr": "Bu uygun bir tanımlama"
+      },
+      "pronunciation": "æpt",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5082,
+      "english": "aptitude",
+      "turkish": "yetenek",
+      "example": {
+        "en": "She has an aptitude for mathematics",
+        "tr": "Matematiğe yeteneği var"
+      },
+      "pronunciation": "ˈæptɪtjuːd",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5083,
+      "english": "arbitrary",
+      "turkish": "keyfi",
+      "example": {
+        "en": "The decision seemed arbitrary",
+        "tr": "Karar keyfi görünüyordu"
+      },
+      "pronunciation": "ˈɑːbɪtrəri",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5084,
+      "english": "arbiter",
+      "turkish": "hakem",
+      "example": {
+        "en": "She served as arbiter in the dispute",
+        "tr": "Anlaşmazlıkta hakem olarak görev yaptı"
+      },
+      "pronunciation": "ˈɑːbɪtə(r)",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5085,
+      "english": "arbitrate",
+      "turkish": "hakemlik yapmak",
+      "example": {
+        "en": "He was asked to arbitrate the conflict",
+        "tr": "Çatışmada hakemlik yapması istendi"
+      },
+      "pronunciation": "ˈɑːbɪtreɪt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5086,
+      "english": "arcade",
+      "turkish": "pasaj",
+      "example": {
+        "en": "There's a shopping arcade nearby",
+        "tr": "Yakında bir alışveriş pasajı var"
+      },
+      "pronunciation": "ɑːˈkeɪd",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5087,
+      "english": "arch",
+      "turkish": "kemer",
+      "example": {
+        "en": "The bridge has three arches",
+        "tr": "Köprünün üç kemeri var"
+      },
+      "pronunciation": "ɑːtʃ",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5088,
+      "english": "archaic",
+      "turkish": "eski",
+      "example": {
+        "en": "This word is archaic",
+        "tr": "Bu kelime eskidir"
+      },
+      "pronunciation": "ɑːˈkeɪɪk",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5089,
+      "english": "archive",
+      "turkish": "arşiv",
+      "example": {
+        "en": "The documents are stored in the archive",
+        "tr": "Belgeler arşivde saklanıyor"
+      },
+      "pronunciation": "ˈɑːkaɪv",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5090,
+      "english": "ardent",
+      "turkish": "ateşli",
+      "example": {
+        "en": "He is an ardent supporter",
+        "tr": "Ateşli bir destekçi"
+      },
+      "pronunciation": "ˈɑːdnt",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5091,
+      "english": "arduous",
+      "turkish": "zahmetli",
+      "example": {
+        "en": "It was an arduous journey",
+        "tr": "Zahmetli bir yolculuktu"
+      },
+      "pronunciation": "ˈɑːdjuəs",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5092,
+      "english": "aristocrat",
+      "turkish": "aristokrat",
+      "example": {
+        "en": "He comes from an aristocrat family",
+        "tr": "Aristokrat bir aileden geliyor"
+      },
+      "pronunciation": "ˈærɪstəkræt",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5093,
+      "english": "armament",
+      "turkish": "silah",
+      "example": {
+        "en": "The country increased its armaments",
+        "tr": "Ülke silahlanmasını artırdı"
+      },
+      "pronunciation": "ˈɑːməmənt",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5094,
+      "english": "aromatic",
+      "turkish": "aromatik",
+      "example": {
+        "en": "The aromatic herbs smell wonderful",
+        "tr": "Aromatik otlar harika kokular"
+      },
+      "pronunciation": "ˌærəˈmætɪk",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5095,
+      "english": "array",
+      "turkish": "dizi",
+      "example": {
+        "en": "There's a vast array of options",
+        "tr": "Geniş bir seçenek dizisi var"
+      },
+      "pronunciation": "əˈreɪ",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5096,
+      "english": "arrogant",
+      "turkish": "kibirli",
+      "example": {
+        "en": "His arrogant attitude is annoying",
+        "tr": "Kibirli tavrı can sıkıcı"
+      },
+      "pronunciation": "ˈærəɡənt",
+      "level": "C1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5097,
+      "english": "arsenal",
+      "turkish": "cephanelik",
+      "example": {
+        "en": "They discovered a hidden arsenal",
+        "tr": "Gizli bir cephanelik keşfettiler"
+      },
+      "pronunciation": "ˈɑːsənl",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5098,
+      "english": "articulate",
+      "turkish": "ifade etmek",
+      "example": {
+        "en": "She can articulate complex ideas clearly",
+        "tr": "Karmaşık fikirleri açıkça ifade edebiliyor"
+      },
+      "pronunciation": "ɑːˈtɪkjuleɪt",
+      "level": "C1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 5099,
+      "english": "artifact",
+      "turkish": "eser",
+      "example": {
+        "en": "They found ancient artifacts",
+        "tr": "Antik eserler buldular"
+      },
+      "pronunciation": "ˈɑːtɪfækt",
+      "level": "C1",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    }
+  ]
+}

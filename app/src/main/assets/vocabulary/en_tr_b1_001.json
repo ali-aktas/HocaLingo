@@ -1,0 +1,1414 @@
+{
+  "package_info": {
+    "id": "en_tr_b1_001",
+    "version": "1.0.0",
+    "level": "B1",
+    "language_pair": "en_tr",
+    "total_words": 100,
+    "updated_at": "2025-10-24",
+    "description": "B1 level English-Turkish vocabulary package 1 - Common verbs",
+    "attribution": "HocaLingo vocabulary database"
+  },
+  "words": [
+    {
+      "id": 3000,
+      "english": "achieve",
+      "turkish": "başarmak",
+      "example": {
+        "en": "She worked hard to achieve her goals",
+        "tr": "Hedeflerine ulaşmak için çok çalıştı"
+      },
+      "pronunciation": "əˈtʃiːv",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3001,
+      "english": "affect",
+      "turkish": "etkilemek",
+      "example": {
+        "en": "This decision will affect everyone",
+        "tr": "Bu karar herkesi etkileyecek"
+      },
+      "pronunciation": "əˈfekt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3002,
+      "english": "announce",
+      "turkish": "duyurmak",
+      "example": {
+        "en": "They will announce the results tomorrow",
+        "tr": "Yarın sonuçları duyuracaklar"
+      },
+      "pronunciation": "əˈnaʊns",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3003,
+      "english": "appear",
+      "turkish": "görünmek",
+      "example": {
+        "en": "A rainbow appeared in the sky",
+        "tr": "Gökyüzünde bir gökkuşağı göründü"
+      },
+      "pronunciation": "əˈpɪə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3004,
+      "english": "apply",
+      "turkish": "başvurmak",
+      "example": {
+        "en": "I want to apply for this job",
+        "tr": "Bu işe başvurmak istiyorum"
+      },
+      "pronunciation": "əˈplaɪ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3005,
+      "english": "approach",
+      "turkish": "yaklaşmak",
+      "example": {
+        "en": "Winter is approaching quickly",
+        "tr": "Kış hızla yaklaşıyor"
+      },
+      "pronunciation": "əˈprəʊtʃ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3006,
+      "english": "arrange",
+      "turkish": "düzenlemek",
+      "example": {
+        "en": "Can you arrange a meeting for us",
+        "tr": "Bizim için bir toplantı düzenleyebilir misin"
+      },
+      "pronunciation": "əˈreɪndʒ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3007,
+      "english": "attach",
+      "turkish": "eklemek",
+      "example": {
+        "en": "Please attach the file to the email",
+        "tr": "Lütfen dosyayı e-postaya ekleyin"
+      },
+      "pronunciation": "əˈtætʃ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3008,
+      "english": "avoid",
+      "turkish": "kaçınmak",
+      "example": {
+        "en": "Try to avoid eating too much sugar",
+        "tr": "Çok fazla şeker yemekten kaçınmaya çalış"
+      },
+      "pronunciation": "əˈvɔɪd",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3009,
+      "english": "cancel",
+      "turkish": "iptal etmek",
+      "example": {
+        "en": "We had to cancel the concert",
+        "tr": "Konseri iptal etmek zorunda kaldık"
+      },
+      "pronunciation": "ˈkænsəl",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3010,
+      "english": "cause",
+      "turkish": "neden olmak",
+      "example": {
+        "en": "The storm caused serious damage",
+        "tr": "Fırtına ciddi hasara neden oldu"
+      },
+      "pronunciation": "kɔːz",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3011,
+      "english": "celebrate",
+      "turkish": "kutlamak",
+      "example": {
+        "en": "We celebrate New Year with friends",
+        "tr": "Yeni yılı arkadaşlarla kutlarız"
+      },
+      "pronunciation": "ˈselɪbreɪt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3012,
+      "english": "challenge",
+      "turkish": "meydan okumak",
+      "example": {
+        "en": "This task will challenge your skills",
+        "tr": "Bu görev becerilerine meydan okuyacak"
+      },
+      "pronunciation": "ˈtʃælɪndʒ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3013,
+      "english": "compare",
+      "turkish": "karşılaştırmak",
+      "example": {
+        "en": "Let me compare these two phones",
+        "tr": "Bu iki telefonu karşılaştırayım"
+      },
+      "pronunciation": "kəmˈpeə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3014,
+      "english": "complain",
+      "turkish": "şikayet etmek",
+      "example": {
+        "en": "He always complains about the weather",
+        "tr": "Her zaman havadan şikayet eder"
+      },
+      "pronunciation": "kəmˈpleɪn",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3015,
+      "english": "complete",
+      "turkish": "tamamlamak",
+      "example": {
+        "en": "I need to complete this project today",
+        "tr": "Bu projeyi bugün tamamlamam gerekiyor"
+      },
+      "pronunciation": "kəmˈpliːt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3016,
+      "english": "confirm",
+      "turkish": "onaylamak",
+      "example": {
+        "en": "Please confirm your reservation",
+        "tr": "Lütfen rezervasyonunuzu onaylayın"
+      },
+      "pronunciation": "kənˈfɜːm",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3017,
+      "english": "connect",
+      "turkish": "bağlamak",
+      "example": {
+        "en": "Can you connect your phone to WiFi",
+        "tr": "Telefonunu WiFi'ye bağlayabilir misin"
+      },
+      "pronunciation": "kəˈnekt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3018,
+      "english": "consider",
+      "turkish": "düşünmek",
+      "example": {
+        "en": "We should consider all options",
+        "tr": "Tüm seçenekleri düşünmeliyiz"
+      },
+      "pronunciation": "kənˈsɪdə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3019,
+      "english": "contain",
+      "turkish": "içermek",
+      "example": {
+        "en": "This bottle contains fresh water",
+        "tr": "Bu şişe tatlı su içeriyor"
+      },
+      "pronunciation": "kənˈteɪn",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3020,
+      "english": "control",
+      "turkish": "kontrol etmek",
+      "example": {
+        "en": "You need to control your emotions",
+        "tr": "Duygularını kontrol etmen gerekiyor"
+      },
+      "pronunciation": "kənˈtrəʊl",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3021,
+      "english": "count",
+      "turkish": "saymak",
+      "example": {
+        "en": "Let me count the money",
+        "tr": "Parayı sayayım"
+      },
+      "pronunciation": "kaʊnt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3022,
+      "english": "cover",
+      "turkish": "kaplamak",
+      "example": {
+        "en": "Snow covered the entire city",
+        "tr": "Kar tüm şehri kapladı"
+      },
+      "pronunciation": "ˈkʌvə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3023,
+      "english": "create",
+      "turkish": "yaratmak",
+      "example": {
+        "en": "Artists create beautiful paintings",
+        "tr": "Sanatçılar güzel tablolar yaratır"
+      },
+      "pronunciation": "kriˈeɪt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3024,
+      "english": "damage",
+      "turkish": "zarar vermek",
+      "example": {
+        "en": "The fire damaged many buildings",
+        "tr": "Yangın birçok binaya zarar verdi"
+      },
+      "pronunciation": "ˈdæmɪdʒ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3025,
+      "english": "deal",
+      "turkish": "anlaşmak",
+      "example": {
+        "en": "Let's make a deal",
+        "tr": "Hadi bir anlaşma yapalım"
+      },
+      "pronunciation": "diːl",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3026,
+      "english": "deliver",
+      "turkish": "teslim etmek",
+      "example": {
+        "en": "They deliver packages every day",
+        "tr": "Her gün paket teslim ederler"
+      },
+      "pronunciation": "dɪˈlɪvə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3027,
+      "english": "depend",
+      "turkish": "bağlı olmak",
+      "example": {
+        "en": "Success depends on hard work",
+        "tr": "Başarı çok çalışmaya bağlıdır"
+      },
+      "pronunciation": "dɪˈpend",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3028,
+      "english": "deserve",
+      "turkish": "hak etmek",
+      "example": {
+        "en": "You deserve a good rest",
+        "tr": "İyi bir dinlenmeyi hak ediyorsun"
+      },
+      "pronunciation": "dɪˈzɜːv",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3029,
+      "english": "destroy",
+      "turkish": "yok etmek",
+      "example": {
+        "en": "The earthquake destroyed many homes",
+        "tr": "Deprem birçok evi yok etti"
+      },
+      "pronunciation": "dɪˈstrɔɪ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3030,
+      "english": "develop",
+      "turkish": "geliştirmek",
+      "example": {
+        "en": "We need to develop new skills",
+        "tr": "Yeni beceriler geliştirmemiz gerekiyor"
+      },
+      "pronunciation": "dɪˈveləp",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3031,
+      "english": "discover",
+      "turkish": "keşfetmek",
+      "example": {
+        "en": "Scientists discover new things daily",
+        "tr": "Bilim insanları her gün yeni şeyler keşfeder"
+      },
+      "pronunciation": "dɪˈskʌvə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3032,
+      "english": "divide",
+      "turkish": "bölmek",
+      "example": {
+        "en": "Divide the cake into six pieces",
+        "tr": "Pastayı altı parçaya böl"
+      },
+      "pronunciation": "dɪˈvaɪd",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3033,
+      "english": "earn",
+      "turkish": "kazanmak",
+      "example": {
+        "en": "She earns a good salary",
+        "tr": "İyi bir maaş kazanıyor"
+      },
+      "pronunciation": "ɜːn",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3034,
+      "english": "employ",
+      "turkish": "işe almak",
+      "example": {
+        "en": "The company employs many workers",
+        "tr": "Şirket birçok işçi çalıştırıyor"
+      },
+      "pronunciation": "ɪmˈplɔɪ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3035,
+      "english": "encourage",
+      "turkish": "cesaretlendirmek",
+      "example": {
+        "en": "Teachers encourage students to study",
+        "tr": "Öğretmenler öğrencileri çalışmaya cesaretlendirir"
+      },
+      "pronunciation": "ɪnˈkʌrɪdʒ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3036,
+      "english": "enjoy",
+      "turkish": "eğlenmek",
+      "example": {
+        "en": "I enjoy reading books",
+        "tr": "Kitap okumaktan hoşlanırım"
+      },
+      "pronunciation": "ɪnˈdʒɔɪ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3037,
+      "english": "examine",
+      "turkish": "incelemek",
+      "example": {
+        "en": "The doctor will examine you now",
+        "tr": "Doktor şimdi sizi muayene edecek"
+      },
+      "pronunciation": "ɪɡˈzæmɪn",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3038,
+      "english": "exist",
+      "turkish": "var olmak",
+      "example": {
+        "en": "Do aliens really exist",
+        "tr": "Uzaylılar gerçekten var mı"
+      },
+      "pronunciation": "ɪɡˈzɪst",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3039,
+      "english": "expect",
+      "turkish": "beklemek",
+      "example": {
+        "en": "I expect good results from you",
+        "tr": "Senden iyi sonuçlar bekliyorum"
+      },
+      "pronunciation": "ɪkˈspekt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3040,
+      "english": "experience",
+      "turkish": "deneyimlemek",
+      "example": {
+        "en": "You will experience new cultures",
+        "tr": "Yeni kültürler deneyimleyeceksin"
+      },
+      "pronunciation": "ɪkˈspɪəriəns",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3041,
+      "english": "express",
+      "turkish": "ifade etmek",
+      "example": {
+        "en": "Please express your feelings",
+        "tr": "Lütfen duygularını ifade et"
+      },
+      "pronunciation": "ɪkˈspres",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3042,
+      "english": "face",
+      "turkish": "yüzleşmek",
+      "example": {
+        "en": "We must face our problems",
+        "tr": "Sorunlarımızla yüzleşmeliyiz"
+      },
+      "pronunciation": "feɪs",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3043,
+      "english": "fail",
+      "turkish": "başarısız olmak",
+      "example": {
+        "en": "Don't be afraid to fail",
+        "tr": "Başarısız olmaktan korkma"
+      },
+      "pronunciation": "feɪl",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3044,
+      "english": "fear",
+      "turkish": "korkmak",
+      "example": {
+        "en": "Many people fear the dark",
+        "tr": "Birçok insan karanlıktan korkar"
+      },
+      "pronunciation": "fɪə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3045,
+      "english": "fill",
+      "turkish": "doldurmak",
+      "example": {
+        "en": "Fill the glass with water",
+        "tr": "Bardağı suyla doldur"
+      },
+      "pronunciation": "fɪl",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3046,
+      "english": "force",
+      "turkish": "zorlamak",
+      "example": {
+        "en": "Don't force me to go",
+        "tr": "Beni gitmeye zorlama"
+      },
+      "pronunciation": "fɔːs",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3047,
+      "english": "form",
+      "turkish": "oluşturmak",
+      "example": {
+        "en": "Let's form a study group",
+        "tr": "Bir çalışma grubu oluşturalım"
+      },
+      "pronunciation": "fɔːm",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3048,
+      "english": "gain",
+      "turkish": "kazanmak",
+      "example": {
+        "en": "You will gain experience here",
+        "tr": "Burada deneyim kazanacaksın"
+      },
+      "pronunciation": "ɡeɪn",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3049,
+      "english": "gather",
+      "turkish": "toplamak",
+      "example": {
+        "en": "Let's gather everyone for a meeting",
+        "tr": "Toplantı için herkesi toplayalım"
+      },
+      "pronunciation": "ˈɡæðə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3050,
+      "english": "generate",
+      "turkish": "üretmek",
+      "example": {
+        "en": "Solar panels generate electricity",
+        "tr": "Güneş panelleri elektrik üretir"
+      },
+      "pronunciation": "ˈdʒenəreɪt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3051,
+      "english": "handle",
+      "turkish": "idare etmek",
+      "example": {
+        "en": "Can you handle this task",
+        "tr": "Bu görevi idare edebilir misin"
+      },
+      "pronunciation": "ˈhændl",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3052,
+      "english": "harm",
+      "turkish": "zarar vermek",
+      "example": {
+        "en": "Smoking can harm your health",
+        "tr": "Sigara sağlığına zarar verebilir"
+      },
+      "pronunciation": "hɑːm",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3053,
+      "english": "hide",
+      "turkish": "saklamak",
+      "example": {
+        "en": "Where did you hide the keys",
+        "tr": "Anahtarları nereye sakladın"
+      },
+      "pronunciation": "haɪd",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3054,
+      "english": "hire",
+      "turkish": "işe almak",
+      "example": {
+        "en": "We need to hire a new manager",
+        "tr": "Yeni bir müdür işe almamız gerekiyor"
+      },
+      "pronunciation": "ˈhaɪə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3055,
+      "english": "ignore",
+      "turkish": "görmezden gelmek",
+      "example": {
+        "en": "Don't ignore my advice",
+        "tr": "Tavsiyemi görmezden gelme"
+      },
+      "pronunciation": "ɪɡˈnɔː(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3056,
+      "english": "improve",
+      "turkish": "geliştirmek",
+      "example": {
+        "en": "Practice will improve your skills",
+        "tr": "Pratik becerilerini geliştirecek"
+      },
+      "pronunciation": "ɪmˈpruːv",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3057,
+      "english": "include",
+      "turkish": "dahil etmek",
+      "example": {
+        "en": "The price includes breakfast",
+        "tr": "Fiyat kahvaltıyı içeriyor"
+      },
+      "pronunciation": "ɪnˈkluːd",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3058,
+      "english": "increase",
+      "turkish": "artırmak",
+      "example": {
+        "en": "We should increase production",
+        "tr": "Üretimi artırmalıyız"
+      },
+      "pronunciation": "ɪnˈkriːs",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3059,
+      "english": "indicate",
+      "turkish": "göstermek",
+      "example": {
+        "en": "This sign indicates the direction",
+        "tr": "Bu tabela yönü gösterir"
+      },
+      "pronunciation": "ˈɪndɪkeɪt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3060,
+      "english": "influence",
+      "turkish": "etkilemek",
+      "example": {
+        "en": "Music can influence our mood",
+        "tr": "Müzik ruh halimizi etkileyebilir"
+      },
+      "pronunciation": "ˈɪnfluəns",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3061,
+      "english": "inform",
+      "turkish": "bilgilendirmek",
+      "example": {
+        "en": "Please inform us about any changes",
+        "tr": "Lütfen bizi değişiklikler hakkında bilgilendirin"
+      },
+      "pronunciation": "ɪnˈfɔːm",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3062,
+      "english": "insist",
+      "turkish": "ısrar etmek",
+      "example": {
+        "en": "He insists on paying the bill",
+        "tr": "Hesabı ödeme konusunda ısrar ediyor"
+      },
+      "pronunciation": "ɪnˈsɪst",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3063,
+      "english": "intend",
+      "turkish": "niyet etmek",
+      "example": {
+        "en": "I intend to finish this today",
+        "tr": "Bunu bugün bitirmeyi amaçlıyorum"
+      },
+      "pronunciation": "ɪnˈtend",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3064,
+      "english": "introduce",
+      "turkish": "tanıtmak",
+      "example": {
+        "en": "Let me introduce my friend",
+        "tr": "Arkadaşımı tanıtayım"
+      },
+      "pronunciation": "ˌɪntrəˈdjuːs",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3065,
+      "english": "invent",
+      "turkish": "icat etmek",
+      "example": {
+        "en": "Who invented the telephone",
+        "tr": "Telefonu kim icat etti"
+      },
+      "pronunciation": "ɪnˈvent",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3066,
+      "english": "involve",
+      "turkish": "dahil etmek",
+      "example": {
+        "en": "This project involves many people",
+        "tr": "Bu proje birçok insanı içeriyor"
+      },
+      "pronunciation": "ɪnˈvɒlv",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3067,
+      "english": "lack",
+      "turkish": "eksikliği olmak",
+      "example": {
+        "en": "They lack experience in this field",
+        "tr": "Bu alanda deneyim eksiklikleri var"
+      },
+      "pronunciation": "læk",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3068,
+      "english": "lead",
+      "turkish": "yönetmek",
+      "example": {
+        "en": "She leads the marketing team",
+        "tr": "Pazarlama ekibini yönetiyor"
+      },
+      "pronunciation": "liːd",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3069,
+      "english": "limit",
+      "turkish": "sınırlamak",
+      "example": {
+        "en": "We need to limit our expenses",
+        "tr": "Harcamalarımızı sınırlamamız gerekiyor"
+      },
+      "pronunciation": "ˈlɪmɪt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3070,
+      "english": "list",
+      "turkish": "listelemek",
+      "example": {
+        "en": "Can you list all the items",
+        "tr": "Tüm öğeleri listeleyebilir misin"
+      },
+      "pronunciation": "lɪst",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3071,
+      "english": "manage",
+      "turkish": "yönetmek",
+      "example": {
+        "en": "He manages a large company",
+        "tr": "Büyük bir şirketi yönetiyor"
+      },
+      "pronunciation": "ˈmænɪdʒ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3072,
+      "english": "matter",
+      "turkish": "önemli olmak",
+      "example": {
+        "en": "Your opinion really matters",
+        "tr": "Senin görüşün gerçekten önemli"
+      },
+      "pronunciation": "ˈmætə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3073,
+      "english": "measure",
+      "turkish": "ölçmek",
+      "example": {
+        "en": "Measure the room before buying furniture",
+        "tr": "Mobilya almadan önce odayı ölç"
+      },
+      "pronunciation": "ˈmeʒə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3074,
+      "english": "mention",
+      "turkish": "bahsetmek",
+      "example": {
+        "en": "She mentioned you yesterday",
+        "tr": "Dün senden bahsetti"
+      },
+      "pronunciation": "ˈmenʃn",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3075,
+      "english": "mix",
+      "turkish": "karıştırmak",
+      "example": {
+        "en": "Mix the ingredients together",
+        "tr": "Malzemeleri birlikte karıştır"
+      },
+      "pronunciation": "mɪks",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3076,
+      "english": "notice",
+      "turkish": "fark etmek",
+      "example": {
+        "en": "Did you notice the change",
+        "tr": "Değişikliği fark ettin mi"
+      },
+      "pronunciation": "ˈnəʊtɪs",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3077,
+      "english": "obtain",
+      "turkish": "elde etmek",
+      "example": {
+        "en": "You need to obtain permission",
+        "tr": "İzin almanız gerekiyor"
+      },
+      "pronunciation": "əbˈteɪn",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3078,
+      "english": "occur",
+      "turkish": "meydana gelmek",
+      "example": {
+        "en": "The accident occurred last night",
+        "tr": "Kaza dün gece meydana geldi"
+      },
+      "pronunciation": "əˈkɜː(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3079,
+      "english": "offer",
+      "turkish": "teklif etmek",
+      "example": {
+        "en": "They offered me a new job",
+        "tr": "Bana yeni bir iş teklif ettiler"
+      },
+      "pronunciation": "ˈɒfə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3080,
+      "english": "operate",
+      "turkish": "çalıştırmak",
+      "example": {
+        "en": "Do you know how to operate this machine",
+        "tr": "Bu makineyi nasıl çalıştıracağını biliyor musun"
+      },
+      "pronunciation": "ˈɒpəreɪt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3081,
+      "english": "oppose",
+      "turkish": "karşı çıkmak",
+      "example": {
+        "en": "Many people oppose this decision",
+        "tr": "Birçok insan bu karara karşı çıkıyor"
+      },
+      "pronunciation": "əˈpəʊz",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3082,
+      "english": "order",
+      "turkish": "sipariş etmek",
+      "example": {
+        "en": "Let's order pizza for dinner",
+        "tr": "Akşam yemeği için pizza sipariş edelim"
+      },
+      "pronunciation": "ˈɔːdə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3083,
+      "english": "organize",
+      "turkish": "organize etmek",
+      "example": {
+        "en": "Who will organize the event",
+        "tr": "Etkinliği kim organize edecek"
+      },
+      "pronunciation": "ˈɔːɡənaɪz",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3084,
+      "english": "own",
+      "turkish": "sahip olmak",
+      "example": {
+        "en": "I own a small business",
+        "tr": "Küçük bir işletmem var"
+      },
+      "pronunciation": "əʊn",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3085,
+      "english": "perform",
+      "turkish": "gerçekleştirmek",
+      "example": {
+        "en": "The band will perform tonight",
+        "tr": "Grup bu gece sahne alacak"
+      },
+      "pronunciation": "pəˈfɔːm",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3086,
+      "english": "permit",
+      "turkish": "izin vermek",
+      "example": {
+        "en": "Smoking is not permitted here",
+        "tr": "Burada sigara içmek yasaktır"
+      },
+      "pronunciation": "pəˈmɪt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3087,
+      "english": "persuade",
+      "turkish": "ikna etmek",
+      "example": {
+        "en": "Can you persuade him to join us",
+        "tr": "Onu bize katılmaya ikna edebilir misin"
+      },
+      "pronunciation": "pəˈsweɪd",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3088,
+      "english": "predict",
+      "turkish": "tahmin etmek",
+      "example": {
+        "en": "Nobody can predict the future",
+        "tr": "Kimse geleceği tahmin edemez"
+      },
+      "pronunciation": "prɪˈdɪkt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3089,
+      "english": "prefer",
+      "turkish": "tercih etmek",
+      "example": {
+        "en": "I prefer tea over coffee",
+        "tr": "Kahveye çay tercih ederim"
+      },
+      "pronunciation": "prɪˈfɜː(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3090,
+      "english": "prepare",
+      "turkish": "hazırlamak",
+      "example": {
+        "en": "She is preparing dinner now",
+        "tr": "Şimdi akşam yemeğini hazırlıyor"
+      },
+      "pronunciation": "prɪˈpeə(r)",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3091,
+      "english": "present",
+      "turkish": "sunmak",
+      "example": {
+        "en": "I will present my ideas tomorrow",
+        "tr": "Yarın fikirlerimi sunacağım"
+      },
+      "pronunciation": "prɪˈzent",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3092,
+      "english": "prevent",
+      "turkish": "önlemek",
+      "example": {
+        "en": "We must prevent this from happening",
+        "tr": "Bunun olmasını önlemeliyiz"
+      },
+      "pronunciation": "prɪˈvent",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3093,
+      "english": "produce",
+      "turkish": "üretmek",
+      "example": {
+        "en": "This factory produces cars",
+        "tr": "Bu fabrika araba üretir"
+      },
+      "pronunciation": "prəˈdjuːs",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3094,
+      "english": "protect",
+      "turkish": "korumak",
+      "example": {
+        "en": "We should protect the environment",
+        "tr": "Çevreyi korumalıyız"
+      },
+      "pronunciation": "prəˈtekt",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3095,
+      "english": "prove",
+      "turkish": "kanıtlamak",
+      "example": {
+        "en": "Can you prove your theory",
+        "tr": "Teorini kanıtlayabilir misin"
+      },
+      "pronunciation": "pruːv",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3096,
+      "english": "provide",
+      "turkish": "sağlamak",
+      "example": {
+        "en": "The hotel provides free breakfast",
+        "tr": "Otel ücretsiz kahvaltı sağlıyor"
+      },
+      "pronunciation": "prəˈvaɪd",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3097,
+      "english": "publish",
+      "turkish": "yayınlamak",
+      "example": {
+        "en": "They will publish the book next month",
+        "tr": "Kitabı gelecek ay yayınlayacaklar"
+      },
+      "pronunciation": "ˈpʌblɪʃ",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3098,
+      "english": "purchase",
+      "turkish": "satın almak",
+      "example": {
+        "en": "You can purchase tickets online",
+        "tr": "Biletleri internetten satın alabilirsiniz"
+      },
+      "pronunciation": "ˈpɜːtʃəs",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 3099,
+      "english": "raise",
+      "turkish": "yükseltmek",
+      "example": {
+        "en": "Please raise your hand if you agree",
+        "tr": "Katılıyorsanız lütfen elinizi kaldırın"
+      },
+      "pronunciation": "reɪz",
+      "level": "B1",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    }
+  ]
+}

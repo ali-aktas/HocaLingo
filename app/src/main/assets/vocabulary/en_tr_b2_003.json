@@ -1,0 +1,1414 @@
+{
+  "package_info": {
+    "id": "en_tr_b2_003",
+    "version": "1.0.0",
+    "level": "B2",
+    "language_pair": "en_tr",
+    "total_words": 100,
+    "updated_at": "2025-10-24",
+    "description": "B2 level English-Turkish vocabulary package 3 - Advanced vocabulary continued",
+    "attribution": "HocaLingo vocabulary database"
+  },
+  "words": [
+    {
+      "id": 4200,
+      "english": "despite",
+      "turkish": "rağmen",
+      "example": {
+        "en": "Despite the rain we went out",
+        "tr": "Yağmura rağmen dışarı çıktık"
+      },
+      "pronunciation": "dɪˈspaɪt",
+      "level": "B2",
+      "category": "prepositions",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4201,
+      "english": "detect",
+      "turkish": "tespit etmek",
+      "example": {
+        "en": "The test can detect cancer early",
+        "tr": "Test kanseri erken tespit edebilir"
+      },
+      "pronunciation": "dɪˈtekt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4202,
+      "english": "deter",
+      "turkish": "caydırmak",
+      "example": {
+        "en": "Nothing can deter me from trying",
+        "tr": "Hiçbir şey beni denemekten caydıramaz"
+      },
+      "pronunciation": "dɪˈtɜː(r)",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4203,
+      "english": "deteriorate",
+      "turkish": "kötüleşmek",
+      "example": {
+        "en": "His health began to deteriorate",
+        "tr": "Sağlığı kötüleşmeye başladı"
+      },
+      "pronunciation": "dɪˈtɪəriəreɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4204,
+      "english": "determine",
+      "turkish": "belirlemek",
+      "example": {
+        "en": "We need to determine the cause",
+        "tr": "Nedeni belirlememiz gerekiyor"
+      },
+      "pronunciation": "dɪˈtɜːmɪn",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4205,
+      "english": "devastate",
+      "turkish": "harap etmek",
+      "example": {
+        "en": "The earthquake devastated the city",
+        "tr": "Deprem şehri harap etti"
+      },
+      "pronunciation": "ˈdevəsteɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4206,
+      "english": "deviate",
+      "turkish": "sapmak",
+      "example": {
+        "en": "Don't deviate from the plan",
+        "tr": "Plandan sapma"
+      },
+      "pronunciation": "ˈdiːvieɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4207,
+      "english": "devise",
+      "turkish": "tasarlamak",
+      "example": {
+        "en": "They devised a clever solution",
+        "tr": "Akıllıca bir çözüm tasarladılar"
+      },
+      "pronunciation": "dɪˈvaɪz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4208,
+      "english": "devote",
+      "turkish": "adamak",
+      "example": {
+        "en": "She devoted herself to charity work",
+        "tr": "Kendini hayır işlerine adadı"
+      },
+      "pronunciation": "dɪˈvəʊt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4209,
+      "english": "dictate",
+      "turkish": "dikte etmek",
+      "example": {
+        "en": "Let me dictate a letter",
+        "tr": "Bir mektup dikte edeyim"
+      },
+      "pronunciation": "dɪkˈteɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4210,
+      "english": "differentiate",
+      "turkish": "ayırt etmek",
+      "example": {
+        "en": "Can you differentiate between them",
+        "tr": "Aralarında ayrım yapabilir misin"
+      },
+      "pronunciation": "ˌdɪfəˈrenʃieɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4211,
+      "english": "digest",
+      "turkish": "sindirmek",
+      "example": {
+        "en": "Give me time to digest this information",
+        "tr": "Bu bilgiyi sindirmem için bana zaman ver"
+      },
+      "pronunciation": "daɪˈdʒest",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4212,
+      "english": "dignity",
+      "turkish": "onur",
+      "example": {
+        "en": "Everyone deserves dignity and respect",
+        "tr": "Herkes onur ve saygıyı hak eder"
+      },
+      "pronunciation": "ˈdɪɡnəti",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4213,
+      "english": "dilemma",
+      "turkish": "ikilem",
+      "example": {
+        "en": "I'm facing a difficult dilemma",
+        "tr": "Zor bir ikilemle karşı karşıyayım"
+      },
+      "pronunciation": "dɪˈlemə",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4214,
+      "english": "dimension",
+      "turkish": "boyut",
+      "example": {
+        "en": "What are the dimensions of the room",
+        "tr": "Odanın boyutları nedir"
+      },
+      "pronunciation": "daɪˈmenʃn",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4215,
+      "english": "diminish",
+      "turkish": "azalmak",
+      "example": {
+        "en": "The pain will gradually diminish",
+        "tr": "Ağrı yavaş yavaş azalacak"
+      },
+      "pronunciation": "dɪˈmɪnɪʃ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4216,
+      "english": "diplomacy",
+      "turkish": "diplomasi",
+      "example": {
+        "en": "This situation requires diplomacy",
+        "tr": "Bu durum diplomasi gerektiriyor"
+      },
+      "pronunciation": "dɪˈpləʊməsi",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4217,
+      "english": "discard",
+      "turkish": "atmak",
+      "example": {
+        "en": "Please discard the old files",
+        "tr": "Lütfen eski dosyaları at"
+      },
+      "pronunciation": "dɪsˈkɑːd",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4218,
+      "english": "discharge",
+      "turkish": "taburcu etmek",
+      "example": {
+        "en": "The hospital discharged him yesterday",
+        "tr": "Hastane onu dün taburcu etti"
+      },
+      "pronunciation": "dɪsˈtʃɑːdʒ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4219,
+      "english": "disclose",
+      "turkish": "açıklamak",
+      "example": {
+        "en": "He refused to disclose his source",
+        "tr": "Kaynağını açıklamayı reddetti"
+      },
+      "pronunciation": "dɪsˈkləʊz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4220,
+      "english": "discount",
+      "turkish": "indirim",
+      "example": {
+        "en": "They offer a ten percent discount",
+        "tr": "Yüzde on indirim sunuyorlar"
+      },
+      "pronunciation": "ˈdɪskaʊnt",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4221,
+      "english": "discourage",
+      "turkish": "cesaretini kırmak",
+      "example": {
+        "en": "Don't let failure discourage you",
+        "tr": "Başarısızlığın cesaretini kırmasına izin verme"
+      },
+      "pronunciation": "dɪsˈkʌrɪdʒ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4222,
+      "english": "discrete",
+      "turkish": "ayrı",
+      "example": {
+        "en": "These are two discrete issues",
+        "tr": "Bunlar iki ayrı mesele"
+      },
+      "pronunciation": "dɪˈskriːt",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4223,
+      "english": "discriminate",
+      "turkish": "ayrımcılık yapmak",
+      "example": {
+        "en": "It's illegal to discriminate",
+        "tr": "Ayrımcılık yapmak yasadışı"
+      },
+      "pronunciation": "dɪˈskrɪmɪneɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4224,
+      "english": "disguise",
+      "turkish": "kılık değiştirmek",
+      "example": {
+        "en": "She wore a disguise",
+        "tr": "Kılık değiştirmişti"
+      },
+      "pronunciation": "dɪsˈɡaɪz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4225,
+      "english": "disgust",
+      "turkish": "iğrenme",
+      "example": {
+        "en": "She looked at him with disgust",
+        "tr": "Ona iğrenerek baktı"
+      },
+      "pronunciation": "dɪsˈɡʌst",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4226,
+      "english": "dismiss",
+      "turkish": "görevden almak",
+      "example": {
+        "en": "They dismissed him from his job",
+        "tr": "Onu işten çıkardılar"
+      },
+      "pronunciation": "dɪsˈmɪs",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4227,
+      "english": "disorder",
+      "turkish": "düzensizlik",
+      "example": {
+        "en": "The room was in complete disorder",
+        "tr": "Oda tam bir düzensizlik içindeydi"
+      },
+      "pronunciation": "dɪsˈɔːdə(r)",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4228,
+      "english": "dispatch",
+      "turkish": "göndermek",
+      "example": {
+        "en": "We will dispatch the order today",
+        "tr": "Siparişi bugün göndereceğiz"
+      },
+      "pronunciation": "dɪˈspætʃ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4229,
+      "english": "disperse",
+      "turkish": "dağıtmak",
+      "example": {
+        "en": "Police dispersed the crowd",
+        "tr": "Polis kalabalığı dağıttı"
+      },
+      "pronunciation": "dɪˈspɜːs",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4230,
+      "english": "displace",
+      "turkish": "yerinden etmek",
+      "example": {
+        "en": "The war displaced millions",
+        "tr": "Savaş milyonları yerinden etti"
+      },
+      "pronunciation": "dɪsˈpleɪs",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4231,
+      "english": "display",
+      "turkish": "sergilemek",
+      "example": {
+        "en": "The museum displays ancient artifacts",
+        "tr": "Müze antik eserleri sergiliyor"
+      },
+      "pronunciation": "dɪˈspleɪ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4232,
+      "english": "dispose",
+      "turkish": "elden çıkarmak",
+      "example": {
+        "en": "How should we dispose of this waste",
+        "tr": "Bu atığı nasıl elden çıkarmalıyız"
+      },
+      "pronunciation": "dɪˈspəʊz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4233,
+      "english": "dispute",
+      "turkish": "anlaşmazlık",
+      "example": {
+        "en": "There's a dispute over the land",
+        "tr": "Arazi konusunda anlaşmazlık var"
+      },
+      "pronunciation": "dɪˈspjuːt",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4234,
+      "english": "disrupt",
+      "turkish": "bozmak",
+      "example": {
+        "en": "Don't disrupt the meeting",
+        "tr": "Toplantıyı bozma"
+      },
+      "pronunciation": "dɪsˈrʌpt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4235,
+      "english": "dissolve",
+      "turkish": "eritmek",
+      "example": {
+        "en": "Sugar dissolves in water",
+        "tr": "Şeker suda erir"
+      },
+      "pronunciation": "dɪˈzɒlv",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4236,
+      "english": "distant",
+      "turkish": "uzak",
+      "example": {
+        "en": "He lives in a distant city",
+        "tr": "Uzak bir şehirde yaşıyor"
+      },
+      "pronunciation": "ˈdɪstənt",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4237,
+      "english": "distinct",
+      "turkish": "belirgin",
+      "example": {
+        "en": "There's a distinct difference",
+        "tr": "Belirgin bir fark var"
+      },
+      "pronunciation": "dɪˈstɪŋkt",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4238,
+      "english": "distinguish",
+      "turkish": "ayırt etmek",
+      "example": {
+        "en": "Can you distinguish between them",
+        "tr": "Aralarını ayırt edebilir misin"
+      },
+      "pronunciation": "dɪˈstɪŋɡwɪʃ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4239,
+      "english": "distort",
+      "turkish": "çarpıtmak",
+      "example": {
+        "en": "Don't distort the facts",
+        "tr": "Gerçekleri çarpıtma"
+      },
+      "pronunciation": "dɪˈstɔːt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4240,
+      "english": "distract",
+      "turkish": "dikkatini dağıtmak",
+      "example": {
+        "en": "Don't distract me while I'm working",
+        "tr": "Çalışırken dikkatimi dağıtma"
+      },
+      "pronunciation": "dɪˈstrækt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4241,
+      "english": "distress",
+      "turkish": "sıkıntı",
+      "example": {
+        "en": "She was in great distress",
+        "tr": "Büyük sıkıntı içindeydi"
+      },
+      "pronunciation": "dɪˈstres",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4242,
+      "english": "distribute",
+      "turkish": "dağıtmak",
+      "example": {
+        "en": "They distribute food to the poor",
+        "tr": "Fakirlere yiyecek dağıtıyorlar"
+      },
+      "pronunciation": "dɪˈstrɪbjuːt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4243,
+      "english": "disturb",
+      "turkish": "rahatsız etmek",
+      "example": {
+        "en": "Please don't disturb me now",
+        "tr": "Lütfen şimdi beni rahatsız etme"
+      },
+      "pronunciation": "dɪˈstɜːb",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4244,
+      "english": "diverse",
+      "turkish": "çeşitli",
+      "example": {
+        "en": "We have a diverse team",
+        "tr": "Çeşitli bir ekibimiz var"
+      },
+      "pronunciation": "daɪˈvɜːs",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4245,
+      "english": "divert",
+      "turkish": "saptırmak",
+      "example": {
+        "en": "They diverted the river's flow",
+        "tr": "Nehrin akışını saptırdılar"
+      },
+      "pronunciation": "daɪˈvɜːt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4246,
+      "english": "divine",
+      "turkish": "ilahi",
+      "example": {
+        "en": "They believe in divine power",
+        "tr": "İlahi güce inanıyorlar"
+      },
+      "pronunciation": "dɪˈvaɪn",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4247,
+      "english": "doctrine",
+      "turkish": "doktrin",
+      "example": {
+        "en": "This is the party's main doctrine",
+        "tr": "Bu partinin ana doktrini"
+      },
+      "pronunciation": "ˈdɒktrɪn",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4248,
+      "english": "domain",
+      "turkish": "alan",
+      "example": {
+        "en": "This is outside my domain",
+        "tr": "Bu benim alanımın dışında"
+      },
+      "pronunciation": "dəˈmeɪn",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4249,
+      "english": "domestic",
+      "turkish": "ev içi",
+      "example": {
+        "en": "She handles all domestic affairs",
+        "tr": "Tüm ev işlerini hallediyor"
+      },
+      "pronunciation": "dəˈmestɪk",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4250,
+      "english": "dominant",
+      "turkish": "baskın",
+      "example": {
+        "en": "He has a dominant personality",
+        "tr": "Baskın bir kişiliği var"
+      },
+      "pronunciation": "ˈdɒmɪnənt",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4251,
+      "english": "dominate",
+      "turkish": "hakimiyet kurmak",
+      "example": {
+        "en": "They dominated the game",
+        "tr": "Oyuna hakimiyet kurdular"
+      },
+      "pronunciation": "ˈdɒmɪneɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4252,
+      "english": "donate",
+      "turkish": "bağışlamak",
+      "example": {
+        "en": "He donated money to charity",
+        "tr": "Hayır kurumuna para bağışladı"
+      },
+      "pronunciation": "dəʊˈneɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4253,
+      "english": "doom",
+      "turkish": "mahkum etmek",
+      "example": {
+        "en": "The project was doomed to fail",
+        "tr": "Proje başarısızlığa mahkumdu"
+      },
+      "pronunciation": "duːm",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4254,
+      "english": "dose",
+      "turkish": "doz",
+      "example": {
+        "en": "Take the correct dose of medicine",
+        "tr": "Doğru ilaç dozunu al"
+      },
+      "pronunciation": "dəʊs",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4255,
+      "english": "draft",
+      "turkish": "taslak",
+      "example": {
+        "en": "This is just a first draft",
+        "tr": "Bu sadece ilk taslak"
+      },
+      "pronunciation": "drɑːft",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4256,
+      "english": "drain",
+      "turkish": "boşaltmak",
+      "example": {
+        "en": "Drain the water from the sink",
+        "tr": "Lavabodaki suyu boşalt"
+      },
+      "pronunciation": "dreɪn",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4257,
+      "english": "dramatic",
+      "turkish": "dramatik",
+      "example": {
+        "en": "There was a dramatic change",
+        "tr": "Dramatik bir değişim oldu"
+      },
+      "pronunciation": "drəˈmætɪk",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4258,
+      "english": "drastic",
+      "turkish": "şiddetli",
+      "example": {
+        "en": "We need drastic measures",
+        "tr": "Şiddetli önlemlere ihtiyacımız var"
+      },
+      "pronunciation": "ˈdræstɪk",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4259,
+      "english": "dread",
+      "turkish": "korkmak",
+      "example": {
+        "en": "I dread going to the dentist",
+        "tr": "Dişçiye gitmekten korkuyorum"
+      },
+      "pronunciation": "dred",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4260,
+      "english": "drift",
+      "turkish": "sürüklenmek",
+      "example": {
+        "en": "The boat began to drift",
+        "tr": "Tekne sürüklenmeye başladı"
+      },
+      "pronunciation": "drɪft",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4261,
+      "english": "drill",
+      "turkish": "matkap",
+      "example": {
+        "en": "Use a drill to make holes",
+        "tr": "Delik açmak için matkap kullan"
+      },
+      "pronunciation": "drɪl",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4262,
+      "english": "drive",
+      "turkish": "sürücü",
+      "example": {
+        "en": "The hard drive is full",
+        "tr": "Sabit disk dolu"
+      },
+      "pronunciation": "draɪv",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4263,
+      "english": "drought",
+      "turkish": "kuraklık",
+      "example": {
+        "en": "The drought destroyed crops",
+        "tr": "Kuraklık ekinleri yok etti"
+      },
+      "pronunciation": "draʊt",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4264,
+      "english": "drown",
+      "turkish": "boğulmak",
+      "example": {
+        "en": "He nearly drowned in the sea",
+        "tr": "Denizde neredeyse boğuluyordu"
+      },
+      "pronunciation": "draʊn",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4265,
+      "english": "dual",
+      "turkish": "çift",
+      "example": {
+        "en": "This phone has dual cameras",
+        "tr": "Bu telefonun çift kamerası var"
+      },
+      "pronunciation": "ˈdjuːəl",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4266,
+      "english": "dubious",
+      "turkish": "şüpheli",
+      "example": {
+        "en": "I'm dubious about his claims",
+        "tr": "İddiaları konusunda şüpheliyim"
+      },
+      "pronunciation": "ˈdjuːbiəs",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4267,
+      "english": "due",
+      "turkish": "gerekli",
+      "example": {
+        "en": "The payment is due tomorrow",
+        "tr": "Ödeme yarın yapılmalı"
+      },
+      "pronunciation": "djuː",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4268,
+      "english": "dull",
+      "turkish": "sıkıcı",
+      "example": {
+        "en": "The lecture was very dull",
+        "tr": "Ders çok sıkıcıydı"
+      },
+      "pronunciation": "dʌl",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4269,
+      "english": "dumb",
+      "turkish": "aptal",
+      "example": {
+        "en": "That was a dumb mistake",
+        "tr": "Bu aptalca bir hataydı"
+      },
+      "pronunciation": "dʌm",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4270,
+      "english": "dump",
+      "turkish": "dökmek",
+      "example": {
+        "en": "Don't dump waste here",
+        "tr": "Buraya atık dökme"
+      },
+      "pronunciation": "dʌmp",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4271,
+      "english": "duplicate",
+      "turkish": "kopya",
+      "example": {
+        "en": "Make a duplicate of this key",
+        "tr": "Bu anahtarın bir kopyasını yap"
+      },
+      "pronunciation": "ˈdjuːplɪkət",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4272,
+      "english": "durable",
+      "turkish": "dayanıklı",
+      "example": {
+        "en": "This material is very durable",
+        "tr": "Bu malzeme çok dayanıklı"
+      },
+      "pronunciation": "ˈdjʊərəbl",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4273,
+      "english": "duration",
+      "turkish": "süre",
+      "example": {
+        "en": "What's the duration of the course",
+        "tr": "Kursun süresi ne kadar"
+      },
+      "pronunciation": "djʊˈreɪʃn",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4274,
+      "english": "dynamic",
+      "turkish": "dinamik",
+      "example": {
+        "en": "She has a dynamic personality",
+        "tr": "Dinamik bir kişiliği var"
+      },
+      "pronunciation": "daɪˈnæmɪk",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4275,
+      "english": "eager",
+      "turkish": "hevesli",
+      "example": {
+        "en": "She's eager to learn",
+        "tr": "Öğrenmeye hevesli"
+      },
+      "pronunciation": "ˈiːɡə(r)",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4276,
+      "english": "ease",
+      "turkish": "kolaylık",
+      "example": {
+        "en": "He solved it with ease",
+        "tr": "Kolaylıkla çözdü"
+      },
+      "pronunciation": "iːz",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4277,
+      "english": "echo",
+      "turkish": "yankı",
+      "example": {
+        "en": "I heard an echo in the cave",
+        "tr": "Mağarada bir yankı duydum"
+      },
+      "pronunciation": "ˈekəʊ",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4278,
+      "english": "ecological",
+      "turkish": "ekolojik",
+      "example": {
+        "en": "We need ecological solutions",
+        "tr": "Ekolojik çözümlere ihtiyacımız var"
+      },
+      "pronunciation": "ˌiːkəˈlɒdʒɪkl",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4279,
+      "english": "economic",
+      "turkish": "ekonomik",
+      "example": {
+        "en": "The economic situation is improving",
+        "tr": "Ekonomik durum iyileşiyor"
+      },
+      "pronunciation": "ˌiːkəˈnɒmɪk",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4280,
+      "english": "edit",
+      "turkish": "düzenlemek",
+      "example": {
+        "en": "Please edit this document",
+        "tr": "Lütfen bu belgeyi düzenle"
+      },
+      "pronunciation": "ˈedɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4281,
+      "english": "efficiency",
+      "turkish": "verimlilik",
+      "example": {
+        "en": "We need to improve efficiency",
+        "tr": "Verimliliği artırmamız gerekiyor"
+      },
+      "pronunciation": "ɪˈfɪʃnsi",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4282,
+      "english": "elaborate",
+      "turkish": "detaylandırmak",
+      "example": {
+        "en": "Could you elaborate on that",
+        "tr": "Bunu açabilir misin"
+      },
+      "pronunciation": "ɪˈlæbəreɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4283,
+      "english": "elastic",
+      "turkish": "esnek",
+      "example": {
+        "en": "This fabric is very elastic",
+        "tr": "Bu kumaş çok esnek"
+      },
+      "pronunciation": "ɪˈlæstɪk",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4284,
+      "english": "elderly",
+      "turkish": "yaşlı",
+      "example": {
+        "en": "We should respect elderly people",
+        "tr": "Yaşlı insanlara saygı göstermeliyiz"
+      },
+      "pronunciation": "ˈeldəli",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4285,
+      "english": "elegant",
+      "turkish": "zarif",
+      "example": {
+        "en": "She wore an elegant dress",
+        "tr": "Zarif bir elbise giymişti"
+      },
+      "pronunciation": "ˈelɪɡənt",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4286,
+      "english": "elevate",
+      "turkish": "yükseltmek",
+      "example": {
+        "en": "This will elevate your status",
+        "tr": "Bu statünü yükseltecek"
+      },
+      "pronunciation": "ˈelɪveɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4287,
+      "english": "eliminate",
+      "turkish": "ortadan kaldırmak",
+      "example": {
+        "en": "We must eliminate waste",
+        "tr": "İsrafı ortadan kaldırmalıyız"
+      },
+      "pronunciation": "ɪˈlɪmɪneɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4288,
+      "english": "elite",
+      "turkish": "seçkin",
+      "example": {
+        "en": "He belongs to the elite group",
+        "tr": "Seçkin gruba ait"
+      },
+      "pronunciation": "eɪˈliːt",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4289,
+      "english": "eloquent",
+      "turkish": "etkili",
+      "example": {
+        "en": "She gave an eloquent speech",
+        "tr": "Etkili bir konuşma yaptı"
+      },
+      "pronunciation": "ˈeləkwənt",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4290,
+      "english": "embrace",
+      "turkish": "kucaklamak",
+      "example": {
+        "en": "She embraced her friend warmly",
+        "tr": "Arkadaşını sıcak bir şekilde kucakladı"
+      },
+      "pronunciation": "ɪmˈbreɪs",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4291,
+      "english": "emerge",
+      "turkish": "ortaya çıkmak",
+      "example": {
+        "en": "A new leader emerged",
+        "tr": "Yeni bir lider ortaya çıktı"
+      },
+      "pronunciation": "ɪˈmɜːdʒ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4292,
+      "english": "emit",
+      "turkish": "yaymak",
+      "example": {
+        "en": "The device emits radiation",
+        "tr": "Cihaz radyasyon yayıyor"
+      },
+      "pronunciation": "ɪˈmɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4293,
+      "english": "emphasis",
+      "turkish": "vurgu",
+      "example": {
+        "en": "There's too much emphasis on grades",
+        "tr": "Notlara çok fazla vurgu var"
+      },
+      "pronunciation": "ˈemfəsɪs",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4294,
+      "english": "empire",
+      "turkish": "imparatorluk",
+      "example": {
+        "en": "The Roman Empire was powerful",
+        "tr": "Roma İmparatorluğu güçlüydü"
+      },
+      "pronunciation": "ˈempaɪə(r)",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4295,
+      "english": "enable",
+      "turkish": "olanak sağlamak",
+      "example": {
+        "en": "This will enable you to succeed",
+        "tr": "Bu başarılı olmanı sağlayacak"
+      },
+      "pronunciation": "ɪˈneɪbl",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4296,
+      "english": "enclose",
+      "turkish": "kapsamak",
+      "example": {
+        "en": "Please enclose the documents",
+        "tr": "Lütfen belgeleri ekleyin"
+      },
+      "pronunciation": "ɪnˈkləʊz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4297,
+      "english": "encounter",
+      "turkish": "karşılaşma",
+      "example": {
+        "en": "It was a chance encounter",
+        "tr": "Tesadüfi bir karşılaşmaydı"
+      },
+      "pronunciation": "ɪnˈkaʊntə(r)",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4298,
+      "english": "endorse",
+      "turkish": "onaylamak",
+      "example": {
+        "en": "I fully endorse this plan",
+        "tr": "Bu planı tamamen onaylıyorum"
+      },
+      "pronunciation": "ɪnˈdɔːs",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4299,
+      "english": "endure",
+      "turkish": "dayanmak",
+      "example": {
+        "en": "They had to endure harsh conditions",
+        "tr": "Zorlu koşullara dayanmak zorundaydılar"
+      },
+      "pronunciation": "ɪnˈdjʊə(r)",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    }
+  ]
+}

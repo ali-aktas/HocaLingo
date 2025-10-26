@@ -1,0 +1,1414 @@
+{
+  "package_info": {
+    "id": "en_tr_b2_001",
+    "version": "1.0.0",
+    "level": "B2",
+    "language_pair": "en_tr",
+    "total_words": 100,
+    "updated_at": "2025-10-24",
+    "description": "B2 level English-Turkish vocabulary package 1 - Advanced verbs and adjectives",
+    "attribution": "HocaLingo vocabulary database"
+  },
+  "words": [
+    {
+      "id": 4000,
+      "english": "abandon",
+      "turkish": "terk etmek",
+      "example": {
+        "en": "They had to abandon the ship",
+        "tr": "Gemiyi terk etmek zorunda kaldılar"
+      },
+      "pronunciation": "əˈbændən",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4001,
+      "english": "abolish",
+      "turkish": "kaldırmak",
+      "example": {
+        "en": "The government abolished the old law",
+        "tr": "Hükümet eski yasayı kaldırdı"
+      },
+      "pronunciation": "əˈbɒlɪʃ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4002,
+      "english": "absorb",
+      "turkish": "emmek",
+      "example": {
+        "en": "The sponge absorbs water quickly",
+        "tr": "Sünger suyu hızla emer"
+      },
+      "pronunciation": "əbˈzɔːb",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4003,
+      "english": "abstract",
+      "turkish": "soyut",
+      "example": {
+        "en": "This is a very abstract concept",
+        "tr": "Bu çok soyut bir kavram"
+      },
+      "pronunciation": "ˈæbstrækt",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4004,
+      "english": "abuse",
+      "turkish": "kötüye kullanmak",
+      "example": {
+        "en": "He abused his power",
+        "tr": "Gücünü kötüye kullandı"
+      },
+      "pronunciation": "əˈbjuːz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4005,
+      "english": "accelerate",
+      "turkish": "hızlandırmak",
+      "example": {
+        "en": "The car accelerated quickly",
+        "tr": "Araba hızla hızlandı"
+      },
+      "pronunciation": "əkˈseləreɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4006,
+      "english": "accompany",
+      "turkish": "eşlik etmek",
+      "example": {
+        "en": "I will accompany you to the station",
+        "tr": "Sana istasyona kadar eşlik edeceğim"
+      },
+      "pronunciation": "əˈkʌmpəni",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4007,
+      "english": "accomplish",
+      "turkish": "gerçekleştirmek",
+      "example": {
+        "en": "She accomplished all her goals",
+        "tr": "Tüm hedeflerini gerçekleştirdi"
+      },
+      "pronunciation": "əˈkʌmplɪʃ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4008,
+      "english": "accumulate",
+      "turkish": "biriktirmek",
+      "example": {
+        "en": "Dust accumulated over the years",
+        "tr": "Yıllar boyunca toz birikti"
+      },
+      "pronunciation": "əˈkjuːmjəleɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4009,
+      "english": "accurate",
+      "turkish": "doğru",
+      "example": {
+        "en": "This information is not accurate",
+        "tr": "Bu bilgi doğru değil"
+      },
+      "pronunciation": "ˈækjərət",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4010,
+      "english": "accuse",
+      "turkish": "suçlamak",
+      "example": {
+        "en": "They accused him of stealing",
+        "tr": "Onu hırsızlıkla suçladılar"
+      },
+      "pronunciation": "əˈkjuːz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4011,
+      "english": "acknowledge",
+      "turkish": "kabul etmek",
+      "example": {
+        "en": "He acknowledged his mistake",
+        "tr": "Hatasını kabul etti"
+      },
+      "pronunciation": "əkˈnɒlɪdʒ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4012,
+      "english": "acquire",
+      "turkish": "edinmek",
+      "example": {
+        "en": "You need to acquire new skills",
+        "tr": "Yeni beceriler edinmen gerekiyor"
+      },
+      "pronunciation": "əˈkwaɪə(r)",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4013,
+      "english": "adapt",
+      "turkish": "uyarlamak",
+      "example": {
+        "en": "Animals adapt to their environment",
+        "tr": "Hayvanlar çevrelerine uyum sağlar"
+      },
+      "pronunciation": "əˈdæpt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4014,
+      "english": "adequate",
+      "turkish": "yeterli",
+      "example": {
+        "en": "The salary is not adequate",
+        "tr": "Maaş yeterli değil"
+      },
+      "pronunciation": "ˈædɪkwət",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4015,
+      "english": "adjust",
+      "turkish": "ayarlamak",
+      "example": {
+        "en": "Adjust the temperature please",
+        "tr": "Lütfen sıcaklığı ayarla"
+      },
+      "pronunciation": "əˈdʒʌst",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4016,
+      "english": "administer",
+      "turkish": "yönetmek",
+      "example": {
+        "en": "She administers the entire department",
+        "tr": "Tüm bölümü yönetiyor"
+      },
+      "pronunciation": "ədˈmɪnɪstə(r)",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4017,
+      "english": "admire",
+      "turkish": "hayran olmak",
+      "example": {
+        "en": "I admire your courage",
+        "tr": "Cesaretine hayranım"
+      },
+      "pronunciation": "ədˈmaɪə(r)",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4018,
+      "english": "admit",
+      "turkish": "kabul etmek",
+      "example": {
+        "en": "I must admit you're right",
+        "tr": "Haklı olduğunu kabul etmeliyim"
+      },
+      "pronunciation": "ədˈmɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4019,
+      "english": "adopt",
+      "turkish": "benimsemek",
+      "example": {
+        "en": "They decided to adopt a child",
+        "tr": "Bir çocuk evlat edinmeye karar verdiler"
+      },
+      "pronunciation": "əˈdɒpt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4020,
+      "english": "advise",
+      "turkish": "tavsiye etmek",
+      "example": {
+        "en": "I advise you to study harder",
+        "tr": "Daha çok çalışmanı tavsiye ederim"
+      },
+      "pronunciation": "ədˈvaɪz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4021,
+      "english": "advocate",
+      "turkish": "savunmak",
+      "example": {
+        "en": "She advocates for human rights",
+        "tr": "İnsan haklarını savunuyor"
+      },
+      "pronunciation": "ˈædvəkeɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4022,
+      "english": "afford",
+      "turkish": "parası yetmek",
+      "example": {
+        "en": "I can't afford a new car",
+        "tr": "Yeni bir arabaya param yetmiyor"
+      },
+      "pronunciation": "əˈfɔːd",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4023,
+      "english": "aggravate",
+      "turkish": "kötüleştirmek",
+      "example": {
+        "en": "This will aggravate the situation",
+        "tr": "Bu durumu kötüleştirecek"
+      },
+      "pronunciation": "ˈæɡrəveɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4024,
+      "english": "allocate",
+      "turkish": "tahsis etmek",
+      "example": {
+        "en": "We need to allocate more resources",
+        "tr": "Daha fazla kaynak tahsis etmemiz gerekiyor"
+      },
+      "pronunciation": "ˈæləkeɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4025,
+      "english": "alter",
+      "turkish": "değiştirmek",
+      "example": {
+        "en": "You cannot alter the past",
+        "tr": "Geçmişi değiştiremezsin"
+      },
+      "pronunciation": "ˈɔːltə(r)",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4026,
+      "english": "amaze",
+      "turkish": "şaşırtmak",
+      "example": {
+        "en": "Your talent amazes me",
+        "tr": "Yeteneğin beni şaşırtıyor"
+      },
+      "pronunciation": "əˈmeɪz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4027,
+      "english": "amend",
+      "turkish": "değiştirmek",
+      "example": {
+        "en": "They amended the contract",
+        "tr": "Sözleşmeyi değiştirdiler"
+      },
+      "pronunciation": "əˈmend",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4028,
+      "english": "analyze",
+      "turkish": "analiz etmek",
+      "example": {
+        "en": "We need to analyze the data",
+        "tr": "Verileri analiz etmemiz gerekiyor"
+      },
+      "pronunciation": "ˈænəlaɪz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4029,
+      "english": "anticipate",
+      "turkish": "öngörmek",
+      "example": {
+        "en": "I didn't anticipate this problem",
+        "tr": "Bu sorunu öngörmedim"
+      },
+      "pronunciation": "ænˈtɪsɪpeɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4030,
+      "english": "apologize",
+      "turkish": "özür dilemek",
+      "example": {
+        "en": "I apologize for being late",
+        "tr": "Geç kaldığım için özür dilerim"
+      },
+      "pronunciation": "əˈpɒlədʒaɪz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4031,
+      "english": "appeal",
+      "turkish": "çekicilik",
+      "example": {
+        "en": "This idea has great appeal",
+        "tr": "Bu fikrin büyük çekiciliği var"
+      },
+      "pronunciation": "əˈpiːl",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4032,
+      "english": "applaud",
+      "turkish": "alkışlamak",
+      "example": {
+        "en": "The audience applauded loudly",
+        "tr": "Seyirciler yüksek sesle alkışladı"
+      },
+      "pronunciation": "əˈplɔːd",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4033,
+      "english": "appreciate",
+      "turkish": "takdir etmek",
+      "example": {
+        "en": "I appreciate your help",
+        "tr": "Yardımını takdir ediyorum"
+      },
+      "pronunciation": "əˈpriːʃieɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4034,
+      "english": "approve",
+      "turkish": "onaylamak",
+      "example": {
+        "en": "The committee approved the plan",
+        "tr": "Komite planı onayladı"
+      },
+      "pronunciation": "əˈpruːv",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4035,
+      "english": "arbitrary",
+      "turkish": "keyfi",
+      "example": {
+        "en": "This decision seems arbitrary",
+        "tr": "Bu karar keyfi görünüyor"
+      },
+      "pronunciation": "ˈɑːbɪtrəri",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4036,
+      "english": "arise",
+      "turkish": "ortaya çıkmak",
+      "example": {
+        "en": "Problems may arise during the project",
+        "tr": "Proje sırasında sorunlar ortaya çıkabilir"
+      },
+      "pronunciation": "əˈraɪz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4037,
+      "english": "arouse",
+      "turkish": "uyandırmak",
+      "example": {
+        "en": "This aroused my curiosity",
+        "tr": "Bu merakımı uyandırdı"
+      },
+      "pronunciation": "əˈraʊz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4038,
+      "english": "articulate",
+      "turkish": "ifade etmek",
+      "example": {
+        "en": "She can articulate her ideas well",
+        "tr": "Fikirlerini iyi ifade edebiliyor"
+      },
+      "pronunciation": "ɑːˈtɪkjuleɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4039,
+      "english": "ascertain",
+      "turkish": "saptamak",
+      "example": {
+        "en": "We need to ascertain the facts",
+        "tr": "Gerçekleri saptamamız gerekiyor"
+      },
+      "pronunciation": "ˌæsəˈteɪn",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4040,
+      "english": "ashamed",
+      "turkish": "utanmış",
+      "example": {
+        "en": "I'm ashamed of what I did",
+        "tr": "Yaptığımdan utanıyorum"
+      },
+      "pronunciation": "əˈʃeɪmd",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4041,
+      "english": "assert",
+      "turkish": "ileri sürmek",
+      "example": {
+        "en": "He asserted his innocence",
+        "tr": "Masumiyetini ileri sürdü"
+      },
+      "pronunciation": "əˈsɜːt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4042,
+      "english": "assess",
+      "turkish": "değerlendirmek",
+      "example": {
+        "en": "Teachers assess student performance",
+        "tr": "Öğretmenler öğrenci performansını değerlendirir"
+      },
+      "pronunciation": "əˈses",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4043,
+      "english": "assign",
+      "turkish": "atamak",
+      "example": {
+        "en": "They assigned him to a new project",
+        "tr": "Onu yeni bir projeye atadılar"
+      },
+      "pronunciation": "əˈsaɪn",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4044,
+      "english": "assist",
+      "turkish": "yardım etmek",
+      "example": {
+        "en": "Can you assist me with this task",
+        "tr": "Bu görevde bana yardım edebilir misin"
+      },
+      "pronunciation": "əˈsɪst",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4045,
+      "english": "associate",
+      "turkish": "ilişkilendirmek",
+      "example": {
+        "en": "I associate this song with summer",
+        "tr": "Bu şarkıyı yazla ilişkilendiriyorum"
+      },
+      "pronunciation": "əˈsəʊʃieɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4046,
+      "english": "assume",
+      "turkish": "varsaymak",
+      "example": {
+        "en": "Don't assume I know everything",
+        "tr": "Her şeyi bildiğimi varsayma"
+      },
+      "pronunciation": "əˈsjuːm",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4047,
+      "english": "assure",
+      "turkish": "temin etmek",
+      "example": {
+        "en": "I assure you everything is fine",
+        "tr": "Sana her şeyin yolunda olduğunu temin ederim"
+      },
+      "pronunciation": "əˈʃʊə(r)",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4048,
+      "english": "astonish",
+      "turkish": "şaşırtmak",
+      "example": {
+        "en": "The news astonished everyone",
+        "tr": "Haber herkesi şaşırttı"
+      },
+      "pronunciation": "əˈstɒnɪʃ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4049,
+      "english": "attribute",
+      "turkish": "atfetmek",
+      "example": {
+        "en": "We attribute our success to teamwork",
+        "tr": "Başarımızı takım çalışmasına atfediyoruz"
+      },
+      "pronunciation": "əˈtrɪbjuːt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4050,
+      "english": "authentic",
+      "turkish": "özgün",
+      "example": {
+        "en": "This is an authentic painting",
+        "tr": "Bu özgün bir resim"
+      },
+      "pronunciation": "ɔːˈθentɪk",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4051,
+      "english": "authorize",
+      "turkish": "yetki vermek",
+      "example": {
+        "en": "Only the manager can authorize this",
+        "tr": "Buna sadece müdür yetki verebilir"
+      },
+      "pronunciation": "ˈɔːθəraɪz",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4052,
+      "english": "automatic",
+      "turkish": "otomatik",
+      "example": {
+        "en": "The door has an automatic sensor",
+        "tr": "Kapının otomatik sensörü var"
+      },
+      "pronunciation": "ˌɔːtəˈmætɪk",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4053,
+      "english": "barely",
+      "turkish": "zar zor",
+      "example": {
+        "en": "I can barely see in the dark",
+        "tr": "Karanlıkta zar zor görebiliyorum"
+      },
+      "pronunciation": "ˈbeəli",
+      "level": "B2",
+      "category": "adverbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4054,
+      "english": "betray",
+      "turkish": "ihanet etmek",
+      "example": {
+        "en": "He betrayed his friend's trust",
+        "tr": "Arkadaşının güvenine ihanet etti"
+      },
+      "pronunciation": "bɪˈtreɪ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4055,
+      "english": "bias",
+      "turkish": "önyargı",
+      "example": {
+        "en": "Everyone has some bias",
+        "tr": "Herkesin biraz önyargısı vardır"
+      },
+      "pronunciation": "ˈbaɪəs",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4056,
+      "english": "bind",
+      "turkish": "bağlamak",
+      "example": {
+        "en": "This contract binds both parties",
+        "tr": "Bu sözleşme her iki tarafı da bağlar"
+      },
+      "pronunciation": "baɪnd",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4057,
+      "english": "blame",
+      "turkish": "suçlamak",
+      "example": {
+        "en": "Don't blame yourself for this",
+        "tr": "Bunun için kendini suçlama"
+      },
+      "pronunciation": "bleɪm",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4058,
+      "english": "blend",
+      "turkish": "karışım",
+      "example": {
+        "en": "This is a blend of different flavors",
+        "tr": "Bu farklı tatların bir karışımı"
+      },
+      "pronunciation": "blend",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4059,
+      "english": "block",
+      "turkish": "engellemek",
+      "example": {
+        "en": "Don't block the entrance",
+        "tr": "Girişi engelleme"
+      },
+      "pronunciation": "blɒk",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4060,
+      "english": "boost",
+      "turkish": "artırmak",
+      "example": {
+        "en": "This will boost your confidence",
+        "tr": "Bu güvenini artıracak"
+      },
+      "pronunciation": "buːst",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4061,
+      "english": "bound",
+      "turkish": "bağlı",
+      "example": {
+        "en": "We are bound by law",
+        "tr": "Yasalara bağlıyız"
+      },
+      "pronunciation": "baʊnd",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4062,
+      "english": "boundary",
+      "turkish": "sınır",
+      "example": {
+        "en": "Respect personal boundaries",
+        "tr": "Kişisel sınırlara saygı göster"
+      },
+      "pronunciation": "ˈbaʊndri",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4063,
+      "english": "breakthrough",
+      "turkish": "atılım",
+      "example": {
+        "en": "Scientists made a major breakthrough",
+        "tr": "Bilim insanları büyük bir atılım yaptı"
+      },
+      "pronunciation": "ˈbreɪkθruː",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4064,
+      "english": "breed",
+      "turkish": "üretmek",
+      "example": {
+        "en": "They breed horses on the farm",
+        "tr": "Çiftlikte at yetiştiriyorlar"
+      },
+      "pronunciation": "briːd",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4065,
+      "english": "brief",
+      "turkish": "kısa",
+      "example": {
+        "en": "Please give a brief summary",
+        "tr": "Lütfen kısa bir özet verin"
+      },
+      "pronunciation": "briːf",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4066,
+      "english": "brilliant",
+      "turkish": "parlak",
+      "example": {
+        "en": "That was a brilliant idea",
+        "tr": "Bu parlak bir fikirdi"
+      },
+      "pronunciation": "ˈbrɪliənt",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4067,
+      "english": "broad",
+      "turkish": "geniş",
+      "example": {
+        "en": "He has a broad knowledge of history",
+        "tr": "Geniş bir tarih bilgisine sahip"
+      },
+      "pronunciation": "brɔːd",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4068,
+      "english": "burden",
+      "turkish": "yük",
+      "example": {
+        "en": "Don't be a burden to others",
+        "tr": "Başkalarına yük olma"
+      },
+      "pronunciation": "ˈbɜːdn",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4069,
+      "english": "bureaucracy",
+      "turkish": "bürokrasi",
+      "example": {
+        "en": "The bureaucracy slows everything down",
+        "tr": "Bürokrasi her şeyi yavaşlatıyor"
+      },
+      "pronunciation": "bjʊəˈrɒkrəsi",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4070,
+      "english": "capable",
+      "turkish": "yetenekli",
+      "example": {
+        "en": "She is very capable at her job",
+        "tr": "İşinde çok yetenekli"
+      },
+      "pronunciation": "ˈkeɪpəbl",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4071,
+      "english": "capacity",
+      "turkish": "kapasite",
+      "example": {
+        "en": "The stadium has a large capacity",
+        "tr": "Stadyumun büyük bir kapasitesi var"
+      },
+      "pronunciation": "kəˈpæsəti",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4072,
+      "english": "capture",
+      "turkish": "yakalamak",
+      "example": {
+        "en": "The police captured the criminal",
+        "tr": "Polis suçluyu yakaladı"
+      },
+      "pronunciation": "ˈkæptʃə(r)",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4073,
+      "english": "cast",
+      "turkish": "atmak",
+      "example": {
+        "en": "Cast your vote in the election",
+        "tr": "Seçimde oyunu kullan"
+      },
+      "pronunciation": "kɑːst",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4074,
+      "english": "casual",
+      "turkish": "gündelik",
+      "example": {
+        "en": "Wear casual clothes to the party",
+        "tr": "Partiye gündelik kıyafetler giy"
+      },
+      "pronunciation": "ˈkæʒuəl",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4075,
+      "english": "cease",
+      "turkish": "durdurmak",
+      "example": {
+        "en": "They ordered him to cease fire",
+        "tr": "Ona ateşi durdurmasını emrettiler"
+      },
+      "pronunciation": "siːs",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4076,
+      "english": "certify",
+      "turkish": "belgelendirmek",
+      "example": {
+        "en": "This document certifies your qualification",
+        "tr": "Bu belge niteliğinizi belgelendirir"
+      },
+      "pronunciation": "ˈsɜːtɪfaɪ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4077,
+      "english": "characteristic",
+      "turkish": "karakteristik",
+      "example": {
+        "en": "Patience is a characteristic of teachers",
+        "tr": "Sabır öğretmenlerin bir karakteristiğidir"
+      },
+      "pronunciation": "ˌkærəktəˈrɪstɪk",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4078,
+      "english": "charm",
+      "turkish": "çekicilik",
+      "example": {
+        "en": "She has great charm",
+        "tr": "Büyük bir çekiciliği var"
+      },
+      "pronunciation": "tʃɑːm",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4079,
+      "english": "chase",
+      "turkish": "kovalamak",
+      "example": {
+        "en": "The dog chased the cat",
+        "tr": "Köpek kediyi kovaladı"
+      },
+      "pronunciation": "tʃeɪs",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4080,
+      "english": "chronic",
+      "turkish": "kronik",
+      "example": {
+        "en": "He suffers from chronic pain",
+        "tr": "Kronik ağrıdan muzdarip"
+      },
+      "pronunciation": "ˈkrɒnɪk",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4081,
+      "english": "circulate",
+      "turkish": "dolaşmak",
+      "example": {
+        "en": "Blood circulates through the body",
+        "tr": "Kan vücutta dolaşır"
+      },
+      "pronunciation": "ˈsɜːkjəleɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4082,
+      "english": "cite",
+      "turkish": "alıntı yapmak",
+      "example": {
+        "en": "Please cite your sources",
+        "tr": "Lütfen kaynaklarınızı belirtin"
+      },
+      "pronunciation": "saɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4083,
+      "english": "civil",
+      "turkish": "sivil",
+      "example": {
+        "en": "We demand civil rights",
+        "tr": "Sivil haklar talep ediyoruz"
+      },
+      "pronunciation": "ˈsɪvl",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4084,
+      "english": "clarify",
+      "turkish": "açıklığa kavuşturmak",
+      "example": {
+        "en": "Can you clarify what you mean",
+        "tr": "Ne demek istediğini açıklayabilir misin"
+      },
+      "pronunciation": "ˈklærɪfaɪ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4085,
+      "english": "clash",
+      "turkish": "çatışma",
+      "example": {
+        "en": "There was a clash between protesters",
+        "tr": "Protestocular arasında çatışma yaşandı"
+      },
+      "pronunciation": "klæʃ",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4086,
+      "english": "classify",
+      "turkish": "sınıflandırmak",
+      "example": {
+        "en": "Scientists classify animals by species",
+        "tr": "Bilim insanları hayvanları türlere göre sınıflandırır"
+      },
+      "pronunciation": "ˈklæsɪfaɪ",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4087,
+      "english": "clause",
+      "turkish": "madde",
+      "example": {
+        "en": "Read clause five of the contract",
+        "tr": "Sözleşmenin beşinci maddesini oku"
+      },
+      "pronunciation": "klɔːz",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4088,
+      "english": "collapse",
+      "turkish": "çöküş",
+      "example": {
+        "en": "The bridge suffered a sudden collapse",
+        "tr": "Köprü ani bir çöküş yaşadı"
+      },
+      "pronunciation": "kəˈlæps",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4089,
+      "english": "colleague",
+      "turkish": "meslektaş",
+      "example": {
+        "en": "She's my colleague at work",
+        "tr": "İş yerinde benim meslektaşım"
+      },
+      "pronunciation": "ˈkɒliːɡ",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4090,
+      "english": "collective",
+      "turkish": "kolektif",
+      "example": {
+        "en": "We need a collective effort",
+        "tr": "Kolektif bir çabaya ihtiyacımız var"
+      },
+      "pronunciation": "kəˈlektɪv",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4091,
+      "english": "combine",
+      "turkish": "birleştirmek",
+      "example": {
+        "en": "Combine all the ingredients together",
+        "tr": "Tüm malzemeleri bir araya getir"
+      },
+      "pronunciation": "kəmˈbaɪn",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4092,
+      "english": "commence",
+      "turkish": "başlamak",
+      "example": {
+        "en": "The ceremony will commence at noon",
+        "tr": "Tören öğlen başlayacak"
+      },
+      "pronunciation": "kəˈmens",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4093,
+      "english": "commit",
+      "turkish": "adamak",
+      "example": {
+        "en": "You must commit to this project",
+        "tr": "Bu projeye kendini adaman gerekiyor"
+      },
+      "pronunciation": "kəˈmɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4094,
+      "english": "commodity",
+      "turkish": "mal",
+      "example": {
+        "en": "Oil is a valuable commodity",
+        "tr": "Petrol değerli bir maldır"
+      },
+      "pronunciation": "kəˈmɒdəti",
+      "level": "B2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4095,
+      "english": "communicate",
+      "turkish": "iletişim kurmak",
+      "example": {
+        "en": "We communicate via email",
+        "tr": "E-posta yoluyla iletişim kuruyoruz"
+      },
+      "pronunciation": "kəˈmjuːnɪkeɪt",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4096,
+      "english": "compact",
+      "turkish": "kompakt",
+      "example": {
+        "en": "This is a compact design",
+        "tr": "Bu kompakt bir tasarım"
+      },
+      "pronunciation": "kəmˈpækt",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4097,
+      "english": "comparable",
+      "turkish": "karşılaştırılabilir",
+      "example": {
+        "en": "These products are not comparable",
+        "tr": "Bu ürünler karşılaştırılabilir değil"
+      },
+      "pronunciation": "ˈkɒmpərəbl",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4098,
+      "english": "compatible",
+      "turkish": "uyumlu",
+      "example": {
+        "en": "These devices are not compatible",
+        "tr": "Bu cihazlar uyumlu değil"
+      },
+      "pronunciation": "kəmˈpætəbl",
+      "level": "B2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 4099,
+      "english": "compel",
+      "turkish": "zorlamak",
+      "example": {
+        "en": "No one can compel you to stay",
+        "tr": "Kimse seni kalmaya zorlayamaz"
+      },
+      "pronunciation": "kəmˈpel",
+      "level": "B2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    }
+  ]
+}

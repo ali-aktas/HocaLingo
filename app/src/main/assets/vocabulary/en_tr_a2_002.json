@@ -1,0 +1,1414 @@
+{
+  "package_info": {
+    "id": "en_tr_a2_002",
+    "version": "1.0.0",
+    "level": "A2",
+    "language_pair": "en_tr",
+    "total_words": 100,
+    "updated_at": "2025-10-23",
+    "description": "A2 level English-Turkish vocabulary package 2",
+    "attribution": "HocaLingo vocabulary database"
+  },
+  "words": [
+    {
+      "id": 2100,
+      "english": "place",
+      "turkish": "yer",
+      "example": {
+        "en": "This is a nice place",
+        "tr": "Burası güzel bir yer"
+      },
+      "pronunciation": "pleɪs",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2101,
+      "english": "area",
+      "turkish": "alan",
+      "example": {
+        "en": "This area is very clean",
+        "tr": "Bu alan çok temiz"
+      },
+      "pronunciation": "ˈɛriə",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2102,
+      "english": "region",
+      "turkish": "bölge",
+      "example": {
+        "en": "I live in this region",
+        "tr": "Bu bölgede yaşıyorum"
+      },
+      "pronunciation": "ˈriːdʒən",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2103,
+      "english": "part",
+      "turkish": "parça",
+      "example": {
+        "en": "This is the best part",
+        "tr": "Bu en iyi parça"
+      },
+      "pronunciation": "pɑrt",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2104,
+      "english": "piece",
+      "turkish": "parça",
+      "example": {
+        "en": "Can I have a piece of cake?",
+        "tr": "Bir parça kek alabilir miyim?"
+      },
+      "pronunciation": "piːs",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2105,
+      "english": "side",
+      "turkish": "yan",
+      "example": {
+        "en": "Come to my side",
+        "tr": "Benim yanıma gel"
+      },
+      "pronunciation": "saɪd",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2106,
+      "english": "center",
+      "turkish": "merkez",
+      "example": {
+        "en": "The shop is in the city center",
+        "tr": "Dükkan şehir merkezinde"
+      },
+      "pronunciation": "ˈsɛntər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2107,
+      "english": "middle",
+      "turkish": "orta",
+      "example": {
+        "en": "Sit in the middle",
+        "tr": "Ortaya otur"
+      },
+      "pronunciation": "ˈmɪdəl",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2108,
+      "english": "corner",
+      "turkish": "köşe",
+      "example": {
+        "en": "The shop is on the corner",
+        "tr": "Dükkan köşede"
+      },
+      "pronunciation": "ˈkɔrnər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2109,
+      "english": "edge",
+      "turkish": "kenar",
+      "example": {
+        "en": "Don't go to the edge",
+        "tr": "Kenara gitme"
+      },
+      "pronunciation": "ɛdʒ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2110,
+      "english": "end",
+      "turkish": "son",
+      "example": {
+        "en": "This is the end of the road",
+        "tr": "Bu yolun sonu"
+      },
+      "pronunciation": "ɛnd",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2111,
+      "english": "beginning",
+      "turkish": "başlangıç",
+      "example": {
+        "en": "This is just the beginning",
+        "tr": "Bu sadece başlangıç"
+      },
+      "pronunciation": "bɪˈɡɪnɪŋ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2112,
+      "english": "way",
+      "turkish": "yol",
+      "example": {
+        "en": "Which way should I go?",
+        "tr": "Hangi yola gitmeliyim?"
+      },
+      "pronunciation": "weɪ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2113,
+      "english": "road",
+      "turkish": "yol",
+      "example": {
+        "en": "The road is very long",
+        "tr": "Yol çok uzun"
+      },
+      "pronunciation": "roʊd",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2114,
+      "english": "path",
+      "turkish": "patika",
+      "example": {
+        "en": "Follow this path",
+        "tr": "Bu patikayı takip et"
+      },
+      "pronunciation": "pæθ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2115,
+      "english": "bridge",
+      "turkish": "köprü",
+      "example": {
+        "en": "Walk across the bridge",
+        "tr": "Köprüden geç"
+      },
+      "pronunciation": "brɪdʒ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2116,
+      "english": "river",
+      "turkish": "nehir",
+      "example": {
+        "en": "The river is very wide",
+        "tr": "Nehir çok geniş"
+      },
+      "pronunciation": "ˈrɪvər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2117,
+      "english": "lake",
+      "turkish": "göl",
+      "example": {
+        "en": "We swim in the lake",
+        "tr": "Gölde yüzeriz"
+      },
+      "pronunciation": "leɪk",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2118,
+      "english": "sea",
+      "turkish": "deniz",
+      "example": {
+        "en": "I love the sea",
+        "tr": "Denizi severim"
+      },
+      "pronunciation": "siː",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2119,
+      "english": "ocean",
+      "turkish": "okyanus",
+      "example": {
+        "en": "The ocean is very deep",
+        "tr": "Okyanus çok derin"
+      },
+      "pronunciation": "ˈoʊʃən",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2120,
+      "english": "mountain",
+      "turkish": "dağ",
+      "example": {
+        "en": "The mountain is very high",
+        "tr": "Dağ çok yüksek"
+      },
+      "pronunciation": "ˈmaʊntən",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2121,
+      "english": "hill",
+      "turkish": "tepe",
+      "example": {
+        "en": "We climbed the hill",
+        "tr": "Tepeye tırmandık"
+      },
+      "pronunciation": "hɪl",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2122,
+      "english": "beach",
+      "turkish": "sahil",
+      "example": {
+        "en": "Let's go to the beach",
+        "tr": "Sahile gidelim"
+      },
+      "pronunciation": "biːtʃ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2123,
+      "english": "island",
+      "turkish": "ada",
+      "example": {
+        "en": "I want to visit an island",
+        "tr": "Bir adayı ziyaret etmek istiyorum"
+      },
+      "pronunciation": "ˈaɪlənd",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2124,
+      "english": "forest",
+      "turkish": "orman",
+      "example": {
+        "en": "We walk in the forest",
+        "tr": "Ormanda yürüyoruz"
+      },
+      "pronunciation": "ˈfɔrɪst",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2125,
+      "english": "tree",
+      "turkish": "ağaç",
+      "example": {
+        "en": "The tree is very old",
+        "tr": "Ağaç çok eski"
+      },
+      "pronunciation": "triː",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2126,
+      "english": "plant",
+      "turkish": "bitki",
+      "example": {
+        "en": "I have many plants at home",
+        "tr": "Evde çok bitkilerim var"
+      },
+      "pronunciation": "plænt",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2127,
+      "english": "flower",
+      "turkish": "çiçek",
+      "example": {
+        "en": "These flowers are beautiful",
+        "tr": "Bu çiçekler güzel"
+      },
+      "pronunciation": "ˈflaʊər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2128,
+      "english": "grass",
+      "turkish": "çimen",
+      "example": {
+        "en": "The grass is green",
+        "tr": "Çimen yeşil"
+      },
+      "pronunciation": "ɡræs",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2129,
+      "english": "sky",
+      "turkish": "gökyüzü",
+      "example": {
+        "en": "The sky is blue today",
+        "tr": "Bugün gökyüzü mavi"
+      },
+      "pronunciation": "skaɪ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2130,
+      "english": "cloud",
+      "turkish": "bulut",
+      "example": {
+        "en": "I see many clouds",
+        "tr": "Çok bulut görüyorum"
+      },
+      "pronunciation": "klaʊd",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2131,
+      "english": "sun",
+      "turkish": "güneş",
+      "example": {
+        "en": "The sun is shining",
+        "tr": "Güneş parlıyor"
+      },
+      "pronunciation": "sʌn",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2132,
+      "english": "moon",
+      "turkish": "ay",
+      "example": {
+        "en": "The moon is beautiful tonight",
+        "tr": "Bu gece ay güzel"
+      },
+      "pronunciation": "muːn",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2133,
+      "english": "star",
+      "turkish": "yıldız",
+      "example": {
+        "en": "I can see many stars",
+        "tr": "Çok yıldız görebiliyorum"
+      },
+      "pronunciation": "stɑr",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2134,
+      "english": "weather",
+      "turkish": "hava durumu",
+      "example": {
+        "en": "The weather is nice today",
+        "tr": "Bugün hava güzel"
+      },
+      "pronunciation": "ˈwɛðər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2135,
+      "english": "wind",
+      "turkish": "rüzgar",
+      "example": {
+        "en": "The wind is strong",
+        "tr": "Rüzgar güçlü"
+      },
+      "pronunciation": "wɪnd",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2136,
+      "english": "storm",
+      "turkish": "fırtına",
+      "example": {
+        "en": "There is a big storm",
+        "tr": "Büyük bir fırtına var"
+      },
+      "pronunciation": "stɔrm",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2137,
+      "english": "temperature",
+      "turkish": "sıcaklık",
+      "example": {
+        "en": "The temperature is high",
+        "tr": "Sıcaklık yüksek"
+      },
+      "pronunciation": "ˈtɛmprətʃər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2138,
+      "english": "season",
+      "turkish": "mevsim",
+      "example": {
+        "en": "Summer is my favorite season",
+        "tr": "Yaz en sevdiğim mevsim"
+      },
+      "pronunciation": "ˈsiːzən",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2139,
+      "english": "spring",
+      "turkish": "ilkbahar",
+      "example": {
+        "en": "Spring is a beautiful season",
+        "tr": "İlkbahar güzel bir mevsim"
+      },
+      "pronunciation": "sprɪŋ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2140,
+      "english": "summer",
+      "turkish": "yaz",
+      "example": {
+        "en": "I love summer holidays",
+        "tr": "Yaz tatillerini severim"
+      },
+      "pronunciation": "ˈsʌmər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2141,
+      "english": "autumn",
+      "turkish": "sonbahar",
+      "example": {
+        "en": "Autumn is a colorful season",
+        "tr": "Sonbahar renkli bir mevsim"
+      },
+      "pronunciation": "ˈɔtəm",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2142,
+      "english": "winter",
+      "turkish": "kış",
+      "example": {
+        "en": "Winter is very cold",
+        "tr": "Kış çok soğuk"
+      },
+      "pronunciation": "ˈwɪntər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2143,
+      "english": "animal",
+      "turkish": "hayvan",
+      "example": {
+        "en": "I love animals",
+        "tr": "Hayvanları severim"
+      },
+      "pronunciation": "ˈænɪməl",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2144,
+      "english": "bird",
+      "turkish": "kuş",
+      "example": {
+        "en": "Birds can fly",
+        "tr": "Kuşlar uçabilir"
+      },
+      "pronunciation": "bɜrd",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2145,
+      "english": "cat",
+      "turkish": "kedi",
+      "example": {
+        "en": "I have a black cat",
+        "tr": "Siyah bir kedim var"
+      },
+      "pronunciation": "kæt",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2146,
+      "english": "dog",
+      "turkish": "köpek",
+      "example": {
+        "en": "My dog is very friendly",
+        "tr": "Köpeğim çok arkadaş canlısı"
+      },
+      "pronunciation": "dɔɡ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2147,
+      "english": "horse",
+      "turkish": "at",
+      "example": {
+        "en": "The horse is fast",
+        "tr": "At hızlı"
+      },
+      "pronunciation": "hɔrs",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2148,
+      "english": "cow",
+      "turkish": "inek",
+      "example": {
+        "en": "Cows give us milk",
+        "tr": "İnekler bize süt verir"
+      },
+      "pronunciation": "kaʊ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2149,
+      "english": "pig",
+      "turkish": "domuz",
+      "example": {
+        "en": "The pig is in the farm",
+        "tr": "Domuz çiftlikte"
+      },
+      "pronunciation": "pɪɡ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2150,
+      "english": "sheep",
+      "turkish": "koyun",
+      "example": {
+        "en": "Sheep give us wool",
+        "tr": "Koyunlar bize yün verir"
+      },
+      "pronunciation": "ʃiːp",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2151,
+      "english": "rabbit",
+      "turkish": "tavşan",
+      "example": {
+        "en": "The rabbit is white",
+        "tr": "Tavşan beyaz"
+      },
+      "pronunciation": "ˈræbɪt",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2152,
+      "english": "mouse",
+      "turkish": "fare",
+      "example": {
+        "en": "The mouse is small",
+        "tr": "Fare küçük"
+      },
+      "pronunciation": "maʊs",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2153,
+      "english": "snake",
+      "turkish": "yılan",
+      "example": {
+        "en": "Snakes can be dangerous",
+        "tr": "Yılanlar tehlikeli olabilir"
+      },
+      "pronunciation": "sneɪk",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2154,
+      "english": "insect",
+      "turkish": "böcek",
+      "example": {
+        "en": "There are many insects here",
+        "tr": "Burada çok böcek var"
+      },
+      "pronunciation": "ˈɪnsɛkt",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2155,
+      "english": "body",
+      "turkish": "vücut",
+      "example": {
+        "en": "Exercise is good for the body",
+        "tr": "Egzersiz vücut için iyidir"
+      },
+      "pronunciation": "ˈbɑdi",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2156,
+      "english": "head",
+      "turkish": "baş",
+      "example": {
+        "en": "My head hurts",
+        "tr": "Başım ağrıyor"
+      },
+      "pronunciation": "hɛd",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2157,
+      "english": "face",
+      "turkish": "yüz",
+      "example": {
+        "en": "Wash your face",
+        "tr": "Yüzünü yıka"
+      },
+      "pronunciation": "feɪs",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2158,
+      "english": "hair",
+      "turkish": "saç",
+      "example": {
+        "en": "She has long hair",
+        "tr": "Uzun saçları var"
+      },
+      "pronunciation": "hɛr",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2159,
+      "english": "eye",
+      "turkish": "göz",
+      "example": {
+        "en": "I have blue eyes",
+        "tr": "Mavi gözlerim var"
+      },
+      "pronunciation": "aɪ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2160,
+      "english": "ear",
+      "turkish": "kulak",
+      "example": {
+        "en": "I can hear with my ears",
+        "tr": "Kulaklarımla duyabiliyorum"
+      },
+      "pronunciation": "ɪr",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2161,
+      "english": "nose",
+      "turkish": "burun",
+      "example": {
+        "en": "My nose is cold",
+        "tr": "Burnum soğuk"
+      },
+      "pronunciation": "noʊz",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2162,
+      "english": "mouth",
+      "turkish": "ağız",
+      "example": {
+        "en": "Open your mouth",
+        "tr": "Ağzını aç"
+      },
+      "pronunciation": "maʊθ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2163,
+      "english": "tooth",
+      "turkish": "diş",
+      "example": {
+        "en": "Brush your teeth",
+        "tr": "Dişlerini fırçala"
+      },
+      "pronunciation": "tuːθ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2164,
+      "english": "neck",
+      "turkish": "boyun",
+      "example": {
+        "en": "My neck is stiff",
+        "tr": "Boynum sert"
+      },
+      "pronunciation": "nɛk",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2165,
+      "english": "shoulder",
+      "turkish": "omuz",
+      "example": {
+        "en": "My shoulder hurts",
+        "tr": "Omzum ağrıyor"
+      },
+      "pronunciation": "ˈʃoʊldər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2166,
+      "english": "arm",
+      "turkish": "kol",
+      "example": {
+        "en": "I broke my arm",
+        "tr": "Kolumu kırdım"
+      },
+      "pronunciation": "ɑrm",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2167,
+      "english": "hand",
+      "turkish": "el",
+      "example": {
+        "en": "Wash your hands",
+        "tr": "Ellerini yıka"
+      },
+      "pronunciation": "hænd",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2168,
+      "english": "finger",
+      "turkish": "parmak",
+      "example": {
+        "en": "I cut my finger",
+        "tr": "Parmağımı kestim"
+      },
+      "pronunciation": "ˈfɪŋɡər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2169,
+      "english": "leg",
+      "turkish": "bacak",
+      "example": {
+        "en": "My legs are tired",
+        "tr": "Bacaklarım yorgun"
+      },
+      "pronunciation": "lɛɡ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2170,
+      "english": "foot",
+      "turkish": "ayak",
+      "example": {
+        "en": "My feet are cold",
+        "tr": "Ayaklarım soğuk"
+      },
+      "pronunciation": "fʊt",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2171,
+      "english": "knee",
+      "turkish": "diz",
+      "example": {
+        "en": "My knee hurts",
+        "tr": "Dizim ağrıyor"
+      },
+      "pronunciation": "niː",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2172,
+      "english": "back",
+      "turkish": "sırt",
+      "example": {
+        "en": "I have back pain",
+        "tr": "Sırt ağrım var"
+      },
+      "pronunciation": "bæk",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2173,
+      "english": "stomach",
+      "turkish": "mide",
+      "example": {
+        "en": "My stomach hurts",
+        "tr": "Midem ağrıyor"
+      },
+      "pronunciation": "ˈstʌmək",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2174,
+      "english": "heart",
+      "turkish": "kalp",
+      "example": {
+        "en": "My heart is beating fast",
+        "tr": "Kalbim hızlı atıyor"
+      },
+      "pronunciation": "hɑrt",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2175,
+      "english": "blood",
+      "turkish": "kan",
+      "example": {
+        "en": "I donate blood",
+        "tr": "Kan bağışlıyorum"
+      },
+      "pronunciation": "blʌd",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2176,
+      "english": "skin",
+      "turkish": "deri",
+      "example": {
+        "en": "My skin is dry",
+        "tr": "Derim kuru"
+      },
+      "pronunciation": "skɪn",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2177,
+      "english": "bone",
+      "turkish": "kemik",
+      "example": {
+        "en": "I broke a bone",
+        "tr": "Bir kemik kırdım"
+      },
+      "pronunciation": "boʊn",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2178,
+      "english": "health",
+      "turkish": "sağlık",
+      "example": {
+        "en": "Health is important",
+        "tr": "Sağlık önemlidir"
+      },
+      "pronunciation": "hɛlθ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2179,
+      "english": "pain",
+      "turkish": "ağrı",
+      "example": {
+        "en": "I have a lot of pain",
+        "tr": "Çok ağrım var"
+      },
+      "pronunciation": "peɪn",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2180,
+      "english": "doctor",
+      "turkish": "doktor",
+      "example": {
+        "en": "I need to see a doctor",
+        "tr": "Doktora görünmem gerek"
+      },
+      "pronunciation": "ˈdɑktər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2181,
+      "english": "nurse",
+      "turkish": "hemşire",
+      "example": {
+        "en": "The nurse is very kind",
+        "tr": "Hemşire çok nazik"
+      },
+      "pronunciation": "nɜrs",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2182,
+      "english": "medicine",
+      "turkish": "ilaç",
+      "example": {
+        "en": "Take your medicine",
+        "tr": "İlacını al"
+      },
+      "pronunciation": "ˈmɛdəsən",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2183,
+      "english": "drug",
+      "turkish": "ilaç",
+      "example": {
+        "en": "This drug is very strong",
+        "tr": "Bu ilaç çok güçlü"
+      },
+      "pronunciation": "drʌɡ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2184,
+      "english": "problem",
+      "turkish": "sorun",
+      "example": {
+        "en": "I have a problem",
+        "tr": "Bir sorunum var"
+      },
+      "pronunciation": "ˈprɑbləm",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2185,
+      "english": "trouble",
+      "turkish": "sorun",
+      "example": {
+        "en": "I am in trouble",
+        "tr": "Başım dertte"
+      },
+      "pronunciation": "ˈtrʌbəl",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2186,
+      "english": "danger",
+      "turkish": "tehlike",
+      "example": {
+        "en": "There is danger here",
+        "tr": "Burada tehlike var"
+      },
+      "pronunciation": "ˈdeɪndʒər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2187,
+      "english": "safe",
+      "turkish": "güvenli",
+      "example": {
+        "en": "This place is safe",
+        "tr": "Burası güvenli"
+      },
+      "pronunciation": "seɪf",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2188,
+      "english": "accident",
+      "turkish": "kaza",
+      "example": {
+        "en": "There was a car accident",
+        "tr": "Bir araba kazası oldu"
+      },
+      "pronunciation": "ˈæksɪdənt",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2189,
+      "english": "fire",
+      "turkish": "yangın",
+      "example": {
+        "en": "There is a fire",
+        "tr": "Yangın var"
+      },
+      "pronunciation": "faɪər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2190,
+      "english": "light",
+      "turkish": "ışık",
+      "example": {
+        "en": "Turn on the light",
+        "tr": "Işığı aç"
+      },
+      "pronunciation": "laɪt",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2191,
+      "english": "dark",
+      "turkish": "karanlık",
+      "example": {
+        "en": "It's dark outside",
+        "tr": "Dışarısı karanlık"
+      },
+      "pronunciation": "dɑrk",
+      "level": "A2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2192,
+      "english": "sound",
+      "turkish": "ses",
+      "example": {
+        "en": "I hear a sound",
+        "tr": "Bir ses duyuyorum"
+      },
+      "pronunciation": "saʊnd",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2193,
+      "english": "noise",
+      "turkish": "gürültü",
+      "example": {
+        "en": "Don't make noise",
+        "tr": "Gürültü yapma"
+      },
+      "pronunciation": "nɔɪz",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2194,
+      "english": "music",
+      "turkish": "müzik",
+      "example": {
+        "en": "I love listening to music",
+        "tr": "Müzik dinlemeyi severim"
+      },
+      "pronunciation": "ˈmjuzɪk",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2195,
+      "english": "song",
+      "turkish": "şarkı",
+      "example": {
+        "en": "This is a beautiful song",
+        "tr": "Bu güzel bir şarkı"
+      },
+      "pronunciation": "sɔŋ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2196,
+      "english": "voice",
+      "turkish": "ses",
+      "example": {
+        "en": "She has a nice voice",
+        "tr": "Güzel bir sesi var"
+      },
+      "pronunciation": "vɔɪs",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2197,
+      "english": "picture",
+      "turkish": "resim",
+      "example": {
+        "en": "Look at this picture",
+        "tr": "Bu resme bak"
+      },
+      "pronunciation": "ˈpɪktʃər",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2198,
+      "english": "photo",
+      "turkish": "fotoğraf",
+      "example": {
+        "en": "Let's take a photo",
+        "tr": "Fotoğraf çekelim"
+      },
+      "pronunciation": "ˈfoʊtoʊ",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 2199,
+      "english": "film",
+      "turkish": "film",
+      "example": {
+        "en": "I want to watch a film",
+        "tr": "Film izlemek istiyorum"
+      },
+      "pronunciation": "fɪlm",
+      "level": "A2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    }
+  ]
+}

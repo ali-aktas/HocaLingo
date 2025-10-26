@@ -1,0 +1,1414 @@
+{
+  "package_info": {
+    "id": "en_tr_c2_001",
+    "version": "1.0.0",
+    "level": "C2",
+    "language_pair": "en_tr",
+    "total_words": 100,
+    "updated_at": "2025-10-24",
+    "description": "C2 level English-Turkish vocabulary package 1 - Mastery level vocabulary",
+    "attribution": "HocaLingo vocabulary database"
+  },
+  "words": [
+    {
+      "id": 6000,
+      "english": "betray",
+      "turkish": "ihanet etmek",
+      "example": {
+        "en": "He betrayed his country",
+        "tr": "Ülkesine ihanet etti"
+      },
+      "pronunciation": "bɪˈtreɪ",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6001,
+      "english": "betroth",
+      "turkish": "nişanlamak",
+      "example": {
+        "en": "They were betrothed at a young age",
+        "tr": "Genç yaşta nişanlandılar"
+      },
+      "pronunciation": "bɪˈtrəʊð",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6002,
+      "english": "beverage",
+      "turkish": "içecek",
+      "example": {
+        "en": "Would you like a hot beverage",
+        "tr": "Sıcak bir içecek ister misiniz"
+      },
+      "pronunciation": "ˈbevərɪdʒ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6003,
+      "english": "beware",
+      "turkish": "dikkat etmek",
+      "example": {
+        "en": "Beware of the dog",
+        "tr": "Köpekten dikkat edin"
+      },
+      "pronunciation": "bɪˈweə(r)",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6004,
+      "english": "bewilder",
+      "turkish": "şaşırtmak",
+      "example": {
+        "en": "The complexity bewildered him",
+        "tr": "Karmaşıklık onu şaşırttı"
+      },
+      "pronunciation": "bɪˈwɪldə(r)",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6005,
+      "english": "bewitch",
+      "turkish": "büyülemek",
+      "example": {
+        "en": "Her voice bewitched the audience",
+        "tr": "Sesi seyirciyi büyüledi"
+      },
+      "pronunciation": "bɪˈwɪtʃ",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6006,
+      "english": "bias",
+      "turkish": "önyargı",
+      "example": {
+        "en": "The judge showed bias",
+        "tr": "Hakim önyargı gösterdi"
+      },
+      "pronunciation": "ˈbaɪəs",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6007,
+      "english": "bibliophile",
+      "turkish": "kitapsever",
+      "example": {
+        "en": "He is a true bibliophile",
+        "tr": "Gerçek bir kitapsever"
+      },
+      "pronunciation": "ˈbɪbliəfaɪl",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6008,
+      "english": "bicker",
+      "turkish": "atışmak",
+      "example": {
+        "en": "They bicker constantly",
+        "tr": "Sürekli atışıyorlar"
+      },
+      "pronunciation": "ˈbɪkə(r)",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6009,
+      "english": "bidding",
+      "turkish": "talimat",
+      "example": {
+        "en": "I did his bidding",
+        "tr": "Onun talimatını yaptım"
+      },
+      "pronunciation": "ˈbɪdɪŋ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6010,
+      "english": "bigot",
+      "turkish": "bağnaz",
+      "example": {
+        "en": "Don't be a bigot",
+        "tr": "Bağnaz olma"
+      },
+      "pronunciation": "ˈbɪɡət",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6011,
+      "english": "bilateral",
+      "turkish": "iki taraflı",
+      "example": {
+        "en": "They signed a bilateral agreement",
+        "tr": "İki taraflı bir anlaşma imzaladılar"
+      },
+      "pronunciation": "ˌbaɪˈlætərəl",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6012,
+      "english": "bile",
+      "turkish": "öd",
+      "example": {
+        "en": "The liver produces bile",
+        "tr": "Karaciğer safra üretir"
+      },
+      "pronunciation": "baɪl",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6013,
+      "english": "bilingual",
+      "turkish": "iki dilli",
+      "example": {
+        "en": "She is bilingual in English and Turkish",
+        "tr": "İngilizce ve Türkçe iki dilli"
+      },
+      "pronunciation": "ˌbaɪˈlɪŋɡwəl",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6014,
+      "english": "binge",
+      "turkish": "aşırı yeme",
+      "example": {
+        "en": "He went on a eating binge",
+        "tr": "Aşırı yeme nöbeti geçirdi"
+      },
+      "pronunciation": "bɪndʒ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6015,
+      "english": "biography",
+      "turkish": "biyografi",
+      "example": {
+        "en": "I read his biography",
+        "tr": "Biyografisini okudum"
+      },
+      "pronunciation": "baɪˈɒɡrəfi",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6016,
+      "english": "bipartisan",
+      "turkish": "iki partili",
+      "example": {
+        "en": "They formed a bipartisan committee",
+        "tr": "İki partili bir komite oluşturdular"
+      },
+      "pronunciation": "ˌbaɪpɑːtɪˈzæn",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6017,
+      "english": "bizarre",
+      "turkish": "tuhaf",
+      "example": {
+        "en": "That was a bizarre incident",
+        "tr": "Tuhaf bir olaydı"
+      },
+      "pronunciation": "bɪˈzɑː(r)",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6018,
+      "english": "blanch",
+      "turkish": "solmak",
+      "example": {
+        "en": "Her face blanched with fear",
+        "tr": "Yüzü korkuyla soldu"
+      },
+      "pronunciation": "blɑːntʃ",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6019,
+      "english": "bland",
+      "turkish": "yavan",
+      "example": {
+        "en": "The food was bland",
+        "tr": "Yemek yavandı"
+      },
+      "pronunciation": "blænd",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6020,
+      "english": "blandish",
+      "turkish": "pohpohlamak",
+      "example": {
+        "en": "He tried to blandish her",
+        "tr": "Onu pohpohlamaya çalıştı"
+      },
+      "pronunciation": "ˈblændɪʃ",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6021,
+      "english": "blasphemy",
+      "turkish": "küfür",
+      "example": {
+        "en": "He was accused of blasphemy",
+        "tr": "Küfürle suçlandı"
+      },
+      "pronunciation": "ˈblæsfəmi",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6022,
+      "english": "blatant",
+      "turkish": "bariz",
+      "example": {
+        "en": "It was a blatant lie",
+        "tr": "Bariz bir yalandı"
+      },
+      "pronunciation": "ˈbleɪtnt",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6023,
+      "english": "blaze",
+      "turkish": "alev",
+      "example": {
+        "en": "The fire blazed brightly",
+        "tr": "Ateş parlak yanıyordu"
+      },
+      "pronunciation": "bleɪz",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6024,
+      "english": "bleach",
+      "turkish": "ağartmak",
+      "example": {
+        "en": "She bleached her hair",
+        "tr": "Saçını ağarttı"
+      },
+      "pronunciation": "bliːtʃ",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6025,
+      "english": "bleak",
+      "turkish": "kasvetli",
+      "example": {
+        "en": "The future looks bleak",
+        "tr": "Gelecek kasvetli görünüyor"
+      },
+      "pronunciation": "bliːk",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6026,
+      "english": "blemish",
+      "turkish": "leke",
+      "example": {
+        "en": "Her skin is without blemish",
+        "tr": "Cildi lekesiz"
+      },
+      "pronunciation": "ˈblemɪʃ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6027,
+      "english": "blight",
+      "turkish": "afet",
+      "example": {
+        "en": "Disease was a blight on the crops",
+        "tr": "Hastalık mahsuller için bir felaketti"
+      },
+      "pronunciation": "blaɪt",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6028,
+      "english": "bliss",
+      "turkish": "mutluluk",
+      "example": {
+        "en": "They lived in wedded bliss",
+        "tr": "Evlilik mutluluğu içinde yaşadılar"
+      },
+      "pronunciation": "blɪs",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6029,
+      "english": "blithe",
+      "turkish": "neşeli",
+      "example": {
+        "en": "She has a blithe spirit",
+        "tr": "Neşeli bir ruhu var"
+      },
+      "pronunciation": "blaɪð",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6030,
+      "english": "bloc",
+      "turkish": "blok",
+      "example": {
+        "en": "The countries formed a trading bloc",
+        "tr": "Ülkeler bir ticaret bloğu oluşturdu"
+      },
+      "pronunciation": "blɒk",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6031,
+      "english": "blockade",
+      "turkish": "abluka",
+      "example": {
+        "en": "The port was under blockade",
+        "tr": "Liman abluka altındaydı"
+      },
+      "pronunciation": "blɒˈkeɪd",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6032,
+      "english": "blot",
+      "turkish": "leke",
+      "example": {
+        "en": "There's an ink blot on the paper",
+        "tr": "Kağıtta mürekkep lekesi var"
+      },
+      "pronunciation": "blɒt",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6033,
+      "english": "bluff",
+      "turkish": "blöf",
+      "example": {
+        "en": "He was bluffing about his cards",
+        "tr": "Kartları hakkında blöf yapıyordu"
+      },
+      "pronunciation": "blʌf",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6034,
+      "english": "blunder",
+      "turkish": "gaf",
+      "example": {
+        "en": "He made a terrible blunder",
+        "tr": "Korkunç bir gaf yaptı"
+      },
+      "pronunciation": "ˈblʌndə(r)",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6035,
+      "english": "blunt",
+      "turkish": "kaba",
+      "example": {
+        "en": "She was blunt in her criticism",
+        "tr": "Eleştirisinde kabaydı"
+      },
+      "pronunciation": "blʌnt",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6036,
+      "english": "blur",
+      "turkish": "bulanıklaştırmak",
+      "example": {
+        "en": "Tears blurred her vision",
+        "tr": "Gözyaşları görüşünü bulanıklaştırdı"
+      },
+      "pronunciation": "blɜː(r)",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6037,
+      "english": "blurt",
+      "turkish": "ağzından kaçırmak",
+      "example": {
+        "en": "He blurted out the secret",
+        "tr": "Sırrı ağzından kaçırdı"
+      },
+      "pronunciation": "blɜːt",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6038,
+      "english": "blush",
+      "turkish": "kızarmak",
+      "example": {
+        "en": "She blushed with embarrassment",
+        "tr": "Utançtan kızardı"
+      },
+      "pronunciation": "blʌʃ",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6039,
+      "english": "bluster",
+      "turkish": "kabadayılık",
+      "example": {
+        "en": "His bluster didn't intimidate anyone",
+        "tr": "Kabadayılığı kimseyi korkutmadı"
+      },
+      "pronunciation": "ˈblʌstə(r)",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6040,
+      "english": "boast",
+      "turkish": "övünmek",
+      "example": {
+        "en": "He boasted about his achievements",
+        "tr": "Başarılarıyla övündü"
+      },
+      "pronunciation": "bəʊst",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6041,
+      "english": "bodily",
+      "turkish": "bedensel",
+      "example": {
+        "en": "He suffered bodily harm",
+        "tr": "Bedensel zarar gördü"
+      },
+      "pronunciation": "ˈbɒdɪli",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6042,
+      "english": "bog",
+      "turkish": "bataklık",
+      "example": {
+        "en": "They got stuck in the bog",
+        "tr": "Bataklığa saplı kaldılar"
+      },
+      "pronunciation": "bɒɡ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6043,
+      "english": "boggle",
+      "turkish": "şaşırmak",
+      "example": {
+        "en": "The mind boggles at the thought",
+        "tr": "Bu düşünce karşısında akıl şaşırır"
+      },
+      "pronunciation": "ˈbɒɡl",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6044,
+      "english": "bogus",
+      "turkish": "sahte",
+      "example": {
+        "en": "He used a bogus name",
+        "tr": "Sahte bir isim kullandı"
+      },
+      "pronunciation": "ˈbəʊɡəs",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6045,
+      "english": "boisterous",
+      "turkish": "gürültülü",
+      "example": {
+        "en": "The children were boisterous",
+        "tr": "Çocuklar gürültülüydü"
+      },
+      "pronunciation": "ˈbɔɪstərəs",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6046,
+      "english": "bolster",
+      "turkish": "desteklemek",
+      "example": {
+        "en": "This will bolster their confidence",
+        "tr": "Bu güvenlerini destekleyecek"
+      },
+      "pronunciation": "ˈbəʊlstə(r)",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6047,
+      "english": "bolt",
+      "turkish": "sürgü",
+      "example": {
+        "en": "Lock the door with the bolt",
+        "tr": "Kapıyı sürgüyle kilitle"
+      },
+      "pronunciation": "bəʊlt",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6048,
+      "english": "bombard",
+      "turkish": "bombardıman etmek",
+      "example": {
+        "en": "They bombarded the city",
+        "tr": "Şehri bombardıman ettiler"
+      },
+      "pronunciation": "bɒmˈbɑːd",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6049,
+      "english": "bombastic",
+      "turkish": "tumturaklı",
+      "example": {
+        "en": "His speech was bombastic",
+        "tr": "Konuşması tumturaklıydı"
+      },
+      "pronunciation": "bɒmˈbæstɪk",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6050,
+      "english": "bondage",
+      "turkish": "kölelik",
+      "example": {
+        "en": "They lived in bondage",
+        "tr": "Kölelik içinde yaşadılar"
+      },
+      "pronunciation": "ˈbɒndɪdʒ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6051,
+      "english": "bonfire",
+      "turkish": "şenlik ateşi",
+      "example": {
+        "en": "They lit a bonfire on the beach",
+        "tr": "Sahilde şenlik ateşi yaktılar"
+      },
+      "pronunciation": "ˈbɒnfaɪə(r)",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6052,
+      "english": "boom",
+      "turkish": "patlama",
+      "example": {
+        "en": "There was an economic boom",
+        "tr": "Ekonomik bir patlama yaşandı"
+      },
+      "pronunciation": "buːm",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6053,
+      "english": "boon",
+      "turkish": "nimet",
+      "example": {
+        "en": "The rain was a boon to farmers",
+        "tr": "Yağmur çiftçiler için bir nimetti"
+      },
+      "pronunciation": "buːn",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6054,
+      "english": "boor",
+      "turkish": "kaba adam",
+      "example": {
+        "en": "He behaved like a boor",
+        "tr": "Kaba adam gibi davrandı"
+      },
+      "pronunciation": "bʊə(r)",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6055,
+      "english": "bootleg",
+      "turkish": "kaçak",
+      "example": {
+        "en": "He sold bootleg alcohol",
+        "tr": "Kaçak alkol sattı"
+      },
+      "pronunciation": "ˈbuːtleɡ",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6056,
+      "english": "botch",
+      "turkish": "berbat etmek",
+      "example": {
+        "en": "He botched the repair",
+        "tr": "Onarımı berbat etti"
+      },
+      "pronunciation": "bɒtʃ",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6057,
+      "english": "bountiful",
+      "turkish": "bol",
+      "example": {
+        "en": "The harvest was bountiful",
+        "tr": "Hasat boldu"
+      },
+      "pronunciation": "ˈbaʊntɪfl",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6058,
+      "english": "bounty",
+      "turkish": "ikramiye",
+      "example": {
+        "en": "There's a bounty on his head",
+        "tr": "Başına ikramiye kondu"
+      },
+      "pronunciation": "ˈbaʊnti",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6059,
+      "english": "bourgeois",
+      "turkish": "burjuva",
+      "example": {
+        "en": "They lived a bourgeois lifestyle",
+        "tr": "Burjuva bir yaşam tarzı sürdüler"
+      },
+      "pronunciation": "ˈbʊəʒwɑː",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6060,
+      "english": "bout",
+      "turkish": "tur",
+      "example": {
+        "en": "He had a bout of flu",
+        "tr": "Bir grip nöbeti geçirdi"
+      },
+      "pronunciation": "baʊt",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6061,
+      "english": "boycott",
+      "turkish": "boykot",
+      "example": {
+        "en": "They organized a boycott",
+        "tr": "Boykot düzenlediler"
+      },
+      "pronunciation": "ˈbɔɪkɒt",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6062,
+      "english": "brace",
+      "turkish": "dayanak",
+      "example": {
+        "en": "The beam needs a brace",
+        "tr": "Kirişin dayanağa ihtiyacı var"
+      },
+      "pronunciation": "breɪs",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6063,
+      "english": "brackish",
+      "turkish": "acı",
+      "example": {
+        "en": "The water is brackish",
+        "tr": "Su acı"
+      },
+      "pronunciation": "ˈbrækɪʃ",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6064,
+      "english": "brag",
+      "turkish": "övünmek",
+      "example": {
+        "en": "Don't brag about your success",
+        "tr": "Başarınla övünme"
+      },
+      "pronunciation": "bræɡ",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6065,
+      "english": "brash",
+      "turkish": "küstah",
+      "example": {
+        "en": "His brash behavior offended many",
+        "tr": "Küstah davranışı birçok kişiyi gücendirdi"
+      },
+      "pronunciation": "bræʃ",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6066,
+      "english": "bravado",
+      "turkish": "gösteri",
+      "example": {
+        "en": "His bravado masked his fear",
+        "tr": "Gösterişi korkusunu maskeledi"
+      },
+      "pronunciation": "brəˈvɑːdəʊ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6067,
+      "english": "bravery",
+      "turkish": "cesaret",
+      "example": {
+        "en": "He showed great bravery",
+        "tr": "Büyük cesaret gösterdi"
+      },
+      "pronunciation": "ˈbreɪvəri",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6068,
+      "english": "brawl",
+      "turkish": "kavga",
+      "example": {
+        "en": "A brawl broke out at the bar",
+        "tr": "Barda kavga çıktı"
+      },
+      "pronunciation": "brɔːl",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6069,
+      "english": "brazen",
+      "turkish": "arsız",
+      "example": {
+        "en": "It was a brazen act",
+        "tr": "Arsızca bir hareketti"
+      },
+      "pronunciation": "ˈbreɪzn",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6070,
+      "english": "breach",
+      "turkish": "ihlal",
+      "example": {
+        "en": "This is a breach of contract",
+        "tr": "Bu bir sözleşme ihlali"
+      },
+      "pronunciation": "briːtʃ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6071,
+      "english": "breadth",
+      "turkish": "genişlik",
+      "example": {
+        "en": "The breadth of the river is impressive",
+        "tr": "Nehrin genişliği etkileyici"
+      },
+      "pronunciation": "bredθ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6072,
+      "english": "bribe",
+      "turkish": "rüşvet",
+      "example": {
+        "en": "He offered a bribe",
+        "tr": "Rüşvet teklif etti"
+      },
+      "pronunciation": "braɪb",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6073,
+      "english": "brink",
+      "turkish": "eşik",
+      "example": {
+        "en": "They're on the brink of war",
+        "tr": "Savaşın eşiğindeler"
+      },
+      "pronunciation": "brɪŋk",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6074,
+      "english": "brisk",
+      "turkish": "hızlı",
+      "example": {
+        "en": "They walked at a brisk pace",
+        "tr": "Hızlı bir tempoda yürüdüler"
+      },
+      "pronunciation": "brɪsk",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6075,
+      "english": "bristle",
+      "turkish": "kıllanmak",
+      "example": {
+        "en": "He bristled at the suggestion",
+        "tr": "Öneri karşısında öfkelendi"
+      },
+      "pronunciation": "ˈbrɪsl",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6076,
+      "english": "brittle",
+      "turkish": "kırılgan",
+      "example": {
+        "en": "The glass is brittle",
+        "tr": "Cam kırılgan"
+      },
+      "pronunciation": "ˈbrɪtl",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6077,
+      "english": "broach",
+      "turkish": "açmak",
+      "example": {
+        "en": "He broached the subject carefully",
+        "tr": "Konuyu dikkatlice açtı"
+      },
+      "pronunciation": "brəʊtʃ",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6078,
+      "english": "brochure",
+      "turkish": "broşür",
+      "example": {
+        "en": "Pick up a travel brochure",
+        "tr": "Bir seyahat broşürü al"
+      },
+      "pronunciation": "ˈbrəʊʃə(r)",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6079,
+      "english": "brood",
+      "turkish": "kuluçka",
+      "example": {
+        "en": "The hen sat on her brood",
+        "tr": "Tavuk yumurtalarının üstünde oturdu"
+      },
+      "pronunciation": "bruːd",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6080,
+      "english": "browse",
+      "turkish": "göz atmak",
+      "example": {
+        "en": "I like to browse in bookstores",
+        "tr": "Kitapçılarda göz atmayı severim"
+      },
+      "pronunciation": "braʊz",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6081,
+      "english": "bruise",
+      "turkish": "çürük",
+      "example": {
+        "en": "He has a bruise on his arm",
+        "tr": "Kolunda morluk var"
+      },
+      "pronunciation": "bruːz",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6082,
+      "english": "brusque",
+      "turkish": "kaba",
+      "example": {
+        "en": "His manner was brusque",
+        "tr": "Tavrı kabaydı"
+      },
+      "pronunciation": "brʊsk",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6083,
+      "english": "brutal",
+      "turkish": "acımasız",
+      "example": {
+        "en": "It was a brutal attack",
+        "tr": "Acımasız bir saldırıydı"
+      },
+      "pronunciation": "ˈbruːtl",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6084,
+      "english": "brute",
+      "turkish": "hayvan",
+      "example": {
+        "en": "He's nothing but a brute",
+        "tr": "Hayvandan başka bir şey değil"
+      },
+      "pronunciation": "bruːt",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6085,
+      "english": "buffet",
+      "turkish": "büfe",
+      "example": {
+        "en": "Help yourself at the buffet",
+        "tr": "Büfeden kendin al"
+      },
+      "pronunciation": "ˈbʊfeɪ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6086,
+      "english": "buffoon",
+      "turkish": "soytarı",
+      "example": {
+        "en": "He played the buffoon",
+        "tr": "Soytarı rolünü oynadı"
+      },
+      "pronunciation": "bəˈfuːn",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6087,
+      "english": "bulge",
+      "turkish": "şişkinlik",
+      "example": {
+        "en": "There's a bulge in the wall",
+        "tr": "Duvarda şişkinlik var"
+      },
+      "pronunciation": "bʌldʒ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6088,
+      "english": "bulk",
+      "turkish": "hacim",
+      "example": {
+        "en": "The bulk of the work is done",
+        "tr": "İşin büyük kısmı yapıldı"
+      },
+      "pronunciation": "bʌlk",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6089,
+      "english": "bulletin",
+      "turkish": "bülten",
+      "example": {
+        "en": "Check the news bulletin",
+        "tr": "Haber bültenine bak"
+      },
+      "pronunciation": "ˈbʊlətɪn",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6090,
+      "english": "bully",
+      "turkish": "zorba",
+      "example": {
+        "en": "He was a school bully",
+        "tr": "Okulda zorbaydı"
+      },
+      "pronunciation": "ˈbʊli",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6091,
+      "english": "bulwark",
+      "turkish": "siper",
+      "example": {
+        "en": "Freedom is a bulwark against tyranny",
+        "tr": "Özgürlük zorbalığa karşı bir siperdir"
+      },
+      "pronunciation": "ˈbʊlwək",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6092,
+      "english": "bumper",
+      "turkish": "tampon",
+      "example": {
+        "en": "The car's bumper was damaged",
+        "tr": "Arabanın tamponu hasarlıydı"
+      },
+      "pronunciation": "ˈbʌmpə(r)",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6093,
+      "english": "bungle",
+      "turkish": "beceriksizlik etmek",
+      "example": {
+        "en": "Don't bungle this opportunity",
+        "tr": "Bu fırsatı beceriksizlikle harcama"
+      },
+      "pronunciation": "ˈbʌŋɡl",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6094,
+      "english": "buoyant",
+      "turkish": "neşeli",
+      "example": {
+        "en": "She was in a buoyant mood",
+        "tr": "Neşeli bir ruh halindeydi"
+      },
+      "pronunciation": "ˈbɔɪənt",
+      "level": "C2",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6095,
+      "english": "burgeon",
+      "turkish": "gelişmek",
+      "example": {
+        "en": "The industry is burgeoning",
+        "tr": "Endüstri gelişiyor"
+      },
+      "pronunciation": "ˈbɜːdʒən",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6096,
+      "english": "burglar",
+      "turkish": "hırsız",
+      "example": {
+        "en": "The burglar broke into the house",
+        "tr": "Hırsız eve girdi"
+      },
+      "pronunciation": "ˈbɜːɡlə(r)",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6097,
+      "english": "burlesque",
+      "turkish": "taklitçi gösteri",
+      "example": {
+        "en": "They performed a burlesque",
+        "tr": "Taklitçi bir gösteri yaptılar"
+      },
+      "pronunciation": "bɜːˈlesk",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6098,
+      "english": "burnish",
+      "turkish": "cilalamak",
+      "example": {
+        "en": "He burnished the metal",
+        "tr": "Metali cilaladı"
+      },
+      "pronunciation": "ˈbɜːnɪʃ",
+      "level": "C2",
+      "category": "verbs",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 6099,
+      "english": "burrow",
+      "turkish": "in",
+      "example": {
+        "en": "The rabbit dug a burrow",
+        "tr": "Tavşan bir in kazdı"
+      },
+      "pronunciation": "ˈbʌrəʊ",
+      "level": "C2",
+      "category": "nouns",
+      "reversible": true,
+      "userAdded": false
+    }
+  ]
+}

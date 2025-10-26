@@ -1,0 +1,1414 @@
+{
+  "package_info": {
+    "id": "en_tr_a1_002",
+    "version": "1.0.0",
+    "level": "A1",
+    "language_pair": "en_tr",
+    "total_words": 100,
+    "updated_at": "2025-10-23",
+    "description": "A1 level English-Turkish vocabulary package 2",
+    "attribution": "HocaLingo vocabulary database"
+  },
+  "words": [
+    {
+      "id": 1100,
+      "english": "train",
+      "turkish": "tren",
+      "example": {
+        "en": "The train is fast",
+        "tr": "Tren hızlı"
+      },
+      "pronunciation": "treɪn",
+      "level": "A1",
+      "category": "transport",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1101,
+      "english": "car",
+      "turkish": "araba",
+      "example": {
+        "en": "I have a new car",
+        "tr": "Yeni bir arabam var"
+      },
+      "pronunciation": "kɑr",
+      "level": "A1",
+      "category": "transport",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1102,
+      "english": "taxi",
+      "turkish": "taksi",
+      "example": {
+        "en": "Let's take a taxi",
+        "tr": "Taksi tutalım"
+      },
+      "pronunciation": "ˈtæksi",
+      "level": "A1",
+      "category": "transport",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1103,
+      "english": "bike",
+      "turkish": "bisiklet",
+      "example": {
+        "en": "I ride my bike to school",
+        "tr": "Okula bisikletle giderim"
+      },
+      "pronunciation": "baɪk",
+      "level": "A1",
+      "category": "transport",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1104,
+      "english": "plane",
+      "turkish": "uçak",
+      "example": {
+        "en": "The plane is in the sky",
+        "tr": "Uçak gökyüzünde"
+      },
+      "pronunciation": "pleɪn",
+      "level": "A1",
+      "category": "transport",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1105,
+      "english": "boat",
+      "turkish": "tekne",
+      "example": {
+        "en": "We travel by boat",
+        "tr": "Tekneyle seyahat ederiz"
+      },
+      "pronunciation": "boʊt",
+      "level": "A1",
+      "category": "transport",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1106,
+      "english": "ticket",
+      "turkish": "bilet",
+      "example": {
+        "en": "I need a ticket",
+        "tr": "Bir bilete ihtiyacım var"
+      },
+      "pronunciation": "ˈtɪkɪt",
+      "level": "A1",
+      "category": "travel",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1107,
+      "english": "passport",
+      "turkish": "pasaport",
+      "example": {
+        "en": "Where is my passport?",
+        "tr": "Pasaportum nerede?"
+      },
+      "pronunciation": "ˈpæspɔrt",
+      "level": "A1",
+      "category": "travel",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1108,
+      "english": "bag",
+      "turkish": "çanta",
+      "example": {
+        "en": "This is my bag",
+        "tr": "Bu benim çantam"
+      },
+      "pronunciation": "bæɡ",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1109,
+      "english": "money",
+      "turkish": "para",
+      "example": {
+        "en": "I need some money",
+        "tr": "Biraz paraya ihtiyacım var"
+      },
+      "pronunciation": "ˈmʌni",
+      "level": "A1",
+      "category": "money",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1110,
+      "english": "price",
+      "turkish": "fiyat",
+      "example": {
+        "en": "What is the price?",
+        "tr": "Fiyat nedir?"
+      },
+      "pronunciation": "praɪs",
+      "level": "A1",
+      "category": "money",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1111,
+      "english": "card",
+      "turkish": "kart",
+      "example": {
+        "en": "I pay with a card",
+        "tr": "Kartla ödeme yaparım"
+      },
+      "pronunciation": "kɑrd",
+      "level": "A1",
+      "category": "money",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1112,
+      "english": "dollar",
+      "turkish": "dolar",
+      "example": {
+        "en": "It costs ten dollars",
+        "tr": "On dolar tutar"
+      },
+      "pronunciation": "ˈdɑlər",
+      "level": "A1",
+      "category": "money",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1113,
+      "english": "food",
+      "turkish": "yemek",
+      "example": {
+        "en": "I like Turkish food",
+        "tr": "Türk yemeğini severim"
+      },
+      "pronunciation": "fuːd",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1114,
+      "english": "drink",
+      "turkish": "içecek",
+      "example": {
+        "en": "Water is a healthy drink",
+        "tr": "Su sağlıklı bir içecektir"
+      },
+      "pronunciation": "drɪŋk",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1115,
+      "english": "water",
+      "turkish": "su",
+      "example": {
+        "en": "I drink water every day",
+        "tr": "Her gün su içerim"
+      },
+      "pronunciation": "ˈwɔtər",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1116,
+      "english": "coffee",
+      "turkish": "kahve",
+      "example": {
+        "en": "I drink coffee in the morning",
+        "tr": "Sabahları kahve içerim"
+      },
+      "pronunciation": "ˈkɔfi",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1117,
+      "english": "tea",
+      "turkish": "çay",
+      "example": {
+        "en": "Would you like some tea?",
+        "tr": "Çay ister misin?"
+      },
+      "pronunciation": "tiː",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1118,
+      "english": "milk",
+      "turkish": "süt",
+      "example": {
+        "en": "Children need milk",
+        "tr": "Çocukların süte ihtiyacı var"
+      },
+      "pronunciation": "mɪlk",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1119,
+      "english": "bread",
+      "turkish": "ekmek",
+      "example": {
+        "en": "I eat bread every day",
+        "tr": "Her gün ekmek yerim"
+      },
+      "pronunciation": "brɛd",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1120,
+      "english": "rice",
+      "turkish": "pirinç",
+      "example": {
+        "en": "I cook rice for dinner",
+        "tr": "Akşam yemeği için pirinç pişiririm"
+      },
+      "pronunciation": "raɪs",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1121,
+      "english": "meat",
+      "turkish": "et",
+      "example": {
+        "en": "I don't eat meat",
+        "tr": "Et yemem"
+      },
+      "pronunciation": "miːt",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1122,
+      "english": "fish",
+      "turkish": "balık",
+      "example": {
+        "en": "Fish is healthy",
+        "tr": "Balık sağlıklıdır"
+      },
+      "pronunciation": "fɪʃ",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1123,
+      "english": "chicken",
+      "turkish": "tavuk",
+      "example": {
+        "en": "We eat chicken for lunch",
+        "tr": "Öğle yemeğinde tavuk yeriz"
+      },
+      "pronunciation": "ˈtʃɪkɪn",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1124,
+      "english": "egg",
+      "turkish": "yumurta",
+      "example": {
+        "en": "I eat two eggs for breakfast",
+        "tr": "Kahvaltıda iki yumurta yerim"
+      },
+      "pronunciation": "ɛɡ",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1125,
+      "english": "cheese",
+      "turkish": "peynir",
+      "example": {
+        "en": "I like cheese",
+        "tr": "Peyniri severim"
+      },
+      "pronunciation": "tʃiːz",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1126,
+      "english": "fruit",
+      "turkish": "meyve",
+      "example": {
+        "en": "Fruit is good for health",
+        "tr": "Meyve sağlık için iyidir"
+      },
+      "pronunciation": "fruːt",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1127,
+      "english": "vegetable",
+      "turkish": "sebze",
+      "example": {
+        "en": "Eat more vegetables",
+        "tr": "Daha fazla sebze ye"
+      },
+      "pronunciation": "ˈvɛdʒtəbəl",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1128,
+      "english": "apple",
+      "turkish": "elma",
+      "example": {
+        "en": "An apple a day is healthy",
+        "tr": "Günde bir elma sağlıklıdır"
+      },
+      "pronunciation": "ˈæpəl",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1129,
+      "english": "banana",
+      "turkish": "muz",
+      "example": {
+        "en": "I eat a banana",
+        "tr": "Bir muz yerim"
+      },
+      "pronunciation": "bəˈnænə",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1130,
+      "english": "orange",
+      "turkish": "portakal",
+      "example": {
+        "en": "Oranges have vitamin C",
+        "tr": "Portakalda C vitamini var"
+      },
+      "pronunciation": "ˈɔrɪndʒ",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1131,
+      "english": "tomato",
+      "turkish": "domates",
+      "example": {
+        "en": "I put tomato in salad",
+        "tr": "Salataya domates koyarım"
+      },
+      "pronunciation": "təˈmeɪtoʊ",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1132,
+      "english": "potato",
+      "turkish": "patates",
+      "example": {
+        "en": "I like fried potatoes",
+        "tr": "Kızarmış patatesi severim"
+      },
+      "pronunciation": "pəˈteɪtoʊ",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1133,
+      "english": "salad",
+      "turkish": "salata",
+      "example": {
+        "en": "I eat salad every day",
+        "tr": "Her gün salata yerim"
+      },
+      "pronunciation": "ˈsæləd",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1134,
+      "english": "soup",
+      "turkish": "çorba",
+      "example": {
+        "en": "The soup is hot",
+        "tr": "Çorba sıcak"
+      },
+      "pronunciation": "suːp",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1135,
+      "english": "cake",
+      "turkish": "kek",
+      "example": {
+        "en": "This cake is delicious",
+        "tr": "Bu kek lezzetli"
+      },
+      "pronunciation": "keɪk",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1136,
+      "english": "ice cream",
+      "turkish": "dondurma",
+      "example": {
+        "en": "Children love ice cream",
+        "tr": "Çocuklar dondurmayı sever"
+      },
+      "pronunciation": "aɪs kriːm",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1137,
+      "english": "sugar",
+      "turkish": "şeker",
+      "example": {
+        "en": "Do you want sugar in your tea?",
+        "tr": "Çayına şeker ister misin?"
+      },
+      "pronunciation": "ˈʃʊɡər",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1138,
+      "english": "salt",
+      "turkish": "tuz",
+      "example": {
+        "en": "Pass me the salt please",
+        "tr": "Lütfen tuzu uzat"
+      },
+      "pronunciation": "sɔlt",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1139,
+      "english": "breakfast",
+      "turkish": "kahvaltı",
+      "example": {
+        "en": "Breakfast is ready",
+        "tr": "Kahvaltı hazır"
+      },
+      "pronunciation": "ˈbrɛkfəst",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1140,
+      "english": "lunch",
+      "turkish": "öğle yemeği",
+      "example": {
+        "en": "What's for lunch?",
+        "tr": "Öğle yemeğinde ne var?"
+      },
+      "pronunciation": "lʌntʃ",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1141,
+      "english": "dinner",
+      "turkish": "akşam yemeği",
+      "example": {
+        "en": "We have dinner at 7",
+        "tr": "Akşam yemeğini saat 7'de yeriz"
+      },
+      "pronunciation": "ˈdɪnər",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1142,
+      "english": "meal",
+      "turkish": "öğün",
+      "example": {
+        "en": "This is a healthy meal",
+        "tr": "Bu sağlıklı bir öğün"
+      },
+      "pronunciation": "miːl",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1143,
+      "english": "menu",
+      "turkish": "menü",
+      "example": {
+        "en": "Can I see the menu?",
+        "tr": "Menüyü görebilir miyim?"
+      },
+      "pronunciation": "ˈmɛnjuː",
+      "level": "A1",
+      "category": "food",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1144,
+      "english": "glass",
+      "turkish": "bardak",
+      "example": {
+        "en": "A glass of water please",
+        "tr": "Bir bardak su lütfen"
+      },
+      "pronunciation": "ɡlæs",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1145,
+      "english": "cup",
+      "turkish": "fincan",
+      "example": {
+        "en": "I drink tea from a cup",
+        "tr": "Çayı fincandan içerim"
+      },
+      "pronunciation": "kʌp",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1146,
+      "english": "plate",
+      "turkish": "tabak",
+      "example": {
+        "en": "Put the food on the plate",
+        "tr": "Yemeği tabağa koy"
+      },
+      "pronunciation": "pleɪt",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1147,
+      "english": "knife",
+      "turkish": "bıçak",
+      "example": {
+        "en": "I need a knife",
+        "tr": "Bir bıçağa ihtiyacım var"
+      },
+      "pronunciation": "naɪf",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1148,
+      "english": "fork",
+      "turkish": "çatal",
+      "example": {
+        "en": "Where is the fork?",
+        "tr": "Çatal nerede?"
+      },
+      "pronunciation": "fɔrk",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1149,
+      "english": "spoon",
+      "turkish": "kaşık",
+      "example": {
+        "en": "I eat soup with a spoon",
+        "tr": "Çorbayı kaşıkla yerim"
+      },
+      "pronunciation": "spuːn",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1150,
+      "english": "bottle",
+      "turkish": "şişe",
+      "example": {
+        "en": "A bottle of water",
+        "tr": "Bir şişe su"
+      },
+      "pronunciation": "ˈbɑtəl",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1151,
+      "english": "clothes",
+      "turkish": "giysi",
+      "example": {
+        "en": "I buy new clothes",
+        "tr": "Yeni giysiler alırım"
+      },
+      "pronunciation": "kloʊz",
+      "level": "A1",
+      "category": "clothing",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1152,
+      "english": "shirt",
+      "turkish": "gömlek",
+      "example": {
+        "en": "He wears a white shirt",
+        "tr": "Beyaz gömlek giyiyor"
+      },
+      "pronunciation": "ʃɜrt",
+      "level": "A1",
+      "category": "clothing",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1153,
+      "english": "pants",
+      "turkish": "pantolon",
+      "example": {
+        "en": "I need new pants",
+        "tr": "Yeni pantolona ihtiyacım var"
+      },
+      "pronunciation": "pænts",
+      "level": "A1",
+      "category": "clothing",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1154,
+      "english": "dress",
+      "turkish": "elbise",
+      "example": {
+        "en": "She wears a beautiful dress",
+        "tr": "Güzel bir elbise giyiyor"
+      },
+      "pronunciation": "drɛs",
+      "level": "A1",
+      "category": "clothing",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1155,
+      "english": "skirt",
+      "turkish": "etek",
+      "example": {
+        "en": "I like this skirt",
+        "tr": "Bu eteği beğendim"
+      },
+      "pronunciation": "skɜrt",
+      "level": "A1",
+      "category": "clothing",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1156,
+      "english": "shoes",
+      "turkish": "ayakkabı",
+      "example": {
+        "en": "These shoes are comfortable",
+        "tr": "Bu ayakkabılar rahat"
+      },
+      "pronunciation": "ʃuːz",
+      "level": "A1",
+      "category": "clothing",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1157,
+      "english": "coat",
+      "turkish": "palto",
+      "example": {
+        "en": "It's cold, wear a coat",
+        "tr": "Hava soğuk, palto giy"
+      },
+      "pronunciation": "koʊt",
+      "level": "A1",
+      "category": "clothing",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1158,
+      "english": "jacket",
+      "turkish": "ceket",
+      "example": {
+        "en": "I need a warm jacket",
+        "tr": "Sıcak bir cekete ihtiyacım var"
+      },
+      "pronunciation": "ˈdʒækɪt",
+      "level": "A1",
+      "category": "clothing",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1159,
+      "english": "hat",
+      "turkish": "şapka",
+      "example": {
+        "en": "I wear a hat in summer",
+        "tr": "Yazın şapka giyerim"
+      },
+      "pronunciation": "hæt",
+      "level": "A1",
+      "category": "clothing",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1160,
+      "english": "watch",
+      "turkish": "kol saati",
+      "example": {
+        "en": "Look at my new watch",
+        "tr": "Yeni kol saatime bak"
+      },
+      "pronunciation": "wɑtʃ",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1161,
+      "english": "glasses",
+      "turkish": "gözlük",
+      "example": {
+        "en": "I need glasses to read",
+        "tr": "Okumak için gözlüğe ihtiyacım var"
+      },
+      "pronunciation": "ˈɡlæsɪz",
+      "level": "A1",
+      "category": "objects",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1162,
+      "english": "color",
+      "turkish": "renk",
+      "example": {
+        "en": "What is your favorite color?",
+        "tr": "En sevdiğin renk nedir?"
+      },
+      "pronunciation": "ˈkʌlər",
+      "level": "A1",
+      "category": "description",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1163,
+      "english": "white",
+      "turkish": "beyaz",
+      "example": {
+        "en": "Snow is white",
+        "tr": "Kar beyazdır"
+      },
+      "pronunciation": "waɪt",
+      "level": "A1",
+      "category": "colors",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1164,
+      "english": "black",
+      "turkish": "siyah",
+      "example": {
+        "en": "I have a black car",
+        "tr": "Siyah bir arabam var"
+      },
+      "pronunciation": "blæk",
+      "level": "A1",
+      "category": "colors",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1165,
+      "english": "red",
+      "turkish": "kırmızı",
+      "example": {
+        "en": "The apple is red",
+        "tr": "Elma kırmızı"
+      },
+      "pronunciation": "rɛd",
+      "level": "A1",
+      "category": "colors",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1166,
+      "english": "blue",
+      "turkish": "mavi",
+      "example": {
+        "en": "The sky is blue",
+        "tr": "Gökyüzü mavi"
+      },
+      "pronunciation": "bluː",
+      "level": "A1",
+      "category": "colors",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1167,
+      "english": "green",
+      "turkish": "yeşil",
+      "example": {
+        "en": "Grass is green",
+        "tr": "Çimen yeşildir"
+      },
+      "pronunciation": "ɡriːn",
+      "level": "A1",
+      "category": "colors",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1168,
+      "english": "yellow",
+      "turkish": "sarı",
+      "example": {
+        "en": "The sun is yellow",
+        "tr": "Güneş sarıdır"
+      },
+      "pronunciation": "ˈjɛloʊ",
+      "level": "A1",
+      "category": "colors",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1169,
+      "english": "brown",
+      "turkish": "kahverengi",
+      "example": {
+        "en": "The table is brown",
+        "tr": "Masa kahverengi"
+      },
+      "pronunciation": "braʊn",
+      "level": "A1",
+      "category": "colors",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1170,
+      "english": "orange",
+      "turkish": "turuncu",
+      "example": {
+        "en": "Orange is my favorite color",
+        "tr": "Turuncu benim favori rengim"
+      },
+      "pronunciation": "ˈɔrɪndʒ",
+      "level": "A1",
+      "category": "colors",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1171,
+      "english": "pink",
+      "turkish": "pembe",
+      "example": {
+        "en": "She loves pink flowers",
+        "tr": "Pembe çiçekleri sever"
+      },
+      "pronunciation": "pɪŋk",
+      "level": "A1",
+      "category": "colors",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1172,
+      "english": "gray",
+      "turkish": "gri",
+      "example": {
+        "en": "The clouds are gray",
+        "tr": "Bulutlar gri"
+      },
+      "pronunciation": "ɡreɪ",
+      "level": "A1",
+      "category": "colors",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1173,
+      "english": "number",
+      "turkish": "sayı",
+      "example": {
+        "en": "What is your phone number?",
+        "tr": "Telefon numaran kaç?"
+      },
+      "pronunciation": "ˈnʌmbər",
+      "level": "A1",
+      "category": "numbers",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1174,
+      "english": "one",
+      "turkish": "bir",
+      "example": {
+        "en": "I have one brother",
+        "tr": "Bir erkek kardeşim var"
+      },
+      "pronunciation": "wʌn",
+      "level": "A1",
+      "category": "numbers",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1175,
+      "english": "two",
+      "turkish": "iki",
+      "example": {
+        "en": "Two plus two is four",
+        "tr": "İki artı iki dört eder"
+      },
+      "pronunciation": "tuː",
+      "level": "A1",
+      "category": "numbers",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1176,
+      "english": "three",
+      "turkish": "üç",
+      "example": {
+        "en": "I have three books",
+        "tr": "Üç kitabım var"
+      },
+      "pronunciation": "θriː",
+      "level": "A1",
+      "category": "numbers",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1177,
+      "english": "four",
+      "turkish": "dört",
+      "example": {
+        "en": "There are four seasons",
+        "tr": "Dört mevsim var"
+      },
+      "pronunciation": "fɔr",
+      "level": "A1",
+      "category": "numbers",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1178,
+      "english": "five",
+      "turkish": "beş",
+      "example": {
+        "en": "I wake up at five",
+        "tr": "Saat beşte uyanırım"
+      },
+      "pronunciation": "faɪv",
+      "level": "A1",
+      "category": "numbers",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1179,
+      "english": "six",
+      "turkish": "altı",
+      "example": {
+        "en": "Six is my lucky number",
+        "tr": "Altı benim şanslı sayım"
+      },
+      "pronunciation": "sɪks",
+      "level": "A1",
+      "category": "numbers",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1180,
+      "english": "seven",
+      "turkish": "yedi",
+      "example": {
+        "en": "There are seven days in a week",
+        "tr": "Bir haftada yedi gün var"
+      },
+      "pronunciation": "ˈsɛvən",
+      "level": "A1",
+      "category": "numbers",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1181,
+      "english": "eight",
+      "turkish": "sekiz",
+      "example": {
+        "en": "School starts at eight",
+        "tr": "Okul sekizde başlar"
+      },
+      "pronunciation": "eɪt",
+      "level": "A1",
+      "category": "numbers",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1182,
+      "english": "nine",
+      "turkish": "dokuz",
+      "example": {
+        "en": "I go to bed at nine",
+        "tr": "Saat dokuzda yatarım"
+      },
+      "pronunciation": "naɪn",
+      "level": "A1",
+      "category": "numbers",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1183,
+      "english": "ten",
+      "turkish": "on",
+      "example": {
+        "en": "I have ten fingers",
+        "tr": "On parmağım var"
+      },
+      "pronunciation": "tɛn",
+      "level": "A1",
+      "category": "numbers",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1184,
+      "english": "hundred",
+      "turkish": "yüz",
+      "example": {
+        "en": "One hundred people",
+        "tr": "Yüz kişi"
+      },
+      "pronunciation": "ˈhʌndrəd",
+      "level": "A1",
+      "category": "numbers",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1185,
+      "english": "thousand",
+      "turkish": "bin",
+      "example": {
+        "en": "One thousand dollars",
+        "tr": "Bin dolar"
+      },
+      "pronunciation": "ˈθaʊzənd",
+      "level": "A1",
+      "category": "numbers",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1186,
+      "english": "first",
+      "turkish": "birinci",
+      "example": {
+        "en": "This is my first day",
+        "tr": "Bu benim ilk günüm"
+      },
+      "pronunciation": "fɜrst",
+      "level": "A1",
+      "category": "numbers",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1187,
+      "english": "second",
+      "turkish": "ikinci",
+      "example": {
+        "en": "February is the second month",
+        "tr": "Şubat ikinci aydır"
+      },
+      "pronunciation": "ˈsɛkənd",
+      "level": "A1",
+      "category": "numbers",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1188,
+      "english": "third",
+      "turkish": "üçüncü",
+      "example": {
+        "en": "He is in third place",
+        "tr": "O üçüncü sırada"
+      },
+      "pronunciation": "θɜrd",
+      "level": "A1",
+      "category": "numbers",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1189,
+      "english": "last",
+      "turkish": "son",
+      "example": {
+        "en": "This is the last day",
+        "tr": "Bu son gün"
+      },
+      "pronunciation": "læst",
+      "level": "A1",
+      "category": "description",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1190,
+      "english": "big",
+      "turkish": "büyük",
+      "example": {
+        "en": "This is a big house",
+        "tr": "Bu büyük bir ev"
+      },
+      "pronunciation": "bɪɡ",
+      "level": "A1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1191,
+      "english": "small",
+      "turkish": "küçük",
+      "example": {
+        "en": "I have a small car",
+        "tr": "Küçük bir arabam var"
+      },
+      "pronunciation": "smɔl",
+      "level": "A1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1192,
+      "english": "long",
+      "turkish": "uzun",
+      "example": {
+        "en": "She has long hair",
+        "tr": "Uzun saçları var"
+      },
+      "pronunciation": "lɔŋ",
+      "level": "A1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1193,
+      "english": "short",
+      "turkish": "kısa",
+      "example": {
+        "en": "This is a short story",
+        "tr": "Bu kısa bir hikaye"
+      },
+      "pronunciation": "ʃɔrt",
+      "level": "A1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1194,
+      "english": "tall",
+      "turkish": "uzun boylu",
+      "example": {
+        "en": "He is very tall",
+        "tr": "O çok uzun boylu"
+      },
+      "pronunciation": "tɔl",
+      "level": "A1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1195,
+      "english": "high",
+      "turkish": "yüksek",
+      "example": {
+        "en": "The mountain is very high",
+        "tr": "Dağ çok yüksek"
+      },
+      "pronunciation": "haɪ",
+      "level": "A1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1196,
+      "english": "low",
+      "turkish": "alçak",
+      "example": {
+        "en": "The table is too low",
+        "tr": "Masa çok alçak"
+      },
+      "pronunciation": "loʊ",
+      "level": "A1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1197,
+      "english": "old",
+      "turkish": "yaşlı",
+      "example": {
+        "en": "My grandfather is old",
+        "tr": "Büyükbabam yaşlı"
+      },
+      "pronunciation": "oʊld",
+      "level": "A1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1198,
+      "english": "young",
+      "turkish": "genç",
+      "example": {
+        "en": "She is very young",
+        "tr": "O çok genç"
+      },
+      "pronunciation": "jʌŋ",
+      "level": "A1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    },
+    {
+      "id": 1199,
+      "english": "new",
+      "turkish": "yeni",
+      "example": {
+        "en": "I have a new phone",
+        "tr": "Yeni bir telefonum var"
+      },
+      "pronunciation": "nuː",
+      "level": "A1",
+      "category": "adjectives",
+      "reversible": true,
+      "userAdded": false
+    }
+  ]
+}
