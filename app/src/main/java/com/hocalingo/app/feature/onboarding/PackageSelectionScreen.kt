@@ -46,6 +46,8 @@ private val PoppinsFontFamily = FontFamily(
  * UPDATED Package Selection with Colorful Gradient Cards
  * ✅ Each level has unique gradient colors
  * ✅ Beautiful visual hierarchy
+ * ✅ Download icon instead of text
+ * ✅ Clean level badge without background
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,50 +64,21 @@ fun PackageSelectionScreen(
     val themeViewModel: ThemeViewModel = hiltViewModel()
     val isDarkTheme = themeViewModel.shouldUseDarkTheme()
 
-    var showLoadingDialog by remember { mutableStateOf(false) }
-    var loadingPackageId by remember { mutableStateOf<String?>(null) }
-
-    // Handle effects
-    // PackageSelectionScreen.kt
-// LaunchedEffect içindeki effect handler'ı bununla değiştir
-
+    // ✅ Effects - sadece yeni ViewModel'deki effect'leri dinle
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 is PackageSelectionEffect.NavigateToWordSelection -> {
                     onNavigateToWordSelection(effect.packageId)
                 }
-                is PackageSelectionEffect.ShowDownloadDialog -> {
-                    // Handle download dialog if needed
-                }
                 is PackageSelectionEffect.ShowMessage -> {
                     snackbarHostState.showSnackbar(effect.message)
                 }
-                is PackageSelectionEffect.ShowLoadingAnimation -> {
-                    // ✅ Animasyon göster ve 2 saniye sonra WordSelection'a git
-                    loadingPackageId = effect.packageId
-                    showLoadingDialog = true
 
-                    kotlinx.coroutines.delay(2000)  // 2 saniye bekle
-
-                    showLoadingDialog = false
-                    onNavigateToWordSelection(effect.packageId)
-                    loadingPackageId = null
-                }
+                is PackageSelectionEffect.ShowDownloadDialog -> TODO()
+                is PackageSelectionEffect.ShowLoadingAnimation -> TODO()
             }
         }
-    }
-
-    if (showLoadingDialog && loadingPackageId != null) {
-        LoadingAnimationDialog(
-            onDismiss = {
-                showLoadingDialog = false
-                // 3 saniye sonra navigation
-                onNavigateToWordSelection(loadingPackageId!!)
-                loadingPackageId = null
-            },
-            isDarkTheme = isDarkTheme
-        )
     }
 
     Scaffold(
@@ -195,10 +168,10 @@ private fun PackageSelectionContent(
 
         // Header
         Text(
-            text = "Öğrenmek istediğin kelime paketini indir",
+            text = "Hocalingo seviye paketleri",
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 24.sp,
+            fontSize = 22.sp,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
             lineHeight = 30.sp
@@ -244,34 +217,24 @@ private fun PackageSelectionContent(
             ),
             enabled = selectedPackageId != null && !isLoading
         ) {
-            if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(20.dp),
-                    color = Color.White,
-                    strokeWidth = 2.dp
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-            }
-
             Text(
-                text = if (isLoading) "İndiriliyor..." else "Devam Et",
+                text = "Devam Et",
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                color = Color.White
+                fontSize = 18.sp
             )
         }
 
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(12.dp))
     }
 }
 
-// ColorfulPackageCard - UPDATED WITH DOWNLOAD STATUS BADGE
-// Bu composable PackageSelectionScreen.kt dosyasının içindeki mevcut fonksiyonu güncelleyecek
-
-// ColorfulPackageCard - UPDATED WITH DOWNLOAD STATUS BADGE
-// Bu composable PackageSelectionScreen.kt dosyasının içindeki mevcut fonksiyonu güncelleyecek
-
+/**
+ * ✅ UPDATED: Colorful Package Card
+ * - İndir yazısı yerine ICON
+ * - Level badge arka planı KALDIRILDI
+ * - Kelime sayısı korundu
+ */
 @Composable
 private fun ColorfulPackageCard(
     packageInfo: PackageInfo,
@@ -279,20 +242,18 @@ private fun ColorfulPackageCard(
     isDarkTheme: Boolean,
     onClick: () -> Unit
 ) {
-    val isDownloaded = packageInfo.isDownloaded
     val downloadProgress = packageInfo.downloadProgress
 
-    // Level-based gradient colors (aynı kalıyor)
     val gradientColors = when (packageInfo.level) {
         "A1" -> if (isDarkTheme) {
-            listOf(Color(0xFFFF8A65), Color(0xFFFFB74D))
+            listOf(Color(0xFF66BB6A), Color(0xFF81C784))
         } else {
-            listOf(Color(0xFFFF9800), Color(0xFFFFC107))
+            listOf(Color(0xFF4CAF50), Color(0xFF8BC34A))
         }
         "A2" -> if (isDarkTheme) {
-            listOf(Color(0xFF66BB6A), Color(0xFF26A69A))
+            listOf(Color(0xFF26C6DA), Color(0xFF29B6F6))
         } else {
-            listOf(Color(0xFF4CAF50), Color(0xFF009688))
+            listOf(Color(0xFF00BCD4), Color(0xFF03A9F4))
         }
         "B1" -> if (isDarkTheme) {
             listOf(Color(0xFF42A5F5), Color(0xFF7E57C2))
@@ -324,7 +285,7 @@ private fun ColorfulPackageCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp)
+            .height(120.dp)
             .clickable { onClick() }
             .shadow(
                 elevation = if (isSelected) 12.dp else 6.dp,
@@ -337,7 +298,7 @@ private fun ColorfulPackageCard(
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         border = if (isSelected) {
-            BorderStroke(3.dp, gradientColors.first())
+            BorderStroke(4.dp, gradientColors.first())
         } else null
     ) {
         Box(
@@ -348,7 +309,7 @@ private fun ColorfulPackageCard(
                     shape = RoundedCornerShape(20.dp)
                 )
         ) {
-            // ✨ YENİ: Download Status Badge (sağ üst köşe)
+            // ✅ UPDATED: Download Status Badge (sağ üst köşe) - İCON
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -356,10 +317,10 @@ private fun ColorfulPackageCard(
             ) {
                 when (packageInfo.downloadStatus) {
                     is PackageDownloadStatus.NotDownloaded -> {
-                        DownloadBadge(
-                            text = "İndir",
+                        // ✅ İndir yazısı yerine ICON
+                        DownloadIconBadge(
                             backgroundColor = Color.White.copy(alpha = 0.95f),
-                            textColor = gradientColors.first()
+                            iconTint = gradientColors.first()
                         )
                     }
                     is PackageDownloadStatus.FullyDownloaded -> {
@@ -379,29 +340,22 @@ private fun ColorfulPackageCard(
                 }
             }
 
-            // Content (aynı kalıyor)
+            // Content
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(20.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                // Level badge
-                Surface(
-                    color = Color.White.copy(alpha = 0.3f),
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.width(60.dp)
-                ) {
-                    Text(
-                        text = packageInfo.level,
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Black,
-                        fontSize = 16.sp,
-                        color = Color.White,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(vertical = 4.dp)
-                    )
-                }
+                // ✅ UPDATED: Level badge - ARKA PLAN KALDIRILDI
+                Text(
+                    text = packageInfo.level,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Black,  // Kalın font
+                    fontSize = 18.sp,
+                    color = Color.White,
+                    textAlign = TextAlign.Start
+                )
 
                 // Package name
                 Text(
@@ -424,6 +378,7 @@ private fun ColorfulPackageCard(
 
                     Spacer(modifier = Modifier.height(4.dp))
 
+                    // ✅ Kelime sayısı korundu
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -435,17 +390,21 @@ private fun ColorfulPackageCard(
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = "${packageInfo.wordCount} kelime",
+                            text = if (packageInfo.wordCount > 0) {
+                                "${packageInfo.wordCount} kelime"
+                            } else {
+                                "Yükleniyor..."
+                            },
                             fontFamily = PoppinsFontFamily,
                             fontWeight = FontWeight.Medium,
-                            fontSize = 13.sp,
+                            fontSize = 14.sp,
                             color = Color.White
                         )
                     }
                 }
             }
 
-            // Download progress overlay (aynı kalıyor)
+            // Download progress overlay
             if (downloadProgress > 0 && downloadProgress < 100) {
                 Box(
                     modifier = Modifier
@@ -478,8 +437,35 @@ private fun ColorfulPackageCard(
 }
 
 /**
- * ✨ YENİ: Download Badge Component
- * Küçük, yuvarlak badge - indirme durumunu gösterir
+ * ✅ YENİ: Download Icon Badge (sadece icon)
+ * "İndir" yazısı yerine download icon
+ */
+@Composable
+private fun DownloadIconBadge(
+    backgroundColor: Color,
+    iconTint: Color
+) {
+    Surface(
+        color = backgroundColor,
+        shape = CircleShape,
+        modifier = Modifier.size(36.dp)
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Icon(
+                imageVector = Icons.Default.Download,
+                contentDescription = "Download",
+                tint = iconTint,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
+/**
+ * Download Badge Component (text için)
  */
 @Composable
 private fun DownloadBadge(

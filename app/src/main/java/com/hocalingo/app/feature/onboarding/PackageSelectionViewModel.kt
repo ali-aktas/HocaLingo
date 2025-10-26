@@ -145,7 +145,7 @@ class PackageSelectionViewModel @Inject constructor(
             try {
                 // Firebase'den indirme başlat (Flow kullanarak progress tracking)
                 // PackageSelectionViewModel içindeki downloadPackage() metodunun
-// when bloğunu bununla değiştir (satır ~150 civarı)
+                // when bloğunu bununla değiştir (satır ~150 civarı)
 
                 packageRepository.downloadPackageWithProgress(packageId).collect { state ->
                     val packages = _uiState.value.packages.toMutableList()
