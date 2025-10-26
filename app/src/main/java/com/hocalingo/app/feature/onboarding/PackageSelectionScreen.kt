@@ -218,10 +218,11 @@ private fun PackageSelectionContent(
             enabled = selectedPackageId != null && !isLoading
         ) {
             Text(
-                text = "Devam Et",
+                text = "Başla",
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
+                fontSize = 18.sp,
+                color = if (selectedPackageId != null) Color.White else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
             )
         }
 
@@ -229,12 +230,6 @@ private fun PackageSelectionContent(
     }
 }
 
-/**
- * ✅ UPDATED: Colorful Package Card
- * - İndir yazısı yerine ICON
- * - Level badge arka planı KALDIRILDI
- * - Kelime sayısı korundu
- */
 @Composable
 private fun ColorfulPackageCard(
     packageInfo: PackageInfo,
@@ -242,33 +237,34 @@ private fun ColorfulPackageCard(
     isDarkTheme: Boolean,
     onClick: () -> Unit
 ) {
-    val downloadProgress = packageInfo.downloadProgress
+    val downloadProgress = packageInfo.downloadProgress ?: 0
 
+    // ✅ Gradient renkler - seviyeye göre
     val gradientColors = when (packageInfo.level) {
         "A1" -> if (isDarkTheme) {
-            listOf(Color(0xFF66BB6A), Color(0xFF81C784))
+            listOf(Color(0xFF66BB6A), Color(0xFF4CAF50))
         } else {
-            listOf(Color(0xFF4CAF50), Color(0xFF8BC34A))
+            listOf(Color(0xFF4CAF50), Color(0xFF388E3C))
         }
         "A2" -> if (isDarkTheme) {
-            listOf(Color(0xFF26C6DA), Color(0xFF29B6F6))
+            listOf(Color(0xFF42A5F5), Color(0xFF2196F3))
         } else {
-            listOf(Color(0xFF00BCD4), Color(0xFF03A9F4))
+            listOf(Color(0xFF2196F3), Color(0xFF1976D2))
         }
         "B1" -> if (isDarkTheme) {
-            listOf(Color(0xFF42A5F5), Color(0xFF7E57C2))
+            listOf(Color(0xFFFF7043), Color(0xFFFF5722))
         } else {
-            listOf(Color(0xFF2196F3), Color(0xFF9C27B0))
+            listOf(Color(0xFFFF5722), Color(0xFFE64A19))
         }
         "B2" -> if (isDarkTheme) {
-            listOf(Color(0xFFAB47BC), Color(0xFFEC407A))
+            listOf(Color(0xFFFFCA28), Color(0xFFFFC107))
         } else {
-            listOf(Color(0xFF9C27B0), Color(0xFFE91E63))
+            listOf(Color(0xFFFFC107), Color(0xFFFFA000))
         }
         "C1" -> if (isDarkTheme) {
-            listOf(Color(0xFFEF5350), Color(0xFFFF7043))
+            listOf(Color(0xFF26A69A), Color(0xFF009688))
         } else {
-            listOf(Color(0xFFF44336), Color(0xFFFF5722))
+            listOf(Color(0xFF009688), Color(0xFF00796B))
         }
         "C2" -> if (isDarkTheme) {
             listOf(Color(0xFFEC407A), Color(0xFFBA68C8))
@@ -285,7 +281,7 @@ private fun ColorfulPackageCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp)
+            .height(140.dp)
             .clickable { onClick() }
             .shadow(
                 elevation = if (isSelected) 12.dp else 6.dp,
@@ -298,7 +294,7 @@ private fun ColorfulPackageCard(
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         border = if (isSelected) {
-            BorderStroke(4.dp, gradientColors.first())
+            BorderStroke(4.dp, Color(0xFFFB9322))
         } else null
     ) {
         Box(
@@ -309,17 +305,31 @@ private fun ColorfulPackageCard(
                     shape = RoundedCornerShape(20.dp)
                 )
         ) {
-            // ✅ UPDATED: Download Status Badge (sağ üst köşe) - İCON
-            Box(
+            // ✅ GÜNCELLEME: Sağ üst köşe - Kelime sayısı VE indirme ikonu
+            Column(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(12.dp)
+                    .padding(12.dp),
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
+                // Kelime sayısı (üstte)
+                if (packageInfo.wordCount > 0) {
+                    Text(
+                        text = "${packageInfo.wordCount} kelime",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Thin,
+                        fontSize = 14.sp,
+                        color = Color.White
+                    )
+                }
+
+                // İndirme durumu (altta)
                 when (packageInfo.downloadStatus) {
                     is PackageDownloadStatus.NotDownloaded -> {
-                        // ✅ İndir yazısı yerine ICON
+                        // Modern indirme ikonu
                         DownloadIconBadge(
-                            backgroundColor = Color.White.copy(alpha = 0.95f),
+                            backgroundColor = Color.White.copy(alpha = 0.45f),
                             iconTint = gradientColors.first()
                         )
                     }
@@ -347,11 +357,11 @@ private fun ColorfulPackageCard(
                     .padding(20.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                // ✅ UPDATED: Level badge - ARKA PLAN KALDIRILDI
+                // ✅ Level badge - ARKA PLAN KALDIRILDI
                 Text(
                     text = packageInfo.level,
                     fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Black,  // Kalın font
+                    fontWeight = FontWeight.Black,
                     fontSize = 18.sp,
                     color = Color.White,
                     textAlign = TextAlign.Start
@@ -366,42 +376,14 @@ private fun ColorfulPackageCard(
                     color = Color.White
                 )
 
-                // Description & word count
-                Column {
-                    Text(
-                        text = packageInfo.description,
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 14.sp,
-                        color = Color.White.copy(alpha = 0.9f)
-                    )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    // ✅ Kelime sayısı korundu
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Book,
-                            contentDescription = "Words",
-                            tint = Color.White,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = if (packageInfo.wordCount > 0) {
-                                "${packageInfo.wordCount} kelime"
-                            } else {
-                                "Yükleniyor..."
-                            },
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 14.sp,
-                            color = Color.White
-                        )
-                    }
-                }
+                // Description only (kelime sayısı kaldırıldı)
+                Text(
+                    text = packageInfo.description,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 14.sp,
+                    color = Color.White.copy(alpha = 0.9f)
+                )
             }
 
             // Download progress overlay
@@ -437,8 +419,7 @@ private fun ColorfulPackageCard(
 }
 
 /**
- * ✅ YENİ: Download Icon Badge (sadece icon)
- * "İndir" yazısı yerine download icon
+ * ✅ GÜNCELLEME: Download Icon Badge - Daha modern ve küçük
  */
 @Composable
 private fun DownloadIconBadge(
@@ -448,17 +429,17 @@ private fun DownloadIconBadge(
     Surface(
         color = backgroundColor,
         shape = CircleShape,
-        modifier = Modifier.size(36.dp)
+        modifier = Modifier.size(32.dp)
     ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier.fillMaxSize()
         ) {
             Icon(
-                imageVector = Icons.Default.Download,
+                imageVector = Icons.Default.CloudDownload,
                 contentDescription = "Download",
                 tint = iconTint,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(18.dp)
             )
         }
     }
