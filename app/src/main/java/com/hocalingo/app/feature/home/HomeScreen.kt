@@ -504,7 +504,7 @@ private fun PackageSelectionCard(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Seviyene uygun kelime paketlerini keşfet",
+                        text = "Seviyene uygun kelime paketlerini keşfet ve öğrenmeye başla!",
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp,

@@ -94,7 +94,10 @@ fun PackageSelectionScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(paddingValues)
+                .padding(
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = 0.dp
+                )
         ) {
             when {
                 uiState.isLoading -> {

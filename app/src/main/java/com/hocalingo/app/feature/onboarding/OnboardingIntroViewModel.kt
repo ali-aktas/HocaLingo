@@ -3,6 +3,7 @@ package com.hocalingo.app.feature.onboarding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hocalingo.app.R
+import com.hocalingo.app.core.common.UserPreferencesManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +20,9 @@ import javax.inject.Inject
  * Manages 3-page intro flow before package selection
  */
 @HiltViewModel
-class OnboardingIntroViewModel @Inject constructor() : ViewModel() {
+class OnboardingIntroViewModel @Inject constructor(
+    private val preferencesManager: UserPreferencesManager
+) : ViewModel() {
 
     private val _state = MutableStateFlow(OnboardingIntroUiState())
     val state: StateFlow<OnboardingIntroUiState> = _state.asStateFlow()
@@ -48,6 +51,9 @@ class OnboardingIntroViewModel @Inject constructor() : ViewModel() {
 
     private fun handleGetStartedClick() {
         viewModelScope.launch {
+            // ✅ Onboarding tamamlandı olarak işaretle
+            preferencesManager.setOnboardingCompleted(true)
+
             _effect.emit(OnboardingIntroEffect.NavigateToPackageSelection)
         }
     }

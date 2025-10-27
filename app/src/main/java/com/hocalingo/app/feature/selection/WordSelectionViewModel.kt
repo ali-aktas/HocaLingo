@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hocalingo.app.core.common.DebugHelper
+import com.hocalingo.app.core.common.UserPreferencesManager
 import com.hocalingo.app.database.entities.ConceptEntity
 import com.hocalingo.app.database.entities.SelectionStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,6 +36,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WordSelectionViewModel @Inject constructor(
     private val repository: WordSelectionRepository,
+    private val preferencesManager: UserPreferencesManager,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -394,6 +396,10 @@ class WordSelectionViewModel @Inject constructor(
                 )
             } else {
                 prepareStudySession()
+
+                // ✅ Kelime seçimi tamamlandı işaretle
+                preferencesManager.setWordsSelected(true)
+
                 _effect.emit(WordSelectionEffect.NavigateToStudy)
             }
         }

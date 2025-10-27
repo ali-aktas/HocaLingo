@@ -105,14 +105,22 @@ fun AIAssistantScreen(
             // Premium content (Coming Soon)
             PremiumAIContent(
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.padding(paddingValues)
+                modifier = Modifier.padding(
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = 0.dp
+                )
+
             )
         } else {
             // Free user - show teaser + upgrade button
             FreeUserContent(
                 isDarkTheme = isDarkTheme,
                 onUpgradeClick = { showPaywall = true },
-                modifier = Modifier.padding(paddingValues)
+                modifier = Modifier.padding(
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = 0.dp
+                )
+
             )
         }
     }
