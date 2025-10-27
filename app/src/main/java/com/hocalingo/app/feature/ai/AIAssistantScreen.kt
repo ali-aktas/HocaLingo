@@ -1,5 +1,6 @@
 package com.hocalingo.app.feature.ai
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -52,10 +55,16 @@ fun AIAssistantScreen(
     val isDarkTheme = themeViewModel.shouldUseDarkTheme()
 
     val subscriptionState by subscriptionViewModel.uiState.collectAsStateWithLifecycle()
-    val isPremium = subscriptionState.currentSubscription.isPremium &&
-            subscriptionState.currentSubscription.isActive()
+    val isPremium = subscriptionState.currentSubscription.isPremium
 
-    var showPaywall by remember { mutableStateOf(!isPremium) }
+    var showPaywall by remember { mutableStateOf(false) }
+
+    // ✅ YENİ: Premium olduktan sonra paywall'u otomatik kapat
+    LaunchedEffect(isPremium) {
+        if (isPremium) {
+            showPaywall = false
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -215,25 +224,16 @@ private fun FreeUserContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         // Lock Icon
-        Box(
-            modifier = Modifier
-                .size(100.dp)
-                .background(
-                    color = Color(0xFFFF9800).copy(alpha = 0.1f),
-                    shape = RoundedCornerShape(50.dp)
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Default.AutoAwesome,
-                contentDescription = null,
-                tint = Color(0xFFFF9800),
-                modifier = Modifier.size(50.dp)
-            )
-        }
+        // AI Badge Image
+        Image(
+            painter = painterResource(id = R.drawable.onboarding_teacher_3),
+            contentDescription = "AI Asistan",
+            modifier = Modifier.size(140.dp),  // ✅ İstediğin boyut
+            contentScale = ContentScale.Fit
+        )
 
         // Title
         Text(
@@ -252,7 +252,7 @@ private fun FreeUserContent(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         // Features
         Column(
@@ -268,11 +268,11 @@ private fun FreeUserContent(
             )
             FeatureRow(
                 icon = Icons.Default.Quiz,
-                text = "Interaktif alıştırmalar"
+                text = "Kelimelerine özel yazılar"
             )
             FeatureRow(
                 icon = Icons.Default.TrendingUp,
-                text = "Hızlandırılmış öğrenme"
+                text = "Doğal ve kalıcı öğrenme"
             )
         }
 
@@ -390,18 +390,18 @@ private fun HeroSection(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(80.dp)
+                        .size(100.dp)
                         .background(
                             Color.White.copy(alpha = 0.2f),
-                            RoundedCornerShape(40.dp)
+                            RoundedCornerShape(50.dp)
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.Psychology,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(40.dp)
+                    Image(
+                        painter = painterResource(id = R.drawable.onboarding_teacher_3),  // ✅ Kendi drawable'ını koy
+                        contentDescription = "AI Asistan",
+                        modifier = Modifier.size(80.dp),
+                        contentScale = ContentScale.Fit
                     )
                 }
 

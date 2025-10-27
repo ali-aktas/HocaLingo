@@ -3,6 +3,8 @@ package com.hocalingo.app.feature.subscription
 import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hocalingo.app.core.ads.AdMobManager
+import com.hocalingo.app.core.ads.NativeAdLoader
 import com.hocalingo.app.core.base.Result
 import com.hocalingo.app.core.common.DebugHelper
 import com.revenuecat.purchases.Package
@@ -29,7 +31,9 @@ import javax.inject.Inject
 class SubscriptionViewModel @Inject constructor(
     private val getSubscriptionStatusUseCase: GetSubscriptionStatusUseCase,
     private val purchaseSubscriptionUseCase: PurchaseSubscriptionUseCase,
-    private val restorePurchasesUseCase: RestorePurchasesUseCase
+    private val restorePurchasesUseCase: RestorePurchasesUseCase,
+    private val adMobManager: AdMobManager,
+    private val nativeAdLoader: NativeAdLoader
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SubscriptionUiState())
@@ -179,6 +183,13 @@ class SubscriptionViewModel @Inject constructor(
             when (val result = restorePurchasesUseCase()) {
                 is Result.Success -> {
                     _uiState.update { it.copy(isRestoring = false) }
+
+                    // ✅ YENİ: Premium aldı, reklamları temizle!
+                    viewModelScope.launch {
+                        adMobManager.clearAdsForPremiumUser()
+                        nativeAdLoader.clearAdsForPremiumUser()
+                    }
+
                     _effect.emit(SubscriptionEffect.ShowMessage("✅ Satın almalar geri yüklendi"))
                     _effect.emit(SubscriptionEffect.PurchaseSuccess)
                 }

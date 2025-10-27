@@ -115,10 +115,18 @@ class AdMobManager @Inject constructor(
     }
 
     /**
-     * ============================================
-     * APP LAUNCH REWARDED AD
-     * ============================================
+     * ✅ NEW: Premium kullanıcı için tüm rewarded ad cache'leri temizle
      */
+    suspend fun clearAdsForPremiumUser() {
+        val isPremium = isPremiumUser()
+        if (isPremium) {
+            DebugHelper.log("🗑️ Clearing all rewarded ads for premium user")
+            appLaunchRewardedAd = null
+            studyRewardedAd = null
+            _appLaunchAdState.value = AdState.NotLoaded
+            _studyRewardedAdState.value = AdState.NotLoaded
+        }
+    }
 
     /**
      * Check if should show app launch ad

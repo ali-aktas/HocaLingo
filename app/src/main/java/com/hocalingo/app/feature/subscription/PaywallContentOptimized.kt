@@ -321,6 +321,21 @@ private fun PricingCardCompact(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
+
+    // ✅ YENİ: Paket tipine göre başlık belirle
+    val title = when {
+        packageItem.identifier.contains("monthly", ignoreCase = true) -> "Aylık"
+        packageItem.identifier.contains("quarterly", ignoreCase = true) -> "3 Aylık"
+        packageItem.identifier.contains("three", ignoreCase = true) -> "3 Aylık"
+        packageItem.identifier.contains("yearly", ignoreCase = true) -> "Yıllık"
+        packageItem.identifier.contains("annual", ignoreCase = true) -> "Yıllık"
+        else -> "Premium"
+    }
+
+    // ✅ YENİ: Popular badge için kontrol
+    val isPopular = packageItem.identifier.contains("quarterly", ignoreCase = true) ||
+            packageItem.identifier.contains("three", ignoreCase = true)
+
     val borderColor = if (isSelected) {
         Color(0xFFFF9800)
     } else {
@@ -328,7 +343,7 @@ private fun PricingCardCompact(
     }
 
     val backgroundColor = if (isSelected) {
-        Color(0xFFFF9800).copy(alpha = 0.08f)
+        Color(0xFFFFE0B2)  // ✅ Daha belirgin açık turuncu
     } else {
         MaterialTheme.colorScheme.surface
     }
@@ -361,11 +376,11 @@ private fun PricingCardCompact(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = packageItem.product.title.split("(").first().trim(),
+                    text = title,
                     fontFamily = PoppinsFontFamily,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = if (isSelected) Color(0xFF424242) else MaterialTheme.colorScheme.onSurface  // ✅ Seçiliyse koyu gri
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))

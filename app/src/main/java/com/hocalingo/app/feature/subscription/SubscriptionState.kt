@@ -33,7 +33,7 @@ data class SubscriptionState(
 
         // Subscription'lar için expiry date kontrolü
         val currentTime = System.currentTimeMillis()
-        return expiryDate?.let { it > currentTime } ?: false
+        return expiryDate?.let { it > currentTime } ?: true
     }
 
     /**

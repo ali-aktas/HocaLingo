@@ -254,10 +254,15 @@ class NativeAdLoader @Inject constructor(
     }
 
     /**
-     * ============================================
-     * CLEANUP
-     * ============================================
+     * ✅ NEW: Premium kullanıcı için tüm reklamları cache'den temizle
      */
+    suspend fun clearAdsForPremiumUser() {
+        val isPremium = subscriptionRepository.isPremium()
+        if (isPremium) {
+            DebugHelper.log("🗑️ Clearing all cached ads for premium user")
+            clearAllAds()
+        }
+    }
 
     /**
      * Clear all cached ads
