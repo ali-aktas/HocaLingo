@@ -64,4 +64,19 @@ interface UserSelectionDao {
             )
         )
     }
+
+    /**
+     * 🆕 Belirli bir zamandan sonraki seçimleri say (midnight reset için)
+     */
+    @Query("""
+        SELECT COUNT(*) 
+        FROM user_selections 
+        WHERE selected_at >= :startTime 
+        AND status = :status
+    """)
+    suspend fun getSelectionsCountSinceTime(
+        startTime: Long,
+        status: SelectionStatus
+    ): Int
+
 }

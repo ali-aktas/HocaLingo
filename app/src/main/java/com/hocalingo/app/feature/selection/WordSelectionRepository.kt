@@ -63,6 +63,34 @@ class WordSelectionRepository @Inject constructor(
     }
 
     /**
+     * 🆕 Gece yarısından itibaren seçilen kelimeleri say
+     */
+    suspend fun getTodaySelectionCountSinceMidnight(): Int {
+        return try {
+            // Bugünün gece yarısı timestamp'i
+            val calendar = java.util.Calendar.getInstance().apply {
+                set(java.util.Calendar.HOUR_OF_DAY, 0)
+                set(java.util.Calendar.MINUTE, 0)
+                set(java.util.Calendar.SECOND, 0)
+                set(java.util.Calendar.MILLISECOND, 0)
+            }
+            val midnightTimestamp = calendar.timeInMillis
+
+            // DAO'dan say
+            val count = database.userSelectionDao().getSelectionsCountSinceTime(
+                startTime = midnightTimestamp,
+                status = SelectionStatus.SELECTED
+            )
+
+            DebugHelper.logWordSelection("Today's selections since midnight: $count")
+            count
+
+        } catch (e: Exception) {
+            DebugHelper.logError("Midnight count error", e)
+            0
+        }
+    }
+    /**
      * Select a word (mark as SELECTED)
      */
     suspend fun selectWord(conceptId: Int, packageLevel: String) {

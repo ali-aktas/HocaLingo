@@ -272,7 +272,7 @@ fun SwipeableCard(
                         text = word,
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 40.sp,
+                        fontSize = 32.sp,
                         color = Color.White,
                         textAlign = TextAlign.Center
                     )

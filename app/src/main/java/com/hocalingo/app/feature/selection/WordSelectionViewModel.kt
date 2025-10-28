@@ -56,7 +56,6 @@ class WordSelectionViewModel @Inject constructor(
     private val MAX_UNDO_SIZE = 10
 
     private val DAILY_SELECTION_LIMIT = 50
-    private val DAILY_SELECTION_LIMIT_PREMIUM = 100
 
     init {
         DebugHelper.logWordSelection("=== WordSelectionViewModel INITIALIZED ===")
@@ -75,6 +74,9 @@ class WordSelectionViewModel @Inject constructor(
             WordSelectionEvent.FinishSelection -> finishSelection()
             WordSelectionEvent.ShowPremium -> showPremiumBottomSheet()
             WordSelectionEvent.DismissPremium -> dismissPremiumBottomSheet()
+            WordSelectionEvent.DismissDailyLimitDialog -> dismissDailyLimitDialog()
+            WordSelectionEvent.DismissNoWordsDialog -> dismissNoWordsDialog()
+            WordSelectionEvent.ShowPremiumFromLimitDialog -> showPremiumFromLimitDialog()
         }
     }
 
@@ -136,20 +138,23 @@ class WordSelectionViewModel @Inject constructor(
                     )
                 }
 
-                // 6. Set first word or complete
+                // 🆕 6. Set first word or handle no words
                 if (unseenWords.isNotEmpty()) {
                     val firstWord = unseenWords.first()
                     _uiState.update { it.copy(currentWord = firstWord) }
                     DebugHelper.logWordSelection("First word: ${firstWord.english}")
                 } else {
-                    DebugHelper.logWordSelection("All words processed")
+                    DebugHelper.logWordSelection("No unseen words available")
+
+                    // Hiç kelime yoksa "kelime kalmadı" dialog'unu göster
                     _uiState.update {
                         it.copy(
-                            isCompleted = true,
-                            currentWord = null
+                            isCompleted = false,               // Completed değil
+                            currentWord = null,                // Kart yok
+                            showNoWordsDialog = true,          // Dialog göster
+                            isLoading = false
                         )
                     }
-                    prepareStudySession()
                 }
 
             } catch (e: Exception) {
@@ -167,9 +172,10 @@ class WordSelectionViewModel @Inject constructor(
     private fun loadTodaySelectionCount() {
         viewModelScope.launch {
             try {
-                val count = repository.getTodaySelectionCount()
+                // 🆕 Midnight'tan itibaren sayıyor
+                val count = repository.getTodaySelectionCountSinceMidnight()
                 _uiState.update { it.copy(todaySelectionCount = count) }
-                DebugHelper.logWordSelection("Today selections: $count")
+                DebugHelper.logWordSelection("Today selections (since midnight): $count")
             } catch (e: Exception) {
                 DebugHelper.logError("Today selection count error", e)
             }
@@ -185,16 +191,22 @@ class WordSelectionViewModel @Inject constructor(
 
             val currentState = _uiState.value
 
-            // Premium limit check
-            if (currentState.todaySelectionCount >= DAILY_SELECTION_LIMIT && !currentState.isPremium) {
-                DebugHelper.logWordSelection("Daily limit reached")
+            // 🆕 Günlük limit kontrolü - UPDATED
+            if (!currentState.isPremium && currentState.todaySelectionCount >= DAILY_SELECTION_LIMIT) {
+                DebugHelper.logWordSelection("Daily limit reached - showing dialog and clearing card")
+
+                // Kartı HEMEN kaldır ve dialog göster
                 _uiState.update {
                     it.copy(
-                        showPremiumSheet = true,
-                        isProcessingSwipe = false
+                        currentWord = null,                    // Kartı ekrandan kaldır
+                        remainingWords = emptyList(),          // Stack'i temizle
+                        showDailyLimitDialog = true,           // Dialog göster
+                        isProcessingSwipe = false              // İşlemi bitir
                     )
                 }
-                return@launch
+
+                _effect.emit(WordSelectionEffect.ShowMessage("Günlük limitine ulaştın!"))
+                return@launch  // Erken çık
             }
 
             try {
@@ -427,11 +439,33 @@ class WordSelectionViewModel @Inject constructor(
     private fun dismissPremiumBottomSheet() {
         _uiState.update { it.copy(showPremiumSheet = false) }
     }
-}
 
-// =====================================================
-// UI STATE, EVENTS, EFFECTS
-// =====================================================
+    // 🆕 Dialog dismiss fonksiyonları
+    private fun dismissDailyLimitDialog() {
+        _uiState.update { it.copy(showDailyLimitDialog = false) }
+    }
+
+    private fun dismissNoWordsDialog() {
+        _uiState.update { it.copy(showNoWordsDialog = false) }
+    }
+
+    // 🆕 Dialog'dan premium sheet'e geçiş
+    private fun showPremiumFromLimitDialog() {
+        viewModelScope.launch {
+            // 1. Önce dialog'u kapat
+            _uiState.update { it.copy(showDailyLimitDialog = false) }
+
+            // 2. Recomposition için bekle
+            delay(150)
+
+            // 3. Premium sheet'i aç
+            _uiState.update { it.copy(showPremiumSheet = true) }
+
+            DebugHelper.log("Transitioned from limit dialog to premium sheet")
+        }
+    }
+
+}
 
 data class WordSelectionUiState(
     val isLoading: Boolean = false,
@@ -449,7 +483,11 @@ data class WordSelectionUiState(
     val isCompleted: Boolean = false,
     val showPremiumSheet: Boolean = false,
     val isPremium: Boolean = false,
-    val studySessionPrepared: Boolean = false
+    val studySessionPrepared: Boolean = false,
+
+    // 🆕 YENİ FIELD'LAR
+    val showDailyLimitDialog: Boolean = false,     // Günlük limit doldu
+    val showNoWordsDialog: Boolean = false         // Pakette kelime kalmadı
 ) {
     val progress: Float
         get() = if (totalWords > 0) {
@@ -473,6 +511,9 @@ sealed interface WordSelectionEvent {
     data object FinishSelection : WordSelectionEvent
     data object ShowPremium : WordSelectionEvent
     data object DismissPremium : WordSelectionEvent
+    data object DismissDailyLimitDialog : WordSelectionEvent
+    data object DismissNoWordsDialog : WordSelectionEvent
+    data object ShowPremiumFromLimitDialog : WordSelectionEvent
 }
 
 sealed interface WordSelectionEffect {

@@ -28,6 +28,7 @@ import com.hocalingo.app.core.ui.components.HocaErrorState
 import com.hocalingo.app.core.ui.components.HocaLoadingIndicator
 import com.hocalingo.app.core.ui.components.HocaSnackbarHost
 import com.hocalingo.app.core.ui.theme.ThemeViewModel
+import com.hocalingo.app.feature.subscription.PaywallBottomSheet
 import kotlinx.coroutines.flow.collectLatest
 
 private val PoppinsFontFamily = FontFamily(
@@ -132,6 +133,41 @@ fun WordSelectionScreen(
                 }
             }
         }
+
+        if (uiState.showDailyLimitDialog) {
+            DailyLimitDialog(
+                onDismiss = {
+                    viewModel.onEvent(WordSelectionEvent.DismissDailyLimitDialog)
+                },
+                onGoHome = {
+                    viewModel.onEvent(WordSelectionEvent.DismissDailyLimitDialog)
+                    onNavigateToHome()
+                },
+                premiumSheetContent = {
+                    // Premium sheet direkt render et
+                    PaywallBottomSheet(  // ✅ Doğru isim
+                        onDismiss = it  // ✅ Lambda parametresi
+                    )
+                }
+            )
+        }
+
+        // Kelime kalmadı dialog
+        if (uiState.showNoWordsDialog) {
+            NoWordsLeftDialog(
+                onDismiss = { viewModel.onEvent(WordSelectionEvent.DismissNoWordsDialog) },
+                onGoHome = {
+                    viewModel.onEvent(WordSelectionEvent.DismissNoWordsDialog)
+                    onNavigateToHome()
+                },
+                onSelectNewPackage = {
+                    viewModel.onEvent(WordSelectionEvent.DismissNoWordsDialog)
+                    // TODO: Navigate to package selection
+                    onNavigateToHome()
+                }
+            )
+        }
+
     }
 }
 
@@ -172,6 +208,16 @@ private fun WordSelectionContent(
                 currentIndex = uiState.processedWords,
                 totalWords = uiState.totalWords
             )
+
+            AnimatedVisibility(
+                visible = uiState.todaySelectionCount >= 40 && !uiState.isPremium
+            ) {
+                DailyLimitWarning(
+                    todaySelectionCount = uiState.todaySelectionCount,
+                    dailyLimit = 50,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -283,17 +329,6 @@ private fun WordSelectionContent(
             )
         }
 
-        // ✅ Daily limit warning - OVERLAY (doesn't affect layout)
-        AnimatedVisibility(
-            visible = uiState.todaySelectionCount >= 40,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 180.dp)
-        ) {
-            DailyLimitWarning(
-                todaySelectionCount = uiState.todaySelectionCount,
-                dailyLimit = 50
-            )
-        }
+
     }
 }
