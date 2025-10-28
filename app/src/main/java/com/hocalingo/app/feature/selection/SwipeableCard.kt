@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.hocalingo.app.R
 import kotlinx.coroutines.launch
 import kotlin.math.abs
+import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
 private val PoppinsFontFamily = FontFamily(
@@ -35,6 +36,15 @@ private val PoppinsFontFamily = FontFamily(
     Font(R.font.poppins_medium, FontWeight.Medium),
     Font(R.font.poppins_bold, FontWeight.Bold),
     Font(R.font.poppins_black, FontWeight.Black)
+)
+
+
+private val cardColors = listOf(
+    Color(0xFF6366F1), Color(0xFF8B5CF6), Color(0xFFEC4899), Color(0xFFEF4444),
+    Color(0xFFF97316), Color(0xFF10B981), Color(0xFF06B6D4), Color(0xFF3B82F6),
+    Color(0xFF8B5A2B), Color(0xFF059669), Color(0xFF7C3AED), Color(0xFFDC2626),
+    Color(0xFF0891B2), Color(0xFF065F46), Color(0xFF7C2D12), Color(0xFF1E40AF),
+    Color(0xFF7E22CE), Color(0xFF0F766E), Color(0xFFA21CAF), Color(0xFF9A3412)
 )
 
 /**
@@ -59,6 +69,11 @@ fun SwipeableCard(
     nextWord: String? = null,
     nextTranslation: String? = null
 ) {
+    // ✅ Random color based on word
+    val cardColor = remember(word, translation) {
+        cardColors[(word + translation).hashCode().absoluteValue % cardColors.size]
+    }
+
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val density = LocalDensity.current
@@ -104,53 +119,6 @@ fun SwipeableCard(
             .fillMaxWidth()
             .height(420.dp)
     ) {
-        // Background card (next card preview)
-        if (nextWord != null && nextTranslation != null) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(horizontal = 28.dp, vertical = 20.dp)
-                    .alpha(0.6f)
-                    .graphicsLayer {
-                        scaleX = 0.95f
-                        scaleY = 0.95f
-                    },
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFF90CAF9)
-                ),
-                shape = RoundedCornerShape(24.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(24.dp)
-                    ) {
-                        Text(
-                            text = nextWord,
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 32.sp,
-                            color = Color.White.copy(alpha = 0.7f),
-                            textAlign = TextAlign.Center
-                        )
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text(
-                            text = nextTranslation,
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 20.sp,
-                            color = Color.White.copy(alpha = 0.6f),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            }
-        }
 
         // Main card
         Card(
@@ -198,7 +166,7 @@ fun SwipeableCard(
                                         launch {
                                             offsetX.animateTo(
                                                 targetValue = targetX,
-                                                animationSpec = tween(300)
+                                                animationSpec = tween(800)
                                             )
                                         }
 
@@ -206,7 +174,7 @@ fun SwipeableCard(
                                             val targetRotation = if (offsetX.value > 0) 25f else -25f
                                             rotation.animateTo(
                                                 targetValue = targetRotation,
-                                                animationSpec = tween(300)
+                                                animationSpec = tween(800)
                                             )
                                         }
 
@@ -221,13 +189,13 @@ fun SwipeableCard(
                                     // Return to center
                                     scope.launch {
                                         launch {
-                                            offsetX.animateTo(0f, animationSpec = tween(300))
+                                            offsetX.animateTo(0f, animationSpec = tween(400))
                                         }
                                         launch {
-                                            offsetY.animateTo(0f, animationSpec = tween(300))
+                                            offsetY.animateTo(0f, animationSpec = tween(400))
                                         }
                                         launch {
-                                            rotation.animateTo(0f, animationSpec = tween(300))
+                                            rotation.animateTo(0f, animationSpec = tween(400))
                                         }
                                     }
                                 }
@@ -250,7 +218,7 @@ fun SwipeableCard(
                     )
                 },
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xFF64B5F6)
+                containerColor = cardColor
             ),
             shape = RoundedCornerShape(24.dp),
             elevation = CardDefaults.cardElevation(
@@ -269,9 +237,9 @@ fun SwipeableCard(
                     fontSize = 32.sp,
                     color = Color(0xFFDC2C29),
                     modifier = Modifier
-                        .align(Alignment.TopStart)
+                        .align(Alignment.TopEnd)
                         .padding(top = 24.dp)
-                        .padding(start = 42.dp)
+                        .padding(end = 42.dp)
                         .alpha(leftIndicatorAlpha)
                         .graphicsLayer {
                             rotationZ = -10f
@@ -285,9 +253,9 @@ fun SwipeableCard(
                     fontSize = 32.sp,
                     color = Color(0xFF14EA1F),
                     modifier = Modifier
-                        .align(Alignment.TopEnd)
+                        .align(Alignment.TopStart)
                         .padding(top = 24.dp)
-                        .padding(end = 42.dp)
+                        .padding(start = 42.dp)
                         .alpha(rightIndicatorAlpha)
                         .graphicsLayer {
                             rotationZ = 10f

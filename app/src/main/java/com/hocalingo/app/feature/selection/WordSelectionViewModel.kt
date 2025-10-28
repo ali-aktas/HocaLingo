@@ -198,8 +198,6 @@ class WordSelectionViewModel @Inject constructor(
             }
 
             try {
-                // ✅ PHASE 1: Animation delay
-                delay(50)
 
                 // 1. Select in database
                 repository.selectWord(conceptId, packageId)
@@ -218,10 +216,6 @@ class WordSelectionViewModel @Inject constructor(
                         processedWords = it.processedWords + 1
                     )
                 }
-
-                // ✅ PHASE 1: Render delay
-                delay(20)
-
                 // 5. Next word
                 moveToNextWord()
 
@@ -244,7 +238,6 @@ class WordSelectionViewModel @Inject constructor(
             _uiState.update { it.copy(isProcessingSwipe = true) }
 
             try {
-                delay(50)
 
                 // Hide in database
                 repository.hideWord(conceptId, packageId)
@@ -259,8 +252,6 @@ class WordSelectionViewModel @Inject constructor(
                         processedWords = it.processedWords + 1
                     )
                 }
-
-                delay(20)
 
                 moveToNextWord()
 

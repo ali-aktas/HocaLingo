@@ -1,5 +1,8 @@
 package com.hocalingo.app.feature.selection
 
+import android.R.attr.scaleX
+import android.R.attr.scaleY
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -9,7 +12,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -139,122 +144,136 @@ private fun WordSelectionContent(
     onUndo: () -> Unit,
     onNavigateToHome: () -> Unit
 ) {
-    // ✅ PHASE 3: Responsive card height
-    val (cardHeight, cardContainerHeight) = calculateOptimalCardHeight()
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Header
-        Text(
-            text = "Hocalingo",
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 28.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(vertical = 16.dp)
-        )
-
-        // ✅ PHASE 3: Compact instruction bar
-        InstructionBar()
-
-        // ✅ PHASE 3: Daily limit warning
-        DailyLimitWarning(
-            todaySelectionCount = uiState.todaySelectionCount,
-            dailyLimit = 50
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // ✅ PHASE 3: Progress bar
-        SelectionProgressBar(
-            progress = uiState.progress,
-            currentIndex = uiState.processedWords,
-            totalWords = uiState.totalWords
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        // ✅ PHASE 3: Card container
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(cardContainerHeight),
-            contentAlignment = Alignment.Center
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Processing indicator
-            ProcessingIndicator(
-                isProcessing = uiState.isProcessingSwipe,
-                modifier = Modifier.align(Alignment.Center)
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Header
+            Text(
+                text = "Hocalingo",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 28.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(vertical = 16.dp)
             )
 
-            // Current word card
-            uiState.currentWord?.let { currentWord ->
-                val nextWord = uiState.remainingWords.getOrNull(uiState.currentWordIndex + 1)
+            // ✅ Compact instruction bar
+            InstructionBar()
 
-                SwipeableCard(
-                    word = currentWord.english,
-                    translation = currentWord.turkish,
-                    nextWord = nextWord?.english,
-                    nextTranslation = nextWord?.turkish,
-                    onSwipeLeft = { onSwipeLeft(currentWord.id) },
-                    onSwipeRight = { onSwipeRight(currentWord.id) },
-                    modifier = Modifier.height(cardHeight)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // ✅ Progress bar
+            SelectionProgressBar(
+                progress = uiState.progress,
+                currentIndex = uiState.processedWords,
+                totalWords = uiState.totalWords
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // ✅ Card area - fills remaining space
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(bottom = 120.dp), // Space for overlapping buttons
+                contentAlignment = Alignment.Center
+            ) {
+                // Processing indicator
+                ProcessingIndicator(
+                    isProcessing = uiState.isProcessingSwipe,
+                    modifier = Modifier.align(Alignment.Center)
                 )
+
+                // ✅ Card stack
+                uiState.currentWord?.let { currentWord ->
+                    val nextWord = uiState.remainingWords.getOrNull(uiState.currentWordIndex + 1)
+
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        // Background card (next)
+                        if (nextWord != null) {
+                            SwipeableCard(
+                                word = nextWord.english,
+                                translation = nextWord.turkish,
+                                nextWord = null,
+                                nextTranslation = null,
+                                onSwipeLeft = { },
+                                onSwipeRight = { },
+                                modifier = Modifier
+                                    .fillMaxWidth(0.9f)
+                                    .fillMaxHeight(0.85f)
+                                    .align(Alignment.Center)
+                                    .alpha(0.6f)
+                                    .graphicsLayer {
+                                        scaleX = 0.95f
+                                        scaleY = 0.95f
+                                    }
+                            )
+                        }
+
+                        // Foreground card (current)
+                        SwipeableCard(
+                            word = currentWord.english,
+                            translation = currentWord.turkish,
+                            nextWord = null,
+                            nextTranslation = null,
+                            onSwipeLeft = { onSwipeLeft(currentWord.id) },
+                            onSwipeRight = { onSwipeRight(currentWord.id) },
+                            modifier = Modifier
+                                .fillMaxWidth(0.9f)
+                                .fillMaxHeight(0.85f)
+                                .align(Alignment.Center)
+                        )
+                    }
+                }
             }
         }
 
-        Spacer(modifier = Modifier.weight(1f))
-
-        // Action buttons
+        // ✅ TINDER-STYLE: Buttons overlap card at bottom
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 24.dp),
+                .align(Alignment.BottomCenter)
+                .padding(horizontal = 20.dp, vertical = 32.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // ✅ Home button (sol)
+            // Home button
             SmallActionButton(
                 icon = Icons.Default.Home,
-                backgroundColor = Color(0xFF9C27B0), // Purple
+                backgroundColor = Color(0xFF9C27B0),
                 contentDescription = "Home",
-                onClick = onNavigateToHome, // ✅ Direkt callback
+                onClick = onNavigateToHome,
                 enabled = !uiState.isProcessingSwipe
             )
 
-            // Skip button
+            // Skip button - BIGGER
             ActionButton(
                 icon = Icons.Default.Close,
                 label = "Geç",
                 backgroundColor = Color(0xFFEF5350),
                 contentDescription = "Skip",
-                onClick = {
-                    uiState.currentWord?.let { word ->
-                        onSwipeLeft(word.id)
-                    }
-                },
-                enabled = !uiState.isProcessingSwipe
+                onClick = { uiState.currentWord?.let { onSwipeLeft(it.id) } },
+                enabled = !uiState.isProcessingSwipe,
+                modifier = Modifier.size(80.dp) // ✅ BÜYÜK
             )
 
-            // Learn button
+            // Learn button - BIGGER
             ActionButton(
                 icon = Icons.Default.Check,
                 label = "Öğren",
-                backgroundColor = Color(0xFF66C66A),
+                backgroundColor = Color(0xFF66BB6A),
                 contentDescription = "Learn",
-                onClick = {
-                    uiState.currentWord?.let { word ->
-                        onSwipeRight(word.id)
-                    }
-                },
-                enabled = !uiState.isProcessingSwipe
+                onClick = { uiState.currentWord?.let { onSwipeRight(it.id) } },
+                enabled = !uiState.isProcessingSwipe,
+                modifier = Modifier.size(80.dp) // ✅ BÜYÜK
             )
 
-            // ✅ Undo button (sağ)
+            // Undo button
             SmallActionButton(
                 icon = Icons.Default.Undo,
                 backgroundColor = Color(0xFF2196F3),
@@ -264,81 +283,17 @@ private fun WordSelectionContent(
             )
         }
 
-// NOT: Eğer SmallActionButton ve ActionButton fonksiyonları yoksa, aşağıdaki kodları ekle:
-
-        @Composable
-        fun ActionButton(
-            icon: ImageVector,
-            label: String,
-            backgroundColor: Color,
-            contentDescription: String,
-            onClick: () -> Unit,
-            enabled: Boolean = true,
-            modifier: Modifier = Modifier
+        // ✅ Daily limit warning - OVERLAY (doesn't affect layout)
+        AnimatedVisibility(
+            visible = uiState.todaySelectionCount >= 40,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 180.dp)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = modifier
-            ) {
-                IconButton(
-                    onClick = onClick,
-                    enabled = enabled,
-                    modifier = Modifier
-                        .size(64.dp)
-                        .background(
-                            color = if (enabled) backgroundColor else backgroundColor.copy(alpha = 0.5f),
-                            shape = CircleShape
-                        )
-                ) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = contentDescription,
-                        tint = Color.White,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = label,
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
-                    color = if (enabled) {
-                        MaterialTheme.colorScheme.onBackground
-                    } else {
-                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
-                    }
-                )
-            }
+            DailyLimitWarning(
+                todaySelectionCount = uiState.todaySelectionCount,
+                dailyLimit = 50
+            )
         }
-
-        @Composable
-        fun SmallActionButton(
-            icon: ImageVector,
-            backgroundColor: Color,
-            contentDescription: String,
-            onClick: () -> Unit,
-            enabled: Boolean = true
-        ) {
-            IconButton(
-                onClick = onClick,
-                enabled = enabled,
-                modifier = Modifier
-                    .size(56.dp)
-                    .background(
-                        color = if (enabled) backgroundColor else backgroundColor.copy(alpha = 0.5f),
-                        shape = CircleShape
-                    )
-            ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = contentDescription,
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
     }
 }
