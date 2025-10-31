@@ -19,14 +19,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/**
- * SubscriptionViewModel - FIXED ✅
- *
- * Package: app/src/main/java/com/hocalingo/app/feature/subscription/
- *
- * ✅ Satın alma artık çalışıyor
- * ✅ Activity referansı ile RevenueCat entegrasyonu tam
- */
+
 @HiltViewModel
 class SubscriptionViewModel @Inject constructor(
     private val getSubscriptionStatusUseCase: GetSubscriptionStatusUseCase,
@@ -158,6 +151,14 @@ class SubscriptionViewModel @Inject constructor(
             when (val result = purchaseSubscriptionUseCase.purchasePackage(activityRef, selectedPackage)) {
                 is Result.Success -> {
                     _uiState.update { it.copy(isPurchasing = false) }
+
+                    // ✅ CRITICAL FIX: Premium aldı, reklamları temizle!
+                    viewModelScope.launch {
+                        DebugHelper.log("🗑️ Premium purchased - Clearing all ads")
+                        adMobManager.clearAdsForPremiumUser()
+                        nativeAdLoader.clearAdsForPremiumUser()
+                    }
+
                     _effect.emit(SubscriptionEffect.ShowMessage("🎉 Premium üyelik aktif!"))
                     _effect.emit(SubscriptionEffect.PurchaseSuccess)
                 }

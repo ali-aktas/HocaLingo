@@ -121,10 +121,16 @@ class AdMobManager @Inject constructor(
         val isPremium = isPremiumUser()
         if (isPremium) {
             DebugHelper.log("🗑️ Clearing all rewarded ads for premium user")
+
+            // Destroy current ads
             appLaunchRewardedAd = null
             studyRewardedAd = null
+
+            // Reset states
             _appLaunchAdState.value = AdState.NotLoaded
             _studyRewardedAdState.value = AdState.NotLoaded
+
+            DebugHelper.logSuccess("✅ All rewarded ads cleared for premium user")
         }
     }
 

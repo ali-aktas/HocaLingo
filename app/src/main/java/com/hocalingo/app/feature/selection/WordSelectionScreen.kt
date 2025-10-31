@@ -300,7 +300,6 @@ private fun WordSelectionContent(
             // Skip button - BIGGER
             ActionButton(
                 icon = Icons.Default.Close,
-                label = "Geç",
                 backgroundColor = Color(0xFFEF5350),
                 contentDescription = "Skip",
                 onClick = { uiState.currentWord?.let { onSwipeLeft(it.id) } },
@@ -311,7 +310,6 @@ private fun WordSelectionContent(
             // Learn button - BIGGER
             ActionButton(
                 icon = Icons.Default.Check,
-                label = "Öğren",
                 backgroundColor = Color(0xFF66BB6A),
                 contentDescription = "Learn",
                 onClick = { uiState.currentWord?.let { onSwipeRight(it.id) } },

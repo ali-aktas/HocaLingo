@@ -17,16 +17,20 @@ import com.hocalingo.app.database.entities.ConceptEntity
 import com.hocalingo.app.database.entities.StudyDirection
 import com.hocalingo.app.database.entities.SessionType
 import com.hocalingo.app.database.entities.WordProgressEntity
+import com.hocalingo.app.feature.subscription.SubscriptionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -48,7 +52,8 @@ class StudyViewModel @Inject constructor(
     private val ratingManager: RatingManager,
     private val feedbackRepository: FeedbackRepository,
     private val adMobManager: AdMobManager,
-    private val nativeAdLoader: NativeAdLoader
+    private val nativeAdLoader: NativeAdLoader,
+    private val subscriptionRepository: SubscriptionRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StudyUiState())
@@ -59,6 +64,25 @@ class StudyViewModel @Inject constructor(
 
     val nativeAdState: StateFlow<NativeAd?> = nativeAdLoader.studyScreenAd
 
+    /**
+     * ✅ PROFESSIONAL: Premium-aware native ad state
+     * Premium ise null, free ise actual ad
+     */
+    val premiumAwareNativeAd: StateFlow<NativeAd?> =
+        subscriptionRepository.getLocalSubscriptionState()
+            .combine(nativeAdLoader.studyScreenAd) { subscriptionState, nativeAd ->
+                if (subscriptionState.isPremium) {
+                    null // Premium user - no ads
+                } else {
+                    nativeAd // Free user - show ad
+                }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = null
+            )
+
     // Study session tracking
     private var currentSessionId: Long? = null
     private var sessionStartTime: Long = 0
@@ -68,15 +92,29 @@ class StudyViewModel @Inject constructor(
     init {
         loadInitialData()
         trackTtsState()
+        observePremiumStatus()
 
         viewModelScope.launch {
             nativeAdLoader.loadStudyScreenAd()
-            // ✅ YENİ SATIR - BURAYA EKLE
             adMobManager.loadStudyRewardedAd()
         }
     }
 
-    // ========== INITIALIZATION ==========
+    /**
+     * ✅ REACTIVE PREMIUM MONITORING
+     * Premium state değiştiğinde reklamları otomatik temizle
+     */
+    private fun observePremiumStatus() {
+        viewModelScope.launch {
+            subscriptionRepository.getLocalSubscriptionState().collect { state ->
+                if (state.isPremium) {
+                    DebugHelper.log("👑 Premium detected in StudyViewModel - Clearing ads")
+                    adMobManager.clearAdsForPremiumUser()
+                    nativeAdLoader.clearAdsForPremiumUser()
+                }
+            }
+        }
+    }
 
     private fun trackTtsState() {
         viewModelScope.launch {

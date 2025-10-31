@@ -171,47 +171,34 @@ fun SelectionProgressBar(
  * Large action button (Skip & Learn)
  * With label below icon
  */
+/**
+ * Large action button (Skip & Learn)
+ * Icon only - clean design
+ */
 @Composable
 fun ActionButton(
     icon: ImageVector,
-    label: String,
     backgroundColor: Color,
     contentDescription: String,
     onClick: () -> Unit,
     enabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
+    FloatingActionButton(
+        onClick = onClick,
+        containerColor = backgroundColor.copy(alpha = if (enabled) 1f else 0.4f),
+        contentColor = Color.White,
+        modifier = modifier.size(64.dp),
+        elevation = FloatingActionButtonDefaults.elevation(
+            defaultElevation = 8.dp,
+            pressedElevation = 12.dp
+        ),
+        shape = CircleShape
     ) {
-        FloatingActionButton(
-            onClick = onClick,
-            containerColor = backgroundColor.copy(alpha = if (enabled) 1f else 0.4f),
-            contentColor = Color.White,
-            modifier = Modifier.size(64.dp),
-            elevation = FloatingActionButtonDefaults.elevation(
-                defaultElevation = 8.dp,
-                pressedElevation = 12.dp
-            ),
-            shape = CircleShape
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = contentDescription,
-                modifier = Modifier.size(32.dp)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = label,
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 14.sp,
-            color = if (enabled) MaterialTheme.colorScheme.onSurface
-            else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            modifier = Modifier.size(32.dp)
         )
     }
 }

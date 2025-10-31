@@ -43,7 +43,6 @@ import com.google.android.gms.ads.nativead.NativeAd
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
-import com.hocalingo.app.core.ads.NativeAdLoader
 import com.hocalingo.app.core.ads.NativeAdCard
 
 /**
@@ -86,10 +85,7 @@ fun StudyScreen(
     val activity = LocalActivity.current
     val scope = rememberCoroutineScope()
 
-    val nativeAd by viewModel.nativeAdState.collectAsState()
-    val isPremium by remember {
-        mutableStateOf(false)
-    }
+    val nativeAd by viewModel.premiumAwareNativeAd.collectAsState()
 
     var showRewardedAdDialog by remember { mutableStateOf(false) }
 

@@ -259,8 +259,21 @@ class NativeAdLoader @Inject constructor(
     suspend fun clearAdsForPremiumUser() {
         val isPremium = subscriptionRepository.isPremium()
         if (isPremium) {
-            DebugHelper.log("🗑️ Clearing all cached ads for premium user")
-            clearAllAds()
+            DebugHelper.log("🗑️ Clearing all native ads for premium user")
+
+            // Destroy existing ads
+            _selectionScreenAd.value?.destroy()
+            _studyScreenAd.value?.destroy()
+
+            // Clear cache
+            _selectionScreenAd.value = null
+            _studyScreenAd.value = null
+
+            // Reset states
+            _selectionAdState.value = AdState.NotLoaded
+            _studyAdState.value = AdState.NotLoaded
+
+            DebugHelper.logSuccess("✅ All native ads cleared for premium user")
         }
     }
 

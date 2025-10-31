@@ -26,6 +26,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hocalingo.app.core.ads.AdMobManager
 import com.hocalingo.app.core.ads.NativeAdLoader
+import com.hocalingo.app.core.common.DebugHelper
 import com.hocalingo.app.core.ui.navigation.HocaBottomNavigationBar
 import com.hocalingo.app.core.ui.navigation.shouldShowBottomNavigation
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
@@ -158,12 +159,6 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
-     * ============================================
-     * ADMOB INITIALIZATION
-     * ============================================
-     */
-
-    /**
      * Initialize AdMob SDK
      */
     private fun initializeAdMob() {
@@ -172,8 +167,14 @@ class MainActivity : ComponentActivity() {
                 // Initialize AdMob SDK
                 adMobManager.initialize()
 
-                // Preload native ads for better UX
-                nativeAdLoader.preloadNativeAds()
+                // ✅ FIXED: Premium kontrolü ile ad preloading
+                val isPremium = adMobManager.isPremiumUser()
+                if (!isPremium) {
+                    DebugHelper.log("🔄 Free user - Preloading ads")
+                    nativeAdLoader.preloadNativeAds()
+                } else {
+                    DebugHelper.log("👑 Premium user - Skipping ad preload")
+                }
 
             } catch (e: Exception) {
                 println("❌ AdMob initialization failed: ${e.message}")
