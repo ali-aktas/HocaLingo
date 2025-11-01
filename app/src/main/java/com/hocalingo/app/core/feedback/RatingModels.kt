@@ -42,9 +42,9 @@ enum class FeedbackCategory(
     val icon: String,
     val displayName: String
 ) {
-    BUG("🐛", "Hata Bildirimi"),
+    BUG("🐛", "Hata"),
     FEATURE("💡", "Öneri"),
-    CONTENT("📚", "İçerik Talebi"),
+    CONTENT("📚", "Talep"),
     OTHER("💬", "Diğer");
 
     companion object {

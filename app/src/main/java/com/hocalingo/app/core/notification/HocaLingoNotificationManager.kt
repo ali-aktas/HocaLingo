@@ -90,7 +90,7 @@ class HocaLingoNotificationManager @Inject constructor(
         )
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification) // We'll need to add this icon
+            .setSmallIcon(R.drawable.hocalingo_icon_nobg) // We'll need to add this icon
             .setContentTitle(getNotificationTitle(word))
             .setContentText(getNotificationText(word))
             .setStyle(
@@ -148,9 +148,9 @@ class HocaLingoNotificationManager @Inject constructor(
         val templates = listOf(
             "'${word.english}' kelimesini hatırlıyor musun?",
             "${word.english} → ${word.turkish}",
-            "'${word.english}' ile pratik yapalım!",
+            "'${word.english}' kelimesini öğrenmek üzeresin!",
             "Bugün '${word.english}' çalışma zamanı!",
-            "${word.english} kelimesi tekrar edilmeyi bekliyor"
+            "${word.english} kelimesi tekrar edilmeyi bekliyor!"
         )
         return templates.random()
     }

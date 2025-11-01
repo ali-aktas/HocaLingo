@@ -23,8 +23,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.hocalingo.app.R
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
+import kotlinx.coroutines.launch
 
 /**
  * FeedbackDialog
@@ -60,7 +62,22 @@ fun FeedbackDialog(
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var isSubmitting by remember { mutableStateOf(false) }
 
-    Dialog(onDismissRequest = onDismiss) {
+    // ✅ FIX: Reset isSubmitting when dialog reopens
+    LaunchedEffect(Unit) {
+        isSubmitting = false
+    }
+
+    Dialog(
+        onDismissRequest = {
+            if (!isSubmitting) {  // ✅ Submitting sırasında kapanmaz
+                onDismiss()
+            }
+        },
+        properties = DialogProperties(
+            dismissOnBackPress = !isSubmitting,      // ✅ Submitting sırasında back disabled
+            dismissOnClickOutside = !isSubmitting    // ✅ Submitting sırasında dış tıklama disabled
+        )
+    ) {
         Card(
             modifier = modifier
                 .fillMaxWidth()
@@ -88,11 +105,18 @@ fun FeedbackDialog(
                         fontSize = 32.sp
                     )
 
-                    IconButton(onClick = onDismiss) {
+                    IconButton(
+                        onClick = onDismiss,
+                        enabled = !isSubmitting  // ✅ Submitting sırasında disabled
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Kapat",
-                            tint = Color(0xFF95A5A6)
+                            tint = if (isSubmitting) {
+                                Color(0xFF95A5A6).copy(alpha = 0.5f)
+                            } else {
+                                Color(0xFF95A5A6)
+                            }
                         )
                     }
                 }
@@ -124,52 +148,41 @@ fun FeedbackDialog(
 
                 // Category selection
                 Text(
-                    text = "Kategori",
+                    text = "Kategori Seç",
                     fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,
                     color = Color(0xFF2C3E50)
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Row(
+                // Category grid
+                FlowRow(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    FeedbackCategory.values().take(2).forEach { category ->
+                    FeedbackCategory.values().forEach { category ->
                         CategoryChip(
                             category = category,
                             isSelected = selectedCategory == category,
-                            onClick = { selectedCategory = category },
-                            modifier = Modifier.weight(1f)
+                            onClick = {
+                                if (!isSubmitting) {  // ✅ Submitting sırasında değiştirilemez
+                                    selectedCategory = category
+                                }
+                            }
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    FeedbackCategory.values().drop(2).forEach { category ->
-                        CategoryChip(
-                            category = category,
-                            isSelected = selectedCategory == category,
-                            onClick = { selectedCategory = category },
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 // Message field
                 Text(
-                    text = "Mesajın",
+                    text = "Mesajın *",
                     fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,
                     color = Color(0xFF2C3E50)
                 )
@@ -178,13 +191,17 @@ fun FeedbackDialog(
 
                 OutlinedTextField(
                     value = message,
-                    onValueChange = { message = it },
+                    onValueChange = {
+                        if (!isSubmitting) {  // ✅ Submitting sırasında değiştirilemez
+                            message = it
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = 120.dp),
+                        .height(120.dp),
                     placeholder = {
                         Text(
-                            text = "Düşüncelerini bizimle paylaş...",
+                            text = "Deneyimini bizimle paylaş...",
                             fontFamily = PoppinsFontFamily,
                             fontSize = 14.sp,
                             color = Color(0xFFBDC3C7)
@@ -192,9 +209,12 @@ fun FeedbackDialog(
                     },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color(0xFFFF6B35),
-                        unfocusedBorderColor = Color(0xFFE0E0E0)
+                        unfocusedBorderColor = Color(0xFFE0E0E0),
+                        disabledBorderColor = Color(0xFFE0E0E0).copy(alpha = 0.5f)
                     ),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    maxLines = 5,
+                    enabled = !isSubmitting  // ✅ Submitting sırasında disabled
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -203,7 +223,7 @@ fun FeedbackDialog(
                 Text(
                     text = "E-posta (Opsiyonel)",
                     fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,
                     color = Color(0xFF2C3E50)
                 )
@@ -212,7 +232,11 @@ fun FeedbackDialog(
 
                 OutlinedTextField(
                     value = email,
-                    onValueChange = { email = it },
+                    onValueChange = {
+                        if (!isSubmitting) {  // ✅ Submitting sırasında değiştirilemez
+                            email = it
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = {
                         Text(
@@ -224,10 +248,12 @@ fun FeedbackDialog(
                     },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color(0xFFFF6B35),
-                        unfocusedBorderColor = Color(0xFFE0E0E0)
+                        unfocusedBorderColor = Color(0xFFE0E0E0),
+                        disabledBorderColor = Color(0xFFE0E0E0).copy(alpha = 0.5f)
                     ),
                     shape = RoundedCornerShape(12.dp),
-                    singleLine = true
+                    singleLine = true,
+                    enabled = !isSubmitting  // ✅ Submitting sırasında disabled
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -235,13 +261,20 @@ fun FeedbackDialog(
                 // Submit button
                 Button(
                     onClick = {
-                        if (message.text.isNotBlank()) {
+                        if (message.text.isNotBlank() && !isSubmitting) {
                             isSubmitting = true
                             onSubmit(
                                 selectedCategory,
                                 message.text,
                                 email.text.takeIf { it.isNotBlank() }
                             )
+
+                            // ✅ FIX: Reset after 3 seconds as fallback
+                            // (Normal case: dialog will close on success)
+                            kotlinx.coroutines.GlobalScope.launch {
+                                kotlinx.coroutines.delay(3000)
+                                isSubmitting = false
+                            }
                         }
                     },
                     modifier = Modifier

@@ -21,19 +21,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.hocalingo.app.R
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
- * SatisfactionDialog
+ * SatisfactionDialog - FIXED VERSION ✅
  * ==================
  * First step: User selects their satisfaction level via emoji
  *
- * Flow:
- * - Shows after successful study session
- * - 4 emoji options (😍😊😐😞)
- * - Positive → Navigate to store rating
- * - Negative → Navigate to feedback form
+ * FIXES:
+ * ✅ Dialog doesn't dismiss on outside click
+ * ✅ Visual feedback on emoji selection
+ * ✅ 600ms delay before proceeding
+ * ✅ Better UX with selection highlight
  *
  * Package: app/src/main/java/com/hocalingo/app/core/feedback/
  */
@@ -51,7 +54,16 @@ fun SatisfactionDialog(
     onSatisfactionSelected: (SatisfactionLevel) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Dialog(onDismissRequest = onDismiss) {
+    var selectedEmoji by remember { mutableStateOf<SatisfactionLevel?>(null) }
+    val scope = rememberCoroutineScope()
+
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            dismissOnBackPress = false,      // ✅ Back tuşu ile kapanmaz
+            dismissOnClickOutside = false    // ✅ Dışarı tıklanınca kapanmaz
+        )
+    ) {
         Card(
             modifier = modifier.fillMaxWidth(),
             shape = RoundedCornerShape(24.dp),
@@ -123,7 +135,16 @@ fun SatisfactionDialog(
                         EmojiButton(
                             emoji = level.emoji,
                             label = level.displayName,
-                            onClick = { onSatisfactionSelected(level) }
+                            isSelected = selectedEmoji == level,  // ✅ Seçili durumu
+                            enabled = selectedEmoji == null,       // ✅ Seçim yapıldıktan sonra disable
+                            onClick = {
+                                selectedEmoji = level
+                                // ✅ 600ms delay + visual feedback
+                                scope.launch {
+                                    delay(600)
+                                    onSatisfactionSelected(level)
+                                }
+                            }
                         )
                     }
                 }
@@ -133,13 +154,18 @@ fun SatisfactionDialog(
                 // Dismiss button
                 TextButton(
                     onClick = onDismiss,
+                    enabled = selectedEmoji == null,  // ✅ Seçim yapılınca disable
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "Şimdi Değil",
+                        text = if (selectedEmoji != null) "İşleniyor..." else "Şimdi Değil",
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Medium,
-                        color = Color(0xFF95A5A6)
+                        color = if (selectedEmoji != null) {
+                            Color(0xFF95A5A6).copy(alpha = 0.5f)
+                        } else {
+                            Color(0xFF95A5A6)
+                        }
                     )
                 }
             }
@@ -151,12 +177,14 @@ fun SatisfactionDialog(
 private fun EmojiButton(
     emoji: String,
     label: String,
+    isSelected: Boolean,   // ✅ Yeni parametre
+    enabled: Boolean,      // ✅ Yeni parametre
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var isPressed by remember { mutableStateOf(false) }
+    // ✅ Animasyonlu scale
     val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.9f else 1f,
+        targetValue = if (isSelected) 1.15f else 1f,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessLow
@@ -166,10 +194,7 @@ private fun EmojiButton(
 
     Column(
         modifier = modifier
-            .clickable {
-                isPressed = true
-                onClick()
-            }
+            .clickable(enabled = enabled) { onClick() }
             .scale(scale)
             .padding(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -179,7 +204,11 @@ private fun EmojiButton(
             modifier = Modifier
                 .size(56.dp)
                 .background(
-                    color = Color(0xFFF8F9FA),
+                    color = if (isSelected) {
+                        Color(0xFFFF6B35)  // ✅ Seçili rengi
+                    } else {
+                        Color(0xFFF8F9FA)
+                    },
                     shape = CircleShape
                 ),
             contentAlignment = Alignment.Center
@@ -196,9 +225,13 @@ private fun EmojiButton(
         Text(
             text = label,
             fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Medium,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,  // ✅ Seçiliyse bold
             fontSize = 12.sp,
-            color = Color(0xFF7F8C8D),
+            color = if (isSelected) {
+                Color(0xFFFF6B35)  // ✅ Seçili rengi
+            } else {
+                Color(0xFF7F8C8D)
+            },
             textAlign = TextAlign.Center
         )
     }
