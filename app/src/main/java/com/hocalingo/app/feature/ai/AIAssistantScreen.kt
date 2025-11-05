@@ -27,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hocalingo.app.R
 import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import com.hocalingo.app.feature.subscription.PaywallBottomSheet
+import com.hocalingo.app.feature.subscription.SubscriptionEvent
 import com.hocalingo.app.feature.subscription.SubscriptionViewModel
 
 // Poppins font family
@@ -58,6 +59,19 @@ fun AIAssistantScreen(
     val isPremium = subscriptionState.currentSubscription.isPremium
 
     var showPaywall by remember { mutableStateOf(false) }
+
+
+    // ✅ YENİ: Ekran açıldığında subscription state'ini güncelle
+    LaunchedEffect(Unit) {
+        subscriptionViewModel.onEvent(SubscriptionEvent.DismissPaywall)
+    }
+
+    // ✅ YENİ: Premium olduktan sonra paywall'u otomatik kapat
+    LaunchedEffect(isPremium) {
+        if (isPremium) {
+            showPaywall = false
+        }
+    }
 
     // ✅ YENİ: Premium olduktan sonra paywall'u otomatik kapat
     LaunchedEffect(isPremium) {
