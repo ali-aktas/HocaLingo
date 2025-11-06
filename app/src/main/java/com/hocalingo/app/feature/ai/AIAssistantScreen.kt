@@ -60,10 +60,17 @@ fun AIAssistantScreen(
 
     var showPaywall by remember { mutableStateOf(false) }
 
-
-    // ✅ YENİ: Ekran açıldığında subscription state'ini güncelle
+    // ✅ FIXED: Ekran açılışında subscription sync yap
     LaunchedEffect(Unit) {
-        subscriptionViewModel.onEvent(SubscriptionEvent.DismissPaywall)
+        // Sync from RevenueCat to ensure latest state
+        subscriptionViewModel.syncSubscription()
+    }
+
+    // ✅ Premium olduktan sonra paywall'u otomatik kapat
+    LaunchedEffect(isPremium) {
+        if (isPremium) {
+            showPaywall = false
+        }
     }
 
     // ✅ YENİ: Premium olduktan sonra paywall'u otomatik kapat

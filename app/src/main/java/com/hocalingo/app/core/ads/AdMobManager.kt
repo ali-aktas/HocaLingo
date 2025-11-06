@@ -130,6 +130,11 @@ class AdMobManager @Inject constructor(
             _appLaunchAdState.value = AdState.NotLoaded
             _studyRewardedAdState.value = AdState.NotLoaded
 
+            // ✅ CRITICAL FIX: Counter'ları da temizle!
+            adCounterDataStore.resetAppLaunchCount()
+            adCounterDataStore.resetStudyWordCount()
+            DebugHelper.log("🧹 Ad counters reset for premium user")
+
             DebugHelper.logSuccess("✅ All rewarded ads cleared for premium user")
         }
     }

@@ -7,6 +7,7 @@ import com.hocalingo.app.core.common.DebugHelper
 import com.hocalingo.app.core.common.UserPreferencesManager
 import com.hocalingo.app.database.entities.ConceptEntity
 import com.hocalingo.app.database.entities.SelectionStatus
+import com.hocalingo.app.feature.subscription.SubscriptionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -37,6 +38,7 @@ import javax.inject.Inject
 class WordSelectionViewModel @Inject constructor(
     private val repository: WordSelectionRepository,
     private val preferencesManager: UserPreferencesManager,
+    private val subscriptionRepository: SubscriptionRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -62,6 +64,24 @@ class WordSelectionViewModel @Inject constructor(
         DebugHelper.logWordSelection("Package ID: $packageId")
         loadWords()
         loadTodaySelectionCount()
+        observePremiumStatus()
+    }
+
+    /**
+     * ✅ CRITICAL FIX: Premium durumu reaktif olarak takip et
+     * Premium aldığında otomatik olarak isPremium state'i güncelleniyor
+     */
+    private fun observePremiumStatus() {
+        viewModelScope.launch {
+            subscriptionRepository.getLocalSubscriptionState().collect { state ->
+                _uiState.update { it.copy(isPremium = state.isPremium) }
+
+                if (state.isPremium) {
+                    DebugHelper.log("👑 Premium detected in WordSelectionViewModel")
+                    DebugHelper.log("✅ Daily limit disabled for premium user")
+                }
+            }
+        }
     }
 
     fun onEvent(event: WordSelectionEvent) {
@@ -77,6 +97,14 @@ class WordSelectionViewModel @Inject constructor(
             WordSelectionEvent.DismissDailyLimitDialog -> dismissDailyLimitDialog()
             WordSelectionEvent.DismissNoWordsDialog -> dismissNoWordsDialog()
             WordSelectionEvent.ShowPremiumFromLimitDialog -> showPremiumFromLimitDialog()
+            WordSelectionEvent.ReloadAfterPremium -> reloadAfterPremium()
+        }
+    }
+
+    private fun reloadAfterPremium() {
+        viewModelScope.launch {
+            // Kartları yeniden yükle
+            loadWords()
         }
     }
 
@@ -221,13 +249,28 @@ class WordSelectionViewModel @Inject constructor(
                 addToUndoStack(UndoAction(conceptId, SelectionStatus.SELECTED))
 
                 // 4. Update counts
-                _uiState.update {
-                    it.copy(
-                        selectedCount = it.selectedCount + 1,
-                        todaySelectionCount = it.todaySelectionCount + 1,
-                        processedWords = it.processedWords + 1
-                    )
+                // ✅ FIXED: Premium değilse today count artır
+                if (!currentState.isPremium) {
+                    _uiState.update {
+                        it.copy(
+                            selectedCount = it.selectedCount + 1,
+                            todaySelectionCount = it.todaySelectionCount + 1,
+                            processedWords = it.processedWords + 1
+                        )
+                    }
+                    DebugHelper.logWordSelection("Today selection count updated: ${currentState.todaySelectionCount + 1}")
+
+                } else {
+                    // Premium user - today count artmıyor
+                    _uiState.update {
+                        it.copy(
+                            selectedCount = it.selectedCount + 1,
+                            processedWords = it.processedWords + 1
+                        )
+                    }
+                    DebugHelper.log("👑 Premium user - Today count not incremented")
                 }
+
                 // 5. Next word
                 moveToNextWord()
 
@@ -322,14 +365,28 @@ class WordSelectionViewModel @Inject constructor(
                 repository.deleteSelection(lastAction.conceptId)
 
                 // 2. Update counts
+                val currentState = _uiState.value
                 when (lastAction.status) {
                     SelectionStatus.SELECTED -> {
-                        _uiState.update {
-                            it.copy(
-                                selectedCount = (it.selectedCount - 1).coerceAtLeast(0),
-                                todaySelectionCount = (it.todaySelectionCount - 1).coerceAtLeast(0),
-                                processedWords = (it.processedWords - 1).coerceAtLeast(0)
-                            )
+                        // ✅ FIXED: Premium değilse today count azalt
+                        if (!currentState.isPremium) {
+                            _uiState.update {
+                                it.copy(
+                                    selectedCount = (it.selectedCount - 1).coerceAtLeast(0),
+                                    todaySelectionCount = (it.todaySelectionCount - 1).coerceAtLeast(0),
+                                    processedWords = (it.processedWords - 1).coerceAtLeast(0)
+                                )
+                            }
+                            DebugHelper.logWordSelection("Today selection count after undo: ${(currentState.todaySelectionCount - 1).coerceAtLeast(0)}")
+                        } else {
+                            // Premium user - today count azaltılmıyor
+                            _uiState.update {
+                                it.copy(
+                                    selectedCount = (it.selectedCount - 1).coerceAtLeast(0),
+                                    processedWords = (it.processedWords - 1).coerceAtLeast(0)
+                                )
+                            }
+                            DebugHelper.log("👑 Premium user - Today count not decremented on undo")
                         }
                     }
                     SelectionStatus.HIDDEN -> {
@@ -344,7 +401,6 @@ class WordSelectionViewModel @Inject constructor(
                 }
 
                 // 3. Bring back the card
-                val currentState = _uiState.value
                 val previousIndex = (currentState.currentWordIndex - 1).coerceAtLeast(0)
 
                 val undoneWord = currentState.remainingWords.find { it.id == lastAction.conceptId }
@@ -514,6 +570,7 @@ sealed interface WordSelectionEvent {
     data object DismissDailyLimitDialog : WordSelectionEvent
     data object DismissNoWordsDialog : WordSelectionEvent
     data object ShowPremiumFromLimitDialog : WordSelectionEvent
+    data object ReloadAfterPremium : WordSelectionEvent
 }
 
 sealed interface WordSelectionEffect {

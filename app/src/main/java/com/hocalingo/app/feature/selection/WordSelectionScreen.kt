@@ -143,11 +143,23 @@ fun WordSelectionScreen(
                     viewModel.onEvent(WordSelectionEvent.DismissDailyLimitDialog)
                     onNavigateToHome()
                 },
-                premiumSheetContent = {
-                    // Premium sheet direkt render et
-                    PaywallBottomSheet(  // ✅ Doğru isim
-                        onDismiss = it  // ✅ Lambda parametresi
-                    )
+                onShowPremium = {
+                    viewModel.onEvent(WordSelectionEvent.ShowPremiumFromLimitDialog)
+                }
+            )
+        }
+
+        // Premium Bottom Sheet
+        if (uiState.showPremiumSheet) {
+            PaywallBottomSheet(
+                onDismiss = {
+                    viewModel.onEvent(WordSelectionEvent.DismissPremium)
+                    onNavigateToHome()  // Cancel → Home
+                },
+                onPurchaseSuccess = {
+                    viewModel.onEvent(WordSelectionEvent.DismissPremium)
+                    // ✅ Premium alındı → Kartları reload et
+                    viewModel.onEvent(WordSelectionEvent.ReloadAfterPremium)
                 }
             )
         }

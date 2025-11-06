@@ -72,11 +72,11 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
 
-        // ✅ Initialize AdMob SDK
+        // Initialize AdMob SDK
         initializeAdMob()
 
-        // ✅ Increment app launch count
-        incrementAppLaunchCount()
+        // ✅ CRITICAL FIX: Premium kontrolü ile app launch counter
+        incrementAppLaunchCountIfFree()
 
         // ✅ Enable edge-to-edge (mandatory for API 35)
         enableEdgeToEdge()
@@ -183,14 +183,26 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
-     * Increment app launch count (for rewarded ad logic)
+     * ✅ CRITICAL FIX: App launch counter'ı sadece free user'lar için artır
+     * Premium user için counter artmıyor, böylece rewarded ad gösterilmiyor
      */
-    private fun incrementAppLaunchCount() {
+    private fun incrementAppLaunchCountIfFree() {
         lifecycleScope.launch {
             try {
-                adMobManager.incrementAppLaunchCount()
+                // Premium kontrolü yap
+                val isPremium = adMobManager.isPremiumUser()
+
+                if (!isPremium) {
+                    // Free user - counter'ı artır
+                    adMobManager.incrementAppLaunchCount()
+                    DebugHelper.log("📊 App launch counter incremented (Free user)")
+                } else {
+                    // Premium user - counter artırılmıyor
+                    DebugHelper.log("👑 Premium user - App launch counter skipped")
+                }
+
             } catch (e: Exception) {
-                println("❌ Failed to increment app launch count: ${e.message}")
+                DebugHelper.logError("❌ Failed to increment app launch count", e)
             }
         }
     }

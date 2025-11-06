@@ -40,10 +40,8 @@ private val PoppinsFontFamily = FontFamily(
 fun DailyLimitDialog(
     onDismiss: () -> Unit,
     onGoHome: () -> Unit,
-    premiumSheetContent: @Composable (onDismissPremium: () -> Unit) -> Unit  // ✅ Callback al
+    onShowPremium: () -> Unit  // ✅ Basit callback
 ) {
-    // 🆕 Local premium state
-    var showLocalPremium by remember { mutableStateOf(false) }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -110,7 +108,7 @@ fun DailyLimitDialog(
 
                 // Premium Button
                 Button(
-                    onClick = { showLocalPremium = true },  // 🆕 Local state
+                    onClick = onShowPremium,  // ✅ Event çağır
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
@@ -164,11 +162,6 @@ fun DailyLimitDialog(
                         fontSize = 16.sp
                     )
                 }
-            }
-
-            // 🆕 Premium sheet dialog içinde
-            if (showLocalPremium) {
-                premiumSheetContent { showLocalPremium = false }  // ✅ Trailing lambda
             }
         }
     }

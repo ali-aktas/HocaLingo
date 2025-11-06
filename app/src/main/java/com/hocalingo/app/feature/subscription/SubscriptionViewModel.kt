@@ -102,6 +102,24 @@ class SubscriptionViewModel @Inject constructor(
     }
 
     /**
+     * ✅ CRITICAL FIX: Sync subscription from RevenueCat
+     * AI Assistant ekranı gibi premium-dependent ekranlarda çağrılmalı
+     */
+    fun syncSubscription() {
+        viewModelScope.launch {
+            DebugHelper.log("🔄 Syncing subscription state...")
+            when (val result = getSubscriptionStatusUseCase.syncFromRemote()) {
+                is Result.Success -> {
+                    DebugHelper.logSuccess("✅ Subscription synced: isPremium=${result.data.isPremium}")
+                }
+                is Result.Error -> {
+                    DebugHelper.logError("❌ Sync failed", result.error)
+                }
+            }
+        }
+    }
+
+    /**
      * Handle user events
      */
     fun onEvent(event: SubscriptionEvent) {
