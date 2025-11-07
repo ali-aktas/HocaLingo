@@ -447,12 +447,21 @@ class StudyViewModel @Inject constructor(
                             return@launch
                         }
 
-                        // 8. Check native ad (every 10 words)
+                        // 8. Check native ad (every 10 words) - ONLY FOR FREE USERS
                         if (currentQueueIndex > 0 && currentQueueIndex % 10 == 0) {
-                            DebugHelper.log("🎯 10 words completed - showing native ad")
-                            _uiState.update { it.copy(showNativeAd = true) }
-                            nativeAdLoader.loadStudyScreenAd()
-                            return@launch
+                            // Premium kontrolü
+                            val isPremium = subscriptionRepository.isPremium()
+
+                            if (!isPremium) {
+                                // Free user - show native ad
+                                DebugHelper.log("🎯 10 words completed - showing native ad")
+                                _uiState.update { it.copy(showNativeAd = true) }
+                                nativeAdLoader.loadStudyScreenAd()
+                                return@launch
+                            } else {
+                                // Premium user - skip ad, continue with next word
+                                DebugHelper.log("👑 Premium user - skipping native ad at word 10")
+                            }
                         }
 
                         // 9. Load next word
