@@ -8,7 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.hocalingo.app.database.entities.StudyDirection
 import com.hocalingo.app.database.entities.WordProgressEntity
-import com.hocalingo.app.feature.ai.WordInfo
+import com.hocalingo.app.database.dao.WordInfo
 import kotlinx.coroutines.flow.Flow
 
 @Dao

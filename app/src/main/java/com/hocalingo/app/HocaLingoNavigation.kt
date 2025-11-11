@@ -29,31 +29,39 @@ import com.hocalingo.app.feature.study.StudyScreen
 import com.hocalingo.app.feature.addword.presentation.AddWordScreen
 import com.hocalingo.app.feature.ai.AIAssistantScreen
 import com.hocalingo.app.feature.profile.ProfileScreen
+import com.hocalingo.app.feature.ai.ui.StoryDetailScreen
+import com.hocalingo.app.feature.ai.AIViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import android.content.Intent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
+import com.hocalingo.app.core.ui.theme.ThemeViewModel
+import com.hocalingo.app.feature.ai.AIEvent
 
 /**
  * Enhanced HocaLingo Navigation Routes
  * ✅ Onboarding Intro (3 pages) added
  */
 object HocaRoutes {
-    // Onboarding Flow
     const val SPLASH = "splash"
     const val AUTH = "auth"
-    const val ONBOARDING_INTRO = "onboarding_intro" // ✅ NEW: 3-page intro
+    const val ONBOARDING_INTRO = "onboarding_intro"
     const val ONBOARDING_LANGUAGE = "onboarding_language"
     const val ONBOARDING_LEVEL = "onboarding_level"
     const val PACKAGE_SELECTION = "package_selection"
     const val WORD_SELECTION = "word_selection"
-
-    // Main App Flow (with bottom navigation)
     const val HOME = "home"
     const val STUDY = "study"
     const val ADD_WORD = "add_word"
     const val AI_ASSISTANT = "ai_assistant"
     const val PROFILE = "profile"
     const val WORDS_LIST = "words_list"
-
-    // Settings and other screens
     const val SETTINGS = "settings"
+    const val AI_STORY_DETAIL = "ai_story_detail"
 }
 
 /**
@@ -263,6 +271,63 @@ fun HocaLingoNavigation(
                 }
             )
         }
+
+        composable(
+            route = "${HocaRoutes.AI_STORY_DETAIL}/{storyId}",
+            arguments = listOf(
+                navArgument("storyId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val storyId = backStackEntry.arguments?.getString("storyId") ?: ""
+            val viewModel: AIViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            val themeViewModel: ThemeViewModel = hiltViewModel()
+            val isDarkTheme = themeViewModel.shouldUseDarkTheme()
+            val context = LocalContext.current
+
+            LaunchedEffect(storyId) {
+                viewModel.onEvent(AIEvent.OpenStoryDetail(storyId))
+            }
+
+            val story = uiState.currentStory
+
+            if (story != null) {
+                StoryDetailScreen(
+                    story = story,
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onShare = {
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_TEXT, story.content)
+                            putExtra(Intent.EXTRA_TITLE, story.title)
+                        }
+                        context.startActivity(
+                            Intent.createChooser(shareIntent, "Hikayeyi Paylaş")
+                        )
+                    },
+                    onDelete = {
+                        viewModel.onEvent(AIEvent.DeleteStory(storyId))
+                        navController.popBackStack()
+                    },
+                    onToggleFavorite = {
+                        viewModel.onEvent(AIEvent.ToggleFavorite(storyId))
+                    },
+                    isDarkTheme = isDarkTheme
+                )
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+        }
+
     }
 }
 

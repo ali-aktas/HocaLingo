@@ -35,6 +35,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.hocalingo.app.core.config.RemoteConfigManager
 
 /**
  * MainActivity - Professional Edge-to-Edge Implementation with AdMob
@@ -65,6 +66,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var nativeAdLoader: NativeAdLoader
 
+    @Inject
+    lateinit var remoteConfigManager: RemoteConfigManager
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Install splash screen first
@@ -80,6 +84,11 @@ class MainActivity : ComponentActivity() {
 
         // ✅ Enable edge-to-edge (mandatory for API 35)
         enableEdgeToEdge()
+
+        lifecycleScope.launch {
+            remoteConfigManager.fetchAndActivate()
+            DebugHelper.log("🔥 Remote Config fetched on app start")
+        }
 
         setContent {
             // Theme management
