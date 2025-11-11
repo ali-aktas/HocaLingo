@@ -21,6 +21,7 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import com.hocalingo.app.database.dao.WordInfo
+import com.hocalingo.app.feature.subscription.SubscriptionRepository
 
 /**
  * StoryRepositoryImpl - Full Business Logic Implementation
@@ -38,12 +39,27 @@ import com.hocalingo.app.database.dao.WordInfo
 class StoryRepositoryImpl @Inject constructor(
     private val geminiApi: GeminiApiService,
     private val database: HocaLingoDatabase,
-    private val remoteConfig: RemoteConfigManager
+    private val remoteConfig: RemoteConfigManager,
+    private val subscriptionRepository: SubscriptionRepository
 ) : StoryRepository {
 
     companion object {
-        private const val DAILY_LIMIT = 2
+        private const val FREE_DAILY_LIMIT = 1    // Free user
+        private const val PREMIUM_DAILY_LIMIT = 2 // Premium user
         private const val WORD_COUNT = 25
+    }
+
+    // getDailyLimit() FONKSİYONU EKLE (class içine, companion object'in hemen altına):
+
+    // ✅ YENİ FONKSİYON - EKLE:
+    /**
+     * Get daily story limit based on premium status
+     * Free: 1 story/day
+     * Premium: 2 stories/day
+     */
+    private suspend fun getDailyLimit(): Int {
+        val isPremium = subscriptionRepository.isPremium()
+        return if (isPremium) PREMIUM_DAILY_LIMIT else FREE_DAILY_LIMIT
     }
 
     override suspend fun generateStory(
@@ -185,11 +201,12 @@ class StoryRepositoryImpl @Inject constructor(
         try {
             val today = getTodayString()
             val quota = database.storyDao().getQuotaForDate(today)
+            val limit = getDailyLimit()  // ✅ Dynamic limit
 
             val remaining = if (quota == null) {
-                DAILY_LIMIT
+                limit
             } else {
-                DAILY_LIMIT - quota.count
+                limit - quota.count
             }
 
             Result.Success(remaining.coerceAtLeast(0))
@@ -200,11 +217,12 @@ class StoryRepositoryImpl @Inject constructor(
 
     override suspend fun getQuotaInfo(): Result<Pair<Int, Int>> = withContext(Dispatchers.IO) {
         try {
+            val limit = getDailyLimit()  // ✅ Dynamic limit
             when (val result = checkDailyQuota()) {
                 is Result.Success -> {
                     val remaining = result.data
-                    val used = DAILY_LIMIT - remaining
-                    Result.Success(Pair(remaining, DAILY_LIMIT))
+                    val used = limit - remaining
+                    Result.Success(Pair(used, limit))
                 }
                 is Result.Error -> result
             }

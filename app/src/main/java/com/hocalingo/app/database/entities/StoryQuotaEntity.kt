@@ -14,7 +14,7 @@ import androidx.room.PrimaryKey
  *
  * Business Logic:
  * - Premium users: 2 stories/day
- * - Free users: 0 stories (feature disabled)
+ * - Free users: 1 stories (feature disabled)
  * - Auto-reset at midnight (resetTime)
  *
  * Example:

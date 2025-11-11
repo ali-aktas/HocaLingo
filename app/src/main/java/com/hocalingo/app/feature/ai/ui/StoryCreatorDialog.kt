@@ -143,7 +143,14 @@ fun StoryCreatorDialog(
                     // Story type selection
                     TypeSelectionSection(
                         selectedType = selectedType,
-                        onTypeSelected = { selectedType = it },
+                        onTypeSelected = { type ->
+                            if (type != StoryType.STORY && !isPremium) {
+                                onShowPremiumPaywall()
+                            } else {
+                                selectedType = type
+                            }
+                        },
+                        isPremium = isPremium,  // ✅ EKLE
                         enabled = !isGenerating,
                         isDarkTheme = isDarkTheme
                     )
@@ -303,6 +310,7 @@ private fun TopicInputSection(
 private fun TypeSelectionSection(
     selectedType: StoryType,
     onTypeSelected: (StoryType) -> Unit,
+    isPremium: Boolean,  // ✅ EKLE
     enabled: Boolean,
     isDarkTheme: Boolean
 ) {
@@ -320,11 +328,21 @@ private fun TypeSelectionSection(
             selectedOption = selectedType,
             onOptionSelected = onTypeSelected,
             enabled = enabled,
-            isPremiumRequired = { false },
+            isPremiumRequired = { it != StoryType.STORY && !isPremium },  // ✅ Sadece STORY free
             isDarkTheme = isDarkTheme,
             optionText = { it.displayName },
             optionIcon = { it.icon }
         )
+
+        // ✅ FREE USER UYARISI EKLE
+        if (!isPremium) {
+            Text(
+                "🔒 Motivasyon, Diyalog ve Makale Premium üyelere özeldir",
+                fontFamily = PoppinsFontFamily,
+                fontSize = 11.sp,
+                color = Color(0xFFFFB74D)
+            )
+        }
     }
 }
 
