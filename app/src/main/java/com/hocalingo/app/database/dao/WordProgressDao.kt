@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.hocalingo.app.database.entities.StudyDirection
 import com.hocalingo.app.database.entities.WordProgressEntity
+import com.hocalingo.app.feature.ai.WordInfo
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -87,4 +88,37 @@ interface WordProgressDao {
         ORDER BY next_review_at ASC
     """)
     fun getWordsForReviewFlow(currentTime: Long): Flow<List<WordProgressEntity>>
+
+    /**
+     * Get learned words for AI story generation
+     *
+     * Criteria:
+     * - lastReviewAt NOT NULL (at least reviewed once)
+     * - intervalDays < maxIntervalDays (recently practiced)
+     * - Random selection for variety
+     *
+     * Used by StoryRepository to select vocabulary
+     *
+     * @param maxIntervalDays Maximum interval (difficulty-based)
+     * @param limit Number of words to return (default: 25)
+     * @return List of WordInfo with id, english, turkish
+     */
+    @Query("""
+    SELECT 
+        c.id as id,
+        c.english as english,
+        c.turkish as turkish
+    FROM concepts c
+    INNER JOIN word_progress wp ON c.id = wp.concept_id
+    WHERE wp.last_review_at IS NOT NULL
+    AND wp.interval_days < :maxIntervalDays
+    ORDER BY RANDOM()
+    LIMIT :limit
+    """)
+    suspend fun getWordsForStoryGeneration(
+        maxIntervalDays: Int,
+        limit: Int = 25
+    ): List<WordInfo>
+
+
 }

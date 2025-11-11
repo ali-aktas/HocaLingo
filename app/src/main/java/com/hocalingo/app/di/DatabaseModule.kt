@@ -7,6 +7,7 @@ import com.hocalingo.app.database.LocalPackageLoader
 import com.hocalingo.app.database.dao.CombinedDataDao
 import com.hocalingo.app.database.dao.ConceptDao
 import com.hocalingo.app.database.dao.DailyStatsDao
+import com.hocalingo.app.database.dao.StoryDao
 import com.hocalingo.app.database.dao.StudySessionDao
 import com.hocalingo.app.database.dao.UserPreferencesDao
 import com.hocalingo.app.database.dao.UserSelectionDao
@@ -119,4 +120,11 @@ object DatabaseModule {
     ): LocalPackageLoader {
         return LocalPackageLoader(context, database)
     }
+
+    @Provides
+    @Singleton
+    fun provideStoryDao(database: HocaLingoDatabase): StoryDao {
+        return database.storyDao()
+    }
+
 }

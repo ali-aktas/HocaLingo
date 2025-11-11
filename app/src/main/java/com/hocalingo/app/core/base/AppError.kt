@@ -23,6 +23,12 @@ sealed class AppError(
     object StudySessionEmpty : AppError("No words available for study")
     object DuplicateWord : AppError("Word already exists")
     object InvalidLevel : AppError("Invalid language level")
+
+    // AI Story feature errors
+    object QuotaExceeded : AppError("Daily story generation limit exceeded")
+    object NoWordsAvailable : AppError("No learned words available for story generation")
+    object ConfigurationError : AppError("Configuration error")
+    data class ApiError(override val message: String) : AppError(message)
 }
 
 fun Exception.toAppError(): AppError = when (this) {
@@ -46,5 +52,9 @@ fun AppError.toUserMessage(): String = when (this) {
     AppError.StudySessionEmpty -> "Çalışılacak kelime yok"
     AppError.DuplicateWord -> "Bu kelime zaten mevcut"
     AppError.InvalidLevel -> "Geçersiz dil seviyesi"
+    AppError.QuotaExceeded -> "Günlük hikaye limitinize ulaştınız"
+    AppError.NoWordsAvailable -> "Hikaye oluşturmak için daha fazla kelime öğrenmeniz gerekiyor"
+    AppError.ConfigurationError -> "Yapılandırma hatası"
+    is AppError.ApiError -> message
     is AppError.Unknown -> "Beklenmeyen bir hata oluştu"
 }

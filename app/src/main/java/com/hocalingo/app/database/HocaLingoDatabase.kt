@@ -1,5 +1,8 @@
 package com.hocalingo.app.database
 
+import com.hocalingo.app.database.dao.StoryDao
+import com.hocalingo.app.database.entities.StoryEntity
+import com.hocalingo.app.database.entities.StoryQuotaEntity
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -48,9 +51,11 @@ import com.hocalingo.app.database.entities.WordProgressEntity
         StudySessionEntity::class,
         DailyStatsEntity::class,
         UserPreferencesEntity::class,
-        WordPackageEntity::class
+        WordPackageEntity::class,
+        StoryEntity::class,
+        StoryQuotaEntity::class
     ],
-    version = 3, // 🔥 UPDATED: Version 1 → 2 for hybrid learning system
+    version = 4,
     exportSchema = true
 )
 @TypeConverters(DatabaseTypeConverters::class)
@@ -65,6 +70,7 @@ abstract class HocaLingoDatabase : RoomDatabase() {
     abstract fun userPreferencesDao(): UserPreferencesDao
     abstract fun wordPackageDao(): WordPackageDao
     abstract fun combinedDataDao(): CombinedDataDao
+    abstract fun storyDao(): StoryDao
 
     companion object {
         const val DATABASE_NAME = "hocalingo_database"
@@ -161,6 +167,61 @@ abstract class HocaLingoDatabase : RoomDatabase() {
             }
         }
 
+
+        // ← BURAYI YENİ EKLE:
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                try {
+                    // Stories table
+                    database.execSQL("""
+                CREATE TABLE IF NOT EXISTS `generated_stories` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `title` TEXT NOT NULL,
+                    `content` TEXT NOT NULL,
+                    `used_words` TEXT NOT NULL,
+                    `topic` TEXT,
+                    `type` TEXT NOT NULL,
+                    `difficulty` TEXT NOT NULL,
+                    `length` TEXT NOT NULL,
+                    `created_at` INTEGER NOT NULL,
+                    `is_favorite` INTEGER NOT NULL DEFAULT 0,
+                    `is_premium` INTEGER NOT NULL DEFAULT 1
+                )
+            """)
+
+                    // Indexes
+                    database.execSQL("""
+                CREATE INDEX IF NOT EXISTS `index_generated_stories_created_at` 
+                ON `generated_stories` (`created_at`)
+            """)
+
+                    database.execSQL("""
+                CREATE INDEX IF NOT EXISTS `index_generated_stories_type` 
+                ON `generated_stories` (`type`)
+            """)
+
+                    database.execSQL("""
+                CREATE INDEX IF NOT EXISTS `index_generated_stories_is_favorite` 
+                ON `generated_stories` (`is_favorite`)
+            """)
+
+                    // Quota table
+                    database.execSQL("""
+                CREATE TABLE IF NOT EXISTS `story_quota` (
+                    `date` TEXT NOT NULL PRIMARY KEY,
+                    `count` INTEGER NOT NULL DEFAULT 0,
+                    `reset_time` INTEGER NOT NULL
+                )
+            """)
+
+                    Log.d("HocaLingoDatabase", "✅ Migration 3→4 completed")
+                } catch (e: Exception) {
+                    Log.e("HocaLingoDatabase", "❌ Migration 3→4 failed", e)
+                    throw e
+                }
+            }
+        }
+
         /**
          * Get database instance with singleton pattern
          *
@@ -175,7 +236,7 @@ abstract class HocaLingoDatabase : RoomDatabase() {
                     HocaLingoDatabase::class.java,
                     DATABASE_NAME
                 )
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4) // ← MIGRATION_3_4 ekle
                     .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
