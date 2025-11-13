@@ -43,7 +43,7 @@ interface GeminiApiService {
      * - SocketTimeoutException: Timeout (30s)
      * - IOException: Network errors
      */
-    @POST("models/gemini-pro:generateContent")
+    @POST("models/gemini-2.5-flash:generateContent")
     suspend fun generateContent(
         @Query("key") apiKey: String,
         @Body request: GeminiRequest

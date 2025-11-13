@@ -156,6 +156,9 @@ dependencies {
     // Icons
     implementation(libs.compose.material.icons.extended)
 
+    // Lottie Animations
+    implementation(libs.lottie.compose)
+
     // =========================================
     // NAVIGATION
     // =========================================

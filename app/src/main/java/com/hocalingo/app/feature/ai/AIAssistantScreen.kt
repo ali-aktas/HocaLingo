@@ -1,9 +1,12 @@
 package com.hocalingo.app.feature.ai
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -11,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -25,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hocalingo.app.R
 import com.hocalingo.app.core.ui.theme.ThemeViewModel
+import com.hocalingo.app.feature.ai.ui.GeneratingAnimationDialog
 import com.hocalingo.app.feature.ai.ui.StoryCreatorDialog
 import com.hocalingo.app.feature.ai.ui.StoryHistorySheet
 import com.hocalingo.app.feature.subscription.PaywallBottomSheet
@@ -37,6 +42,18 @@ private val PoppinsFontFamily = FontFamily(
     Font(R.font.poppins_black, FontWeight.Black)
 )
 
+/**
+ * AIAssistantScreen - Redesigned Version
+ *
+ * New Design Features:
+ * ✅ Dark gradient background (#1A1625 → #211A2E)
+ * ✅ Hero section with Lingo AI character
+ * ✅ Progress bar (quota visualization)
+ * ✅ Modern pill-style buttons
+ * ✅ Premium section for free users
+ * ✅ Premium badge for premium users
+ * ✅ Lottie generation animation
+ */
 @Composable
 fun AIAssistantScreen(
     onNavigateBack: () -> Unit = {},
@@ -50,6 +67,7 @@ fun AIAssistantScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     var showPaywall by remember { mutableStateOf(false) }
 
+    // Handle effects
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
@@ -68,82 +86,110 @@ fun AIAssistantScreen(
         }
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        "AI Asistan",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold
+    // Main container with gradient background
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF1A1625),
+                        Color(0xFF211A2E)
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, "Geri")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
                 )
             )
-        }
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            contentPadding = PaddingValues(vertical = 20.dp)
-        ) {
-            item {
-                HeroCard(isDarkTheme = isDarkTheme)
-            }
-
-            if (!uiState.isPremium) {
-                item {
-                    PremiumUpgradeCard(
-                        onClick = { showPaywall = true },
-                        isDarkTheme = isDarkTheme
+    ) {
+        Scaffold(
+            containerColor = Color.Transparent,
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            "AI Hikaye Asistanı",
+                            fontFamily = PoppinsFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(
+                                Icons.Default.ArrowBack,
+                                contentDescription = "Geri",
+                                tint = Color.White
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent
                     )
-                }
-            }
-
-            item {
-                QuotaCard(
-                    quotaText = uiState.quotaText,
-                    hasQuota = uiState.hasQuotaRemaining,
-                    isPremium = uiState.isPremium,
-                    isDarkTheme = isDarkTheme
                 )
             }
-
-            item {
-                CreateStoryButton(
-                    onClick = { viewModel.onEvent(AIEvent.OpenCreatorDialog) },
-                    enabled = uiState.hasQuotaRemaining,
-                    isDarkTheme = isDarkTheme
-                )
-            }
-
-            if (uiState.stories.isNotEmpty()) {
+        ) { paddingValues ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                contentPadding = PaddingValues(vertical = 20.dp)
+            ) {
+                // Hero section with Lingo AI character
                 item {
-                    HistoryButton(
-                        storyCount = uiState.stories.size,
-                        onClick = { viewModel.onEvent(AIEvent.ShowHistory) },
-                        isDarkTheme = isDarkTheme
+                    HeroSection(
+                        isPremium = uiState.isPremium,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
-            }
 
-            item {
-                FeaturesSection(isDarkTheme = isDarkTheme)
+                // Quota progress bar
+                item {
+                    QuotaProgressCard(
+                        quotaUsed = uiState.quotaUsed,
+                        quotaTotal = uiState.quotaTotal,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                // Create story button
+                item {
+                    CreateStoryButton(
+                        onClick = { viewModel.onEvent(AIEvent.OpenCreatorDialog) },
+                        enabled = uiState.hasQuotaRemaining,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                // Story history button
+                if (uiState.stories.isNotEmpty()) {
+                    item {
+                        HistoryButton(
+                            storyCount = uiState.stories.size,
+                            onClick = { viewModel.onEvent(AIEvent.ShowHistory) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+
+                // Premium section (free users) or Premium badge (premium users)
+                item {
+                    if (!uiState.isPremium) {
+                        PremiumUpgradeSection(
+                            onUpgradeClick = { showPaywall = true },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else {
+                        PremiumUserBadge(
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
             }
         }
     }
 
+    // Dialogs
     if (showPaywall && !uiState.isPremium) {
         PaywallBottomSheet(
             onDismiss = { showPaywall = false },
@@ -164,7 +210,7 @@ fun AIAssistantScreen(
                 viewModel.onEvent(AIEvent.GenerateStory(topic, type, difficulty, length))
             },
             onShowPremiumPaywall = { showPaywall = true },
-            isDarkTheme = isDarkTheme
+            isDarkTheme = isDarkTheme  // ✅ EKLE
         )
     }
 
@@ -183,349 +229,367 @@ fun AIAssistantScreen(
             isDarkTheme = isDarkTheme
         )
     }
+
+    // Generating animation dialog
+    if (uiState.isGenerating) {
+        GeneratingAnimationDialog()
+    }
 }
 
+/**
+ * Hero Section - Lingo AI Character with title
+ */
 @Composable
-private fun HeroCard(isDarkTheme: Boolean) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+private fun HeroSection(
+    isPremium: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .height(280.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF2D1B4E),
+                        Color(0xFF1A1625)
+                    )
+                )
+            ),
+        contentAlignment = Alignment.Center
     ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Lingo AI Character Image
+            Image(
+                painter = painterResource(R.drawable.lingo_ai_image),
+                contentDescription = "Lingo AI Asistan",
+                modifier = Modifier
+                    .size(160.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Fit
+            )
+
+            // Title
+            Text(
+                text = "Fikirlerini hayata geçir",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+
+            // Subtitle
+            Text(
+                text = "Hayal gücünün sınırlarını zorla ve\nbenzersiz hikayeler yarat.",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Normal,
+                fontSize = 14.sp,
+                color = Color.White.copy(alpha = 0.7f),
+                textAlign = TextAlign.Center,
+                lineHeight = 20.sp
+            )
+        }
+    }
+}
+
+/**
+ * Quota Progress Card - Shows remaining stories
+ */
+@Composable
+private fun QuotaProgressCard(
+    quotaUsed: Int,
+    quotaTotal: Int,
+    modifier: Modifier = Modifier
+) {
+    val quotaRemaining = quotaTotal - quotaUsed
+    val progress = quotaUsed.toFloat() / quotaTotal.toFloat()
+
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color(0xFF2D1B4E))
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            text = "$quotaRemaining/$quotaTotal hikaye kaldı",
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 15.sp,
+            color = Color.White
+        )
+
+        // Progress bar
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = if (isDarkTheme) {
-                            listOf(Color(0xFF4A148C), Color(0xFF6A1B9A))
-                        } else {
-                            listOf(Color(0xFF667eea), Color(0xFF764ba2))
-                        }
-                    )
-                )
-                .padding(32.dp),
-            contentAlignment = Alignment.Center
+                .height(8.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(Color(0xFF1A1625))
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .background(
-                            Color.White.copy(alpha = 0.2f),
-                            RoundedCornerShape(50.dp)
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.onboarding_teacher_3),
-                        contentDescription = "AI Assistant",
-                        modifier = Modifier.size(60.dp),
-                        contentScale = ContentScale.Fit
-                    )
-                }
-
-                Text(
-                    text = "AI Hikaye Oluşturucu",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Black,
-                    fontSize = 24.sp,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                )
-
-                Text(
-                    text = "Öğrendiğiniz kelimelerle kişiselleştirilmiş hikayeler oluşturun",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 14.sp,
-                    color = Color.White.copy(alpha = 0.9f),
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun PremiumUpgradeCard(
-    onClick: () -> Unit,
-    isDarkTheme: Boolean
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isDarkTheme) Color(0xFF2D2D2D) else Color(0xFFFFF8E1)
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.weight(1f)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Stars,
-                    contentDescription = null,
-                    tint = if (isDarkTheme) Color(0xFFFFB74D) else Color(0xFFFF9800),
-                    modifier = Modifier.size(32.dp)
-                )
-                Column {
-                    Text(
-                        "Premium'a Geçin",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp,
-                        color = if (isDarkTheme) Color.White else Color.Black
-                    )
-                    Text(
-                        "Tüm özelliklere erişin",
-                        fontFamily = PoppinsFontFamily,
-                        fontSize = 12.sp,
-                        color = if (isDarkTheme) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.7f)
-                    )
-                }
-            }
-
-            Button(
-                onClick = onClick,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isDarkTheme) Color(0xFFFFB74D) else Color(0xFFFF9800)
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(
-                    "Yükselt",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 13.sp
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun QuotaCard(
-    quotaText: String,
-    hasQuota: Boolean,
-    isPremium: Boolean,
-    isDarkTheme: Boolean
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isDarkTheme) Color(0xFF2D2D2D) else Color(0xFFF5F5F5)
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = if (hasQuota) Icons.Default.CheckCircle else Icons.Default.Warning,
-                    contentDescription = null,
-                    tint = if (hasQuota) Color(0xFF4CAF50) else Color(0xFFFF5252),
-                    modifier = Modifier.size(28.dp)
-                )
-                Column {
-                    Text(
-                        "Günlük Hikaye Hakkı",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 13.sp,
-                        color = if (isDarkTheme) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.7f)
-                    )
-                    Text(
-                        quotaText,
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                        color = if (hasQuota) Color(0xFF4CAF50) else Color(0xFFFF5252)
-                    )
-                }
-            }
-
-            if (isPremium) {
-                Surface(
-                    color = Color(0xFFFFD700).copy(alpha = 0.2f),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            Icons.Default.Stars,
-                            contentDescription = null,
-                            tint = Color(0xFFFFD700),
-                            modifier = Modifier.size(14.dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(progress)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                Color(0xFF7C3AED),
+                                Color(0xFF9D5CFF)
+                            )
                         )
-                        Text(
-                            "Premium",
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 11.sp,
-                            color = Color(0xFFFFD700)
-                        )
-                    }
-                }
-            }
+                    )
+            )
         }
     }
 }
 
+/**
+ * Create Story Button - Primary action
+ */
 @Composable
 private fun CreateStoryButton(
     onClick: () -> Unit,
     enabled: Boolean,
-    isDarkTheme: Boolean
+    modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
         enabled = enabled,
+        modifier = modifier
+            .height(56.dp),
         shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isDarkTheme) Color(0xFF7986CB) else Color(0xFF667eea),
-            disabledContainerColor = if (isDarkTheme) Color(0xFF404040) else Color(0xFFE0E0E0)
+            containerColor = Color(0xFF7C3AED),
+            disabledContainerColor = Color(0xFF2D1B4E)
+        ),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp,
+            disabledElevation = 0.dp
         )
     ) {
-        Icon(Icons.Default.AutoStories, "Hikaye Oluştur")
-        Spacer(Modifier.width(8.dp))
-        Text(
-            "Yeni Hikaye Oluştur",
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp
-        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.AutoFixHigh,
+                contentDescription = null,
+                tint = Color.White
+            )
+            Text(
+                "Hikaye Oluştur",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                color = Color.White
+            )
+        }
     }
 }
 
+/**
+ * History Button - Secondary action
+ */
 @Composable
 private fun HistoryButton(
     storyCount: Int,
     onClick: () -> Unit,
-    isDarkTheme: Boolean
+    modifier: Modifier = Modifier
 ) {
     OutlinedButton(
         onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .height(56.dp),
         shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = if (isDarkTheme) Color.White else Color.Black
-        )
-    ) {
-        Icon(Icons.Default.History, "Geçmiş")
-        Spacer(Modifier.width(8.dp))
-        Text(
-            "Hikaye Geçmişi ($storyCount)",
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 16.sp
-        )
-    }
-}
-
-@Composable
-private fun FeaturesSection(isDarkTheme: Boolean) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(
-            "Özellikler",
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            color = if (isDarkTheme) Color.White else Color.Black
-        )
-
-        FeatureItem(
-            icon = Icons.Default.AutoStories,
-            title = "Kişiselleştirilmiş İçerik",
-            description = "Öğrendiğiniz kelimelerle otomatik hikaye",
-            isDarkTheme = isDarkTheme
-        )
-
-        FeatureItem(
-            icon = Icons.Default.TrendingUp,
-            title = "Zorluk Seviyeleri",
-            description = "Kolay, orta ve zor seviyeler",
-            isDarkTheme = isDarkTheme
-        )
-
-        FeatureItem(
-            icon = Icons.Default.Category,
-            title = "Çeşitli Türler",
-            description = "Hikaye, motivasyon, diyalog ve makale",
-            isDarkTheme = isDarkTheme
-        )
-    }
-}
-
-@Composable
-private fun FeatureItem(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    title: String,
-    description: String,
-    isDarkTheme: Boolean
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isDarkTheme) Color(0xFF2D2D2D) else Color(0xFFF5F5F5)
-        )
+            containerColor = Color(0xFF2D1B4E).copy(alpha = 0.5f),
+            contentColor = Color.White
+        ),
+        border = null
     ) {
         Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.History,
+                    contentDescription = null,
+                    tint = Color.White
+                )
+                Text(
+                    "Geçmiş Hikayeler",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 16.sp,
+                    color = Color.White
+                )
+            }
+
+            // Story count badge
+            Box(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(Color(0xFF7C3AED))
+                    .padding(horizontal = 12.dp, vertical = 4.dp)
+            ) {
+                Text(
+                    text = storyCount.toString(),
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    color = Color.White
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Premium Upgrade Section - For free users
+ */
+@Composable
+private fun PremiumUpgradeSection(
+    onUpgradeClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF3D2463),
+                        Color(0xFF2D1B4E)
+                    )
+                )
+            )
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // Premium badge
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.Star,
+                contentDescription = null,
+                tint = Color(0xFFFFD700),
+                modifier = Modifier.size(24.dp)
+            )
+            Text(
+                "Premium'a Geç",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                color = Color.White
+            )
+        }
+
+        // Benefits list
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            PremiumBenefitItem("Sınırsız hikaye oluşturma")
+            PremiumBenefitItem("Gelişmiş stil seçenekleri")
+            PremiumBenefitItem("Reklamsız deneyim")
+        }
+
+        // Upgrade button
+        Button(
+            onClick = onUpgradeClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .height(48.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF7C3AED)
+            )
+        ) {
+            Text(
+                "Şimdi Yükselt",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 15.sp,
+                color = Color.White
+            )
+        }
+    }
+}
+
+/**
+ * Premium benefit item
+ */
+@Composable
+private fun PremiumBenefitItem(text: String) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Default.CheckCircle,
+            contentDescription = null,
+            tint = Color(0xFF7C3AED),
+            modifier = Modifier.size(20.dp)
+        )
+        Text(
+            text = text,
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 14.sp,
+            color = Color.White.copy(alpha = 0.9f)
+        )
+    }
+}
+
+/**
+ * Premium User Badge - For premium users
+ */
+@Composable
+private fun PremiumUserBadge(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(
+                        Color(0xFF7C3AED),
+                        Color(0xFF9D5CFF)
+                    )
+                )
+            )
+            .padding(vertical = 20.dp, horizontal = 24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = icon,
+                imageVector = Icons.Default.Stars,
                 contentDescription = null,
-                tint = if (isDarkTheme) Color(0xFF7986CB) else Color(0xFF667eea),
-                modifier = Modifier.size(24.dp)
+                tint = Color(0xFFFFD700),
+                modifier = Modifier.size(28.dp)
             )
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    title,
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 14.sp,
-                    color = if (isDarkTheme) Color.White else Color.Black
-                )
-                Text(
-                    description,
-                    fontFamily = PoppinsFontFamily,
-                    fontSize = 12.sp,
-                    color = if (isDarkTheme) Color.White.copy(alpha = 0.6f) else Color.Black.copy(alpha = 0.6f)
-                )
-            }
+            Text(
+                "Premium Üyesin! 🎉",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                color = Color.White
+            )
         }
     }
 }

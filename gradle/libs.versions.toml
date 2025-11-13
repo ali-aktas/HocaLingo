@@ -33,6 +33,9 @@ hilt-work = "1.0.0"
 firebaseBom = "33.7.0"              # ✅ Latest stable
 googleServices = "4.4.2"
 
+#Animations
+lottie = "6.1.0"
+
 # RevenueCat & AdMob
 revenuecat = "8.10.0"               # ✅ Latest
 playServicesAds = "23.5.0"       # ✅ Latest
@@ -103,6 +106,9 @@ firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-config = { group = "com.google.firebase", name = "firebase-config" }
+
+#Animations
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
 
 # Monetization
 revenuecat = { group = "com.revenuecat.purchases", name = "purchases", version.ref = "revenuecat" }
