@@ -552,7 +552,7 @@ private fun AIAssistantCard(
                 .background(
                     brush = Brush.linearGradient(
                         colors = if (isDarkTheme) {
-                            listOf(Color(0xFF7986CB), Color(0xFF5C6BC0)) // Dark theme purple
+                            listOf(Color(0xFF45287B), Color(0xFF2D1B4E)) // Dark theme purple
                         } else {
                             listOf(Color(0xFF667eea), Color(0xFF764ba2)) // Light theme purple
                         }

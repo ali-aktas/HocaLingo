@@ -244,6 +244,8 @@ fun shouldShowBottomNavigation(currentRoute: String?): Boolean {
         currentRoute.startsWith(HocaRoutes.ONBOARDING_LEVEL) -> false
         currentRoute.startsWith(HocaRoutes.WORD_SELECTION) -> false
         currentRoute.startsWith(HocaRoutes.STUDY) -> false
+        currentRoute.startsWith(HocaRoutes.AI_ASSISTANT) -> false
+        currentRoute.startsWith(HocaRoutes.AI_STORY_DETAIL) -> false
         else -> true
     }
 }

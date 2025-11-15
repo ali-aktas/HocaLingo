@@ -249,13 +249,16 @@ fun HocaLingoNavigation(
             )
         }
 
-        // AI Assistant Screen - Professional Coming Soon
+        // AI Assistant Screen - Satır ~166 civarı
         composable(route = HocaRoutes.AI_ASSISTANT) {
             AIAssistantScreen(
                 onNavigateBack = {
                     navController.navigate(HocaRoutes.HOME) {
                         popUpTo(HocaRoutes.HOME) { inclusive = false }
                     }
+                },
+                onNavigateToDetail = { storyId ->
+                    navController.navigate("${HocaRoutes.AI_STORY_DETAIL}/$storyId")
                 }
             )
         }

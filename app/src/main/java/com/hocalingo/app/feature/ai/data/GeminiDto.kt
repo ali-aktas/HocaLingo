@@ -35,12 +35,10 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class GeminiRequest(
-    val contents: List<Content>
+    val contents: List<Content>,
+    val generationConfig: GenerationConfig? = null
 ) {
     companion object {
-        /**
-         * Helper function to create request from simple text prompt
-         */
         fun fromPrompt(prompt: String): GeminiRequest {
             return GeminiRequest(
                 contents = listOf(
@@ -49,11 +47,36 @@ data class GeminiRequest(
                             Part(text = prompt)
                         )
                     )
+                ),
+                generationConfig = GenerationConfig(
+                    temperature = 0.9,
+                    topK = 40,
+                    topP = 0.95,
+                    maxOutputTokens = 512,
+                    thinkingConfig = ThinkingConfig(
+                        thinkingBudget = 0 // 🔴 thinking tamamen kapalı
+                    )
                 )
             )
         }
     }
 }
+
+
+@Serializable
+data class ThinkingConfig(
+    val thinkingBudget: Int = 0 // 0 = thinking kapalı, -1 = dynamic, >0 = sabit bütçe
+)
+
+@Serializable
+data class GenerationConfig(
+    val temperature: Double = 0.9,
+    val topK: Int = 40,
+    val topP: Double = 0.95,
+    val maxOutputTokens: Int = 512, // 150-200 kelime hikaye için fazlasıyla yeter
+    val thinkingConfig: ThinkingConfig? = null
+)
+
 
 @Serializable
 data class Content(

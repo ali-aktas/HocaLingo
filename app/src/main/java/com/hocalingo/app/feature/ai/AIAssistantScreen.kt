@@ -246,51 +246,43 @@ private fun HeroSection(
 ) {
     Box(
         modifier = modifier
-            .height(280.dp)
+            .height(320.dp)
             .clip(RoundedCornerShape(24.dp))
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF2D1B4E),
-                        Color(0xFF1A1625)
+    ) {
+        Image(
+            painter = painterResource(R.drawable.lingo_ai_image),
+            contentDescription = "Lingo AI Asistan",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Black.copy(alpha = 0.1f),
+                            Color.Black.copy(alpha = 0.6f)
+                        )
                     )
                 )
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            // Lingo AI Character Image
-            Image(
-                painter = painterResource(R.drawable.lingo_ai_image),
-                contentDescription = "Lingo AI Asistan",
-                modifier = Modifier
-                    .size(160.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Fit
-            )
+        )
 
-            // Title
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Bottom
+        ) {
             Text(
-                text = "Fikirlerini hayata geçir",
+                text = "Hocalingo yapay zeka asistanı ile çalıştığın kelimelerden hikayeler yarat.",
                 fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 22.sp,
+                fontWeight = FontWeight.Thin,
+                fontSize = 14.sp,
                 color = Color.White,
                 textAlign = TextAlign.Center
-            )
-
-            // Subtitle
-            Text(
-                text = "Hayal gücünün sınırlarını zorla ve\nbenzersiz hikayeler yarat.",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Normal,
-                fontSize = 14.sp,
-                color = Color.White.copy(alpha = 0.7f),
-                textAlign = TextAlign.Center,
-                lineHeight = 20.sp
             )
         }
     }
@@ -316,7 +308,7 @@ private fun QuotaProgressCard(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            text = "$quotaRemaining/$quotaTotal hikaye kaldı",
+            text = "Bugün $quotaRemaining/$quotaTotal hikaye hakkın kaldı",
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.SemiBold,
             fontSize = 15.sp,
