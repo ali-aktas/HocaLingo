@@ -90,7 +90,7 @@ class HocaLingoNotificationManager @Inject constructor(
         )
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.hocalingo_icon_nobg) // We'll need to add this icon
+            .setSmallIcon(R.drawable.hocalingo_icon_plane) // We'll need to add this icon
             .setContentTitle(getNotificationTitle(word))
             .setContentText(getNotificationText(word))
             .setStyle(

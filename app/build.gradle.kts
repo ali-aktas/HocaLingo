@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -21,8 +23,8 @@ android {
         applicationId = "com.hocalingo.app"
         minSdk = 24
         targetSdk = 35
-        versionCode = 15
-        versionName = "1.1.5"
+        versionCode = 16
+        versionName = "1.1.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -32,6 +34,40 @@ android {
         // ✅ BuildConfig fields - App version ve diğer sabitler için
         buildConfigField("String", "VERSION_NAME", "\"${versionName}\"")
         buildConfigField("int", "VERSION_CODE", "${versionCode}")
+
+        val properties = Properties()
+        val localPropertiesFile = project.rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            properties.load(localPropertiesFile.inputStream())
+        }
+        buildConfigField(
+            "String",
+            "REVENUECAT_API_KEY",
+            "\"${properties.getProperty("REVENUECAT_API_KEY", "")}\""
+        )
+
+        // 🆕 AdMob IDs
+        manifestPlaceholders["admobAppId"] =
+            properties.getProperty("ADMOB_APP_ID", "ca-app-pub-3940256099942544~3347511713")
+
+        buildConfigField(
+            "String",
+            "ADMOB_NATIVE_AD_UNIT_ID",
+            "\"${properties.getProperty("ADMOB_NATIVE_AD_UNIT_ID", "ca-app-pub-3940256099942544/2247696110")}\""
+        )
+
+        buildConfigField(
+            "String",
+            "ADMOB_APP_LAUNCH_REWARD_ID",
+            "\"${properties.getProperty("ADMOB_APP_LAUNCH_REWARD_ID", "ca-app-pub-3940256099942544/5224354917")}\""
+        )
+
+        buildConfigField(
+            "String",
+            "ADMOB_STUDY_REWARD_ID",
+            "\"${properties.getProperty("ADMOB_STUDY_REWARD_ID", "ca-app-pub-3940256099942544/5224354917")}\""
+        )
+
     }
 
     // ✅ SIGNING CONFIG (Production için keystore eklenince aktifleştirilecek)

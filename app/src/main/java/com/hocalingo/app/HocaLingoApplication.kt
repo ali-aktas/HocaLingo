@@ -4,12 +4,14 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.WorkManager
+import com.hocalingo.app.BuildConfig
 import com.hocalingo.app.core.common.DebugHelper
 import com.revenuecat.purchases.LogLevel
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesConfiguration
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
+
 
 /**
  * HocaLingo Application Class
@@ -59,25 +61,27 @@ class HocaLingoApplication : Application() {
     /**
      * RevenueCat SDK'sını başlatır
      *
-     * ⚠️ ÖNEMLI: API Key güvenliği için BuildConfig kullanılmalı
-     * Şimdilik direkt kod içinde ama production'da BuildConfig'e taşınmalı!
      */
     private fun initializeRevenueCat() {
         try {
             DebugHelper.log("🚀 Initializing RevenueCat SDK...")
 
-            // ✅ RevenueCat API Key
-            val apiKey = "goog_hUrMIAPlvIzmWpBMQMiZiaUTHMs"
+            val apiKey = BuildConfig.REVENUECAT_API_KEY
 
-            // Debug mode için log level ayarla
+            // 🧪 TEST: API key doğru mu?
+            DebugHelper.log("🔑 API Key length: ${apiKey.length}")
+
+            if (apiKey.isBlank()) {
+                DebugHelper.logError("❌ RevenueCat API key is empty!")
+                return
+            }
+
             if (BuildConfig.DEBUG) {
                 Purchases.logLevel = LogLevel.DEBUG
             }
 
-            // RevenueCat configure
             Purchases.configure(
-                PurchasesConfiguration.Builder(this, apiKey)
-                    .build()
+                PurchasesConfiguration.Builder(this, apiKey).build()
             )
 
             DebugHelper.logSuccess("✅ RevenueCat SDK initialized successfully!")

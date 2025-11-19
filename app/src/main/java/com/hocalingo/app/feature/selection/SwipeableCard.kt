@@ -235,7 +235,7 @@ fun SwipeableCard(
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 32.sp,
-                    color = Color(0xFFDC2C29),
+                    color = Color(0xFF742323),
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(top = 24.dp)
@@ -251,7 +251,7 @@ fun SwipeableCard(
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 32.sp,
-                    color = Color(0xFF14EA1F),
+                    color = Color(0xFF1E7122),
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(top = 24.dp)
@@ -272,7 +272,7 @@ fun SwipeableCard(
                         text = word,
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 32.sp,
+                        fontSize = 28.sp,
                         color = Color.White,
                         textAlign = TextAlign.Center
                     )
@@ -283,7 +283,7 @@ fun SwipeableCard(
                         text = translation,
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Medium,
-                        fontSize = 24.sp,
+                        fontSize = 22.sp,
                         color = Color.White.copy(alpha = 0.9f),
                         textAlign = TextAlign.Center
                     )

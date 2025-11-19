@@ -93,8 +93,8 @@ fun AIAssistantScreen(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF1A1625),
-                        Color(0xFF211A2E)
+                        Color(0xFF070109),
+                        Color(0xFF1E1336)
                     )
                 )
             )
@@ -106,7 +106,7 @@ fun AIAssistantScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            "AI Hikaye Asistanı",
+                            "Hocalingo Hikaye Üretici",
                             fontFamily = PoppinsFontFamily,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
@@ -277,9 +277,9 @@ private fun HeroSection(
             verticalArrangement = Arrangement.Bottom
         ) {
             Text(
-                text = "Hocalingo yapay zeka asistanı ile çalıştığın kelimelerden hikayeler yarat.",
+                text = "Yapay zeka asistanı ile çalıştığın kelimelerden hikayeler yarat.",
                 fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Thin,
+                fontWeight = FontWeight.Medium,
                 fontSize = 14.sp,
                 color = Color.White,
                 textAlign = TextAlign.Center
@@ -476,9 +476,9 @@ private fun PremiumUpgradeSection(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = Icons.Default.Star,
+                imageVector = Icons.Default.StarOutline,
                 contentDescription = null,
-                tint = Color(0xFFFFD700),
+                tint = Color(0xFFFF9900),
                 modifier = Modifier.size(24.dp)
             )
             Text(
@@ -492,8 +492,8 @@ private fun PremiumUpgradeSection(
 
         // Benefits list
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            PremiumBenefitItem("Sınırsız hikaye oluşturma")
-            PremiumBenefitItem("Gelişmiş stil seçenekleri")
+            PremiumBenefitItem("Daha çok hikaye oluşturma")
+            PremiumBenefitItem("Yazıları özelleştirebilme")
             PremiumBenefitItem("Reklamsız deneyim")
         }
 

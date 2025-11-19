@@ -42,10 +42,10 @@ private val PoppinsFontFamily = FontFamily(
  * New Design Features:
  * ✅ Dark theme (#1A1625, #211A2E)
  * ✅ Pill-style selection buttons
- * ✅ Premium badges (orange)
- * ✅ Lock icons for premium features
+ * ✅ Lock icons for premium features (NO "Pro" badge)
  * ✅ Modern gradient background
  * ✅ Clean, minimal design
+ * ✅ FlowRow for responsive layout
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -106,9 +106,6 @@ fun StoryCreatorDialog(
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
-                    // Topic input (optional) - Tasarımda yok ama gerekli olabilir, kaldırıyorum
-                    // TopicInputSection(...)
-
                     // Story type selection
                     TypeSelectionSection(
                         selectedType = selectedType,
@@ -232,10 +229,10 @@ private fun TypeSelectionSection(
             color = Color.White
         )
 
-        // Pill buttons row
-        Row(
+        FlowRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             StoryType.entries.forEach { type ->
                 val isSelected = selectedType == type
@@ -246,8 +243,7 @@ private fun TypeSelectionSection(
                     isSelected = isSelected,
                     isPremiumLocked = isPremiumLocked,
                     onClick = { if (enabled) onTypeSelected(type) },
-                    enabled = enabled,
-                    modifier = Modifier.weight(1f)
+                    enabled = enabled
                 )
             }
         }
@@ -273,9 +269,10 @@ private fun DifficultySelectionSection(
             color = Color.White
         )
 
-        Row(
+        FlowRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             StoryDifficulty.entries.forEach { difficulty ->
                 val isSelected = selectedDifficulty == difficulty
@@ -286,8 +283,7 @@ private fun DifficultySelectionSection(
                     isSelected = isSelected,
                     isPremiumLocked = isPremiumLocked,
                     onClick = { if (enabled) onDifficultySelected(difficulty) },
-                    enabled = enabled,
-                    modifier = Modifier.weight(1f)
+                    enabled = enabled
                 )
             }
         }
@@ -313,9 +309,10 @@ private fun LengthSelectionSection(
             color = Color.White
         )
 
-        Row(
+        FlowRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             StoryLength.entries.forEach { length ->
                 val isSelected = selectedLength == length
@@ -326,8 +323,7 @@ private fun LengthSelectionSection(
                     isSelected = isSelected,
                     isPremiumLocked = isPremiumLocked,
                     onClick = { if (enabled) onLengthSelected(length) },
-                    enabled = enabled,
-                    modifier = Modifier.weight(1f)
+                    enabled = enabled
                 )
             }
         }
@@ -335,7 +331,8 @@ private fun LengthSelectionSection(
 }
 
 /**
- * Pill Button - Modern selection button with premium support
+ * Pill Button - Modern selection button
+ * ✅ ONLY shows Lock icon for premium items (NO "Pro" badge text)
  */
 @Composable
 private fun PillButton(
@@ -380,12 +377,13 @@ private fun PillButton(
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // ✅ Sadece kilit ikonu (Premium badge yok!)
             if (isPremiumLocked) {
                 Icon(
                     imageVector = Icons.Default.Lock,
-                    contentDescription = null,
+                    contentDescription = "Premium özellik",
                     tint = Color(0xFFFF8A00),
-                    modifier = Modifier.size(14.dp)
+                    modifier = Modifier.size(16.dp)
                 )
             }
 
@@ -393,26 +391,9 @@ private fun PillButton(
                 text = text,
                 fontFamily = PoppinsFontFamily,
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                fontSize = 13.sp,
+                fontSize = 14.sp,
                 color = contentColor
             )
-
-            if (isPremiumLocked) {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(Color(0xFFFF8A00))
-                        .padding(horizontal = 6.dp, vertical = 2.dp)
-                ) {
-                    Text(
-                        "Premium",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 9.sp,
-                        color = Color.White
-                    )
-                }
-            }
         }
     }
 }
@@ -430,8 +411,7 @@ private fun GenerateButton(
     Button(
         onClick = onClick,
         enabled = enabled && !isLoading,
-        modifier = modifier
-            .height(56.dp),
+        modifier = modifier.height(56.dp),
         shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF7C3AED),

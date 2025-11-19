@@ -7,6 +7,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
+import com.hocalingo.app.BuildConfig
 import com.hocalingo.app.core.common.DebugHelper
 import com.hocalingo.app.feature.subscription.SubscriptionRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -40,7 +41,12 @@ class NativeAdLoader @Inject constructor(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     // Test ad unit IDs (Replace with real IDs in production)
-    private val nativeAdUnitId = "ca-app-pub-3940256099942544/2247696110" // Test ID
+    // Native Ad Unit ID (Production vs Debug)
+    private val nativeAdUnitId = if (BuildConfig.DEBUG) {
+        "ca-app-pub-3940256099942544/2247696110" // Test ID for debug
+    } else {
+        BuildConfig.ADMOB_NATIVE_AD_UNIT_ID // Production ID
+    }
 
     // Native Ad Cache (Multiple ads for different screens)
     private val _selectionScreenAd = MutableStateFlow<NativeAd?>(null)

@@ -10,6 +10,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.OnUserEarnedRewardListener
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.hocalingo.app.BuildConfig
 import com.hocalingo.app.core.common.DebugHelper
 import com.hocalingo.app.feature.subscription.SubscriptionRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -44,7 +45,18 @@ class AdMobManager @Inject constructor(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     // Ad Unit IDs (Test IDs for development)
-    private val rewardedAdUnitId = "ca-app-pub-3940256099942544/5224354917" // Test ID
+    // Rewarded Ad Unit IDs (Production vs Debug)
+    private val appLaunchRewardedAdUnitId = if (BuildConfig.DEBUG) {
+        "ca-app-pub-3940256099942544/5224354917" // Test ID for debug
+    } else {
+        BuildConfig.ADMOB_APP_LAUNCH_REWARD_ID // Production ID
+    }
+
+    private val studyRewardedAdUnitId = if (BuildConfig.DEBUG) {
+        "ca-app-pub-3940256099942544/5224354917" // Test ID for debug
+    } else {
+        BuildConfig.ADMOB_STUDY_REWARD_ID // Production ID
+    }
 
     // Rewarded Ad States
     private val _appLaunchAdState = MutableStateFlow<AdState>(AdState.NotLoaded)
@@ -190,7 +202,7 @@ class AdMobManager @Inject constructor(
 
             RewardedAd.load(
                 context,
-                rewardedAdUnitId,
+                appLaunchRewardedAdUnitId,
                 adRequest,
                 object : RewardedAdLoadCallback() {
                     override fun onAdLoaded(ad: RewardedAd) {
@@ -315,7 +327,7 @@ class AdMobManager @Inject constructor(
 
             RewardedAd.load(
                 context,
-                rewardedAdUnitId,
+                studyRewardedAdUnitId,
                 adRequest,
                 object : RewardedAdLoadCallback() {
                     override fun onAdLoaded(ad: RewardedAd) {
