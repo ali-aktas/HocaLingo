@@ -115,14 +115,6 @@ fun StoryDetailScreen(
                         containerColor = Color.Transparent
                     )
                 )
-            },
-            bottomBar = {
-                BottomActionBar(
-                    onCopyText = { /* TODO: Copy text */ },
-                    onSelectText = { /* TODO: Text selection */ },
-                    onSearch = { /* TODO: Search in text */ },
-                    onImageView = { /* TODO: Show images */ }
-                )
             }
         ) { paddingValues ->
             Column(

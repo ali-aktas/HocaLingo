@@ -5,13 +5,13 @@ import kotlinx.serialization.Serializable
 /**
  * Gemini API Data Transfer Objects
  *
- * Package: app/src/main/java/com/hocalingo/app/feature/ai/data/models/
+ * Package: app/src/main/java/com/hocalingo/app/feature/ai/data/
  *
  * Google Gemini API için request/response modelleri.
  * Kotlinx.serialization kullanılıyor (Retrofit converter ile).
  *
  * API Format:
- * Request: { "contents": [{ "parts": [{ "text": "..." }] }] }
+ * Request: { "contents": [{ "parts": [{ "text": "..." }] }], "generationConfig": {...} }
  * Response: { "candidates": [{ "content": { "parts": [{ "text": "..." }] } }] }
  */
 
@@ -22,15 +22,7 @@ import kotlinx.serialization.Serializable
  *
  * Example:
  * ```kotlin
- * GeminiRequest(
- *     contents = listOf(
- *         Content(
- *             parts = listOf(
- *                 Part(text = "Write a story using these words: book, coffee, rain")
- *             )
- *         )
- *     )
- * )
+ * GeminiRequest.fromPrompt("Write a story...", maxTokens = 800)
  * ```
  */
 @Serializable
@@ -39,7 +31,14 @@ data class GeminiRequest(
     val generationConfig: GenerationConfig? = null
 ) {
     companion object {
-        fun fromPrompt(prompt: String): GeminiRequest {
+        /**
+         * Create request from prompt with dynamic token limit
+         *
+         * @param prompt The text prompt for AI
+         * @param maxTokens Maximum output tokens (default: 512)
+         * @return Configured GeminiRequest
+         */
+        fun fromPrompt(prompt: String, maxTokens: Int = 512): GeminiRequest {
             return GeminiRequest(
                 contents = listOf(
                     Content(
@@ -52,9 +51,9 @@ data class GeminiRequest(
                     temperature = 0.9,
                     topK = 40,
                     topP = 0.95,
-                    maxOutputTokens = 512,
+                    maxOutputTokens = maxTokens,
                     thinkingConfig = ThinkingConfig(
-                        thinkingBudget = 0 // 🔴 thinking tamamen kapalı
+                        thinkingBudget = 0  // 0 = thinking disabled (cost optimization)
                     )
                 )
             )
@@ -62,27 +61,38 @@ data class GeminiRequest(
     }
 }
 
-
+/**
+ * Thinking configuration for Gemini 2.5 models
+ * Set thinkingBudget = 0 to disable thinking and reduce cost
+ */
 @Serializable
 data class ThinkingConfig(
-    val thinkingBudget: Int = 0 // 0 = thinking kapalı, -1 = dynamic, >0 = sabit bütçe
+    val thinkingBudget: Int = 0  // 0 = disabled, -1 = dynamic, >0 = fixed budget
 )
 
+/**
+ * Generation configuration for controlling AI output
+ */
 @Serializable
 data class GenerationConfig(
-    val temperature: Double = 0.9,
-    val topK: Int = 40,
-    val topP: Double = 0.95,
-    val maxOutputTokens: Int = 512, // 150-200 kelime hikaye için fazlasıyla yeter
+    val temperature: Double = 0.9,      // Creativity (0.0-1.0)
+    val topK: Int = 40,                 // Top K sampling
+    val topP: Double = 0.95,            // Top P sampling
+    val maxOutputTokens: Int = 512,    // Max tokens to generate
     val thinkingConfig: ThinkingConfig? = null
 )
 
-
+/**
+ * Content wrapper for message parts
+ */
 @Serializable
 data class Content(
-    val parts: List<Part>
+    val parts: List<Part>? = null  // Nullable to handle empty responses
 )
 
+/**
+ * Individual message part (text)
+ */
 @Serializable
 data class Part(
     val text: String
@@ -104,7 +114,7 @@ data class GeminiResponse(
     /**
      * Extract generated text from first candidate
      *
-     * @return Generated text or empty string if no candidates
+     * @return Generated text or empty string if no candidates/parts
      */
     fun getGeneratedText(): String {
         return candidates.firstOrNull()
@@ -124,6 +134,9 @@ data class GeminiResponse(
     }
 }
 
+/**
+ * Individual candidate response
+ */
 @Serializable
 data class Candidate(
     val content: Content

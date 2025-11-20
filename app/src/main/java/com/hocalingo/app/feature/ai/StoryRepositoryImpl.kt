@@ -46,7 +46,10 @@ class StoryRepositoryImpl @Inject constructor(
     companion object {
         private const val FREE_DAILY_LIMIT = 1    // Free user
         private const val PREMIUM_DAILY_LIMIT = 2 // Premium user
-        private const val WORD_COUNT = 25
+        // ✅ Dinamik kelime sayıları
+        private const val SHORT_WORD_COUNT = 12
+        private const val MEDIUM_WORD_COUNT = 18
+        private const val LONG_WORD_COUNT = 25
     }
 
     // getDailyLimit() FONKSİYONU EKLE (class içine, companion object'in hemen altına):
@@ -86,8 +89,10 @@ class StoryRepositoryImpl @Inject constructor(
                 is Result.Error -> return@withContext quotaResult
             }
 
-            // 2. Select learned words
-            val words = selectLearnedWords(difficulty)
+
+            // 2. Select learned words (dynamic count based on length)
+            val words = selectLearnedWords(difficulty, length)
+
             if (words.isEmpty()) {
                 DebugHelper.log("❌ No learned words found")
                 return@withContext Result.Error(AppError.NoWordsAvailable)
@@ -107,7 +112,16 @@ class StoryRepositoryImpl @Inject constructor(
                 return@withContext Result.Error(AppError.ConfigurationError)
             }
 
-            val request = GeminiRequest.fromPrompt(prompt)
+
+            // ✅ Create request with dynamic token limits (NO THINKING - cost optimization)
+            val maxTokens = when (length) {
+                StoryLength.SHORT -> 200    // ~100 kelime
+                StoryLength.MEDIUM -> 400   // ~200 kelime
+                StoryLength.LONG -> 600    // ~300 kelime
+            }
+
+            val request = GeminiRequest.fromPrompt(prompt, maxTokens)
+
             val response = geminiApi.generateContent(apiKey, request)
 
             if (!response.isValid()) {
@@ -118,10 +132,14 @@ class StoryRepositoryImpl @Inject constructor(
             val generatedText = response.getGeneratedText()
             DebugHelper.log("✅ Story generated (${generatedText.length} chars)")
 
+            // ✅ Clean the generated content
+            val cleanedContent = cleanStoryContent(generatedText)
+            DebugHelper.log("🧹 Content cleaned (${cleanedContent.length} chars)")
+
             // 5. Create story object
             val story = GeneratedStory(
-                title = extractTitle(generatedText, type),
-                content = generatedText,
+                title = extractTitle(cleanedContent, type),  // ✅ cleaned version
+                content = cleanedContent,                     // ✅ cleaned version
                 usedWords = words.map { it.id },
                 topic = topic,
                 type = type,
@@ -231,23 +249,55 @@ class StoryRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getEnglishWordsForStory(wordIds: List<Int>): Result<List<String>> = withContext(Dispatchers.IO) {
+        try {
+            if (wordIds.isEmpty()) {
+                return@withContext Result.Success(emptyList())
+            }
+
+            // Get concepts from database by IDs
+            val concepts = database.conceptDao().getConceptsByIds(wordIds)
+
+            // Extract English words
+            val englishWords = concepts.map { it.english }
+
+            DebugHelper.log("📚 Loaded ${englishWords.size} words for highlighting")
+
+            Result.Success(englishWords)
+        } catch (e: Exception) {
+            DebugHelper.logError("Failed to load words for story", e)
+            Result.Error(AppError.Unknown(e))
+        }
+    }
+
     // ==================== PRIVATE HELPERS ====================
 
     /**
-     * Select learned words based on difficulty
-     * Uses interval_days from word_progress table
+     * Select learned words based on difficulty AND length
+     * ✅ OPTIMIZED: Dynamic word count based on story length
      */
-    private suspend fun selectLearnedWords(difficulty: StoryDifficulty): List<WordInfo> {
+    private suspend fun selectLearnedWords(
+        difficulty: StoryDifficulty,
+        length: StoryLength
+    ): List<WordInfo> {
         val maxIntervalDays = difficulty.maxIntervalDays
+
+        // ✅ Uzunluğa göre kelime sayısı
+        val wordCount = when (length) {
+            StoryLength.SHORT -> SHORT_WORD_COUNT   // 12
+            StoryLength.MEDIUM -> MEDIUM_WORD_COUNT // 18
+            StoryLength.LONG -> LONG_WORD_COUNT     // 25
+        }
 
         return database.wordProgressDao().getWordsForStoryGeneration(
             maxIntervalDays = maxIntervalDays,
-            limit = WORD_COUNT
+            limit = wordCount
         )
     }
 
     /**
      * Build AI prompt for story generation
+     * ✅ OPTIMIZED: More explicit rules, better examples
      */
     private fun buildPrompt(
         words: List<WordInfo>,
@@ -258,9 +308,9 @@ class StoryRepositoryImpl @Inject constructor(
         val wordList = words.joinToString(", ") { it.english }
 
         val typeInstruction = when (type) {
-            StoryType.STORY -> "bir kısa hikaye yaz"
-            StoryType.MOTIVATION -> "motivasyon verici bir yazı yaz"
-            StoryType.DIALOGUE -> "günlük hayattan bir diyalog yaz"
+            StoryType.STORY -> "bir hikaye yaz"
+            StoryType.MOTIVATION -> "motivasyon ve ilham verici bir yazı yaz"
+            StoryType.DIALOGUE -> "günlük hayattan 2 kişinin karşılıklı konuştuğu bir diyalog yaz"
             StoryType.ARTICLE -> "bilgilendirici bir makale yaz"
         }
 
@@ -270,23 +320,88 @@ class StoryRepositoryImpl @Inject constructor(
             StoryLength.LONG -> "Detaylı ve uzun yaz (yaklaşık ${length.targetWordCount} kelime)."
         }
 
-        val topicPart = topic?.let { "Konu: $it\n" } ?: ""
+        val topicPart = topic?.let { "Konu: $it\n\n" } ?: ""
 
         return """
-            Türkçe olarak $typeInstruction. $lengthInstruction
-            
-            ${topicPart}Aşağıdaki İngilizce kelimeleri kullan (kelimeleri aynen İngilizce olarak kullan):
-            $wordList
-            
-            KURALLAR:
-            1. Verilen kelimeleri hikaye içinde İngilizce olarak kullan (Türkçe çevirme)
-            2. Her kelimeyi doğal bir şekilde cümlelere yerleştir
-            3. Akıcı ve okunabilir Türkçe yaz
-            4. Kelimeler bold veya italic olmasın, düz metin kullan
-            5. Başlık ekleme, direkt hikayeye başla
-            
-            Örnek: "Sabah uyandığımda window'dan güneşi gördüm. Coffee içerken newspaper okudum."
-        """.trimIndent()
+        SEN BİR HİKAYE/METİN YAZARISIN. Türkçe olarak $typeInstruction. $lengthInstruction
+        
+        ${topicPart}Aşağıdaki İngilizce kelimeleri kullan:
+        $wordList
+        
+        ⚠️ ÇOK ÖNEMLİ KURALLAR:
+        
+        1. KELİMELER MUTLAKA İNGİLİZCE OLACAK
+           ❌ YANLIŞ: "bu genç (young) adam"
+           ❌ YANLIŞ: "bu **young** adam"
+           ✅ DOĞRU: "bu young adam"
+        
+        2. HİÇBİR BİÇİMLENDİRME YAPMA
+           - Markdown kullanma: **bold**, *italic*, _altı çizili_
+           - Parantez içinde çeviri yazma: (genç)
+           - Sadece düz metin yaz
+        
+        3. DOĞAL CÜMLELER KUR
+           ✅ "Sabah window'dan manzaraya baktım"
+           ✅ "Coffee içerken newspaper okudum"
+           ✅ "Arkadaşıma gift aldım"
+        
+        4. BAŞLIK YAZMA, DİREKT HİKAYEYE BAŞLA
+        
+        5. TÜM KELİMELERİ KULLAN
+           - Her kelimeyi en az 1 kez kullan
+           - Doğal akış içinde yerleştir
+        
+        ÖRNEK METİN:
+        "Dün evening saatlerinde park'ta yürüyordum. Suddenly bir çocuk bana doğru running geldi. Happy görünüyordu ve elinde küçük bir gift vardı. Beautiful bir andı."
+        
+        ŞİMDİ SEN YAZ (sadece hikaye, hiç açıklama yapma):
+    """.trimIndent()
+    }
+
+    /**
+     * Clean AI-generated story from formatting issues
+     * ✅ Removes markdown, parenthetical translations, asterisks
+     * ✅ Ensures clean, readable text
+     */
+    private fun cleanStoryContent(content: String): String {
+        var cleaned = content
+
+        // 1. Remove markdown bold: **word** -> word
+        cleaned = cleaned.replace(Regex("""\*\*([^*]+)\*\*"""), "$1")
+
+        // 2. Remove markdown italic: *word* or _word_ -> word
+        cleaned = cleaned.replace(Regex("""\*([^*]+)\*"""), "$1")
+        cleaned = cleaned.replace(Regex("""_([^_]+)_"""), "$1")
+
+        // 3. Remove parenthetical translations: word (kelime) -> word
+        // Matches: word (Turkish translation)
+        cleaned = cleaned.replace(Regex("""(\w+)\s*\([^)]+\)"""), "$1")
+
+        // 4. Remove bracketed translations: word [kelime] -> word
+        cleaned = cleaned.replace(Regex("""(\w+)\s*\[[^\]]+\]"""), "$1")
+
+        // 5. Remove any remaining asterisks
+        cleaned = cleaned.replace("*", "")
+
+        // 6. Clean up multiple spaces
+        cleaned = cleaned.replace(Regex("""\s+"""), " ")
+
+        // 7. Fix incomplete last sentence (if ends without punctuation)
+        if (cleaned.isNotEmpty() && !cleaned.last().toString().matches(Regex("[.!?]"))) {
+            // Find last complete sentence
+            val lastPunctuationIndex = cleaned.indexOfLast { it in ".!?" }
+            if (lastPunctuationIndex > 0) {
+                cleaned = cleaned.substring(0, lastPunctuationIndex + 1)
+            } else {
+                // If no punctuation found, add period at end
+                cleaned += "."
+            }
+        }
+
+        // 8. Trim whitespace
+        cleaned = cleaned.trim()
+
+        return cleaned
     }
 
     /**

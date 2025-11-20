@@ -34,7 +34,7 @@ class HomeRepositoryImpl @Inject constructor(
     override suspend fun getUserName(): Result<String> = withContext(Dispatchers.IO) {
         try {
             // TODO: User preferences'tan alınacak
-            Result.Success("Ali")
+            Result.Success("Dostum")
         } catch (e: Exception) {
             Result.Error(e.toAppError())
         }

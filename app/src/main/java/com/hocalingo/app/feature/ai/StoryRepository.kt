@@ -73,4 +73,11 @@ interface StoryRepository {
      * @return Pair(used, total) - e.g. (1, 2) = "1/2 kalan"
      */
     suspend fun getQuotaInfo(): Result<Pair<Int, Int>>
+
+    /**
+     * Get English words for a story (for highlighting)
+     * @param wordIds List of word IDs used in story
+     * @return List of English words
+     */
+    suspend fun getEnglishWordsForStory(wordIds: List<Int>): Result<List<String>>
 }

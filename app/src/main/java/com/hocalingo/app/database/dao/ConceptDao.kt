@@ -18,6 +18,9 @@ interface ConceptDao {
     @Query("SELECT * FROM concepts WHERE id = :conceptId")
     suspend fun getConceptById(conceptId: Int): ConceptEntity?
 
+    @Query("SELECT * FROM concepts WHERE id IN (:conceptIds)")
+    suspend fun getConceptsByIds(conceptIds: List<Int>): List<ConceptEntity>
+
     @Query("SELECT * FROM concepts WHERE level = :level")
     suspend fun getConceptsByLevel(level: String): List<ConceptEntity>
 

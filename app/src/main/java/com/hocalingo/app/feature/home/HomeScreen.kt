@@ -211,7 +211,7 @@ private fun WelcomeHeaderWithStats(
                     .fillMaxWidth(0.6f) // Leave space for image
             ) {
                 Text(
-                    text = "Merhaba, $userName!",
+                    text = "Merhaba $userName!",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp,
