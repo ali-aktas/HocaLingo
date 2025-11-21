@@ -1,11 +1,11 @@
-package com.hocalingo.app.feature.addword.presentation
+package com.hocalingo.app.feature.add_word
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -23,7 +23,9 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -67,6 +69,7 @@ fun AddWordScreen(
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val focusManager = LocalFocusManager.current
+    val scrollState = rememberScrollState()
 
     // Get theme state for smart styling
     val themeViewModel: ThemeViewModel = hiltViewModel()
@@ -102,80 +105,85 @@ fun AddWordScreen(
     }
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background
-        // topBar YOK!
+        containerColor = MaterialTheme.colorScheme.background,
+        snackbarHost = {
+            HocaSnackbarHost(
+                hostState = snackbarHostState,
+                currentRoute = HocaRoutes.ADD_WORD
+            )
+        }
     ) { paddingValues ->
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    top = paddingValues.calculateTopPadding(),
-                    bottom = 0.dp
-                )
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .verticalScroll(scrollState)
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 32.dp)
         ) {
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Header Section
+            // 🎨 Header
             HeaderSection(
                 userWordsCount = uiState.userWordsCount,
                 isDarkTheme = isDarkTheme
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Main Content with padding
-            Column(
-                modifier = Modifier.padding(horizontal = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
+            // 💡 Info Banner - YENİ EKLENEN
+            InfoBanner(isDarkTheme = isDarkTheme)
 
-                // 🎯 Main Word Entry Card (Primary Focus)
-                MainWordEntryCard(
-                    englishWord = uiState.englishWord,
-                    turkishWord = uiState.turkishWord,
-                    englishError = uiState.englishWordError,
-                    turkishError = uiState.turkishWordError,
-                    onEvent = viewModel::onEvent,
-                    focusManager = focusManager,
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // 🎯 Main Word Entry Card (Primary Focus)
+            MainWordEntryCard(
+                englishWord = uiState.englishWord,
+                turkishWord = uiState.turkishWord,
+                englishError = uiState.englishWordError,
+                turkishError = uiState.turkishWordError,
+                onEvent = viewModel::onEvent,
+                focusManager = focusManager,
+                isDarkTheme = isDarkTheme
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 📝 Example Sections (Expandable)
+            ExampleSectionsCard(
+                englishExample = uiState.englishExample,
+                turkishExample = uiState.turkishExample,
+                englishError = uiState.englishExampleError,
+                turkishError = uiState.turkishExampleError,
+                showEnglishExample = showEnglishExample,
+                showTurkishExample = showTurkishExample,
+                onToggleEnglishExample = { showEnglishExample = !showEnglishExample },
+                onToggleTurkishExample = { showTurkishExample = !showTurkishExample },
+                onEvent = viewModel::onEvent,
+                focusManager = focusManager,
+                isDarkTheme = isDarkTheme
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 🎬 Action Buttons
+            ActionButtonsCard(
+                canSubmit = uiState.canSubmit,
+                isLoading = uiState.isLoading,
+                onSubmit = { viewModel.onEvent(AddWordEvent.SubmitWord) },
+                onClear = { viewModel.onEvent(AddWordEvent.ClearForm) },
+                isDarkTheme = isDarkTheme
+            )
+
+            // Error Display
+            uiState.error?.let { error ->
+                Spacer(modifier = Modifier.height(16.dp))
+                ErrorCard(
+                    error = error,
+                    onDismiss = { viewModel.onEvent(AddWordEvent.DismissError) },
                     isDarkTheme = isDarkTheme
                 )
-
-                // 📝 Example Sections (Expandable)
-                ExampleSectionsCard(
-                    englishExample = uiState.englishExample,
-                    turkishExample = uiState.turkishExample,
-                    englishError = uiState.englishExampleError,
-                    turkishError = uiState.turkishExampleError,
-                    showEnglishExample = showEnglishExample,
-                    showTurkishExample = showTurkishExample,
-                    onToggleEnglishExample = { showEnglishExample = !showEnglishExample },
-                    onToggleTurkishExample = { showTurkishExample = !showTurkishExample },
-                    onEvent = viewModel::onEvent,
-                    focusManager = focusManager,
-                    isDarkTheme = isDarkTheme
-                )
-
-                // 🎬 Action Buttons
-                ActionButtonsCard(
-                    canSubmit = uiState.canSubmit,
-                    isLoading = uiState.isLoading,
-                    onSubmit = { viewModel.onEvent(AddWordEvent.SubmitWord) },
-                    onClear = { viewModel.onEvent(AddWordEvent.ClearForm) },
-                    isDarkTheme = isDarkTheme
-                )
-
-                // Error Display
-                uiState.error?.let { error ->
-                    ErrorCard(
-                        error = error,
-                        onDismiss = { viewModel.onEvent(AddWordEvent.DismissError) },
-                        isDarkTheme = isDarkTheme
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
             }
         }
     }
@@ -188,7 +196,9 @@ private fun HeaderSection(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(top = 24.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 24.dp)
     ) {
         Text(
             text = "Kendi Kelimeni Ekle",
@@ -316,7 +326,7 @@ private fun ExampleSectionsCard(
     onToggleEnglishExample: () -> Unit,
     onToggleTurkishExample: () -> Unit,
     onEvent: (AddWordEvent) -> Unit,
-    focusManager: androidx.compose.ui.focus.FocusManager,
+    focusManager: FocusManager,
     isDarkTheme: Boolean
 ) {
     Card(
@@ -446,13 +456,6 @@ private fun ExpandableExampleSection(
                 fontSize = 14.sp,
                 color = Color.White,
                 modifier = Modifier.weight(1f)
-            )
-
-            Icon(
-                imageVector = if (isExpanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                contentDescription = if (isExpanded) "Kapat" else "Aç",
-                tint = Color.White.copy(alpha = 0.8f),
-                modifier = Modifier.size(20.dp)
             )
         }
 
@@ -701,5 +704,69 @@ private fun AddWordScreenPreview() {
             onNavigateBack = {},
             onNavigateToStudy = {}
         )
+    }
+}
+
+@Composable
+private fun InfoBanner(
+    isDarkTheme: Boolean
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isDarkTheme) {
+                Color(0xFF2D2D3D)
+            } else {
+                Color(0xFFF5F5F5)
+            }
+        ),
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Lingo Hoca Görseli
+            Image(
+                painter = painterResource(R.drawable.onboarding_teacher_1),
+                contentDescription = "Lingo Hoca",
+                modifier = Modifier.size(100.dp), // ✅ 80dp → 100dp
+                contentScale = ContentScale.Fit // ✅ EKLENEN
+            )
+
+            // Açıklama Metni
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = "Kendi Kelimeni Ekle",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = if (isDarkTheme) Color.White else Color(0xFF1A1A2E)
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "Kendi kelime havuzunu oluştur! Her eklediğin kelime çalışma programına otomatik eklenecek.",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 13.sp,
+                    color = if (isDarkTheme) {
+                        Color.White.copy(alpha = 0.7f)
+                    } else {
+                        Color(0xFF666666)
+                    },
+                    lineHeight = 18.sp
+                )
+            }
+        }
     }
 }

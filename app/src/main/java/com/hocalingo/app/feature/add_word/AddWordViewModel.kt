@@ -1,4 +1,4 @@
-package com.hocalingo.app.feature.addword.presentation
+package com.hocalingo.app.feature.add_word
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +11,7 @@ import com.hocalingo.app.database.entities.StudyDirection
 import com.hocalingo.app.database.entities.UserSelectionEntity
 import com.hocalingo.app.database.entities.WordProgressEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -207,7 +208,7 @@ class AddWordViewModel @Inject constructor(
                 _effect.emit(AddWordEffect.ShowMessage("Kelime başarıyla eklendi! 🎉"))
 
                 // Auto-clear form after successful submission
-                kotlinx.coroutines.delay(1500)
+                delay(1500)
                 clearForm()
 
             } catch (e: Exception) {

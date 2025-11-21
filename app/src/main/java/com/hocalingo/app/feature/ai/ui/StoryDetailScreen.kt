@@ -26,6 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hocalingo.app.R
 import com.hocalingo.app.feature.ai.models.GeneratedStory
+import androidx.compose.runtime.DisposableEffect
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hocalingo.app.feature.ai.AIViewModel
+import com.hocalingo.app.feature.ai.AIEvent
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -52,12 +57,21 @@ private val PoppinsFontFamily = FontFamily(
 fun StoryDetailScreen(
     story: GeneratedStory,
     onNavigateBack: () -> Unit,
-    onShare: () -> Unit,
     onDelete: () -> Unit,
-    onToggleFavorite: () -> Unit,
-    isDarkTheme: Boolean,
-    modifier: Modifier = Modifier
+    onShare: () -> Unit,
+    viewModel: AIViewModel = hiltViewModel()
 ) {
+    // State collection
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val englishWords = uiState.selectedStoryWords
+
+    // Cleanup on dispose
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.onEvent(AIEvent.CloseStoryDetail)
+        }
+    }
+
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     Box(
@@ -146,7 +160,7 @@ fun StoryDetailScreen(
                 // Story content with highlighted words
                 HighlightedStoryContent(
                     content = story.content,
-                    usedWords = story.usedWords
+                    englishWords = englishWords
                 )
             }
         }
@@ -206,48 +220,17 @@ private fun MetadataRow(
 @Composable
 private fun HighlightedStoryContent(
     content: String,
-    usedWords: List<Int>
+    englishWords: List<String>
 ) {
-    // TODO: Implement word highlighting based on usedWords
-    // For now, showing content with sample highlights
-
-    val annotatedString = buildAnnotatedString {
-        var lastIndex = 0
-
-        // Sample highlighting logic
-        // In production, you'd match usedWords from database
-        val wordsToHighlight = listOf(
-            "nebulae", "triangulated", "illuminate"
+    val highlightedText = remember(content, englishWords) {
+        StoryTextHelper.highlightWords(
+            content = content,
+            englishWords = englishWords
         )
-
-        wordsToHighlight.forEach { word ->
-            val index = content.indexOf(word, lastIndex, ignoreCase = true)
-            if (index != -1) {
-                // Normal text before highlighted word
-                append(content.substring(lastIndex, index))
-
-                // Highlighted word
-                withStyle(
-                    style = SpanStyle(
-                        color = Color(0xFF9D5CFF),
-                        fontWeight = FontWeight.Bold
-                    )
-                ) {
-                    append(content.substring(index, index + word.length))
-                }
-
-                lastIndex = index + word.length
-            }
-        }
-
-        // Remaining text
-        if (lastIndex < content.length) {
-            append(content.substring(lastIndex))
-        }
     }
 
     Text(
-        text = annotatedString,
+        text = highlightedText,
         fontFamily = PoppinsFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,

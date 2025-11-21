@@ -117,7 +117,7 @@ class ProfileViewModel @Inject constructor(
                     is Result.Error -> UserPreferences(
                         ThemeMode.SYSTEM,
                         StudyDirection.EN_TO_TR,
-                        true,
+                        false,
                         20,
                         true
                     )

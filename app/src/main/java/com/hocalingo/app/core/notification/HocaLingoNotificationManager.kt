@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
@@ -90,7 +91,13 @@ class HocaLingoNotificationManager @Inject constructor(
         )
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.hocalingo_icon_plane) // We'll need to add this icon
+            .setSmallIcon(R.drawable.hocalingo_plane) // ✅ Senin beyaz vektör ikonun
+            .setLargeIcon(
+                BitmapFactory.decodeResource(
+                    context.resources,
+                    R.mipmap.ic_launcher
+                )
+            ) // ✅ YENİ EKLENEN - uygulama ikonu
             .setContentTitle(getNotificationTitle(word))
             .setContentText(getNotificationText(word))
             .setStyle(

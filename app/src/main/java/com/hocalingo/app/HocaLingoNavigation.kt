@@ -26,7 +26,7 @@ import com.hocalingo.app.feature.onboarding.PackageSelectionScreen
 import com.hocalingo.app.feature.selection.WordSelectionScreen
 import com.hocalingo.app.feature.splash.SplashScreen
 import com.hocalingo.app.feature.study.StudyScreen
-import com.hocalingo.app.feature.addword.presentation.AddWordScreen
+import com.hocalingo.app.feature.add_word.AddWordScreen
 import com.hocalingo.app.feature.ai.AIAssistantScreen
 import com.hocalingo.app.feature.profile.ProfileScreen
 import com.hocalingo.app.feature.ai.ui.StoryDetailScreen
@@ -316,10 +316,7 @@ fun HocaLingoNavigation(
                         viewModel.onEvent(AIEvent.DeleteStory(storyId))
                         navController.popBackStack()
                     },
-                    onToggleFavorite = {
-                        viewModel.onEvent(AIEvent.ToggleFavorite(storyId))
-                    },
-                    isDarkTheme = isDarkTheme
+                    viewModel = viewModel // YENİ EKLENEN
                 )
             } else {
                 Box(

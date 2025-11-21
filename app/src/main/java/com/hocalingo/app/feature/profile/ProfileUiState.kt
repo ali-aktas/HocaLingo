@@ -42,7 +42,7 @@ data class ProfileUiState(
     // User preferences
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val studyDirection: StudyDirection = StudyDirection.EN_TO_TR,
-    val notificationsEnabled: Boolean = true,
+    val notificationsEnabled: Boolean = false,
     val notificationHour: Int = 20, // ✅ NEW: Default 20:00 (8 PM)
     val soundEnabled: Boolean = true,
     val dailyGoal: Int = 20

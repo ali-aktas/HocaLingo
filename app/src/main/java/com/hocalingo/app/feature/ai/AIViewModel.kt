@@ -92,6 +92,7 @@ class AIViewModel @Inject constructor(
             is AIEvent.OpenStoryDetail -> openStoryDetail(event.storyId)
             is AIEvent.DeleteStory -> deleteStory(event.storyId)
             is AIEvent.ToggleFavorite -> toggleFavorite(event.storyId)
+            AIEvent.CloseStoryDetail -> closeStoryDetail()
             AIEvent.DismissError -> dismissError()
             AIEvent.RefreshQuota -> loadQuotaInfo()
         }
@@ -254,15 +255,64 @@ class AIViewModel @Inject constructor(
      */
     private fun openStoryDetail(storyId: String) {
         viewModelScope.launch {
-            when (val result = storyRepository.getStoryById(storyId)) {
+            DebugHelper.log("📖 Opening story detail: $storyId")
+
+            // 1. Story'yi yükle
+            when (val storyResult = storyRepository.getStoryById(storyId)) {
                 is Result.Success -> {
-                    _uiState.update { it.copy(currentStory = result.data) }
-                    _effect.emit(AIEffect.NavigateToDetail(storyId))
+                    val story = storyResult.data
+                    DebugHelper.log("✅ Story loaded: ${story.title}")
+
+                    // 2. Story'deki concept ID'lerden İngilizce kelimeleri yükle
+                    when (val wordsResult = storyRepository.getEnglishWordsForStory(story.usedWords)) {
+                        is Result.Success -> {
+                            val englishWords = wordsResult.data
+                            DebugHelper.log("📚 Loaded ${englishWords.size} words for highlighting")
+
+                            // State güncelle
+                            _uiState.update {
+                                it.copy(
+                                    currentStory = story,
+                                    selectedStoryWords = englishWords
+                                )
+                            }
+
+                            // Navigate
+                            _effect.emit(AIEffect.NavigateToDetail(storyId))
+                        }
+                        is Result.Error -> {
+                            // Kelimeler yüklenemedi ama hikayeyi göster (graceful degradation)
+                            DebugHelper.logError("⚠️ Failed to load words, showing story without highlights", wordsResult.error)
+
+                            _uiState.update {
+                                it.copy(
+                                    currentStory = story,
+                                    selectedStoryWords = emptyList()
+                                )
+                            }
+
+                            _effect.emit(AIEffect.NavigateToDetail(storyId))
+                        }
+                    }
                 }
                 is Result.Error -> {
+                    DebugHelper.logError("❌ Failed to load story", storyResult.error)
                     _effect.emit(AIEffect.ShowError("Hikaye yüklenemedi"))
                 }
             }
+        }
+    }
+
+    /**
+     * Close story detail and cleanup state
+     */
+    private fun closeStoryDetail() {
+        DebugHelper.log("🔙 Closing story detail")
+        _uiState.update {
+            it.copy(
+                currentStory = null,
+                selectedStoryWords = emptyList()
+            )
         }
     }
 
@@ -322,6 +372,7 @@ data class AIUiState(
 
     // Current story (for detail screen)
     val currentStory: GeneratedStory? = null,
+    val selectedStoryWords: List<String> = emptyList(),
 
     // Generation state
     val isGenerating: Boolean = false,
@@ -367,9 +418,8 @@ sealed interface AIEvent {
     data class OpenStoryDetail(val storyId: String) : AIEvent
     data class DeleteStory(val storyId: String) : AIEvent
     data class ToggleFavorite(val storyId: String) : AIEvent
-
-    // Utility
     data object DismissError : AIEvent
+    data object CloseStoryDetail : AIEvent
     data object RefreshQuota : AIEvent
 }
 

@@ -3,6 +3,6 @@
 
     <style name="SplashTheme" parent="Theme.HocaLingo">
         <item name="android:windowSplashScreenBackground">@color/splash_orange</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/hocalingo_icon_plane</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/lingo_nobg</item>
     </style>
 </resources>

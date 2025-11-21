@@ -1,4 +1,4 @@
-package com.hocalingo.app.feature.addword.presentation
+package com.hocalingo.app.feature.add_word
 
 /**
  * UI State for Add Word Screen
