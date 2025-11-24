@@ -554,15 +554,12 @@ class StudyViewModel @Inject constructor(
     private fun playPronunciation() {
         val concept = _uiState.value.currentConcept
         if (concept != null && _uiState.value.isTtsEnabled) {
-            val (textToSpeak, language) = when (_uiState.value.studyDirection) {
-                StudyDirection.EN_TO_TR -> concept.english to "en"
-                StudyDirection.TR_TO_EN -> concept.turkish to "tr"
-            }
-
-            if (textToSpeak.isNotEmpty()) {
-                textToSpeechManager.speak(textToSpeak, language)
-                DebugHelper.log("TTS: Speaking '$textToSpeak' in $language")
-            }
+            // ✅ TTS butonu her zaman İngilizce kelimeyi okumalı
+            // Çünkü buton akıllı yerleştirildi:
+            // EN→TR: Ön kartta (İngilizce var)
+            // TR→EN: Arka kartta (İngilizce var)
+            textToSpeechManager.speak(concept.english, "en")
+            DebugHelper.log("TTS: Speaking English word '${concept.english}'")
         }
     }
 

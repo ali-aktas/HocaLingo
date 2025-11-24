@@ -357,6 +357,7 @@ private fun StudyContent(
                     onCardClick = { onEvent(StudyEvent.FlipCard) },
                     onPronunciationClick = { onEvent(StudyEvent.PlayPronunciation) },
                     showPronunciationButton = uiState.shouldShowTtsButton,
+                    showTtsOnFrontSide = uiState.showTtsOnFrontSide,
                     modifier = Modifier.weight(1f)
                 )
             } else {
@@ -637,6 +638,7 @@ private fun StudyCard(
     isFlipped: Boolean,
     onCardClick: () -> Unit,
     onPronunciationClick: () -> Unit,
+    showTtsOnFrontSide: Boolean,
     showPronunciationButton: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -698,7 +700,8 @@ private fun StudyCard(
                         )
                     }
                 }
-                if (showPronunciationButton) {
+                // ✅ TTS Button on FRONT side (EN→TR only)
+                if (showPronunciationButton && showTtsOnFrontSide) {
                     IconButton(
                         onClick = onPronunciationClick,
                         modifier = Modifier.align(Alignment.TopEnd)
@@ -738,6 +741,22 @@ private fun StudyCard(
                                 lineHeight = 20.sp
                             )
                         }
+                    }
+                }
+                // ✅ TTS Button on BACK side (düzeltme ile)
+                if (showPronunciationButton && !showTtsOnFrontSide) {
+                    IconButton(
+                        onClick = onPronunciationClick,
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .graphicsLayer { scaleX = -1f } // ✅ Card'ın rotationY'sinden dolayı ters görünüyor, düzelt
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.VolumeUp,
+                            contentDescription = "Seslendirme",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
                     }
                 }
             }
@@ -785,6 +804,7 @@ private fun StudyActionButtons(
                 )
             }
         }
+
     } else {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -818,6 +838,7 @@ private fun StudyActionButtons(
                 modifier = Modifier.weight(1f)
             )
         }
+
     }
 }
 

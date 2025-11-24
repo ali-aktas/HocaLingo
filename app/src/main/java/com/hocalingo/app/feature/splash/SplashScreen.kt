@@ -1,15 +1,20 @@
 package com.hocalingo.app.feature.splash
 
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +36,20 @@ private val PoppinsFontFamily = FontFamily(
     Font(R.font.poppins_black, FontWeight.Black)
 )
 
+/**
+ * 🎯 UPDATED SPLASH SCREEN
+ *
+ * ✅ Seamless transition from system splash
+ * ✅ Hoca head (lingo_nobg.png) centered - same as system splash
+ * ✅ Text overlays fade-in over hoca head
+ * ✅ Smooth animations with breathing effect
+ *
+ * Visual Hierarchy:
+ * 1. Orange background (consistent with system splash)
+ * 2. Hoca head (static, centered)
+ * 3. Text overlays (fade-in with breathing animation)
+ * 4. Loading spinner
+ */
 @Composable
 fun SplashScreen(
     onNavigateToAuth: () -> Unit = {},
@@ -53,107 +72,159 @@ fun SplashScreen(
         }
     }
 
-    // ✅ MODERN PROFESSIONAL ANIMATIONS
-    // Title scale-in animation
-    val titleScale by animateFloatAsState(
+    // ✅ ANIMATIONS - Smooth and professional
+    val infiniteTransition = rememberInfiniteTransition(label = "breathing")
+
+    // Hoca head fade-in (instant to match system splash)
+    val iconAlpha by animateFloatAsState(
         targetValue = 1f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        ),
-        label = "title_scale"
+        animationSpec = tween(durationMillis = 300, easing = LinearEasing),
+        label = "iconAlpha"
     )
 
-    // Title fade-in animation (earlier since no icon)
+    // Title fade-in with delay (after icon appears)
     val titleAlpha by animateFloatAsState(
         targetValue = 1f,
-        animationSpec = tween(600, delayMillis = 300),
-        label = "title_alpha"
+        animationSpec = tween(durationMillis = 600, delayMillis = 400, easing = FastOutSlowInEasing),
+        label = "titleAlpha"
     )
 
-    // Tagline fade-in animation
+    // Tagline fade-in with more delay
     val taglineAlpha by animateFloatAsState(
         targetValue = 1f,
-        animationSpec = tween(600, delayMillis = 600),
-        label = "tagline_alpha"
+        animationSpec = tween(durationMillis = 600, delayMillis = 700, easing = FastOutSlowInEasing),
+        label = "taglineAlpha"
     )
 
-    // ✅ BREATHING PULSE ANIMATION (subtle)
-    val infiniteTransition = rememberInfiniteTransition(label = "breathing")
+    // Loading indicator fade-in last
+    val loadingAlpha by animateFloatAsState(
+        targetValue = 1f,
+        animationSpec = tween(durationMillis = 600, delayMillis = 1000, easing = FastOutSlowInEasing),
+        label = "loadingAlpha"
+    )
+
+    // 🔥 BREATHING EFFECT - BOLD & VISIBLE (1.0 ↔ 1.10)
     val breathingScale by infiniteTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = 1.03f,
+        initialValue = 1.0f,
+        targetValue = 1.10f, // 🔥 Much more visible!
         animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = EaseInOutSine),
+            animation = tween(durationMillis = 1500, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
         ),
-        label = "breathing_scale"
+        label = "breathingScale"
     )
 
-    // ✅ THEME-AWARE BACKGROUND COLORS
-    val backgroundColor = if (isDarkTheme) {
-        Color(0xFFFB9322) // Darker orange for dark theme
-    } else {
-        Color(0xFFFB9322) // Updated orange tone
-    }
+    // 🎨 LOADING PROGRESS - Linear bar animation
+    val loadingProgress by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 2500, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "loadingProgress"
+    )
 
+    // ✅ BACKGROUND - Brand orange (same as system splash)
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundColor),
-        contentAlignment = Alignment.Center
+            .background(Color(0xFFFB9322)) // HocaLingo orange - matches themes.xml
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        // ✅ MAIN CONTENT - Absolute center with Box for perfect alignment
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            // ✅ BRAND TITLE - Main Focus (No Icon)
-            Text(
-                text = "HocaLingo",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Black,
-                fontSize = 48.sp, // Bigger since no icon
-                color = Color.White,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .scale(titleScale * breathingScale) // Scale + breathing combined
-                    .alpha(titleAlpha)
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                // 🎯 HOCA HEAD ICON - Box wrapper for perfect centering
+                Box(
+                    modifier = Modifier
+                        .size(240.dp)
+                        .scale(breathingScale) // 🔥 BOLD breathing (1.0 ↔ 1.10)
+                        .alpha(iconAlpha),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.lingo_nobg),
+                        contentDescription = "HocaLingo Logo",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Fit
+                    )
+                }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(2.dp)) // 🔥 Reduced spacing
 
-            // ✅ TAGLINE
-            Text(
-                text = "Akıllı Kelime Öğrenme",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 18.sp,
-                color = Color.White.copy(alpha = 0.9f),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.alpha(taglineAlpha)
-            )
+                // ✅ APP TITLE - BOLD breathing effect
+                Text(
+                    text = "HocaLingo",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Black,
+                    fontSize = 48.sp,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .scale(breathingScale) // 🔥 Same bold breathing
+                        .alpha(titleAlpha)
+                )
 
-            Spacer(modifier = Modifier.height(60.dp))
+                Spacer(modifier = Modifier.height(8.dp)) // 🔥 Reduced spacing
 
-            // ✅ SUBTLE LOADING INDICATOR (Optional)
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(24.dp)
-                    .alpha(0.7f),
-                color = Color.White,
-                strokeWidth = 2.dp
-            )
+                // ✅ TAGLINE - Static, clean
+                Text(
+                    text = "Akıllı Kelime Öğrenme",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 18.sp,
+                    color = Color.White.copy(alpha = 0.9f),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.alpha(taglineAlpha)
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                // 🎨 COLORFUL LINEAR PROGRESS BAR - Purple fill
+                Box(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(6.dp)
+                        .alpha(loadingAlpha)
+                        .clip(RoundedCornerShape(3.dp)),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    // Background track (light transparent)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.White.copy(alpha = 0.3f))
+                    )
+
+                    // Animated purple fill
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .fillMaxWidth(loadingProgress)
+                            .background(
+                                Color(0xFF9C27B0) // 🎨 Purple/Magenta
+                            )
+                    )
+                }
+            }
         }
 
-        // ✅ VERSION INFO (Bottom corner - optional)
+        // ✅ VERSION INFO - Bottom center
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(bottom = 32.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
             Text(
-                text = "v1.1.6",
+                text = "1.1.7",
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Normal,
                 fontSize = 12.sp,

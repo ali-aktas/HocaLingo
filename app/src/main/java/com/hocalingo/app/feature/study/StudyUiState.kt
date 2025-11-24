@@ -100,6 +100,14 @@ data class StudyUiState(
         get() = isTtsEnabled && currentConcept != null
 
     /**
+     * TTS button should be on front side (EN→TR) or back side (TR→EN)
+     * EN→TR: true (front = English word)
+     * TR→EN: false (back = English word)
+     */
+    val showTtsOnFrontSide: Boolean
+        get() = studyDirection == StudyDirection.EN_TO_TR
+
+    /**
      * Front example sentence
      */
     val frontExampleText: String
