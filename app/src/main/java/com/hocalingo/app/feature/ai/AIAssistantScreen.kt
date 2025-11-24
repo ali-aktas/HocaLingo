@@ -106,7 +106,7 @@ fun AIAssistantScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            "Hocalingo Hikaye Üretici",
+                            "Hocalingo Yapay Zeka",
                             fontFamily = PoppinsFontFamily,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
@@ -277,9 +277,9 @@ private fun HeroSection(
             verticalArrangement = Arrangement.Bottom
         ) {
             Text(
-                text = "Yapay zeka asistanı ile çalıştığın kelimelerden hikayeler yarat.",
+                text = "Yapay zeka ile destene eklediğin kelimelerden okuma yazıları yarat!",
                 fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
                 color = Color.White,
                 textAlign = TextAlign.Center
@@ -478,7 +478,7 @@ private fun PremiumUpgradeSection(
             Icon(
                 imageVector = Icons.Default.StarOutline,
                 contentDescription = null,
-                tint = Color(0xFFFF9900),
+                tint = Color(0xFF6500FF),
                 modifier = Modifier.size(24.dp)
             )
             Text(
@@ -572,14 +572,14 @@ private fun PremiumUserBadge(
             Icon(
                 imageVector = Icons.Default.Stars,
                 contentDescription = null,
-                tint = Color(0xFFFFD700),
-                modifier = Modifier.size(28.dp)
+                tint = Color(0xFF6500FF),
+                modifier = Modifier.size(22.dp)
             )
             Text(
                 "Premium Üyesin! 🎉",
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
+                fontSize = 14.sp,
                 color = Color.White
             )
         }

@@ -29,13 +29,17 @@ import com.hocalingo.app.database.entities.WordPackageEntity
 import com.hocalingo.app.database.entities.WordProgressEntity
 
 /**
- * HocaLingo Room Database - UPDATED TO VERSION 2
+ * HocaLingo Room Database - UPDATED TO VERSION 5
  *
- * VERSION 2 CHANGES:
- * ✅ Added learning_phase column to word_progress table
- * ✅ Added session_position column to word_progress table
- * ✅ Added indexes for new columns
- * ✅ Migration from version 1 to 2 included
+ * VERSION 5 CHANGES:
+ * ✅ Changed successful_reviews from INTEGER to REAL for partial success tracking
+ * ✅ MEDIUM button now gives 0.5 points instead of 1 point
+ * ✅ Migration from version 4 to 5 included
+ *
+ * Previous versions:
+ * VERSION 4: Added AI Story feature tables
+ * VERSION 3: Added hard_presses and successful_reviews tracking
+ * VERSION 2: Added learning_phase and session_position for hybrid system
  *
  * Central database for all app data including:
  * - Word concepts and vocabulary
@@ -55,7 +59,7 @@ import com.hocalingo.app.database.entities.WordProgressEntity
         StoryEntity::class,
         StoryQuotaEntity::class
     ],
-    version = 4,
+    version = 5,  // ✅ 4 → 5
     exportSchema = true
 )
 @TypeConverters(DatabaseTypeConverters::class)
@@ -167,8 +171,9 @@ abstract class HocaLingoDatabase : RoomDatabase() {
             }
         }
 
-
-        // ← BURAYI YENİ EKLE:
+        /**
+         * 🔥 MIGRATION 3 → 4: Add AI Story Feature Tables
+         */
         val MIGRATION_3_4 = object : Migration(3, 4) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 try {
@@ -223,6 +228,112 @@ abstract class HocaLingoDatabase : RoomDatabase() {
         }
 
         /**
+         * 🔥 MIGRATION 4 → 5: Change successful_reviews to REAL for partial success
+         *
+         * This allows MEDIUM button to give 0.5 points instead of 1 point
+         * Required for improved graduation criteria:
+         * - EASY = 1.0 point
+         * - MEDIUM = 0.5 points
+         * - Graduation at 3.0 points
+         */
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                try {
+                    Log.d("HocaLingoDatabase", "🔄 Starting Migration 4→5...")
+
+                    // SQLite doesn't support ALTER COLUMN TYPE directly
+                    // We need to: create new table → copy data → drop old → rename new
+
+                    // 1. Create new table with REAL type for successful_reviews
+                    database.execSQL("""
+                        CREATE TABLE word_progress_new (
+                            concept_id INTEGER NOT NULL,
+                            direction TEXT NOT NULL,
+                            repetitions INTEGER NOT NULL DEFAULT 0,
+                            interval_days REAL NOT NULL DEFAULT 1.0,
+                            ease_factor REAL NOT NULL DEFAULT 2.5,
+                            next_review_at INTEGER NOT NULL,
+                            last_review_at INTEGER,
+                            is_selected INTEGER NOT NULL DEFAULT 0,
+                            is_mastered INTEGER NOT NULL DEFAULT 0,
+                            hard_presses INTEGER DEFAULT 0,
+                            successful_reviews REAL DEFAULT 0.0,
+                            learning_phase INTEGER NOT NULL DEFAULT 1,
+                            session_position INTEGER,
+                            failures INTEGER DEFAULT 0,
+                            success_streak INTEGER DEFAULT 0,
+                            created_at INTEGER NOT NULL,
+                            updated_at INTEGER NOT NULL,
+                            PRIMARY KEY(concept_id, direction),
+                            FOREIGN KEY(concept_id) REFERENCES concepts(id) ON DELETE CASCADE
+                        )
+                    """)
+
+                    // 2. Copy data (INTEGER automatically converts to REAL)
+                    database.execSQL("""
+                        INSERT INTO word_progress_new 
+                        SELECT 
+                            concept_id,
+                            direction,
+                            repetitions,
+                            interval_days,
+                            ease_factor,
+                            next_review_at,
+                            last_review_at,
+                            is_selected,
+                            is_mastered,
+                            hard_presses,
+                            CAST(successful_reviews AS REAL),
+                            learning_phase,
+                            session_position,
+                            failures,
+                            success_streak,
+                            created_at,
+                            updated_at
+                        FROM word_progress
+                    """)
+
+                    // 3. Drop old table
+                    database.execSQL("DROP TABLE word_progress")
+
+                    // 4. Rename new table
+                    database.execSQL("ALTER TABLE word_progress_new RENAME TO word_progress")
+
+                    // 5. Recreate indexes
+                    database.execSQL("""
+                        CREATE INDEX IF NOT EXISTS index_word_progress_concept_id 
+                        ON word_progress(concept_id)
+                    """)
+
+                    database.execSQL("""
+                        CREATE INDEX IF NOT EXISTS index_word_progress_next_review_at 
+                        ON word_progress(next_review_at)
+                    """)
+
+                    database.execSQL("""
+                        CREATE INDEX IF NOT EXISTS index_word_progress_is_selected 
+                        ON word_progress(is_selected)
+                    """)
+
+                    database.execSQL("""
+                        CREATE INDEX IF NOT EXISTS index_word_progress_learning_phase 
+                        ON word_progress(learning_phase)
+                    """)
+
+                    database.execSQL("""
+                        CREATE INDEX IF NOT EXISTS index_word_progress_session_position 
+                        ON word_progress(session_position)
+                    """)
+
+                    Log.d("HocaLingoDatabase", "✅ Migration 4→5 completed successfully")
+                } catch (e: Exception) {
+                    Log.e("HocaLingoDatabase", "❌ Migration 4→5 failed", e)
+                    throw e
+                }
+            }
+        }
+
+        /**
          * Get database instance with singleton pattern
          *
          * ⚠️ BU METOD ŞİMDİLİK KULLANILMIYOR!
@@ -236,7 +347,7 @@ abstract class HocaLingoDatabase : RoomDatabase() {
                     HocaLingoDatabase::class.java,
                     DATABASE_NAME
                 )
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4) // ← MIGRATION_3_4 ekle
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)  // ✅ MIGRATION_4_5 eklendi
                     .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance

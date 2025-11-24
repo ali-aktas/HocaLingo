@@ -58,9 +58,10 @@ private fun populateNativeAdView(nativeAd: NativeAd, adView: NativeAdView) {
     val ctaView: Button? = adView.findViewById(R.id.ad_call_to_action)
     val advertiserView: TextView? = adView.findViewById(R.id.ad_advertiser)
     val starRatingView: RatingBar? = adView.findViewById(R.id.ad_stars)
+    val mediaView: MediaView? = adView.findViewById(R.id.ad_media)
 
 //    // Opsiyonel view'lar (XML'de olmayabilir)
-//    val mediaView: MediaView? = adView.findViewById(R.id.ad_media)
+
 //    val priceView: TextView? = adView.findViewById(R.id.ad_price)
 //    val storeView: TextView? = adView.findViewById(R.id.ad_store)
 
@@ -71,7 +72,8 @@ private fun populateNativeAdView(nativeAd: NativeAd, adView: NativeAdView) {
     adView.iconView = iconView
     adView.advertiserView = advertiserView
     adView.starRatingView = starRatingView
-//    adView.mediaView = mediaView
+    adView.mediaView = mediaView
+
 //    adView.priceView = priceView
 //    adView.storeView = storeView
 

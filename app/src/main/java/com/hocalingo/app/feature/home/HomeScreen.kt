@@ -208,7 +208,7 @@ private fun WelcomeHeaderWithStats(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(20.dp)
-                    .fillMaxWidth(0.6f) // Leave space for image
+                    .fillMaxWidth(0.8f) // Leave space for image
             ) {
                 Text(
                     text = "Merhaba $userName!",
@@ -273,7 +273,7 @@ private fun WelcomeHeaderWithStats(
                 painter = painterResource(id = R.drawable.main_screen_card),
                 contentDescription = "Lingo Hoca",
                 modifier = Modifier
-                    .size(170.dp)
+                    .size(180.dp)
                     .align(Alignment.BottomEnd)
                     .offset(x = 15.dp, y = 0.dp), // Slight offset to pop out
                 contentScale = ContentScale.Fit,

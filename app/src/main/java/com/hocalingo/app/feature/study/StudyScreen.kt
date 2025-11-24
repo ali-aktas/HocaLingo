@@ -326,10 +326,10 @@ private fun StudyContent(
                 }
 
                 Text(
-                    text = "Çalışma",
+                    text = "Aralıklı tekrar çalışması",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
@@ -753,6 +753,7 @@ private fun StudyActionButtons(
     hardTimeText: String,
     onHardPressed: () -> Unit,
     onMediumPressed: () -> Unit,
+    isAdDialogShowing: Boolean = false,
     onEasyPressed: () -> Unit
 ) {
     if (!isCardFlipped) {
@@ -776,7 +777,7 @@ private fun StudyActionButtons(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Kartı çevirmek için dokunun",
+                    text = "Ne kadar hatırlıyorsun?",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,
@@ -795,6 +796,7 @@ private fun StudyActionButtons(
                 backgroundColor = Color(0xFFFF3B30),
                 contentColor = Color.White,
                 onClick = onHardPressed,
+                enabled = !isAdDialogShowing,
                 modifier = Modifier.weight(1f)
             )
             ActionButton(
@@ -803,6 +805,7 @@ private fun StudyActionButtons(
                 backgroundColor = Color(0xFFFF9500),
                 contentColor = Color.White,
                 onClick = onMediumPressed,
+                enabled = !isAdDialogShowing,
                 modifier = Modifier.weight(1f)
             )
             ActionButton(
@@ -811,6 +814,7 @@ private fun StudyActionButtons(
                 backgroundColor = Color(0xFF34C759),
                 contentColor = Color.White,
                 onClick = onEasyPressed,
+                enabled = !isAdDialogShowing,
                 modifier = Modifier.weight(1f)
             )
         }
@@ -824,11 +828,12 @@ private fun ActionButton(
     backgroundColor: Color,
     contentColor: Color,
     onClick: () -> Unit,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
-            .clickable { onClick() }
+            .clickable(enabled = enabled) { onClick() }
             .height(80.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = backgroundColor),

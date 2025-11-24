@@ -31,7 +31,7 @@ interface StudyRepository {
      */
     fun getStudyQueue(
         direction: StudyDirection,
-        limit: Int = 50
+        limit: Int = 70
     ): Flow<List<ConceptWithTimingData>>
 
     /**

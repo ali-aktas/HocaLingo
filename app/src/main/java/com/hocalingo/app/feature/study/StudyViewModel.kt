@@ -192,7 +192,7 @@ class StudyViewModel @Inject constructor(
 
                         startNewSession()
 
-                        studyRepository.getStudyQueue(direction, limit = 20)
+                        studyRepository.getStudyQueue(direction, limit = 70)
                             .collectLatest { queueData ->
                                 DebugHelper.log("Study queue received: ${queueData.size} words")
 
@@ -375,8 +375,8 @@ class StudyViewModel @Inject constructor(
                         // 4. QUEUE REORDERING for learning phase words
                         if (updatedProgress.learningPhase && updatedProgress.sessionPosition != null) {
                             // Word is still in learning - reinsert in queue based on difficulty
-                            DebugHelper.log("🔄 Learning phase word - reinserting with sessionPos=${updatedProgress.sessionPosition}")
-                            reinsertWordInQueue(currentQueueIndex, updatedProgress.sessionPosition!!)
+                            DebugHelper.log("🔄 Learning phase word - reinserting with quality=$quality")
+                            reinsertWordInQueue(currentQueueIndex, quality)  // ✅ DEĞİŞTİ: sessionPosition → quality
                         } else {
                             // Word graduated or in review phase - remove from queue permanently
                             DebugHelper.log("🎓 Graduated/Review word - removing from current queue")
@@ -400,6 +400,7 @@ class StudyViewModel @Inject constructor(
                                 // Continue to next checks
                             } else {
                                 DebugHelper.log("🎯 Showing rewarded ad")
+                                adMobManager.resetStudyWordCount()
                                 _uiState.update { it.copy(currentConcept = null, isLoading = true) }
                                 _effect.emit(StudyEffect.ShowStudyRewardedAd)
                                 return@launch
@@ -487,20 +488,53 @@ class StudyViewModel @Inject constructor(
             // Önce loading'i kapat
             _uiState.update { it.copy(isLoading = false) }
 
-            if (currentQueueIndex < studyQueue.size) {
-                loadNextWord()
-                // Sonraki için preload
-                adMobManager.loadStudyRewardedAd()
-            } else {
-                _uiState.update {
-                    it.copy(
-                        currentConcept = null,
-                        showEmptyQueueMessage = true,
-                        isCardFlipped = false,
-                        isLoading = false
-                    )
+            // ✅ YENİ: Learning phase filter
+            if (currentQueueIndex >= studyQueue.size) {
+                val direction = _uiState.value.studyDirection
+                val learningWords = studyQueue.filter { word ->
+                    val progress = studyRepository.getCurrentProgress(word.id, direction)
+                    when (progress) {
+                        is Result.Success -> progress.data?.learningPhase == true
+                        is Result.Error -> false
+                    }
                 }
-                completeSession()
+
+                if (learningWords.isNotEmpty()) {
+                    studyQueue = learningWords
+                    currentQueueIndex = 0
+                    DebugHelper.log("🔄 Queue filtered after ad: ${studyQueue.size} learning words")
+
+                    _uiState.update {
+                        it.copy(
+                            totalWordsInQueue = studyQueue.size,
+                            remainingCards = studyQueue.size
+                        )
+                    }
+
+                    loadNextWord()
+                    // ✅ Sadece yüklü değilse
+                    if (adMobManager.studyRewardedAdState.value !is AdState.Loaded) {
+                        adMobManager.loadStudyRewardedAd()
+                    }
+                    return@launch
+                } else {
+                    // Gerçekten bitti
+                    completeSession()
+                    return@launch
+                }
+            }
+
+            // ✅ YENİ: Native ad check
+            if (currentQueueIndex % 10 == 0 && currentQueueIndex > 0) {
+                _uiState.update { it.copy(showNativeAd = true) }
+                return@launch
+            }
+
+            // Normal flow devam
+            loadNextWord()
+            // ✅ Sadece yüklü değilse
+            if (adMobManager.studyRewardedAdState.value !is AdState.Loaded) {
+                adMobManager.loadStudyRewardedAd()
             }
         }
     }
@@ -647,7 +681,7 @@ class StudyViewModel @Inject constructor(
      * MEDIUM (200-299): 75% of remaining queue
      * EASY (300-399):  100% of remaining queue (end)
      */
-    private fun reinsertWordInQueue(currentIndex: Int, sessionPosition: Int) {
+    private fun reinsertWordInQueue(currentIndex: Int, quality: Int) {  // ✅ sessionPosition → quality
         if (currentIndex >= studyQueue.size) return
 
         val word = studyQueue[currentIndex]
@@ -659,11 +693,12 @@ class StudyViewModel @Inject constructor(
         // Calculate remaining queue size after removal
         val remainingSize = mutableQueue.size
 
-        // Calculate offset based on session position percentage
-        val offsetPercentage = when {
-            sessionPosition < 100 -> 0.45f      // HARD: 45% of queue
-            sessionPosition in 200..299 -> 0.75f // MEDIUM: 75% of queue
-            else -> 1.0f                         // EASY: 100% (end of queue)
+        // ✅ Calculate offset based on button quality (not sessionPosition!)
+        val offsetPercentage = when (quality) {
+            SpacedRepetitionAlgorithm.QUALITY_HARD -> 0.30f    // HARD: 30% of queue (close)
+            SpacedRepetitionAlgorithm.QUALITY_MEDIUM -> 0.60f  // MEDIUM: 60% of queue (middle)
+            SpacedRepetitionAlgorithm.QUALITY_EASY -> 1.0f     // EASY: 100% (end)
+            else -> 1.0f
         }
 
         // Calculate new index (rounded down)
@@ -674,7 +709,7 @@ class StudyViewModel @Inject constructor(
         mutableQueue.add(newIndex, word)
         studyQueue = mutableQueue
 
-        DebugHelper.log("🔄 Reordered: ${word.english} | Queue: $remainingSize cards | Offset: ${offsetPercentage * 100}% = $offset cards | Position: $currentIndex → $newIndex")
+        DebugHelper.log("🔄 Reordered: ${word.english} | Quality=$quality | Queue: $remainingSize cards | Offset: ${offsetPercentage * 100}% = $offset cards | Position: $currentIndex → $newIndex")
     }
 
     private fun createDefaultProgress(conceptId: Int, direction: StudyDirection) =

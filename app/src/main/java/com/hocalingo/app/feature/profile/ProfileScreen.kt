@@ -170,12 +170,13 @@ fun ProfileScreen(
             // Settings Header - Theme-aware text color
             item {
                 Text(
-                    text = "Profil",
+                    text = "Hocalingo",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Black,
                     fontSize = 32.sp,
-                    color = MaterialTheme.colorScheme.onBackground, // Theme-aware
-                    modifier = Modifier.fillMaxWidth()
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
             }
 
@@ -456,9 +457,9 @@ private fun ModernSettingsCard(
                 .background(
                     brush = Brush.linearGradient(
                         colors = if (isDarkTheme) {
-                            listOf(Color(0xFF52355F), Color(0xFF634371))
+                            listOf(Color(0xFF571EAC), Color(0xFF541780))
                         } else {
-                            listOf(Color(0xFF246149), Color(0xFF36764E))
+                            listOf(Color(0xFF53138B), Color(0xFF6418AF))
                         }
                     )
                 )

@@ -381,9 +381,10 @@ class AdMobManager @Inject constructor(
                 studyRewardedAd = null
                 _studyRewardedAdState.value = AdState.Dismissed
 
-                scope.launch {
-                    adCounterDataStore.resetStudyWordCount()
-                }
+                // ❌ KALDIRDIK - Artık burada reset yapmıyoruz
+                // scope.launch {
+                //     adCounterDataStore.resetStudyWordCount()
+                // }
 
                 onAdDismissed()
 

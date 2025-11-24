@@ -53,7 +53,9 @@ data class WordProgressEntity(
     val isMastered: Boolean = false,
 
     @ColumnInfo(name = "hard_presses") val hardPresses: Int? = null,
-    @ColumnInfo(name = "successful_reviews") val successfulReviews: Int? = null,
+
+    @ColumnInfo(name = "successful_reviews")
+    val successfulReviews: Float? = null,
 
     /**
      * NEW: Learning Phase Management

@@ -6,24 +6,21 @@ import kotlin.math.min
 import com.hocalingo.app.database.entities.StudyDirection
 
 /**
- * ✅ OPTIMIZED SM-2 Spaced Repetition Algorithm - PRODUCTION READY
+ * ✅ OPTIMIZED SM-2 Spaced Repetition Algorithm - VERSION 3
  *
  * Package: app/src/main/java/com/hocalingo/app/core/common/
  *
- * 🎯 核心修正：
- * 1. Learning phase = Bugün içinde tekrar göster (nextReviewAt = today)
- * 2. Graduation = Gerçek öğrenme (minimum 3-4 başarılı deneme)
- * 3. Session position = Aynı gün içinde sıralama (başa/ortaya/sona)
- * 4. Review phase = Gerçekten öğrenilmiş kelimeler için
+ * 🎯 V3 MAJOR CHANGES:
+ * 1. ✅ successfulReviews now Float (partial success tracking)
+ * 2. ✅ MEDIUM = 0.5 points (graduation requires 3 points = 3 EASY or 6 MEDIUM)
+ * 3. ✅ EASY = 1.0 point (full success)
+ * 4. ✅ Review HARD: Reset to learning phase (sıfırdan başla)
  *
- * 🔥 V2 IMPROVEMENTS:
- * - ✅ Review MEDIUM: Adaptive multiplier (interval-based behavior)
- *   - 0-3 gün: 1.5x progression (gentle growth)
- *   - 4-7 gün: 1.2x progression (moderate growth)
- *   - 8-21 gün: 0.85x reduction (slight decrease)
- *   - 21+ gün: 0.5x reduction (significant decrease)
- * - ✅ Learning MEDIUM: +0.05 EaseFactor bonus
- * - ✅ Semantically correct: "Zorlandım" = daha sık görmek istiyorum
+ * Previous improvements:
+ * - Learning phase = Bugün içinde tekrar göster
+ * - Graduation = Gerçek öğrenme (minimum 3 başarılı)
+ * - Session position = Aynı gün içinde sıralama
+ * - Review MEDIUM: Adaptive multiplier (interval-based)
  */
 object SpacedRepetitionAlgorithm {
 
@@ -39,7 +36,7 @@ object SpacedRepetitionAlgorithm {
     private const val EASY_POSITION_INCREMENT = 10   // Sona
 
     // ✅ Graduation thresholds (gerçek öğrenme kriterleri)
-    private const val MIN_SUCCESSFUL_REVIEWS = 3     // En az 3 başarılı
+    private const val MIN_SUCCESSFUL_REVIEWS = 3f     // En az 3.0 puan
     private const val MAX_HARD_PRESSES_TO_GRADUATE = 1  // Max 1 HARD basışı
 
     // ==================== REVIEW PHASE CONSTANTS ====================
@@ -61,7 +58,7 @@ object SpacedRepetitionAlgorithm {
     // ==================== MAIN ALGORITHM ====================
 
     /**
-     * ✅ OPTIMIZED: Calculate next review with adaptive MEDIUM behavior
+     * ✅ V3 OPTIMIZED: Calculate next review with partial success tracking
      */
     fun calculateNextReview(
         currentProgress: WordProgressEntity,
@@ -69,13 +66,13 @@ object SpacedRepetitionAlgorithm {
         currentSessionMaxPosition: Int = 100
     ): WordProgressEntity {
         val currentTime = System.currentTimeMillis()
-        val todayEnd = getTodayEndTime(currentTime) // ✅ Bugünün sonu
+        val todayEnd = getTodayEndTime(currentTime)
 
         DebugHelper.log(
-            "🔥 SM-2 V2: quality=$quality, reps=${currentProgress.repetitions}, " +
+            "🔥 SM-2 V3: quality=$quality, reps=${currentProgress.repetitions}, " +
                     "learningPhase=${currentProgress.learningPhase}, " +
                     "hardPresses=${currentProgress.hardPresses ?: 0}, " +
-                    "successfulReviews=${currentProgress.successfulReviews ?: 0}"
+                    "successfulReviews=${currentProgress.successfulReviews ?: 0f}"
         )
 
         val result = when {
@@ -95,6 +92,7 @@ object SpacedRepetitionAlgorithm {
         val timeText = getTimeUntilReview(result.nextReviewAt)
         DebugHelper.log(
             "✅ RESULT: $phaseText, reps=${result.repetitions}, " +
+                    "successful=${result.successfulReviews ?: 0f}, " +
                     "interval=${result.intervalDays}d, EF=${result.easeFactor}, next='$timeText'"
         )
 
@@ -104,14 +102,13 @@ object SpacedRepetitionAlgorithm {
     // ==================== LEARNING PHASE ====================
 
     /**
-     * ✅ FIXED Learning Phase: Kelimeleri aynı gün içinde tekrar göster
+     * ✅ V3 Learning Phase: MEDIUM gives 0.5 points, EASY gives 1.0 point
      *
-     * Mantık:
-     * - HARD → En başa (position = current + 1), hardPresses++
-     * - MEDIUM → Ortaya (position = current + 5), successfulReviews++, hafif EF bonusu
-     * - EASY → Sona (position = current + 10), successfulReviews++
-     * - Graduation check: 3+ başarılı VE max 1 HARD
-     * - nextReviewAt = Bugünün sonu (aynı gün içinde review)
+     * Graduation requires 3.0 points:
+     * - 3 EASY = 3.0 points ✅
+     * - 6 MEDIUM = 3.0 points ✅
+     * - 2 EASY + 2 MEDIUM = 3.0 points ✅
+     * - 1 EASY + 4 MEDIUM = 3.0 points ✅
      */
     private fun handleLearningPhase(
         currentProgress: WordProgressEntity,
@@ -123,44 +120,44 @@ object SpacedRepetitionAlgorithm {
 
         return when (quality) {
             QUALITY_HARD -> {
-                DebugHelper.log("🔴 LEARNING HARD: Position = başa")
+                DebugHelper.log("🔴 LEARNING HARD: Position = başa, no points")
 
                 currentProgress.copy(
                     repetitions = currentProgress.repetitions + 1,
-                    intervalDays = 0f, // Same day
+                    intervalDays = 0f,
                     easeFactor = max(MIN_EASE_FACTOR, currentProgress.easeFactor - 0.2f),
                     nextReviewAt = currentTime + (1 * 60 * 1000),
                     lastReviewAt = currentTime,
                     learningPhase = true,
                     sessionPosition = currentSessionMaxPosition + HARD_POSITION_INCREMENT,
                     hardPresses = (currentProgress.hardPresses ?: 0) + 1,
-                    successfulReviews = currentProgress.successfulReviews ?: 0, // No change
+                    successfulReviews = 0f,  // SIFIRLA
                     isMastered = false,
                     updatedAt = currentTime
                 )
             }
 
             QUALITY_MEDIUM -> {
-                val newSuccessful = (currentProgress.successfulReviews ?: 0) + 1
+                val newSuccessful = (currentProgress.successfulReviews ?: 0f) + 0.5f  // ✅ Yarım puan
                 val newReps = currentProgress.repetitions + 1
                 val hardPresses = currentProgress.hardPresses ?: 0
 
                 // ✅ Check graduation
                 if (shouldGraduate(newSuccessful, hardPresses)) {
-                    DebugHelper.log("🎓 GRADUATING (MEDIUM): $newSuccessful successful, $hardPresses hard")
+                    DebugHelper.log("🎓 GRADUATING (MEDIUM): $newSuccessful points, $hardPresses hard")
                     graduateToReview(currentProgress, newReps, currentTime)
                 } else {
-                    DebugHelper.log("🟡 LEARNING MEDIUM: Position = ortaya, successful = $newSuccessful")
+                    DebugHelper.log("🟡 LEARNING MEDIUM: Position = ortaya, successful = $newSuccessful points")
 
                     currentProgress.copy(
                         repetitions = newReps,
-                        intervalDays = 0f, // Same day
-                        easeFactor = min(MAX_EASE_FACTOR, currentProgress.easeFactor + 0.05f), // ✅ FIX: Hafif bonus
-                        nextReviewAt = currentTime + (10 * 60 * 1000), // 10 dk sonra
+                        intervalDays = 0f,
+                        easeFactor = min(MAX_EASE_FACTOR, currentProgress.easeFactor + 0.05f),
+                        nextReviewAt = currentTime + (10 * 60 * 1000),  // 10 dakika
                         lastReviewAt = currentTime,
                         learningPhase = true,
                         sessionPosition = currentSessionMaxPosition + MEDIUM_POSITION_INCREMENT,
-                        successfulReviews = newSuccessful,
+                        successfulReviews = newSuccessful,  // ✅ Yarım puan eklendi
                         isMastered = false,
                         updatedAt = currentTime
                     )
@@ -168,26 +165,26 @@ object SpacedRepetitionAlgorithm {
             }
 
             QUALITY_EASY -> {
-                val newSuccessful = (currentProgress.successfulReviews ?: 0) + 1
+                val newSuccessful = (currentProgress.successfulReviews ?: 0f) + 1f  // ✅ Tam puan
                 val newReps = currentProgress.repetitions + 1
                 val hardPresses = currentProgress.hardPresses ?: 0
 
                 // ✅ Check graduation
                 if (shouldGraduate(newSuccessful, hardPresses)) {
-                    DebugHelper.log("🎓 GRADUATING (EASY): $newSuccessful successful, $hardPresses hard")
+                    DebugHelper.log("🎓 GRADUATING (EASY): $newSuccessful points, $hardPresses hard")
                     graduateToReview(currentProgress, newReps, currentTime)
                 } else {
-                    DebugHelper.log("🟢 LEARNING EASY: Position = sona, successful = $newSuccessful")
+                    DebugHelper.log("🟢 LEARNING EASY: Position = sona, successful = $newSuccessful points")
 
                     currentProgress.copy(
                         repetitions = newReps,
-                        intervalDays = 0f, // Same day
+                        intervalDays = 0f,
                         easeFactor = min(MAX_EASE_FACTOR, currentProgress.easeFactor + 0.1f),
-                        nextReviewAt = currentTime + (60 * 60 * 1000), // 1 saat sonra
+                        nextReviewAt = currentTime + (60 * 60 * 1000),  // 1 saat
                         lastReviewAt = currentTime,
                         learningPhase = true,
                         sessionPosition = currentSessionMaxPosition + EASY_POSITION_INCREMENT,
-                        successfulReviews = newSuccessful,
+                        successfulReviews = newSuccessful,  // ✅ Tam puan eklendi
                         isMastered = false,
                         updatedAt = currentTime
                     )
@@ -199,11 +196,12 @@ object SpacedRepetitionAlgorithm {
     }
 
     /**
-     * ✅ Graduation criteria check
+     * ✅ V3 Graduation criteria: 3.0 points required
      */
-    private fun shouldGraduate(successfulReviews: Int, hardPresses: Int): Boolean {
-        return successfulReviews >= 3  // Sadece 3 successful yeterli
+    private fun shouldGraduate(successfulReviews: Float, hardPresses: Int): Boolean {
+        return successfulReviews >= MIN_SUCCESSFUL_REVIEWS  // ✅ Float comparison: >= 3.0
     }
+
     /**
      * ✅ Graduate to Review Phase
      */
@@ -218,8 +216,8 @@ object SpacedRepetitionAlgorithm {
             easeFactor = min(MAX_EASE_FACTOR, currentProgress.easeFactor + 0.15f),
             nextReviewAt = currentTime + (GRADUATION_INTERVAL_DAYS * 24 * 60 * 60 * 1000).toLong(),
             lastReviewAt = currentTime,
-            learningPhase = false, // ✅ GRADUATE
-            sessionPosition = null, // No longer in session
+            learningPhase = false,  // ✅ GRADUATE
+            sessionPosition = null,
             isMastered = false,
             updatedAt = currentTime
         )
@@ -228,9 +226,11 @@ object SpacedRepetitionAlgorithm {
     // ==================== REVIEW PHASE ====================
 
     /**
-     * ✅ OPTIMIZED Review Phase: Gerçek spaced repetition (SM-2 + Adaptive MEDIUM)
+     * ✅ V3 Review Phase: HARD resets to learning phase
      *
-     * 🔧 V2: MEDIUM artık adaptive multiplier kullanıyor
+     * HARD behavior:
+     * - Resets to learning phase (başa dön)
+     * - User didn't remember the word, start over
      */
     private fun handleReviewPhase(
         currentProgress: WordProgressEntity,
@@ -240,21 +240,21 @@ object SpacedRepetitionAlgorithm {
 
         return when (quality) {
             QUALITY_HARD -> {
-                DebugHelper.log("🔴 REVIEW HARD: Back to learning")
+                DebugHelper.log("🔴 REVIEW HARD: Back to learning phase")
 
                 // ✅ Başarısız review → Learning phase'e geri dön
                 val todayEnd = getTodayEndTime(currentTime)
 
                 currentProgress.copy(
-                    repetitions = 0, // Reset
+                    repetitions = 0,  // Reset
                     intervalDays = 0f,
                     easeFactor = max(MIN_EASE_FACTOR, currentProgress.easeFactor - 0.2f),
-                    nextReviewAt = todayEnd, // ✅ Bugün tekrar göster
+                    nextReviewAt = todayEnd,  // ✅ Bugün tekrar göster
                     lastReviewAt = currentTime,
-                    learningPhase = true, // Back to learning
-                    sessionPosition = 1, // Front of session
-                    hardPresses = 1, // Reset counter
-                    successfulReviews = 0, // Reset
+                    learningPhase = true,  // Back to learning
+                    sessionPosition = 1,  // Front of session
+                    hardPresses = 1,  // Reset counter
+                    successfulReviews = 0f,  // ✅ Reset (Float)
                     isMastered = false,
                     updatedAt = currentTime
                 )
@@ -265,15 +265,14 @@ object SpacedRepetitionAlgorithm {
 
                 val newReps = currentProgress.repetitions + 1
                 val baseInterval = max(1f, currentProgress.intervalDays)
-                val newEaseFactor = updateEaseFactor(currentProgress.easeFactor, 4) // SM-2 quality 4
+                val newEaseFactor = updateEaseFactor(currentProgress.easeFactor, 4)
 
                 // ✅ ADAPTIVE MULTIPLIER: Interval'a göre dinamik davranış
-                // "Zorlandım" semantiği: Küçük interval'da ilerlet, büyük interval'da geri çek
                 val mediumMultiplier = when {
-                    baseInterval <= 3f -> 1.5f      // 0-3 gün: Gentle progression (1→1.5, 3→4.5)
-                    baseInterval <= 7f -> 1.2f      // 4-7 gün: Hafif progression (5→6, 7→8.4)
-                    baseInterval <= 21f -> 0.85f    // 8-21 gün: Hafif reduction (14→11.9, 21→17.85)
-                    else -> 0.5f                     // 21+ gün: Ciddi reduction (30→15, 60→30)
+                    baseInterval <= 3f -> 1.5f      // 0-3 gün: Gentle progression
+                    baseInterval <= 7f -> 1.2f      // 4-7 gün: Hafif progression
+                    baseInterval <= 21f -> 0.85f    // 8-21 gün: Hafif reduction
+                    else -> 0.5f                     // 21+ gün: Ciddi reduction
                 }
 
                 val calculatedInterval = baseInterval * mediumMultiplier
@@ -292,7 +291,7 @@ object SpacedRepetitionAlgorithm {
                     lastReviewAt = currentTime,
                     learningPhase = false,
                     sessionPosition = null,
-                    isMastered = finalInterval >= 21f && newReps >= 4, // 3 hafta+
+                    isMastered = finalInterval >= 21f && newReps >= 4,
                     updatedAt = currentTime
                 )
             }
@@ -301,7 +300,7 @@ object SpacedRepetitionAlgorithm {
                 DebugHelper.log("🟢 REVIEW EASY: Strong progression")
 
                 val newReps = currentProgress.repetitions + 1
-                val newEaseFactor = updateEaseFactor(currentProgress.easeFactor, 5) // SM-2 quality 5
+                val newEaseFactor = updateEaseFactor(currentProgress.easeFactor, 5)
 
                 // ✅ Progressive interval calculation
                 val calculatedInterval = when (newReps) {
@@ -352,7 +351,6 @@ object SpacedRepetitionAlgorithm {
      * ✅ SM-2 Ease Factor update formula
      */
     private fun updateEaseFactor(currentEF: Float, quality: Int): Float {
-        // SM-2 formula: EF' = EF + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02))
         val newEF = currentEF + (0.1f - (5 - quality) * (0.08f + (5 - quality) * 0.02f))
         return max(MIN_EASE_FACTOR, min(newEF, MAX_EASE_FACTOR))
     }
@@ -373,16 +371,22 @@ object SpacedRepetitionAlgorithm {
         val days = hours / 24
 
         return when {
-            minutes < 60 -> "${minutes.toInt()} dk"
-            hours < 24 -> "${hours.toInt()} saat"
-            days < 7 -> "${days.toInt()} gün"
-            days < 30 -> "${(days / 7).toInt()} hafta"
-            else -> "${(days / 30).toInt()} ay"
+            // ✅ Learning phase için insan dostu metinler
+            minutes < 5 -> "Hemen tekrar"          // 0-5 dk
+            minutes < 30 -> "Birazdan"             // 5-30 dk
+            hours < 2 -> "Sonra"                   // 30 dk - 2 saat
+            hours < 12 -> "Bugün tekrar"           // 2-12 saat
+            days < 1 -> "Yarın"                    // 12-24 saat
+
+            // ✅ Review phase: gün → ay → yıl (ondalıklı)
+            days < 30 -> "${days.toInt()} gün"
+            days < 365 -> "%.1f ay".format(days / 30f)
+            else -> "%.1f yıl".format(days / 365f)
         }
     }
 
     /**
-     * ✅ Create initial progress for new words
+     * ✅ V3: Create initial progress with Float successfulReviews
      */
     fun createInitialProgress(
         conceptId: Int,
@@ -398,14 +402,14 @@ object SpacedRepetitionAlgorithm {
             repetitions = 0,
             intervalDays = 0f,
             easeFactor = DEFAULT_EASE_FACTOR,
-            nextReviewAt = todayEnd, // ✅ Bugün çalışılacak
+            nextReviewAt = todayEnd,
             lastReviewAt = null,
             isSelected = true,
             isMastered = false,
-            learningPhase = true, // Start in learning
+            learningPhase = true,
             sessionPosition = sessionPosition,
             hardPresses = 0,
-            successfulReviews = 0,
+            successfulReviews = 0f,  // ✅ Float initialization
             createdAt = currentTime,
             updatedAt = currentTime
         )
@@ -423,7 +427,7 @@ object SpacedRepetitionAlgorithm {
         // Review cards sorted by how overdue
         val timeDifference = currentTime - progress.nextReviewAt
         return if (timeDifference > 0) {
-            (timeDifference / (1000 * 60 * 60)).toInt() // Hours overdue
+            (timeDifference / (1000 * 60 * 60)).toInt()
         } else {
             0
         }
