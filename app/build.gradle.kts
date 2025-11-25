@@ -270,7 +270,7 @@ dependencies {
     // UI UTILITIES
     // =========================================
     // ✅ System UI Controller (Status bar/Navigation bar)
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")
+    //implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")
 
     // ✅ Activity Compose (enableEdgeToEdge)
     implementation("androidx.activity:activity-compose:1.9.3")
