@@ -435,4 +435,41 @@ class StudyRepositoryImpl @Inject constructor(
         DebugHelper.logError("Get today session stats error", e)
         Result.Error(AppError.Unknown(e))
     }
+
+    override suspend fun addCardStudyTime(): Result<Unit> = try {
+        val today = Calendar.getInstance()
+        val todayString = dateFormat.format(today.time)
+        val userId = "user_1"
+
+        val todayStats = database.dailyStatsDao().getStatsByDate(userId, todayString)
+
+        if (todayStats != null) {
+            // Mevcut stats'a 7 saniye ekle
+            val updated = todayStats.copy(
+                studyTimeMs = todayStats.studyTimeMs + 7000
+            )
+            database.dailyStatsDao().insertOrUpdateStats(updated)
+            DebugHelper.log("⏱️ Kart +7sn → Toplam: ${updated.studyTimeMs / 1000}sn")
+        } else {
+            // Bugün ilk kart - yeni stats oluştur
+            val newStats = DailyStatsEntity(
+                date = todayString,
+                userId = userId,
+                wordsStudied = 0,
+                correctAnswers = 0,
+                totalAnswers = 0,
+                studyTimeMs = 7000,
+                streakCount = 0,
+                goalAchieved = false
+            )
+            database.dailyStatsDao().insertOrUpdateStats(newStats)
+            DebugHelper.log("⏱️ İlk kart bugün: 7sn")
+        }
+
+        Result.Success(Unit)
+    } catch (e: Exception) {
+        DebugHelper.logError("Kart süresi eklenirken hata", e)
+        Result.Error(AppError.Unknown(e))
+    }
+
 }

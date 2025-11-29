@@ -372,6 +372,9 @@ class StudyViewModel @Inject constructor(
                         // 3. Increment AdMob study word counter
                         adMobManager.incrementStudyWordCount()
 
+                        // ✅ Her kart için 7 saniye ekle
+                        studyRepository.addCardStudyTime()
+
                         // 4. QUEUE REORDERING for learning phase words
                         if (updatedProgress.learningPhase && updatedProgress.sessionPosition != null) {
                             // Word is still in learning - reinsert in queue based on difficulty

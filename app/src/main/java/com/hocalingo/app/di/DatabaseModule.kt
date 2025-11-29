@@ -46,7 +46,6 @@ object DatabaseModule {
         )
             // ✅ Migration'lar HocaLingoDatabase.getDatabase() içinde tanımlı
             // Direkt getDatabase() kullan
-            .fallbackToDestructiveMigration() // Development için - production'da dikkatli kullan!
             .build()
     }
 

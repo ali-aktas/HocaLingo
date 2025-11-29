@@ -116,6 +116,12 @@ interface StudyRepository {
      * Get study session statistics for today
      */
     suspend fun getTodaySessionStats(): Result<TodayStats>
+
+    /**
+     * Her kart için 7 saniye ekle
+     */
+    suspend fun addCardStudyTime(): Result<Unit>
+
 }
 
 /**

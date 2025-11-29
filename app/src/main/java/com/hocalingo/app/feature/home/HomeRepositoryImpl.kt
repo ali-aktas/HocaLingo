@@ -178,8 +178,15 @@ class HomeRepositoryImpl @Inject constructor(
             val startOfMonth = getStartOfMonth(currentTime)
             val daysInMonth = getDaysInCurrentMonth()
 
-            // Bu ay çalışma süresini hesapla (ms → dakika)
-            val totalStudyTimeMs = studySessionDao.getTotalStudyTimeSince(startOfMonth)
+            // ✅ DailyStatsEntity'den toplam süreyi hesapla
+            val userId = "user_1"
+            val startOfMonthString = dateFormat.format(Date(startOfMonth))
+            val dailyStatsList = dailyStatsDao.getRecentStats(userId, 31)
+
+            val totalStudyTimeMs = dailyStatsList
+                .filter { it.date >= startOfMonthString }
+                .sumOf { it.studyTimeMs }
+
             val studyTimeMinutes = (totalStudyTimeMs / (1000 * 60)).toInt()
 
             // Bu ay aktif günleri hesapla (DailyStatsEntity'den)
