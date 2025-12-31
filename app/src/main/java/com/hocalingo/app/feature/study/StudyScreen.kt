@@ -39,6 +39,10 @@ import com.hocalingo.app.core.ui.theme.HocaLingoTheme
 import com.hocalingo.app.core.feedback.SatisfactionDialog
 import com.hocalingo.app.core.feedback.FeedbackDialog
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.google.android.gms.ads.nativead.NativeAd
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -185,7 +189,7 @@ fun StudyScreen(
             if (showRewardedAdDialog) {
                 android.util.Log.d("HocaLingo", "🔍 Showing rewarded ad dialog")
                 StudyRewardedAdDialog(
-                    wordsCompleted = 25,
+                    wordsCompleted = 40,
                     onContinue = {
                         android.util.Log.d("HocaLingo", "🔍 Dialog onContinue clicked")
                         showRewardedAdDialog = false
@@ -223,7 +227,7 @@ fun StudyScreen(
 }
 
 /**
- * Rewarded Ad Success Dialog
+ * Rewarded Ad Dialog - Modern Design with Hoca Logo
  */
 @Composable
 private fun StudyRewardedAdDialog(
@@ -231,62 +235,107 @@ private fun StudyRewardedAdDialog(
     onContinue: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    AlertDialog(
+    Dialog(
         onDismissRequest = onDismiss,
-        title = {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = "🎉",
-                    fontSize = 48.sp,
-                    modifier = Modifier.padding(bottom = 8.dp)
+        properties = DialogProperties(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false
+        )
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color(0xFF6366F1), // Modern indigo
+                                Color(0xFF8B5CF6)  // Modern purple
+                            )
+                        )
+                    )
+                    .padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Hoca Logo
+                Image(
+                    painter = painterResource(id = R.drawable.lingo_happy),
+                    contentDescription = "Hoca Logo",
+                    modifier = Modifier.size(100.dp)
                 )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Title
                 Text(
-                    text = "Harika İş!",
+                    text = "Harika Gidiyorsun!",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = Color.White,
+                    textAlign = TextAlign.Center
                 )
-            }
-        },
-        text = {
-            Text(
-                text = "$wordsCompleted kelime tamamladın!\nÖğrenmeye devam etmek için reklam izle.",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
-        },
-        confirmButton = {
-            Button(
-                onClick = onContinue,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF4CAF50)
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Message
                 Text(
-                    text = "Devam Et",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(
-                    text = "İptal",
+                    text = "$wordsCompleted kart çalıştın! 🚀\n\nÖğrenmeye devam etmek için kısa bir reklam izle.",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    fontSize = 14.sp,
+                    color = Color.White.copy(alpha = 0.95f),
+                    textAlign = TextAlign.Center,
+                    lineHeight = 24.sp
                 )
+
+                Spacer(modifier = Modifier.height(28.dp))
+
+                // Continue button
+                Button(
+                    onClick = onContinue,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text(
+                        text = "Reklamı İzle ve Devam Et",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color(0xFF6366F1)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Dismiss button
+                TextButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Daha Sonra",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 14.sp,
+                        color = Color.White.copy(alpha = 0.8f)
+                    )
+                }
             }
-        },
-        containerColor = MaterialTheme.colorScheme.surface,
-        shape = RoundedCornerShape(20.dp)
-    )
+        }
+    }
 }
 
 /**
@@ -346,8 +395,8 @@ private fun StudyContent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Study Card (native ad açıkken görünmeyecek)
-            if (!uiState.showNativeAd) {
+            // Study Card (native ad yoksa veya yüklenmediyse göster)
+            if (!uiState.showNativeAd || nativeAd == null) {
                 StudyCard(
                     frontText = uiState.frontText,
                     backText = uiState.backText,
@@ -360,9 +409,6 @@ private fun StudyContent(
                     showTtsOnFrontSide = uiState.showTtsOnFrontSide,
                     modifier = Modifier.weight(1f)
                 )
-            } else {
-                // Native ad placeholder (aynı boyutta boş alan)
-                Spacer(modifier = Modifier.weight(1f))
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -648,7 +694,7 @@ private fun StudyCard(
 
     val rotationY by animateFloatAsState(
         targetValue = if (isFlipped) 180f else 0f,
-        animationSpec = spring(dampingRatio = 0.8f),
+        animationSpec = spring(dampingRatio = 1.1f),
         label = "cardFlip"
     )
 

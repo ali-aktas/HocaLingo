@@ -214,7 +214,7 @@ private fun HeaderSection(
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant, // Theme-aware
+            color = MaterialTheme.colorScheme.onPrimaryContainer, // Theme-aware
             textAlign = TextAlign.Center
         )
     }
@@ -258,14 +258,14 @@ private fun MainWordEntryCard(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.AutoAwesome,
+                        imageVector = Icons.Filled.Add,
                         contentDescription = null,
                         tint = Color.White,
                         modifier = Modifier.size(28.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
-                        text = "Ana Kelimeler",
+                        text = "Kelime ve anlamını yaz",
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
@@ -273,7 +273,7 @@ private fun MainWordEntryCard(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 // English word field
                 ModernTextField(
@@ -298,7 +298,7 @@ private fun MainWordEntryCard(
                 ModernTextField(
                     value = turkishWord,
                     onValueChange = { onEvent(AddWordEvent.TurkishWordChanged(it)) },
-                    label = "Türkçe Karşılığı",
+                    label = "Türkçe Anlamı",
                     placeholder = "güzel",
                     error = turkishError,
                     leadingIcon = Icons.Outlined.Translate,
@@ -559,10 +559,10 @@ private fun ActionButtonsCard(
                         )
                         Spacer(modifier = Modifier.width(6.dp)) // 8dp'den 6dp'ye azaltıldı
                         Text(
-                            text = "Kelime Ekle",
+                            text = "Destene Ekle",
                             fontFamily = PoppinsFontFamily,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
+                            fontSize = 14.sp
                         )
                     }
                 }
@@ -714,12 +714,12 @@ private fun InfoBanner(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 8.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (isDarkTheme) {
-                Color(0xFF2D2D3D)
+                Color(0xFF443953)
             } else {
-                Color(0xFFF5F5F5)
+                Color(0xFF979797)
             }
         ),
         shape = RoundedCornerShape(20.dp),
@@ -728,7 +728,7 @@ private fun InfoBanner(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -745,24 +745,14 @@ private fun InfoBanner(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Kendi Kelimeni Ekle",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    color = if (isDarkTheme) Color.White else Color(0xFF1A1A2E)
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = "Kendi kelime havuzunu oluştur! Her eklediğin kelime çalışma programına otomatik eklenecek.",
+                    text = "Günlük hayatta görüp öğrenmek istediğin kelimeleri buradan çalışma destene ekleyebilirssin.",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Normal,
-                    fontSize = 13.sp,
+                    fontSize = 12.sp,
                     color = if (isDarkTheme) {
-                        Color.White.copy(alpha = 0.7f)
+                        Color.White.copy(alpha = 0.8f)
                     } else {
-                        Color(0xFF666666)
+                        Color(0xFFE7E5E5)
                     },
                     lineHeight = 18.sp
                 )

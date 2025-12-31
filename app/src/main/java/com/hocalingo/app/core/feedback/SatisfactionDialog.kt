@@ -60,8 +60,8 @@ fun SatisfactionDialog(
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
-            dismissOnBackPress = false,      // ✅ Back tuşu ile kapanmaz
-            dismissOnClickOutside = false    // ✅ Dışarı tıklanınca kapanmaz
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false
         )
     ) {
         Card(

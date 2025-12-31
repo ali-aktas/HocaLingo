@@ -98,6 +98,9 @@ class WordSelectionViewModel @Inject constructor(
             WordSelectionEvent.DismissNoWordsDialog -> dismissNoWordsDialog()
             WordSelectionEvent.ShowPremiumFromLimitDialog -> showPremiumFromLimitDialog()
             WordSelectionEvent.ReloadAfterPremium -> reloadAfterPremium()
+            WordSelectionEvent.StartStudyNow -> startStudyNow()
+            WordSelectionEvent.ContinueSelecting -> continueSelecting()
+            WordSelectionEvent.DismissStartStudyDialog -> dismissStartStudyDialog()
         }
     }
 
@@ -270,6 +273,20 @@ class WordSelectionViewModel @Inject constructor(
                     }
                     DebugHelper.log("👑 Premium user - Today count not incremented")
                 }
+
+                // 5. Check if user selected 25 words (suggest study)
+                val newSelectedCount = currentState.selectedCount + 1
+                if (newSelectedCount == 25 && !currentState.isPremium) {
+                    DebugHelper.logWordSelection("🎯 25 words selected - showing start study dialog")
+                    _uiState.update {
+                        it.copy(
+                            showStartStudyDialog = true,
+                            isProcessingSwipe = false
+                        )
+                    }
+                    return@launch
+                }
+
 
                 // 5. Next word
                 moveToNextWord()
@@ -521,6 +538,37 @@ class WordSelectionViewModel @Inject constructor(
         }
     }
 
+    private fun startStudyNow() {
+        viewModelScope.launch {
+            DebugHelper.logWordSelection("User chose to start study now")
+
+            // Dialog'u kapat
+            _uiState.update { it.copy(showStartStudyDialog = false) }
+
+            // Study session'ı hazırla
+            prepareStudySession()
+
+            // Study ekranına git
+            _effect.emit(WordSelectionEffect.NavigateToStudy)
+        }
+    }
+
+    private fun continueSelecting() {
+        viewModelScope.launch {
+            DebugHelper.logWordSelection("User chose to continue selecting")
+
+            // Dialog'u kapat
+            _uiState.update { it.copy(showStartStudyDialog = false) }
+
+            // Bir sonraki karta geç
+            moveToNextWord()
+        }
+    }
+
+    private fun dismissStartStudyDialog() {
+        _uiState.update { it.copy(showStartStudyDialog = false) }
+    }
+
 }
 
 data class WordSelectionUiState(
@@ -540,10 +588,9 @@ data class WordSelectionUiState(
     val showPremiumSheet: Boolean = false,
     val isPremium: Boolean = false,
     val studySessionPrepared: Boolean = false,
-
-    // 🆕 YENİ FIELD'LAR
     val showDailyLimitDialog: Boolean = false,     // Günlük limit doldu
-    val showNoWordsDialog: Boolean = false         // Pakette kelime kalmadı
+    val showNoWordsDialog: Boolean = false,         // Pakette kelime kalmadı
+    val showStartStudyDialog: Boolean = false
 ) {
     val progress: Float
         get() = if (totalWords > 0) {
@@ -571,6 +618,9 @@ sealed interface WordSelectionEvent {
     data object DismissNoWordsDialog : WordSelectionEvent
     data object ShowPremiumFromLimitDialog : WordSelectionEvent
     data object ReloadAfterPremium : WordSelectionEvent
+    data object StartStudyNow : WordSelectionEvent
+    data object ContinueSelecting : WordSelectionEvent
+    data object DismissStartStudyDialog : WordSelectionEvent
 }
 
 sealed interface WordSelectionEffect {

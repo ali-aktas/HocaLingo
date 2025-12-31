@@ -235,7 +235,7 @@ fun SwipeableCard(
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 32.sp,
-                    color = Color(0xFF742323),
+                    color = Color(0xFFEF5350),
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(top = 24.dp)
@@ -251,7 +251,7 @@ fun SwipeableCard(
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 32.sp,
-                    color = Color(0xFF1E7122),
+                    color = Color(0xFF66BB6A),
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(top = 24.dp)

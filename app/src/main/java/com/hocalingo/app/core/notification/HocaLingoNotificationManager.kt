@@ -91,11 +91,11 @@ class HocaLingoNotificationManager @Inject constructor(
         )
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.hocalingo_plane) // ✅ Senin beyaz vektör ikonun
+            .setSmallIcon(R.drawable.lingo_big)
             .setLargeIcon(
                 BitmapFactory.decodeResource(
                     context.resources,
-                    R.mipmap.ic_launcher
+                    R.drawable.lingo_nobg
                 )
             ) // ✅ YENİ EKLENEN - uygulama ikonu
             .setContentTitle(getNotificationTitle(word))

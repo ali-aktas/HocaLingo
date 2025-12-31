@@ -1,6 +1,7 @@
 package com.hocalingo.app.feature.onboarding
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -164,17 +166,27 @@ private fun PackageSelectionContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(12.dp),
+            .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Image(
+            painter = painterResource(id = R.drawable.onboarding_teacher_1),
+            contentDescription = null,
+            modifier = Modifier
+                .size(140.dp)
+        )
+
+
         Spacer(modifier = Modifier.height(2.dp))
 
         // Header
         Text(
-            text = "Hocalingo seviye paketleri",
+            text = "Seviyeni seç, öğrenmeye başla!",
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 22.sp,
+            fontSize = 16.sp,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
             lineHeight = 30.sp
@@ -197,7 +209,7 @@ private fun PackageSelectionContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(18.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         // Continue Button
         Button(
@@ -212,7 +224,7 @@ private fun PackageSelectionContent(
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (selectedPackageId != null) {
-                    if (isDarkTheme) Color(0xFF4FC3F7) else Color(0xFF00D4FF)
+                    if (isDarkTheme) Color(0xFF9D4FF7) else Color(0xFF8E0CFF)
                 } else {
                     MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                 },
@@ -221,10 +233,10 @@ private fun PackageSelectionContent(
             enabled = selectedPackageId != null && !isLoading
         ) {
             Text(
-                text = "Başla",
+                text = "Paketi aç",
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 color = if (selectedPackageId != null) Color.White else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
             )
         }
@@ -332,7 +344,7 @@ private fun ColorfulPackageCard(
                     is PackageDownloadStatus.NotDownloaded -> {
                         // Modern indirme ikonu
                         DownloadIconBadge(
-                            backgroundColor = Color.White.copy(alpha = 0.45f),
+                            backgroundColor = Color.White.copy(alpha = 0.65f),
                             iconTint = gradientColors.first()
                         )
                     }
@@ -360,12 +372,12 @@ private fun ColorfulPackageCard(
                     .padding(20.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                // ✅ Level badge - ARKA PLAN KALDIRILDI
+                // ✅ Level badge
                 Text(
                     text = packageInfo.level,
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Black,
-                    fontSize = 18.sp,
+                    fontSize = 20.sp,
                     color = Color.White,
                     textAlign = TextAlign.Start
                 )
@@ -375,15 +387,15 @@ private fun ColorfulPackageCard(
                     text = packageInfo.name,
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
+                    fontSize = 20.sp,
                     color = Color.White
                 )
 
-                // Description only (kelime sayısı kaldırıldı)
+                // Description
                 Text(
                     text = packageInfo.description,
                     fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Normal,
+                    fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,
                     color = Color.White.copy(alpha = 0.9f)
                 )
@@ -429,23 +441,12 @@ private fun DownloadIconBadge(
     backgroundColor: Color,
     iconTint: Color
 ) {
-    Surface(
-        color = backgroundColor,
-        shape = CircleShape,
-        modifier = Modifier.size(32.dp)
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Icon(
-                imageVector = Icons.Default.CloudDownload,
-                contentDescription = "Download",
-                tint = iconTint,
-                modifier = Modifier.size(18.dp)
-            )
-        }
-    }
+    Icon(
+        imageVector = Icons.Default.Download,
+        contentDescription = "Download",
+        tint = iconTint,
+        modifier = Modifier.size(24.dp)
+    )
 }
 
 /**

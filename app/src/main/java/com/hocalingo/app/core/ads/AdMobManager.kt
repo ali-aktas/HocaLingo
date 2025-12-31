@@ -403,6 +403,12 @@ class AdMobManager @Inject constructor(
         ad.show(activity, OnUserEarnedRewardListener { reward ->
             DebugHelper.logSuccess("🎁 Reward earned: ${reward.amount} ${reward.type}")
             _studyRewardedAdState.value = AdState.Completed
+
+            // ✅ Reklam tamamlandı - counter'ı sıfırla
+            scope.launch {
+                adCounterDataStore.resetStudyWordCount()
+                DebugHelper.log("✅ Study word counter reset (ad completed)")
+            }
         })
     }
 

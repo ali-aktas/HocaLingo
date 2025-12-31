@@ -398,12 +398,12 @@ class StudyViewModel @Inject constructor(
                         if (shouldShowAd) {
                             if (!isAdLoaded) {
                                 DebugHelper.logError("⚠️ Rewarded ad not loaded - skipping")
-                                adMobManager.resetStudyWordCount()
+                                // ❌ Reset kaldırıldı - reklam gösterilmeden reset yapma
                                 adMobManager.loadStudyRewardedAd()
                                 // Continue to next checks
                             } else {
                                 DebugHelper.log("🎯 Showing rewarded ad")
-                                adMobManager.resetStudyWordCount()
+                                // ❌ Reset kaldırıldı - reklam tamamlandığında yapılacak
                                 _uiState.update { it.copy(currentConcept = null, isLoading = true) }
                                 _effect.emit(StudyEffect.ShowStudyRewardedAd)
                                 return@launch

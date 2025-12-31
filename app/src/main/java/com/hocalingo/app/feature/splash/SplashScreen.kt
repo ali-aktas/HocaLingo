@@ -224,7 +224,7 @@ fun SplashScreen(
             contentAlignment = Alignment.BottomCenter
         ) {
             Text(
-                text = "1.1.7",
+                text = "1.1.8",
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Normal,
                 fontSize = 12.sp,

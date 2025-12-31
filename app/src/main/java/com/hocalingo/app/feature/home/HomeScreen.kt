@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -105,7 +106,7 @@ fun HomeScreen(
             // App Title - "Hocalingo"
             item {
                 Text(
-                    text = "Hocalingo",
+                    text = "HocaLingo",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Black,
                     fontSize = 32.sp,
@@ -135,25 +136,179 @@ fun HomeScreen(
                 )
             }
 
-            // Package Selection Card - UPDATED TO TEAL
+            // Package Selection & AI Assistant - Modern clean cards
             item {
-                PackageSelectionCard(
-                    onNavigateToPackageSelection = { viewModel.onEvent(HomeEvent.NavigateToPackageSelection) },
-                    isDarkTheme = isDarkTheme
-                )
-            }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    // Package Card - Modern gradient
+                    Card(
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(1f)
+                            .clickable { viewModel.onEvent(HomeEvent.NavigateToPackageSelection) },
+                        shape = RoundedCornerShape(20.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (isDarkTheme) {
+                                Color(0xFF2D1B3D)
+                            } else {
+                                Color(0xFFF5F0FF)
+                            }
+                        ),
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 4.dp,
+                            pressedElevation = 8.dp
+                        )
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    brush = Brush.verticalGradient(
+                                        colors = if (isDarkTheme) {
+                                            listOf(
+                                                Color(0xFF9856B1),
+                                                Color(0xFF7B46A1),
+                                                Color(0xFF6A3D94)
+                                            )
+                                        } else {
+                                            listOf(
+                                                Color(0xFFA76BBD),
+                                                Color(0xFF9158B0),
+                                                Color(0xFF7E49A3)
+                                            )
+                                        }
+                                    )
+                                )
+                                .padding(20.dp)
+                        ) {
+                            // Icon - Sağ üst köşe
+                            Image(
+                                painter = painterResource(id = R.drawable.card_icon),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .align(Alignment.TopEnd)
+                            )
 
-            // AI Assistant Card
-            item {
-                AIAssistantCard(
-                    onNavigateToAI = { viewModel.onEvent(HomeEvent.NavigateToAIAssistant) },
-                    isDarkTheme = isDarkTheme
-                )
+                            // Content
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .align(Alignment.BottomStart),
+                                verticalArrangement = Arrangement.Bottom
+                            ) {
+                                Text(
+                                    text = "Kelime Paketleri",
+                                    fontFamily = PoppinsFontFamily,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 18.sp,
+                                    color = Color.White,
+                                    lineHeight = 22.sp
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "Seviyene göre öğren",
+                                    fontFamily = PoppinsFontFamily,
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = 12.sp,
+                                    color = Color.White.copy(alpha = 0.9f)
+                                )
+                            }
+                        }
+                    }
+
+                    // AI Card - Modern gradient
+                    Card(
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(1f)
+                            .clickable { viewModel.onEvent(HomeEvent.NavigateToAIAssistant) },
+                        shape = RoundedCornerShape(20.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (isDarkTheme) {
+                                Color(0xFF1A1A2E)
+                            } else {
+                                Color(0xFFF0F4FF)
+                            }
+                        ),
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 4.dp,
+                            pressedElevation = 8.dp
+                        )
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    brush = Brush.verticalGradient(
+                                        colors = if (isDarkTheme) {
+                                            listOf(
+                                                Color(0xFF7825FF),
+                                                Color(0xFF6420E0),
+                                                Color(0xFF5318C7)
+                                            )
+                                        } else {
+                                            listOf(
+                                                Color(0xFF8B3DFF),
+                                                Color(0xFF7530EB),
+                                                Color(0xFF6323D7)
+                                            )
+                                        }
+                                    )
+                                )
+                                .padding(20.dp)
+                        ) {
+                            // Icon - Sağ üst köşe
+                            Image(
+                                painter = painterResource(id = R.drawable.ai_icon),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .align(Alignment.TopEnd)
+                            )
+
+                            // Content
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .align(Alignment.BottomStart),
+                                verticalArrangement = Arrangement.Bottom
+                            ) {
+                                Text(
+                                    text = "HocaLingo",
+                                    fontFamily = PoppinsFontFamily,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 18.sp,
+                                    color = Color.White,
+                                    lineHeight = 22.sp
+                                )
+                                Text(
+                                    text = "AI Asistanı",
+                                    fontFamily = PoppinsFontFamily,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 18.sp,
+                                    color = Color.White,
+                                    lineHeight = 22.sp
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "Akıllı hikaye yazarı",
+                                    fontFamily = PoppinsFontFamily,
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = 12.sp,
+                                    color = Color.White.copy(alpha = 0.9f)
+                                )
+                            }
+                        }
+                    }
+                }
             }
 
             // Bottom spacing for BottomNavigationBar
             item {
-                Spacer(modifier = Modifier.height(80.dp))
+                Spacer(modifier = Modifier.height(60.dp))
             }
         }
     }
@@ -229,40 +384,40 @@ private fun WelcomeHeaderWithStats(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "$streakDays günlük seri!",
+                        text = "$streakDays günlük seri yakaladın!",
                         fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Thin,
+                        fontSize = 13.sp,
                         color = Color.White
                     )
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 // Monthly Stats - Small version
                 Text(
-                    text = "Bu Ay 📈",
+                    text = "Bu Ay",
                     fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Medium,
                     fontSize = 18.sp,
-                    color = Color.White.copy(alpha = 0.95f)
+                    color = Color.LightGray.copy(alpha = 1f)
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     CompactStatItem(
-                        label = "Aktif",
+                        label = "Aktifsin",
                         value = "${stats.activeDaysThisMonth} gün"
                     )
                     CompactStatItem(
-                        label = "Süre",
+                        label = "Çalıştın",
                         value = stats.studyTimeFormatted
                     )
                     CompactStatItem(
-                        label = "Disiplin",
+                        label = "Disiplinlisin",
                         value = "${stats.disciplineScore}%"
                     )
                 }
@@ -313,8 +468,7 @@ private fun CompactStatItem(
 
 /**
  * UPDATED Daily Goal Card - Orange/Yellow Gradient
- * ✅ Light: Warm orange gradient
- * ✅ Dark: Deeper orange gradient
+ * ✅ Progress bar üzerinde kalan kelime sayısı
  */
 @Composable
 private fun DailyGoalCard(
@@ -342,7 +496,7 @@ private fun DailyGoalCard(
                 .background(
                     brush = Brush.linearGradient(
                         colors = if (isDarkTheme) {
-                            listOf(Color(0xFFFF8A65), Color(0xFFFF7043)) // Dark warm orange
+                            listOf(Color(0xFFFF7C2C), Color(0xFFFF8326)) // Dark warm orange
                         } else {
                             listOf(Color(0xFFFFB74D), Color(0xFFFFA726)) // Light warm orange
                         }
@@ -375,17 +529,32 @@ private fun DailyGoalCard(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    text = "Bugün çalıştığın kelimeler",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
-                    color = Color.White.copy(alpha = 0.9f)
-                )
+                // Progress bar with count on top
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Bugün çalışma destendeki kelimeler",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 13.sp,
+                        color = Color.White.copy(alpha = 0.8f)
+                    )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "${progress.todayCompletedCards} / ${progress.todayAvailableCards}",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color.White
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
 
                 // Progress bar
                 Box(
@@ -409,16 +578,6 @@ private fun DailyGoalCard(
                             .background(Color.White)
                     )
                 }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "${progress.todayCompletedCards} / ${progress.todayAvailableCards}",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    color = Color.White
-                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -447,151 +606,68 @@ private fun DailyGoalCard(
 }
 
 /**
- * UPDATED Package Selection Card - Teal/Cyan Gradient
- * ✅ Light: Bright teal gradient
- * ✅ Dark: Deeper cyan gradient
- * ✅ Different from purple AI card
+ * Compact Action Card - Square card for side-by-side layout
+ * ✅ Yan yana kare kartlar için optimize edilmiş
  */
 @Composable
-private fun PackageSelectionCard(
-    onNavigateToPackageSelection: () -> Unit,
-    isDarkTheme: Boolean
+private fun CompactActionCard(
+    title: String,
+    subtitle: String,
+    icon: ImageVector,
+    gradient: List<Color>,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onNavigateToPackageSelection() }
+        modifier = modifier
+            .aspectRatio(1f) // Square card
+            .clickable { onClick() }
             .shadow(
                 elevation = 6.dp,
                 shape = RoundedCornerShape(20.dp),
                 spotColor = Color.Black.copy(alpha = 0.2f)
             ),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
-        ),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .background(
-                    brush = Brush.linearGradient(
-                        colors = if (isDarkTheme) {
-                            listOf(Color(0xFF26A69A), Color(0xFF00897B)) // Dark teal
-                        } else {
-                            listOf(Color(0xFF4ECDC4), Color(0xFF44A08D)) // Light teal
-                        }
-                    ),
+                    brush = Brush.linearGradient(colors = gradient),
                     shape = RoundedCornerShape(20.dp)
                 )
                 .padding(20.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(36.dp)
+                )
+
+                Column {
                     Text(
-                        text = "Yeni Paket Seç 📚",
+                        text = title,
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
+                        fontSize = 17.sp,
                         color = Color.White
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Seviyene uygun kelime paketlerini keşfet ve öğrenmeye başla!",
+                        text = subtitle,
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp,
+                        fontSize = 13.sp,
                         color = Color.White.copy(alpha = 0.9f)
                     )
                 }
-
-                Icon(
-                    imageVector = Icons.Outlined.ArrowForward,
-                    contentDescription = "Git",
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
-    }
-}
-
-/**
- * AI Assistant Card - Existing Purple Gradient
- */
-@Composable
-private fun AIAssistantCard(
-    onNavigateToAI: () -> Unit,
-    isDarkTheme: Boolean
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onNavigateToAI() }
-            .shadow(
-                elevation = 6.dp,
-                shape = RoundedCornerShape(20.dp),
-                spotColor = Color.Black.copy(alpha = 0.2f)
-            ),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = if (isDarkTheme) {
-                            listOf(Color(0xFF45287B), Color(0xFF2D1B4E)) // Dark theme purple
-                        } else {
-                            listOf(Color(0xFF667eea), Color(0xFF764ba2)) // Light theme purple
-                        }
-                    ),
-                    shape = RoundedCornerShape(20.dp)
-                )
-                .padding(20.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = "AI Asistan 🤖",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                        color = Color.White
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "Kişisel öğrenme yardımcın hazır",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp,
-                        color = Color.White.copy(alpha = 0.9f)
-                    )
-                }
-
-                Icon(
-                    imageVector = Icons.Outlined.Psychology,
-                    contentDescription = "AI",
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
             }
         }
     }

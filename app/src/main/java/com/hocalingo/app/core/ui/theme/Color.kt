@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Color
 val Primary = Color(0xFF6750A4)           // Purple - Modern, Friendly Learning
 val OnPrimary = Color(0xFFFFFFFF)
 val PrimaryContainer = Color(0xFFE9DDFF)
-val OnPrimaryContainer = Color(0xFF21005D)
+val OnPrimaryContainer = Color(0xFF6327CE)
 
 val Secondary = Color(0xFF4CAF50)         // Green - Success & Progress
 val OnSecondary = Color(0xFFFFFFFF)

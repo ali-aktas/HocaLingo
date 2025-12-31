@@ -444,12 +444,12 @@ class StudyRepositoryImpl @Inject constructor(
         val todayStats = database.dailyStatsDao().getStatsByDate(userId, todayString)
 
         if (todayStats != null) {
-            // Mevcut stats'a 7 saniye ekle
+            // Mevcut stats'a 5 saniye ekle
             val updated = todayStats.copy(
-                studyTimeMs = todayStats.studyTimeMs + 7000
+                studyTimeMs = todayStats.studyTimeMs + 5000
             )
             database.dailyStatsDao().insertOrUpdateStats(updated)
-            DebugHelper.log("⏱️ Kart +7sn → Toplam: ${updated.studyTimeMs / 1000}sn")
+            DebugHelper.log("⏱️ Kart +5sn → Toplam: ${updated.studyTimeMs / 1000}sn")
         } else {
             // Bugün ilk kart - yeni stats oluştur
             val newStats = DailyStatsEntity(
@@ -458,12 +458,12 @@ class StudyRepositoryImpl @Inject constructor(
                 wordsStudied = 0,
                 correctAnswers = 0,
                 totalAnswers = 0,
-                studyTimeMs = 7000,
+                studyTimeMs = 5000,
                 streakCount = 0,
                 goalAchieved = false
             )
             database.dailyStatsDao().insertOrUpdateStats(newStats)
-            DebugHelper.log("⏱️ İlk kart bugün: 7sn")
+            DebugHelper.log("⏱️ İlk kart bugün: 5sn")
         }
 
         Result.Success(Unit)

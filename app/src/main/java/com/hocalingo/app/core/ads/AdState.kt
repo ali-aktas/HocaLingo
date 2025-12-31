@@ -57,7 +57,7 @@ enum class AdType {
     APP_LAUNCH_REWARDED,
 
     /**
-     * Study ekranında 25 kelime sonrası gösterilen rewarded ad
+     * Study ekranında 40 kelime sonrası gösterilen rewarded ad
      */
     STUDY_REWARDED,
 

@@ -106,7 +106,7 @@ fun AIAssistantScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            "Hocalingo Yapay Zeka",
+                            "Hocalingo AI Asistanı",
                             fontFamily = PoppinsFontFamily,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
@@ -277,9 +277,9 @@ private fun HeroSection(
             verticalArrangement = Arrangement.Bottom
         ) {
             Text(
-                text = "Yapay zeka ile destene eklediğin kelimelerden okuma yazıları yarat!",
+                text = "Yapay zeka ile çalıştığın kelimelerden okuma yazıları yarat!",
                 fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Thin,
                 fontSize = 14.sp,
                 color = Color.White,
                 textAlign = TextAlign.Center

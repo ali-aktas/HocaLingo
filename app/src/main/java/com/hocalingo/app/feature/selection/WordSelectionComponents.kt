@@ -85,7 +85,7 @@ fun InstructionBar(
     modifier: Modifier = Modifier
 ) {
     Text(
-        text = "İstediğin kelimeyi çalışma destene ekle",
+        text = "Çalışma destene bir kaç kelime ekle",
         fontFamily = PoppinsFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 15.sp,
