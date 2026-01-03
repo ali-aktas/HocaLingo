@@ -26,6 +26,7 @@ import com.hocalingo.app.feature.onboarding.PackageSelectionScreen
 import com.hocalingo.app.feature.selection.WordSelectionScreen
 import com.hocalingo.app.feature.splash.SplashScreen
 import com.hocalingo.app.feature.study.StudyScreen
+import com.hocalingo.app.feature.study.StudyMainScreen
 import com.hocalingo.app.feature.add_word.AddWordScreen
 import com.hocalingo.app.feature.ai.AIAssistantScreen
 import com.hocalingo.app.feature.profile.ProfileScreen
@@ -43,8 +44,11 @@ import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import com.hocalingo.app.feature.ai.AIEvent
 
 /**
- * Enhanced HocaLingo Navigation Routes
- * ✅ Onboarding Intro (3 pages) added
+ * HocaLingo Navigation Routes
+ *
+ * ✅ UPDATED: StudyMainScreen added as study hub
+ * ✅ STUDY → StudyMainScreen (Bottom Nav destination)
+ * ✅ STUDY_SCREEN → StudyScreen (Actual study session)
  */
 object HocaRoutes {
     const val SPLASH = "splash"
@@ -55,7 +59,8 @@ object HocaRoutes {
     const val PACKAGE_SELECTION = "package_selection"
     const val WORD_SELECTION = "word_selection"
     const val HOME = "home"
-    const val STUDY = "study"
+    const val STUDY = "study"                    // StudyMainScreen (Hub)
+    const val STUDY_SCREEN = "study_screen"      // StudyScreen (Actual study)
     const val ADD_WORD = "add_word"
     const val AI_ASSISTANT = "ai_assistant"
     const val PROFILE = "profile"
@@ -66,7 +71,15 @@ object HocaRoutes {
 
 /**
  * Main Navigation Composable
- * Updated Flow: SPLASH → AUTH → ONBOARDING_INTRO → PACKAGE_SELECTION → WORD_SELECTION → HOME
+ *
+ * Flow:
+ * SPLASH → AUTH → ONBOARDING_INTRO → PACKAGE_SELECTION → WORD_SELECTION → HOME
+ *
+ * Main App Navigation:
+ * - Bottom Nav: Home, Study (StudyMainScreen), AddWord, Profile
+ * - StudyMainScreen → StudyScreen (Start Study button)
+ * - StudyMainScreen → AddWordScreen (Add Word button)
+ * - HomeScreen → StudyScreen (Direct "Çalışmaya Başla" button)
  */
 @Composable
 fun HocaLingoNavigation(
@@ -89,7 +102,7 @@ fun HocaLingoNavigation(
                     }
                 },
                 onNavigateToOnboarding = {
-                    navController.navigate(HocaRoutes.ONBOARDING_INTRO) { // ✅ CHANGED: INTRO first
+                    navController.navigate(HocaRoutes.ONBOARDING_INTRO) {
                         popUpTo(HocaRoutes.SPLASH) { inclusive = true }
                     }
                 },
@@ -105,14 +118,14 @@ fun HocaLingoNavigation(
         composable(route = HocaRoutes.AUTH) {
             AuthScreen(
                 onNavigateToOnboarding = {
-                    navController.navigate(HocaRoutes.ONBOARDING_INTRO) { // ✅ CHANGED: INTRO first
+                    navController.navigate(HocaRoutes.ONBOARDING_INTRO) {
                         popUpTo(HocaRoutes.AUTH) { inclusive = true }
                     }
                 }
             )
         }
 
-        // ✅ NEW: Onboarding Intro Screen (3 pages)
+        // Onboarding Intro Screen (3 pages)
         composable(route = HocaRoutes.ONBOARDING_INTRO) {
             OnboardingIntroScreen(
                 onNavigateToPackageSelection = {
@@ -123,7 +136,7 @@ fun HocaLingoNavigation(
             )
         }
 
-        // Language Selection (Future Feature)
+        // Language Selection (Future Feature - Placeholder)
         composable(route = HocaRoutes.ONBOARDING_LANGUAGE) {
             PlaceholderScreen(
                 title = "🌍 ${stringResource(R.string.settings_title)}",
@@ -147,7 +160,7 @@ fun HocaLingoNavigation(
             )
         }
 
-        // ✅ NEW: Package Selection - HOME ACCESS
+        // Package Selection - HOME ACCESS (from main app)
         composable(route = HocaRoutes.PACKAGE_SELECTION) {
             PackageSelectionScreen(
                 onNavigateToWordSelection = { packageId ->
@@ -159,7 +172,7 @@ fun HocaLingoNavigation(
             )
         }
 
-        // Word Selection Screen - REAL IMPLEMENTATION with FIXED PARAMETER
+        // Word Selection Screen
         composable(
             route = "${HocaRoutes.WORD_SELECTION}/{packageId}",
             arguments = listOf(
@@ -185,11 +198,12 @@ fun HocaLingoNavigation(
 
         // ===== MAIN APP FLOW (with Bottom Navigation) =====
 
-        // Home Screen - FIXED NAVIGATION ✅
+        // Home Screen
         composable(route = HocaRoutes.HOME) {
             HomeScreen(
                 onNavigateToStudy = {
-                    navController.navigate(HocaRoutes.STUDY)
+                    // HomeScreen "Çalışmaya Başla" butonu → Direkt StudyScreen
+                    navController.navigate(HocaRoutes.STUDY_SCREEN)
                 },
                 onNavigateToPackageSelection = {
                     navController.navigate(HocaRoutes.PACKAGE_SELECTION)
@@ -200,13 +214,28 @@ fun HocaLingoNavigation(
             )
         }
 
-        // Study Screen - Active Learning Session - REAL IMPLEMENTATION
+        // ===== STUDY FLOW =====
+
+        // Study Main Screen (Hub) - Bottom Navigation Destination
         composable(route = HocaRoutes.STUDY) {
+            StudyMainScreen(
+                onNavigateToStudy = {
+                    // "Çalışmaya Başla" butonu → StudyScreen
+                    navController.navigate(HocaRoutes.STUDY_SCREEN)
+                },
+                onNavigateToAddWord = {
+                    // "Yeni Kelime Ekle" butonu → AddWordScreen
+                    navController.navigate(HocaRoutes.ADD_WORD)
+                }
+            )
+        }
+
+        // Study Screen (Actual Learning Session)
+        composable(route = HocaRoutes.STUDY_SCREEN) {
             StudyScreen(
                 onNavigateBack = {
-                    navController.navigate(HocaRoutes.HOME) {
-                        popUpTo(HocaRoutes.HOME) { inclusive = false }
-                    }
+                    // Back button → Pop back to previous screen
+                    navController.popBackStack()
                 },
                 onNavigateToWordSelection = {
                     navController.navigate(HocaRoutes.PACKAGE_SELECTION)
@@ -214,21 +243,19 @@ fun HocaLingoNavigation(
             )
         }
 
-        // Add Word Screen - REAL IMPLEMENTATION ✅
+        // Add Word Screen
         composable(route = HocaRoutes.ADD_WORD) {
             AddWordScreen(
                 onNavigateBack = {
-                    navController.navigate(HocaRoutes.HOME) {
-                        popUpTo(HocaRoutes.HOME) { inclusive = false }
-                    }
+                    navController.popBackStack()
                 },
                 onNavigateToStudy = {
-                    navController.navigate(HocaRoutes.STUDY)
+                    navController.navigate(HocaRoutes.STUDY_SCREEN)
                 }
             )
         }
 
-        // ✅ Profile Screen - REAL IMPLEMENTATION
+        // Profile Screen
         composable(route = HocaRoutes.PROFILE) {
             ProfileScreen(
                 onNavigateToWordsList = {
@@ -237,7 +264,7 @@ fun HocaLingoNavigation(
             )
         }
 
-        // ✅ Words List Screen - Future Implementation (placeholder for now)
+        // Words List Screen (Future Implementation - Placeholder)
         composable(route = HocaRoutes.WORDS_LIST) {
             PlaceholderScreen(
                 title = "📚 Tüm Kelimeler",
@@ -249,7 +276,7 @@ fun HocaLingoNavigation(
             )
         }
 
-        // AI Assistant Screen - Satır ~166 civarı
+        // AI Assistant Screen
         composable(route = HocaRoutes.AI_ASSISTANT) {
             AIAssistantScreen(
                 onNavigateBack = {
@@ -275,6 +302,7 @@ fun HocaLingoNavigation(
             )
         }
 
+        // AI Story Detail Screen
         composable(
             route = "${HocaRoutes.AI_STORY_DETAIL}/{storyId}",
             arguments = listOf(
@@ -283,15 +311,13 @@ fun HocaLingoNavigation(
                 }
             )
         ) { backStackEntry ->
-            val storyId = backStackEntry.arguments?.getString("storyId") ?: ""
-            val viewModel: AIViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            val themeViewModel: ThemeViewModel = hiltViewModel()
-            val isDarkTheme = themeViewModel.shouldUseDarkTheme()
+            val storyId = backStackEntry.arguments?.getString("storyId") ?: return@composable
+            val aiViewModel: AIViewModel = hiltViewModel()
+            val uiState by aiViewModel.uiState.collectAsStateWithLifecycle()
             val context = LocalContext.current
 
             LaunchedEffect(storyId) {
-                viewModel.onEvent(AIEvent.OpenStoryDetail(storyId))
+                aiViewModel.onEvent(AIEvent.OpenStoryDetail(storyId))
             }
 
             val story = uiState.currentStory
@@ -313,10 +339,10 @@ fun HocaLingoNavigation(
                         )
                     },
                     onDelete = {
-                        viewModel.onEvent(AIEvent.DeleteStory(storyId))
+                        aiViewModel.onEvent(AIEvent.DeleteStory(storyId))
                         navController.popBackStack()
                     },
-                    viewModel = viewModel // YENİ EKLENEN
+                    viewModel = aiViewModel
                 )
             } else {
                 Box(
@@ -327,7 +353,6 @@ fun HocaLingoNavigation(
                 }
             }
         }
-
     }
 }
 
@@ -344,26 +369,24 @@ private fun PlaceholderScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(32.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineMedium,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
-
         Spacer(modifier = Modifier.height(16.dp))
-
         Text(
             text = subtitle,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
-
         Spacer(modifier = Modifier.height(32.dp))
-
         Button(onClick = onNavigate) {
-            Text(buttonText)
+            Text(text = buttonText)
         }
     }
 }

@@ -39,6 +39,18 @@ private val PoppinsFontFamily = FontFamily(
 )
 
 /**
+ * Bottom Navigation Item Data Class
+ */
+data class BottomNavItem(
+    val route: String,
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
+    val labelRes: Int,
+    val label: String,
+    val isMainAction: Boolean = false
+)
+
+/**
  * Professional Bottom Navigation - Fixed for All Devices
  *
  * ✅ Gesture navigation (swipe) - Works perfectly
@@ -51,6 +63,10 @@ private val PoppinsFontFamily = FontFamily(
  * - Box inside Card has navigationBarsPadding()
  * - Content (Row) has fixed 70dp height
  * - Result: Content stays 70dp, total height adapts to system bars
+ *
+ * UPDATED:
+ * - STUDY route → StudyMainScreen (Hub)
+ * - Bottom navigation items unchanged
  */
 @Composable
 fun HocaBottomNavigationBar(
@@ -70,7 +86,7 @@ fun HocaBottomNavigationBar(
                 label = "Ana Sayfa"
             ),
             BottomNavItem(
-                route = HocaRoutes.STUDY,
+                route = HocaRoutes.STUDY,  // StudyMainScreen (Hub)
                 selectedIcon = Icons.Filled.School,
                 unselectedIcon = Icons.Outlined.School,
                 labelRes = R.string.nav_study,
@@ -94,14 +110,10 @@ fun HocaBottomNavigationBar(
         )
     }
 
-    // ✅ CRITICAL FIX:
-    // - Card height is wrapContentHeight (adapts to content)
-    // - Box inside has navigationBarsPadding() for system bars
-    // - Row has fixed 70dp height for consistent UI
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .wrapContentHeight(), // 🎯 Adapts to content + system bars
+            .wrapContentHeight(),
         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent)
@@ -119,12 +131,12 @@ fun HocaBottomNavigationBar(
                     ),
                     shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
                 )
-                .navigationBarsPadding() // 🎯 Handles system navigation bars
+                .navigationBarsPadding()
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(70.dp) // 🎯 Fixed content height - always 70dp
+                    .height(70.dp)
                     .padding(horizontal = 8.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
@@ -152,6 +164,9 @@ fun HocaBottomNavigationBar(
     }
 }
 
+/**
+ * Single Bottom Navigation Item
+ */
 @Composable
 private fun BottomNavigationItem(
     item: BottomNavItem,
@@ -169,72 +184,54 @@ private fun BottomNavigationItem(
     )
 
     val iconColor by animateColorAsState(
-        targetValue = if (isSelected) Color.White else Color.White.copy(alpha = 0.7f),
-        animationSpec = tween(200),
+        targetValue = if (isSelected) Color.White else Color.White.copy(alpha = 0.6f),
+        animationSpec = tween(durationMillis = 200),
         label = "iconColor"
-    )
-
-    val backgroundColor by animateColorAsState(
-        targetValue = if (isSelected && item.isMainAction) {
-            Color.White.copy(alpha = 0.2f)
-        } else if (isSelected) {
-            Color.White.copy(alpha = 0.15f)
-        } else {
-            Color.Transparent
-        },
-        animationSpec = tween(200),
-        label = "backgroundColor"
     )
 
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(0.dp))
-            .background(backgroundColor)
             .clickable(onClick = onClick)
-            .padding(
-                horizontal = if (item.isMainAction) 20.dp else 12.dp,
-                vertical = 8.dp
-            )
+            .padding(horizontal = 8.dp, vertical = 8.dp)
             .graphicsLayer {
                 scaleX = scale
                 scaleY = scale
             },
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Icon(
             imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
             contentDescription = item.label,
             tint = iconColor,
-            modifier = Modifier.size(
-                if (item.isMainAction) 28.dp else 24.dp
-            )
+            modifier = Modifier.size(if (item.isMainAction) 28.dp else 24.dp)
         )
 
-        if (isSelected) {
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = item.label,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = if (item.isMainAction) FontWeight.Bold else FontWeight.Medium,
-                fontSize = if (item.isMainAction) 12.sp else 10.sp,
-                color = Color.White,
-                textAlign = TextAlign.Center,
-                maxLines = 1
-            )
-        }
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = item.label,
+            fontFamily = PoppinsFontFamily,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+            fontSize = if (item.isMainAction) 11.sp else 10.sp,
+            color = iconColor,
+            textAlign = TextAlign.Center,
+            maxLines = 1
+        )
     }
 }
 
-data class BottomNavItem(
-    val route: String,
-    val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector,
-    val labelRes: Int,
-    val label: String,
-    val isMainAction: Boolean = false
-)
-
-fun shouldShowBottomNavigation(currentRoute: String?): Boolean {
+/**
+ * Bottom Navigation Visibility Logic
+ *
+ * UPDATED:
+ * - Added STUDY_SCREEN to hidden routes
+ * - STUDY (StudyMainScreen) shows bottom navigation
+ * - STUDY_SCREEN (actual study session) hides bottom navigation
+ */
+fun shouldShowBottomNavigation(
+    currentRoute: String?
+): Boolean {
     return when {
         currentRoute == null -> false
         currentRoute.startsWith(HocaRoutes.SPLASH) -> false
@@ -243,7 +240,7 @@ fun shouldShowBottomNavigation(currentRoute: String?): Boolean {
         currentRoute.startsWith(HocaRoutes.ONBOARDING_LANGUAGE) -> false
         currentRoute.startsWith(HocaRoutes.ONBOARDING_LEVEL) -> false
         currentRoute.startsWith(HocaRoutes.WORD_SELECTION) -> false
-        currentRoute.startsWith(HocaRoutes.STUDY) -> false
+        currentRoute.startsWith(HocaRoutes.STUDY_SCREEN) -> false  // Hide in actual study session
         currentRoute.startsWith(HocaRoutes.AI_ASSISTANT) -> false
         currentRoute.startsWith(HocaRoutes.AI_STORY_DETAIL) -> false
         else -> true

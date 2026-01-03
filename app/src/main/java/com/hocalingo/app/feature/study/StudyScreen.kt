@@ -2,80 +2,38 @@ package com.hocalingo.app.feature.study
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.hocalingo.app.HocaRoutes
-import com.hocalingo.app.R
-import com.hocalingo.app.core.ui.components.HocaSnackbarHost
-import com.hocalingo.app.core.ui.theme.HocaLingoTheme
-import com.hocalingo.app.core.feedback.SatisfactionDialog
-import com.hocalingo.app.core.feedback.FeedbackDialog
-import androidx.activity.compose.LocalActivity
-import androidx.compose.foundation.Image
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.google.android.gms.ads.nativead.NativeAd
+import com.hocalingo.app.HocaRoutes
+import com.hocalingo.app.core.feedback.FeedbackDialog
+import com.hocalingo.app.core.feedback.SatisfactionDialog
+import com.hocalingo.app.core.ui.components.HocaSnackbarHost
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
-import com.hocalingo.app.core.ads.NativeAdCard
 
 /**
- * StudyScreen - FIXED VERSION
+ * StudyScreen - Main Study Screen Component
  *
- * Package: app/src/main/java/com/hocalingo/app/feature/study/
+ * Package: feature/study/
  *
- * ✅ UI completely unchanged
- * ✅ Logic fixes only
- * ✅ Dark mode support maintained
+ * Responsibilities:
+ * - State management via ViewModel
+ * - Effect handling (navigation, snackbars, TTS)
+ * - Scaffold & layout structure
+ * - Ad lifecycle management
+ * - Rating dialog coordination
+ *
+ * Architecture: MVVM + MVI
+ * - UiState: Immutable state container
+ * - Events: User actions
+ * - Effects: One-time side effects
  */
-
-// Poppins font family
-private val PoppinsFontFamily = FontFamily(
-    Font(R.font.poppins_regular, FontWeight.Normal),
-    Font(R.font.poppins_medium, FontWeight.Medium),
-    Font(R.font.poppins_bold, FontWeight.Bold),
-    Font(R.font.poppins_black, FontWeight.Black)
-)
-
-// Modern card colors (20 şık renk - beyaz/gri/sarı hariç)
-private val cardColors = listOf(
-    Color(0xFF6366F1), Color(0xFF8B5CF6), Color(0xFFEC4899), Color(0xFFEF4444),
-    Color(0xFFF97316), Color(0xFF10B981), Color(0xFF06B6D4), Color(0xFF3B82F6),
-    Color(0xFF8B5A2B), Color(0xFF059669), Color(0xFF7C3AED), Color(0xFFDC2626),
-    Color(0xFF0891B2), Color(0xFF065F46), Color(0xFF7C2D12), Color(0xFF1E40AF),
-    Color(0xFF7E22CE), Color(0xFF0F766E), Color(0xFFA21CAF), Color(0xFF9A3412)
-)
-
 @SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,28 +48,25 @@ fun StudyScreen(
     val scope = rememberCoroutineScope()
 
     val nativeAd by viewModel.premiumAwareNativeAd.collectAsState()
-
     var showRewardedAdDialog by remember { mutableStateOf(false) }
 
-    // Handle ALL effects including rewarded ad
+    // Effect Handler - Centralized side effect management
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
-            android.util.Log.d("HocaLingo", "🔍 Effect received: $effect")
             when (effect) {
                 StudyEffect.NavigateToHome -> onNavigateBack()
                 StudyEffect.NavigateToWordSelection -> onNavigateToWordSelection()
                 is StudyEffect.ShowMessage -> snackbarHostState.showSnackbar(effect.message)
-                is StudyEffect.SpeakText -> { /* TTS handled in ViewModel */ }
-                is StudyEffect.HapticFeedback -> { /* TODO: Implement haptic */ }
-                is StudyEffect.PlaySound -> { /* TODO: Implement sound */ }
-                is StudyEffect.ShowSessionComplete -> { /* Handled via UI state */ }
                 StudyEffect.LaunchNativeStoreRating -> {
                     activity?.let { viewModel.getRatingManager().launchNativeRating(it) }
                 }
                 StudyEffect.ShowStudyRewardedAd -> {
-                    android.util.Log.d("HocaLingo", "🔍 Setting showRewardedAdDialog = true")
                     showRewardedAdDialog = true
                 }
+                is StudyEffect.SpeakText -> { /* Handled in ViewModel */ }
+                is StudyEffect.HapticFeedback -> { /* TODO: Implement haptic feedback */ }
+                is StudyEffect.PlaySound -> { /* TODO: Implement sound effects */ }
+                is StudyEffect.ShowSessionComplete -> { /* Handled via UI state */ }
             }
         }
     }
@@ -131,13 +86,17 @@ fun StudyScreen(
                 .padding(paddingValues)
         ) {
             when {
-                uiState.isLoading -> LoadingState(modifier = Modifier.fillMaxSize())
+                uiState.isLoading -> {
+                    LoadingState(modifier = Modifier.fillMaxSize())
+                }
+
                 uiState.showEmptyQueueMessage || uiState.isQueueEmpty -> {
                     StudyCompletionScreen(
                         onNavigateToWordSelection = onNavigateToWordSelection,
                         onNavigateToHome = onNavigateBack
                     )
                 }
+
                 uiState.error != null -> {
                     ErrorState(
                         error = uiState.error ?: "",
@@ -145,6 +104,7 @@ fun StudyScreen(
                         modifier = Modifier.fillMaxSize()
                     )
                 }
+
                 uiState.currentConcept != null -> {
                     StudyContent(
                         uiState = uiState,
@@ -153,10 +113,11 @@ fun StudyScreen(
                         nativeAd = nativeAd
                     )
                 }
+
                 else -> LoadingState(modifier = Modifier.fillMaxSize())
             }
 
-            // ========== RATING DIALOGS ==========
+            // Rating Dialogs
             if (uiState.showSatisfactionDialog) {
                 SatisfactionDialog(
                     onDismiss = { viewModel.onEvent(StudyEvent.DismissSatisfactionDialog) },
@@ -185,27 +146,22 @@ fun StudyScreen(
                 }
             }
 
-            // ========== REWARDED AD DIALOG ==========
+            // Rewarded Ad Dialog
             if (showRewardedAdDialog) {
-                android.util.Log.d("HocaLingo", "🔍 Showing rewarded ad dialog")
                 StudyRewardedAdDialog(
                     wordsCompleted = 40,
                     onContinue = {
-                        android.util.Log.d("HocaLingo", "🔍 Dialog onContinue clicked")
                         showRewardedAdDialog = false
                         activity?.let { act ->
                             scope.launch {
                                 viewModel.getAdMobManager().showStudyRewardedAd(
                                     activity = act as Activity,
-                                    onAdShown = {
-                                        android.util.Log.d("HocaLingo", "🔍 Ad shown")
-                                    },
+                                    onAdShown = {},
                                     onAdDismissed = {
-                                        android.util.Log.d("HocaLingo", "🔍 Ad dismissed, calling continueAfterAd")
                                         viewModel.onEvent(StudyEvent.ContinueAfterAd)
                                     },
                                     onAdFailed = { error ->
-                                        showRewardedAdDialog = false  // ← YENİ SATIR
+                                        showRewardedAdDialog = false
                                         scope.launch {
                                             snackbarHostState.showSnackbar("Reklam yüklenemedi, devam ediyorsunuz")
                                         }
@@ -216,7 +172,6 @@ fun StudyScreen(
                         }
                     },
                     onDismiss = {
-                        android.util.Log.d("HocaLingo", "🔍 Dialog dismissed")
                         showRewardedAdDialog = false
                         viewModel.onEvent(StudyEvent.ContinueAfterAd)
                     }
@@ -227,126 +182,20 @@ fun StudyScreen(
 }
 
 /**
- * Rewarded Ad Dialog - Modern Design with Hoca Logo
- */
-@Composable
-private fun StudyRewardedAdDialog(
-    wordsCompleted: Int,
-    onContinue: () -> Unit,
-    onDismiss: () -> Unit
-) {
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(
-            dismissOnBackPress = false,
-            dismissOnClickOutside = false
-        )
-    ) {
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color(0xFF6366F1), // Modern indigo
-                                Color(0xFF8B5CF6)  // Modern purple
-                            )
-                        )
-                    )
-                    .padding(32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Hoca Logo
-                Image(
-                    painter = painterResource(id = R.drawable.lingo_happy),
-                    contentDescription = "Hoca Logo",
-                    modifier = Modifier.size(100.dp)
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Title
-                Text(
-                    text = "Harika Gidiyorsun!",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Message
-                Text(
-                    text = "$wordsCompleted kart çalıştın! 🚀\n\nÖğrenmeye devam etmek için kısa bir reklam izle.",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
-                    color = Color.White.copy(alpha = 0.95f),
-                    textAlign = TextAlign.Center,
-                    lineHeight = 24.sp
-                )
-
-                Spacer(modifier = Modifier.height(28.dp))
-
-                // Continue button
-                Button(
-                    onClick = onContinue,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Text(
-                        text = "Reklamı İzle ve Devam Et",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color(0xFF6366F1)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // Dismiss button
-                TextButton(
-                    onClick = onDismiss,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Daha Sonra",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp,
-                        color = Color.White.copy(alpha = 0.8f)
-                    )
-                }
-            }
-        }
-    }
-}
-
-/**
- * Study Content - Main learning interface
+ * StudyContent - Main study interface layout
+ *
+ * Layout structure:
+ * - Top bar with navigation
+ * - Progress indicator
+ * - Study card (or native ad overlay)
+ * - Action buttons
  */
 @Composable
 private fun StudyContent(
     uiState: StudyUiState,
     onEvent: (StudyEvent) -> Unit,
     onNavigateBack: () -> Unit,
-    nativeAd: NativeAd? = null
+    nativeAd: NativeAd?
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -354,48 +203,24 @@ private fun StudyContent(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Top bar
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = onNavigateBack,
-                    modifier = Modifier.background(
-                        color = MaterialTheme.colorScheme.surface,
-                        shape = CircleShape
-                    )
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Geri",
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                }
+            // Top Navigation Bar
+            StudyTopBar(
+                onBackClick = onNavigateBack,
+                onSettingsClick = { /* TODO: Settings */ }
+            )
 
-                Text(
-                    text = "Aralıklı tekrar çalışması",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+            Spacer(modifier = Modifier.height(16.dp))
 
-                Spacer(modifier = Modifier.size(48.dp))
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
+            // Progress Indicator
             StudyProgressIndicator(
-                currentIndex = uiState.currentWordIndex,
+                currentIndex = uiState.currentCardIndex,
                 totalWords = uiState.totalWordsInQueue,
                 progress = uiState.progressPercentage / 100f
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Study Card (native ad yoksa veya yüklenmediyse göster)
+            // Study Card (hide if native ad is showing)
             if (!uiState.showNativeAd || nativeAd == null) {
                 StudyCard(
                     frontText = uiState.frontText,
@@ -413,6 +238,7 @@ private fun StudyContent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Action Buttons
             StudyActionButtons(
                 isCardFlipped = uiState.isCardFlipped,
                 easyTimeText = uiState.easyTimeText,
@@ -424,624 +250,15 @@ private fun StudyContent(
             )
         }
 
-        // NATIVE AD OVERLAY (StudyCard ile aynı konumda)
+        // Native Ad Overlay (positioned over the card)
         if (uiState.showNativeAd && nativeAd != null) {
             StudyNativeAdOverlay(
                 nativeAd = nativeAd,
                 onClose = { onEvent(StudyEvent.CloseNativeAd) },
                 modifier = Modifier
-                    .align(Alignment.Center)
+                    .align(androidx.compose.ui.Alignment.Center)
                     .padding(16.dp)
             )
         }
-    }
-}
-
-/**
- * Enhanced Study Completion Screen
- */
-@Composable
-private fun StudyCompletionScreen(
-    onNavigateToWordSelection: () -> Unit,
-    onNavigateToHome: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Box(
-            modifier = Modifier.size(120.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .background(
-                        brush = Brush.radialGradient(
-                            colors = listOf(
-                                Color(0xFF4CAF50).copy(alpha = 0.2f),
-                                Color(0xFF4CAF50).copy(alpha = 0.1f),
-                                Color.Transparent
-                            )
-                        ),
-                        shape = CircleShape
-                    )
-            )
-            Text(text = "🎉", fontSize = 64.sp)
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Text(
-            text = "Harika İş Çıkardın!",
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 28.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Text(
-            text = "Bugün tüm kelimeleri çalıştın.\nÖğrenmeye devam etmek için yeni kelimeler seç!",
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 16.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            lineHeight = 22.sp
-        )
-
-        Spacer(modifier = Modifier.height(40.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            CompletionActionCard(
-                title = "Yeni Kelimeler",
-                subtitle = "Öğrenmeye devam et",
-                icon = Icons.Filled.Add,
-                backgroundColor = Brush.linearGradient(
-                    colors = listOf(Color(0xFF4ECDC4), Color(0xFF44A08D))
-                ),
-                onClick = onNavigateToWordSelection,
-                modifier = Modifier.weight(1f)
-            )
-
-            CompletionActionCard(
-                title = "Ana Sayfa",
-                subtitle = "İstatistikleri gör",
-                icon = Icons.Filled.Home,
-                backgroundColor = Brush.linearGradient(
-                    colors = listOf(Color(0xFF667eea), Color(0xFF764ba2))
-                ),
-                onClick = onNavigateToHome,
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                CompletionStat(
-                    icon = Icons.Filled.CheckCircle,
-                    label = "Tamamlandı",
-                    color = Color(0xFF4CAF50)
-                )
-                CompletionStat(
-                    icon = Icons.Filled.LocalFireDepartment,
-                    label = "Streak devam",
-                    color = Color(0xFFFF5722)
-                )
-                CompletionStat(
-                    icon = Icons.Filled.EmojiEvents,
-                    label = "Hedef tamamlandı",
-                    color = Color(0xFFFFC107)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun CompletionActionCard(
-    title: String,
-    subtitle: String,
-    icon: ImageVector,
-    backgroundColor: Brush,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .height(120.dp)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(brush = backgroundColor)
-                .padding(16.dp)
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(32.dp)
-                )
-                Column {
-                    Text(
-                        text = title,
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color.White
-                    )
-                    Text(
-                        text = subtitle,
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 12.sp,
-                        color = Color.White.copy(alpha = 0.9f)
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun CompletionStat(
-    icon: ImageVector,
-    label: String,
-    color: Color
-) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = color,
-            modifier = Modifier.size(28.dp)
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = label,
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-private fun StudyProgressIndicator(
-    currentIndex: Int,
-    totalWords: Int,
-    progress: Float
-) {
-    if (totalWords > 0) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "${currentIndex + 1}/${totalWords}",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(6.dp)
-                    .clip(RoundedCornerShape(3.dp)),
-                color = Color(0xFF4ECDC4),
-                trackColor = MaterialTheme.colorScheme.surfaceVariant
-            )
-        }
-    }
-}
-
-@Composable
-private fun StudyCard(
-    frontText: String,
-    backText: String,
-    frontExampleText: String,
-    backExampleText: String,
-    isFlipped: Boolean,
-    onCardClick: () -> Unit,
-    onPronunciationClick: () -> Unit,
-    showTtsOnFrontSide: Boolean,
-    showPronunciationButton: Boolean = false,
-    modifier: Modifier = Modifier
-) {
-    val cardColor = remember(frontText, backText) {
-        cardColors[(frontText + backText).hashCode().absoluteValue % cardColors.size]
-    }
-
-    val rotationY by animateFloatAsState(
-        targetValue = if (isFlipped) 180f else 0f,
-        animationSpec = spring(dampingRatio = 1.1f),
-        label = "cardFlip"
-    )
-
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }
-            ) { onCardClick() }
-            .graphicsLayer {
-                this.rotationY = rotationY
-                cameraDistance = 12f * density
-            },
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = cardColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            if (rotationY <= 90f) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = frontText,
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 32.sp,
-                        color = Color.White,
-                        textAlign = TextAlign.Center,
-                        lineHeight = 36.sp
-                    )
-                    if (frontExampleText.isNotEmpty()) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = frontExampleText,
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 16.sp,
-                            color = Color.White.copy(alpha = 0.9f),
-                            textAlign = TextAlign.Center,
-                            lineHeight = 20.sp
-                        )
-                    }
-                }
-                // ✅ TTS Button on FRONT side (EN→TR only)
-                if (showPronunciationButton && showTtsOnFrontSide) {
-                    IconButton(
-                        onClick = onPronunciationClick,
-                        modifier = Modifier.align(Alignment.TopEnd)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.VolumeUp,
-                            contentDescription = "Seslendirme",
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                }
-            } else {
-                Box(modifier = Modifier.graphicsLayer { scaleX = -1f }) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = backText,
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 32.sp,
-                            color = Color.White,
-                            textAlign = TextAlign.Center,
-                            lineHeight = 36.sp
-                        )
-                        if (backExampleText.isNotEmpty()) {
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(
-                                text = backExampleText,
-                                fontFamily = PoppinsFontFamily,
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 16.sp,
-                                color = Color.White.copy(alpha = 0.9f),
-                                textAlign = TextAlign.Center,
-                                lineHeight = 20.sp
-                            )
-                        }
-                    }
-                }
-                // ✅ TTS Button on BACK side (düzeltme ile)
-                if (showPronunciationButton && !showTtsOnFrontSide) {
-                    IconButton(
-                        onClick = onPronunciationClick,
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .graphicsLayer { scaleX = -1f } // ✅ Card'ın rotationY'sinden dolayı ters görünüyor, düzelt
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.VolumeUp,
-                            contentDescription = "Seslendirme",
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun StudyActionButtons(
-    isCardFlipped: Boolean,
-    easyTimeText: String,
-    mediumTimeText: String,
-    hardTimeText: String,
-    onHardPressed: () -> Unit,
-    onMediumPressed: () -> Unit,
-    isAdDialogShowing: Boolean = false,
-    onEasyPressed: () -> Unit
-) {
-    if (!isCardFlipped) {
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.TouchApp,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Ne kadar hatırlıyorsun?",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-
-    } else {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            ActionButton(
-                mainText = "ZOR",
-                timeText = hardTimeText.ifEmpty { "1 dk" },
-                backgroundColor = Color(0xFFFF3B30),
-                contentColor = Color.White,
-                onClick = onHardPressed,
-                enabled = !isAdDialogShowing,
-                modifier = Modifier.weight(1f)
-            )
-            ActionButton(
-                mainText = "ORTA",
-                timeText = mediumTimeText.ifEmpty { "10 dk" },
-                backgroundColor = Color(0xFFFF9500),
-                contentColor = Color.White,
-                onClick = onMediumPressed,
-                enabled = !isAdDialogShowing,
-                modifier = Modifier.weight(1f)
-            )
-            ActionButton(
-                mainText = "KOLAY",
-                timeText = easyTimeText.ifEmpty { "1 gün" },
-                backgroundColor = Color(0xFF34C759),
-                contentColor = Color.White,
-                onClick = onEasyPressed,
-                enabled = !isAdDialogShowing,
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-    }
-}
-
-@Composable
-private fun ActionButton(
-    mainText: String,
-    timeText: String,
-    backgroundColor: Color,
-    contentColor: Color,
-    onClick: () -> Unit,
-    enabled: Boolean = true,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .clickable(enabled = enabled) { onClick() }
-            .height(80.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = backgroundColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = mainText,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-                color = contentColor,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = timeText,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Normal,
-                fontSize = 11.sp,
-                color = contentColor.copy(alpha = 0.8f),
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
-@Composable
-private fun LoadingState(modifier: Modifier = Modifier) {
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            CircularProgressIndicator(color = Color(0xFF4ECDC4))
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Çalışma hazırlanıyor...",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    }
-}
-
-@Composable
-private fun ErrorState(
-    error: String,
-    onRetry: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(text = "⚠️", fontSize = 48.sp)
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = error,
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 16.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-        Button(onClick = onRetry) {
-            Text("Tekrar Dene")
-        }
-    }
-}
-
-/**
- * Native Ad Overlay - StudyCard üstüne tam oturan
- */
-@Composable
-private fun StudyNativeAdOverlay(
-    nativeAd: NativeAd?,
-    onClose: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    if (nativeAd == null) return
-
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(0.7f),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 16.dp)
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            // Native Ad
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                NativeAdCard(
-                    nativeAd = nativeAd,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-
-            // X Butonu
-            IconButton(
-                onClick = onClose,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp)
-                    .size(36.dp)
-                    .background(
-                        color = Color.Black.copy(alpha = 0.6f),
-                        shape = CircleShape
-                    )
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = "Kapat",
-                    tint = Color.White
-                )
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun StudyCompletionScreenPreview() {
-    HocaLingoTheme {
-        StudyCompletionScreen(
-            onNavigateToWordSelection = {},
-            onNavigateToHome = {}
-        )
     }
 }
