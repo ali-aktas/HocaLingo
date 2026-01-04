@@ -14,6 +14,7 @@ import com.hocalingo.app.HocaRoutes
 import com.hocalingo.app.core.feedback.FeedbackDialog
 import com.hocalingo.app.core.feedback.SatisfactionDialog
 import com.hocalingo.app.core.ui.components.HocaSnackbarHost
+import com.hocalingo.app.feature.subscription.PaywallBottomSheet
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -49,6 +50,7 @@ fun StudyScreen(
 
     val nativeAd by viewModel.premiumAwareNativeAd.collectAsState()
     var showRewardedAdDialog by remember { mutableStateOf(false) }
+    var showPaywall by remember { mutableStateOf(false) }
 
     // Effect Handler - Centralized side effect management
     LaunchedEffect(Unit) {
@@ -171,8 +173,27 @@ fun StudyScreen(
                             }
                         }
                     },
+                    onUpgradeToPremium = { // ✅ YENİ PARAMETRE
+                        showRewardedAdDialog = false
+                        showPaywall = true
+                    },
                     onDismiss = {
                         showRewardedAdDialog = false
+                        viewModel.onEvent(StudyEvent.ContinueAfterAd)
+                    }
+                )
+            }
+            // ✅ Paywall BottomSheet
+            if (showPaywall) {
+                PaywallBottomSheet(
+                    onDismiss = {
+                        showPaywall = false
+                        // User dismissed paywall, show ad dialog again
+                        showRewardedAdDialog = true
+                    },
+                    onPurchaseSuccess = {
+                        showPaywall = false
+                        // Premium purchased, continue without ad
                         viewModel.onEvent(StudyEvent.ContinueAfterAd)
                     }
                 )

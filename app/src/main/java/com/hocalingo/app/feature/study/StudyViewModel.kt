@@ -90,6 +90,7 @@ class StudyViewModel @Inject constructor(
     private var currentQueueIndex: Int = 0
 
     init {
+        nativeAdLoader.loadStudyScreenAd()
         loadInitialData()
         trackTtsState()
         observePremiumStatus()

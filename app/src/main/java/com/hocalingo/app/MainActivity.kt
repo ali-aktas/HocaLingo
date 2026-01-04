@@ -14,6 +14,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -27,6 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.hocalingo.app.core.ads.AdMobManager
 import com.hocalingo.app.core.ads.NativeAdLoader
 import com.hocalingo.app.core.common.DebugHelper
+import com.hocalingo.app.core.common.TrialOfferDataStore
 import com.hocalingo.app.core.ui.navigation.HocaBottomNavigationBar
 import com.hocalingo.app.core.ui.navigation.shouldShowBottomNavigation
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
@@ -36,6 +41,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.hocalingo.app.core.config.RemoteConfigManager
+import com.hocalingo.app.feature.subscription.TrialOfferDialog
+import com.hocalingo.app.feature.subscription.PaywallBottomSheet
 
 /**
  * MainActivity - Professional Edge-to-Edge Implementation with AdMob
@@ -69,6 +76,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var remoteConfigManager: RemoteConfigManager
 
+    @Inject
+    lateinit var trialOfferDataStore: TrialOfferDataStore
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Install splash screen first
@@ -94,6 +104,10 @@ class MainActivity : ComponentActivity() {
             // Theme management
             val themeViewModel: ThemeViewModel = hiltViewModel()
             val shouldUseDarkTheme = themeViewModel.shouldUseDarkTheme()
+            // ✅ Trial Offer State (for second showing after 3 days)
+            var showTrialOffer by remember { mutableStateOf(false) }
+            var showPaywall by remember { mutableStateOf(false) }
+            val scope = rememberCoroutineScope()
 
             HocaLingoTheme(
                 darkTheme = shouldUseDarkTheme,
@@ -139,6 +153,21 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
+                // ✅ Check trial offer (second showing after 3 days)
+                LaunchedEffect(Unit) {
+                    delay(3000) // Wait 3 seconds
+
+                    val shouldShow = trialOfferDataStore.shouldShowTrialOffer()
+                    if (shouldShow) {
+                        val prefs = trialOfferDataStore.getDebugInfo()
+                        DebugHelper.log("Trial Offer Check: $prefs")
+
+                        // Mark as second shown
+                        trialOfferDataStore.markSecondShown()
+                        showTrialOffer = true
+                    }
+                }
+
                 // ✅ CRITICAL FIX: contentWindowInsets removes default padding
                 // Now each screen manages its own status bar padding
                 Scaffold(
@@ -163,6 +192,36 @@ class MainActivity : ComponentActivity() {
                             .padding(paddingValues) // Only bottom nav padding
                     )
                 }
+                // ✅ Trial Offer Dialog (Second showing)
+                if (showTrialOffer) {
+                    TrialOfferDialog(
+                        onStartTrial = {
+                            showTrialOffer = false
+                            showPaywall = true
+                        },
+                        onDismiss = {
+                            showTrialOffer = false
+                            scope.launch {
+                                trialOfferDataStore.markPermanentlyDismissed()
+                            }
+                        }
+                    )
+                }
+
+                // ✅ Paywall BottomSheet (Second showing)
+                if (showPaywall) {
+                    PaywallBottomSheet(
+                        onDismiss = {
+                            showPaywall = false
+                        },
+                        onPurchaseSuccess = {
+                            showPaywall = false
+                            scope.launch {
+                                trialOfferDataStore.resetAfterPurchase()
+                            }
+                        }
+                    )
+                }
             }
         }
     }
@@ -173,20 +232,15 @@ class MainActivity : ComponentActivity() {
     private fun initializeAdMob() {
         lifecycleScope.launch {
             try {
-                // Initialize AdMob SDK
+                // ✅ Only initialize SDK
                 adMobManager.initialize()
+                DebugHelper.logSuccess("✅ AdMob SDK initialized (Lazy loading enabled)")
 
-                // ✅ FIXED: Premium kontrolü ile ad preloading
-                val isPremium = adMobManager.isPremiumUser()
-                if (!isPremium) {
-                    DebugHelper.log("🔄 Free user - Preloading ads")
-                    nativeAdLoader.preloadNativeAds()
-                } else {
-                    DebugHelper.log("👑 Premium user - Skipping ad preload")
-                }
+                // ❌ REMOVED: nativeAdLoader.preloadNativeAds()
+                // Ads are now loaded lazily when screens are opened
 
             } catch (e: Exception) {
-                println("❌ AdMob initialization failed: ${e.message}")
+                DebugHelper.logError("❌ AdMob initialization failed", e)
             }
         }
     }

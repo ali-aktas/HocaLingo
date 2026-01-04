@@ -60,8 +60,6 @@ class WordSelectionViewModel @Inject constructor(
     private val DAILY_SELECTION_LIMIT = 50
 
     init {
-        DebugHelper.logWordSelection("=== WordSelectionViewModel INITIALIZED ===")
-        DebugHelper.logWordSelection("Package ID: $packageId")
         loadWords()
         loadTodaySelectionCount()
         observePremiumStatus()

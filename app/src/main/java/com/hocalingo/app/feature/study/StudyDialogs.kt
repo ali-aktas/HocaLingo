@@ -2,6 +2,7 @@ package com.hocalingo.app.feature.study
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -63,6 +64,7 @@ private val PoppinsFontFamily = FontFamily(
 fun StudyRewardedAdDialog(
     wordsCompleted: Int,
     onContinue: () -> Unit,
+    onUpgradeToPremium: () -> Unit,
     onDismiss: () -> Unit
 ) {
     Dialog(
@@ -144,6 +146,50 @@ fun StudyRewardedAdDialog(
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // ✅ Premium Upgrade Button
+                OutlinedButton(
+                    onClick = onUpgradeToPremium,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp)
+                        .border(
+                            width = 1.5.dp,
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFF7C3AED),
+                                    Color(0xFF9D5CFF)
+                                )
+                            ),
+                            shape = RoundedCornerShape(14.dp)
+                        ),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = Color(0xFF7C3AED)
+                    )
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Stars,
+                            contentDescription = null,
+                            tint = Color(0xFF7C3AED),
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Text(
+                            "Premium'a Geç - Reklamsız",
+                            fontFamily = PoppinsFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 15.sp,
+                            color = Color(0xFF7C3AED)
+                        )
+                    }
                 }
             }
         }

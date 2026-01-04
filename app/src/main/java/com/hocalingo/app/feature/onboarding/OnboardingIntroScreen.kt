@@ -22,6 +22,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -32,6 +36,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.hocalingo.app.feature.subscription.TrialOfferDialog
+import com.hocalingo.app.feature.subscription.PaywallBottomSheet
+import com.hocalingo.app.core.common.TrialOfferDataStore
+import kotlinx.coroutines.launch
 
 /**
  * Onboarding Intro Screen - 3 Pages
@@ -44,6 +52,11 @@ fun OnboardingIntroScreen(
     onNavigateToPackageSelection: () -> Unit,
     viewModel: OnboardingIntroViewModel = hiltViewModel()
 ) {
+    // ✅ Trial Offer System
+    val trialOfferDataStore: TrialOfferDataStore = hiltViewModel()
+    var showTrialOffer by remember { mutableStateOf(false) }
+    var showPaywall by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
     val state by viewModel.state.collectAsState()
     val pagerState = rememberPagerState(pageCount = { state.totalPages })
     val pages = OnboardingIntroViewModel.getOnboardingPages()
@@ -52,7 +65,18 @@ fun OnboardingIntroScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                OnboardingIntroEffect.NavigateToPackageSelection -> onNavigateToPackageSelection()
+                OnboardingIntroEffect.NavigateToPackageSelection -> {
+                    // ✅ Check if should show trial offer
+                    scope.launch {
+                        val shouldShow = trialOfferDataStore.shouldShowTrialOffer()
+                        if (shouldShow) {
+                            trialOfferDataStore.markFirstShown()
+                            showTrialOffer = true
+                        } else {
+                            onNavigateToPackageSelection()
+                        }
+                    }
+                }
                 is OnboardingIntroEffect.ScrollToPage -> {
                     pagerState.animateScrollToPage(effect.page)
                 }
@@ -76,6 +100,39 @@ fun OnboardingIntroScreen(
             totalPages = state.totalPages,
             onNextClick = { viewModel.onEvent(OnboardingIntroEvent.OnNextClick) },
             onGetStartedClick = { viewModel.onEvent(OnboardingIntroEvent.OnGetStartedClick) }
+        )
+    }
+    // ✅ Trial Offer Dialog
+    if (showTrialOffer) {
+        TrialOfferDialog(
+            onStartTrial = {
+                showTrialOffer = false
+                showPaywall = true
+            },
+            onDismiss = {
+                showTrialOffer = false
+                scope.launch {
+                    trialOfferDataStore.markFirstDismissed()
+                }
+                onNavigateToPackageSelection()
+            }
+        )
+    }
+
+    // ✅ Paywall BottomSheet
+    if (showPaywall) {
+        PaywallBottomSheet(
+            onDismiss = {
+                showPaywall = false
+                onNavigateToPackageSelection()
+            },
+            onPurchaseSuccess = {
+                showPaywall = false
+                scope.launch {
+                    trialOfferDataStore.resetAfterPurchase()
+                }
+                onNavigateToPackageSelection()
+            }
         )
     }
 }
