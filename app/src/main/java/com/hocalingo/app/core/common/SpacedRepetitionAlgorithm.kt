@@ -246,15 +246,15 @@ object SpacedRepetitionAlgorithm {
                 val todayEnd = getTodayEndTime(currentTime)
 
                 currentProgress.copy(
-                    repetitions = 0,  // Reset
-                    intervalDays = 0f,
+                    repetitions = 1,
+                    intervalDays = GRADUATION_INTERVAL_DAYS,
                     easeFactor = max(MIN_EASE_FACTOR, currentProgress.easeFactor - 0.2f),
-                    nextReviewAt = todayEnd,  // ✅ Bugün tekrar göster
+                    nextReviewAt = currentTime + (GRADUATION_INTERVAL_DAYS * 24 * 60 * 60 * 1000).toLong(),
                     lastReviewAt = currentTime,
-                    learningPhase = true,  // Back to learning
-                    sessionPosition = 1,  // Front of session
-                    hardPresses = 1,  // Reset counter
-                    successfulReviews = 0f,  // ✅ Reset (Float)
+                    learningPhase = false,
+                    sessionPosition = null,
+                    hardPresses = (currentProgress.hardPresses ?: 0) + 1,
+                    successfulReviews = 0f,
                     isMastered = false,
                     updatedAt = currentTime
                 )

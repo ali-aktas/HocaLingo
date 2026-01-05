@@ -41,7 +41,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.hocalingo.app.core.config.RemoteConfigManager
-import com.hocalingo.app.feature.subscription.TrialOfferDialog
 import com.hocalingo.app.feature.subscription.PaywallBottomSheet
 
 /**
@@ -154,17 +153,19 @@ class MainActivity : ComponentActivity() {
                 }
 
                 // ✅ Check trial offer (second showing after 3 days)
-                LaunchedEffect(Unit) {
-                    delay(3000) // Wait 3 seconds
+                LaunchedEffect(currentRoute) {
+                    if (currentRoute == HocaRoutes.HOME) {
+                        delay(2000) // Wait 2 seconds
 
-                    val shouldShow = trialOfferDataStore.shouldShowTrialOffer()
-                    if (shouldShow) {
-                        val prefs = trialOfferDataStore.getDebugInfo()
-                        DebugHelper.log("Trial Offer Check: $prefs")
+                        val shouldShow = trialOfferDataStore.shouldShowTrialOffer()
+                        if (shouldShow) {
+                            val prefs = trialOfferDataStore.getDebugInfo()
+                            DebugHelper.log("Trial Offer Check: $prefs")
 
-                        // Mark as second shown
-                        trialOfferDataStore.markSecondShown()
-                        showTrialOffer = true
+                            // Mark as second shown
+                            trialOfferDataStore.markSecondShown()
+                            showTrialOffer = true
+                        }
                     }
                 }
 
@@ -186,29 +187,33 @@ class MainActivity : ComponentActivity() {
                     // Each screen will add its own statusBarsPadding()
                     HocaLingoNavigation(
                         navController = navController,
+                        trialOfferDataStore = trialOfferDataStore,
                         modifier = Modifier
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.background)
                             .padding(paddingValues) // Only bottom nav padding
                     )
                 }
-                // ✅ Trial Offer Dialog (Second showing)
+
+                // ✅ Premium Push - 3 Gün Sonrası
                 if (showTrialOffer) {
-                    TrialOfferDialog(
-                        onStartTrial = {
-                            showTrialOffer = false
-                            showPaywall = true
-                        },
+                    PaywallBottomSheet(
                         onDismiss = {
                             showTrialOffer = false
                             scope.launch {
                                 trialOfferDataStore.markPermanentlyDismissed()
                             }
+                        },
+                        onPurchaseSuccess = {
+                            showTrialOffer = false
+                            scope.launch {
+                                trialOfferDataStore.resetAfterPurchase()
+                            }
                         }
                     )
                 }
 
-                // ✅ Paywall BottomSheet (Second showing)
+                // 👇 Aşağıdaki satır hala kalmalı (farklı senaryolar için)
                 if (showPaywall) {
                     PaywallBottomSheet(
                         onDismiss = {

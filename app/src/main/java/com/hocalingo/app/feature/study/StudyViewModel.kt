@@ -696,8 +696,8 @@ class StudyViewModel @Inject constructor(
 
         // ✅ Calculate offset based on button quality (not sessionPosition!)
         val offsetPercentage = when (quality) {
-            SpacedRepetitionAlgorithm.QUALITY_HARD -> 0.30f    // HARD: 30% of queue (close)
-            SpacedRepetitionAlgorithm.QUALITY_MEDIUM -> 0.60f  // MEDIUM: 60% of queue (middle)
+            SpacedRepetitionAlgorithm.QUALITY_HARD -> 0.60f    // HARD: 30% of queue (close)
+            SpacedRepetitionAlgorithm.QUALITY_MEDIUM -> 0.80f  // MEDIUM: 60% of queue (middle)
             SpacedRepetitionAlgorithm.QUALITY_EASY -> 1.0f     // EASY: 100% (end)
             else -> 1.0f
         }

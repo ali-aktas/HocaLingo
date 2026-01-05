@@ -10,7 +10,8 @@ data class HomeUiState(
     val streakDays: Int = 0,
     val dailyGoalProgress: DailyGoalProgress = DailyGoalProgress(),
     val monthlyStats: MonthlyStats = MonthlyStats(),
-    val error: String? = null
+    val error: String? = null,
+    val showPremiumPush: Boolean = false
 )
 
 /**
@@ -72,6 +73,9 @@ sealed interface HomeEvent {
     data object StartStudy : HomeEvent
     data object NavigateToPackageSelection : HomeEvent
     data object NavigateToAIAssistant : HomeEvent
+
+    data object DismissPremiumPush : HomeEvent
+    data object PremiumPurchaseSuccess : HomeEvent
 }
 
 /**

@@ -3,6 +3,7 @@ package com.hocalingo.app.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hocalingo.app.core.base.Result
+import com.hocalingo.app.core.common.TrialOfferDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,7 +21,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val homeRepository: HomeRepository
+    private val homeRepository: HomeRepository,
+    private val trialOfferDataStore: TrialOfferDataStore
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -30,6 +33,31 @@ class HomeViewModel @Inject constructor(
 
     init {
         loadDashboardData()
+        checkPremiumPush()
+    }
+
+    private fun checkPremiumPush() {
+        viewModelScope.launch {
+            val shouldShow = trialOfferDataStore.shouldShowTrialOffer()
+            if (shouldShow) {
+                trialOfferDataStore.markFirstShown()
+                _uiState.update { it.copy(showPremiumPush = true) }
+            }
+        }
+    }
+
+    fun dismissPremiumPush() {
+        viewModelScope.launch {
+            trialOfferDataStore.markFirstDismissed()
+            _uiState.update { it.copy(showPremiumPush = false) }
+        }
+    }
+
+    fun onPremiumPurchaseSuccess() {
+        viewModelScope.launch {
+            trialOfferDataStore.resetAfterPurchase()
+            _uiState.update { it.copy(showPremiumPush = false) }
+        }
     }
 
     fun onEvent(event: HomeEvent) {
@@ -39,6 +67,8 @@ class HomeViewModel @Inject constructor(
             HomeEvent.StartStudy -> handleStartStudy()
             HomeEvent.NavigateToPackageSelection -> handleNavigateToPackageSelection()
             HomeEvent.NavigateToAIAssistant -> handleNavigateToAIAssistant()
+            HomeEvent.DismissPremiumPush -> dismissPremiumPush()
+            HomeEvent.PremiumPurchaseSuccess -> onPremiumPurchaseSuccess()
         }
     }
 

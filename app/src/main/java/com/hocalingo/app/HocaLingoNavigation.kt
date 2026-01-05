@@ -40,6 +40,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import com.hocalingo.app.core.common.TrialOfferDataStore
 import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import com.hocalingo.app.feature.ai.AIEvent
 
@@ -84,6 +85,7 @@ object HocaRoutes {
 @Composable
 fun HocaLingoNavigation(
     navController: NavHostController,
+    trialOfferDataStore: TrialOfferDataStore,
     modifier: Modifier = Modifier
 ) {
     NavHost(

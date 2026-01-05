@@ -7,11 +7,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,7 +18,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -38,6 +35,11 @@ import com.hocalingo.app.core.ui.components.HocaSnackbarHost
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
 import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import kotlinx.coroutines.flow.collectLatest
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import com.hocalingo.app.core.common.TrialOfferDataStore
+import com.hocalingo.app.feature.subscription.PaywallBottomSheet
+import kotlinx.coroutines.launch
 
 // Poppins font family
 private val PoppinsFontFamily = FontFamily(
@@ -311,6 +313,19 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(60.dp))
             }
         }
+
+        // ✅ Premium Push Bottom Sheet
+        if (uiState.showPremiumPush) {
+            PaywallBottomSheet(
+                onDismiss = {
+                    viewModel.onEvent(HomeEvent.DismissPremiumPush)
+                },
+                onPurchaseSuccess = {
+                    viewModel.onEvent(HomeEvent.PremiumPurchaseSuccess)
+                }
+            )
+        }
+
     }
 }
 

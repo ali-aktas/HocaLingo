@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * SplashViewModel - ASSETS PACKAGE LOADER ENTEGRE EDİLDİ
@@ -48,35 +50,45 @@ class SplashViewModel @Inject constructor(
     private fun checkAppState() {
         viewModelScope.launch {
             try {
-                DebugHelper.log("🎬 Splash animasyonu başlatılıyor...")
+                DebugHelper.log("🎬 Splash başlatılıyor...")
 
-                // ✨ YENİ: Assets'ten 1600 kelimeyi yükle (ilk açılışta)
-                // 2-3 saniyelik animasyon sırasında arka planda yüklenir
-                loadBundledPackages()
+                // ✅ 1. Paralel yükleme - internet gerektirmez
+                val assetsJob = launch {
+                    loadBundledPackages()
+                }
 
-                // Minimum splash duration (animasyonun görünmesi için)
-                delay(1500)
+                // ✅ 2. Minimum delay - sadece 500ms
+                delay(500)
 
-                // Firebase test paketi yükle (backward compatibility)
-                ensureTestDataLoaded()
-
-                DebugHelper.log("👤 User durumu kontrol ediliyor...")
-
-                // Kullanıcı durumunu kontrol et
+                // ✅ 3. Auth kontrolü - offline da çalışır
                 val currentUser = authRepository.getCurrentUser()
-                DebugHelper.log("Current user: ${currentUser?.uid ?: "YOK"}")
+                DebugHelper.log("👤 User: ${currentUser?.uid ?: "YOK"}")
 
+                // ✅ 4. Assets yüklemesi bitsin (max 2 saniye bekle)
+                kotlinx.coroutines.withTimeoutOrNull(2000) {
+                    assetsJob.join()
+                }
+
+                // ✅ 5. Firebase test paketi - SADECE internet varsa
+                // İnternet yoksa atla, uygulama açılsın
+                try {
+                    kotlinx.coroutines.withTimeout(1000) {
+                        ensureTestDataLoaded()
+                    }
+                } catch (e: Exception) {
+                    DebugHelper.log("⚠️ Test data atlandı (internet yok/yavaş)")
+                }
+
+                // ✅ 6. Navigation
                 if (currentUser != null) {
-                    // Kullanıcı var - onboarding tamamlanmış mı kontrol et
                     checkOnboardingStatus()
                 } else {
-                    // Kullanıcı yok - Auth ekranına yönlendir
-                    DebugHelper.log("➡️  Auth ekranına yönlendiriliyor...")
                     _navigationEvent.emit(SplashNavigationEvent.NavigateToAuth)
                 }
 
             } catch (e: Exception) {
-                DebugHelper.logError("💥 Splash kontrol hatası", e)
+                DebugHelper.logError("💥 Splash error", e)
+                // Hata olsa bile uygulama açılsın
                 _navigationEvent.emit(SplashNavigationEvent.NavigateToAuth)
             }
         }
@@ -92,25 +104,18 @@ class SplashViewModel @Inject constructor(
      */
     private suspend fun loadBundledPackages() {
         try {
-            DebugHelper.log("📦 ═══════════════════════════════════")
-            DebugHelper.log("📦 BUNDLED PACKAGES YÜKLEME BAŞLIYOR")
-            DebugHelper.log("📦 ═══════════════════════════════════")
+            DebugHelper.log("📦 Bundled packages kontrol ediliyor...")
 
             when (val result = localPackageLoader.loadBundledPackagesIfNeeded()) {
                 is Result.Success -> {
-                    DebugHelper.logSuccess("✅ Bundled packages hazır: ${result.data} kelime")
+                    DebugHelper.logSuccess("✅ ${result.data} kelime hazır")
                 }
                 is Result.Error -> {
-                    DebugHelper.logError("⚠️  Bundled packages yüklenemedi", result.error)
-                    // Non-critical error - devam et
+                    DebugHelper.log("⚠️ Assets atlandı") // Error değil warning
                 }
             }
-
-            DebugHelper.log("📦 ═══════════════════════════════════")
-
         } catch (e: Exception) {
-            DebugHelper.logError("💥 loadBundledPackages hatası", e)
-            // Non-critical - uygulama açılmaya devam eder
+            DebugHelper.log("⚠️ Assets yükleme atlandı")
         }
     }
 
@@ -120,30 +125,25 @@ class SplashViewModel @Inject constructor(
      */
     private suspend fun ensureTestDataLoaded() {
         try {
-            DebugHelper.log("🔍 Test verisi kontrol ediliyor...")
+            DebugHelper.log("🔍 Test data kontrol...")
 
-            when (val result = jsonLoader.isTestDataLoaded()) {
-                is Result.Success -> {
-                    if (!result.data) {
-                        DebugHelper.log("⬇️  Test verisi yükleniyor...")
-                        when (val loadResult = jsonLoader.loadTestWords()) {
-                            is Result.Success -> {
-                                DebugHelper.logSuccess("✅ Test verisi yüklendi: ${loadResult.data} kelime")
-                            }
-                            is Result.Error -> {
-                                DebugHelper.logError("⚠️  Test verisi yüklenemedi", loadResult.error)
-                            }
+            // ✅ Timeout ile kontrol - max 1 saniye
+            withTimeout(1000) {
+                when (val result = jsonLoader.isTestDataLoaded()) {
+                    is Result.Success -> {
+                        if (!result.data) {
+                            // Sadece yüklü değilse yükle
+                            jsonLoader.loadTestWords()
                         }
-                    } else {
-                        DebugHelper.log("✅ Test verisi zaten mevcut")
                     }
-                }
-                is Result.Error -> {
-                    DebugHelper.logError("Test verisi kontrolü başarısız", result.error)
+                    is Result.Error -> {
+                        // Hata varsa atla
+                    }
                 }
             }
         } catch (e: Exception) {
-            DebugHelper.logError("ensureTestDataLoaded hatası", e)
+            // Timeout veya hata - atla
+            DebugHelper.log("⚠️ Test data atlandı")
         }
     }
 
