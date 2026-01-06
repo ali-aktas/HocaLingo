@@ -146,10 +146,10 @@ fun WordSelectionScreen(
             DailyLimitDialog(
                 onDismiss = {
                     viewModel.onEvent(WordSelectionEvent.DismissDailyLimitDialog)
+                    onNavigateToHome()
                 },
                 onGoHome = {
-                    viewModel.onEvent(WordSelectionEvent.DismissDailyLimitDialog)
-                    onNavigateToHome()
+                    viewModel.onEvent(WordSelectionEvent.GoToStudyFromLimit)
                 },
                 onShowPremium = {
                     viewModel.onEvent(WordSelectionEvent.ShowPremiumFromLimitDialog)
@@ -382,11 +382,11 @@ private fun WordSelectionContent(
             )
 
             AnimatedVisibility(
-                visible = uiState.todaySelectionCount >= 40 && !uiState.isPremium
+                visible = uiState.todaySelectionCount >= 5 && !uiState.isPremium
             ) {
                 DailyLimitWarning(
                     todaySelectionCount = uiState.todaySelectionCount,
-                    dailyLimit = 50,
+                    dailyLimit = 15,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
             }

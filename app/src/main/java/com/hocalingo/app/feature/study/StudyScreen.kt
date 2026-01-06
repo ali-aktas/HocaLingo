@@ -67,7 +67,10 @@ fun StudyScreen(
                 }
                 is StudyEffect.SpeakText -> { /* Handled in ViewModel */ }
                 is StudyEffect.HapticFeedback -> { /* TODO: Implement haptic feedback */ }
-                is StudyEffect.PlaySound -> { /* TODO: Implement sound effects */ }
+                is StudyEffect.PlaySound -> {
+                    // Already handled in ViewModel via SoundEffectManager
+                    // No additional UI action needed
+                }
                 is StudyEffect.ShowSessionComplete -> { /* Handled via UI state */ }
             }
         }

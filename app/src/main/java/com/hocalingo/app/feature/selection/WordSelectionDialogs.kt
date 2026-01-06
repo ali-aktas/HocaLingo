@@ -34,7 +34,7 @@ private val PoppinsFontFamily = FontFamily(
 
 /**
  * Dialog: Günlük limit doldu
- * Free kullanıcılar 50 kelime seçtiğinde gösterilir
+ * Free kullanıcılar 15 kelime seçtiğinde gösterilir
  */
 @Composable
 fun DailyLimitDialog(
@@ -83,7 +83,7 @@ fun DailyLimitDialog(
 
                 // Title
                 Text(
-                    text = "Günlük Limitine Ulaştın! 🎯",
+                    text = "Harika İlerleme! 🎯",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
@@ -95,7 +95,7 @@ fun DailyLimitDialog(
 
                 // Message
                 Text(
-                    text = "Bugün 50 kelime seçtin!\nYarın yeni kelimelerle devam edebilirsin.",
+                    text = "Bugün 15 kelime seçtin! \n Şimdi bunları pekiştirmeye odaklan.",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,
@@ -108,26 +108,25 @@ fun DailyLimitDialog(
 
                 // Premium Button
                 Button(
-                    onClick = onShowPremium,  // ✅ Event çağır
+                    onClick = onShowPremium,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFFF9800)
+                        containerColor = Color(0xFFFFB300)
                     ),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp)
+                    Text(
+                        text = "💎",
+                        fontSize = 20.sp
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Premium'a Geç - Sınırsız Seçim",
+                        text = "Günlük 50 kelime için Premium",
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
+                        fontSize = 15.sp
                     )
                 }
 
@@ -150,13 +149,13 @@ fun DailyLimitDialog(
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Home,
+                        imageVector = Icons.Default.School,
                         contentDescription = null,
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Ana Sayfaya Dön",
+                        text = "Seçtiklerini Öğrenmeye Başla",
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
@@ -278,23 +277,13 @@ fun NoWordsLeftDialog(
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = Color.White
                     ),
-                    border = ButtonDefaults.outlinedButtonBorder.copy(
-                        brush = Brush.linearGradient(
-                            colors = listOf(Color.White, Color.White)
-                        )
-                    ),
+                    border = androidx.compose.foundation.BorderStroke(2.dp, Color.White.copy(alpha = 0.6f)),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Home,
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Ana Sayfaya Dön",
+                        text = "Tamamla",
                         fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
                 }

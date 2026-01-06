@@ -202,7 +202,7 @@ fun HomeScreen(
                                 verticalArrangement = Arrangement.Bottom
                             ) {
                                 Text(
-                                    text = "Kelime Paketleri",
+                                    text = "Destene Yeni Kelimeler Ekle",
                                     fontFamily = PoppinsFontFamily,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 18.sp,

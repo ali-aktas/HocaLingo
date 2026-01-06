@@ -108,20 +108,45 @@ fun InstructionBar(
 @Composable
 fun DailyLimitWarning(
     todaySelectionCount: Int,
-    dailyLimit: Int = 50,
+    dailyLimit: Int = 15,  // ✅ 50 → 15
     modifier: Modifier = Modifier
 ) {
     val remaining = dailyLimit - todaySelectionCount
 
     if (remaining in 1..10) {
-        Text(
-            text = "⚠️ $remaining kelime hakkın kaldı",
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 12.sp,
-            color = Color(0xFFFF9800),
-            modifier = modifier.padding(vertical = 4.dp)
-        )
+        // Son 10 kart uyarısı
+        if (remaining > 5) {
+            Text(
+                text = "⚠️ $remaining kelime hakkın kaldı",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 13.sp,
+                color = Color(0xFFFF9800),
+                modifier = modifier.padding(vertical = 4.dp)
+            )
+        } else {
+            // Son 5 kart - Premium teşviki
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = modifier.padding(vertical = 4.dp)
+            ) {
+                Text(
+                    text = "⚠️ $remaining kelime hakkın kaldı",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 13.sp,
+                    color = Color(0xFFFF6B00)
+                )
+                Text(
+                    text = "💎 Premium'la günlük 50 kelime seç",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 11.sp,
+                    color = Color(0xFF6200EA),
+                    modifier = Modifier.padding(top = 2.dp)
+                )
+            }
+        }
     }
 }
 

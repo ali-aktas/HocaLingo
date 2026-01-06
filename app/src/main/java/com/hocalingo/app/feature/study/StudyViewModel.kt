@@ -32,6 +32,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import com.hocalingo.app.core.common.SoundEffectManager
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 /**
@@ -53,7 +55,8 @@ class StudyViewModel @Inject constructor(
     private val feedbackRepository: FeedbackRepository,
     private val adMobManager: AdMobManager,
     private val nativeAdLoader: NativeAdLoader,
-    private val subscriptionRepository: SubscriptionRepository
+    private val subscriptionRepository: SubscriptionRepository,
+    private val soundEffectManager: SoundEffectManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StudyUiState())
@@ -328,6 +331,15 @@ class StudyViewModel @Inject constructor(
                     )
                 }
 
+                // ✅ Otomatik TTS: Her yeni kart yüklendiğinde İngilizce kelimeyi oku
+                viewModelScope.launch {
+                    if (_uiState.value.isTtsEnabled) {
+                        delay(300) // Kart animasyonunun bitmesini bekle
+                        textToSpeechManager.speak(currentConcept.english, "en")
+                        DebugHelper.log("🔊 Auto-TTS: Speaking '${currentConcept.english}'")
+                    }
+                }
+
                 DebugHelper.log("🔍 State updated successfully")
                 DebugHelper.log("Word loaded: ${currentConcept.english} -> ${currentConcept.turkish}")
 
@@ -546,6 +558,9 @@ class StudyViewModel @Inject constructor(
     // ========== CARD ACTIONS ==========
 
     private fun flipCard() {
+        // ✅ Play sound effect
+        soundEffectManager.playCardFlip()
+
         _uiState.update { it.copy(isCardFlipped = !it.isCardFlipped) }
     }
 

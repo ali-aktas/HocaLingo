@@ -41,7 +41,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import com.hocalingo.app.core.common.TrialOfferDataStore
-import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import com.hocalingo.app.feature.ai.AIEvent
 
 /**
@@ -186,7 +185,7 @@ fun HocaLingoNavigation(
         ) { backStackEntry ->
             WordSelectionScreen(
                 onNavigateToStudy = {
-                    navController.navigate(HocaRoutes.HOME) {
+                    navController.navigate(HocaRoutes.STUDY_SCREEN) {
                         popUpTo("${HocaRoutes.WORD_SELECTION}/{packageId}") { inclusive = true }
                     }
                 },

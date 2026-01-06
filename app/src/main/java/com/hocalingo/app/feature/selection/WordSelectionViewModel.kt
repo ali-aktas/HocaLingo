@@ -57,7 +57,7 @@ class WordSelectionViewModel @Inject constructor(
     private val undoStack = Stack<UndoAction>()
     private val MAX_UNDO_SIZE = 10
 
-    private val DAILY_SELECTION_LIMIT = 50
+    private val DAILY_SELECTION_LIMIT = 15
 
     init {
         loadWords()
@@ -99,6 +99,7 @@ class WordSelectionViewModel @Inject constructor(
             WordSelectionEvent.StartStudyNow -> startStudyNow()
             WordSelectionEvent.ContinueSelecting -> continueSelecting()
             WordSelectionEvent.DismissStartStudyDialog -> dismissStartStudyDialog()
+            WordSelectionEvent.GoToStudyFromLimit -> goToStudyFromLimit()
         }
     }
 
@@ -567,6 +568,23 @@ class WordSelectionViewModel @Inject constructor(
         _uiState.update { it.copy(showStartStudyDialog = false) }
     }
 
+    private fun goToStudyFromLimit() {
+        viewModelScope.launch {
+            DebugHelper.logWordSelection("Going to study from daily limit dialog")
+
+            // 1. Dialog'u kapat
+            _uiState.update { it.copy(showDailyLimitDialog = false) }
+
+            // 2. Study session hazırla (eğer henüz hazır değilse)
+            if (!_uiState.value.studySessionPrepared) {
+                prepareStudySession()
+            }
+
+            // 3. Study ekranına git
+            _effect.emit(WordSelectionEffect.NavigateToStudy)
+        }
+    }
+
 }
 
 data class WordSelectionUiState(
@@ -619,6 +637,8 @@ sealed interface WordSelectionEvent {
     data object StartStudyNow : WordSelectionEvent
     data object ContinueSelecting : WordSelectionEvent
     data object DismissStartStudyDialog : WordSelectionEvent
+
+    data object GoToStudyFromLimit : WordSelectionEvent
 }
 
 sealed interface WordSelectionEffect {
