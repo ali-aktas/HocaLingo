@@ -31,6 +31,9 @@ class SoundEffectManager @Inject constructor(
 ) {
 
     private var cardFlipPlayer: MediaPlayer? = null
+    private var clickPlayer: MediaPlayer? = null
+    private var swipeRightPlayer: MediaPlayer? = null
+    private var swipeLeftPlayer: MediaPlayer? = null
     private var isInitialized = false
 
     // Sound state tracking
@@ -55,14 +58,55 @@ class SoundEffectManager @Inject constructor(
                         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                         .build()
                 )
-                setVolume(0.7f, 0.7f) // 70% volume for subtle effect
+                setVolume(0.7f, 0.7f)
                 setOnCompletionListener {
-                    // Reset to start for next play
                     seekTo(0)
                 }
             }
 
-            isInitialized = cardFlipPlayer != null
+            // Click sound
+            clickPlayer = MediaPlayer.create(context, R.raw.click_sound)?.apply {
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
+                setVolume(0.5f, 0.5f)
+                setOnCompletionListener {
+                    seekTo(0)
+                }
+            }
+
+            // Swipe right sound (success/select)
+            swipeRightPlayer = MediaPlayer.create(context, R.raw.swipe_right)?.apply {
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
+                setVolume(0.6f, 0.6f)
+                setOnCompletionListener {
+                    seekTo(0)
+                }
+            }
+
+            // Swipe left sound (skip/reject)
+            swipeLeftPlayer = MediaPlayer.create(context, R.raw.swipe_left)?.apply {
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
+                setVolume(0.6f, 0.6f)
+                setOnCompletionListener {
+                    seekTo(0)
+                }
+            }
+
+            isInitialized = cardFlipPlayer != null && clickPlayer != null && swipeRightPlayer != null && swipeLeftPlayer != null
 
             if (isInitialized) {
                 DebugHelper.log("✅ Sound effects initialized successfully")
@@ -100,6 +144,77 @@ class SoundEffectManager @Inject constructor(
     }
 
     /**
+     * Play click sound
+     * Called when user taps on buttons or interactive elements
+     */
+    fun playClickSound() {
+        if (!isInitialized || !_isSoundEnabled.value) {
+            DebugHelper.log("Sound disabled or not initialized")
+            return
+        }
+
+        try {
+            clickPlayer?.let { player ->
+                if (player.isPlaying) {
+                    player.seekTo(0) // Restart if already playing
+                }
+                player.start()
+                DebugHelper.log("🔊 Click sound played")
+            }
+        } catch (e: Exception) {
+            DebugHelper.logError("Error playing click sound", e)
+        }
+    }
+
+    /**
+     * Play swipe right sound
+     * Called when user swipes right (selects word)
+     * Positive, satisfying sound
+     */
+    fun playSwipeRight() {
+        if (!isInitialized || !_isSoundEnabled.value) {
+            DebugHelper.log("Sound disabled or not initialized")
+            return
+        }
+
+        try {
+            swipeRightPlayer?.let { player ->
+                if (player.isPlaying) {
+                    player.seekTo(0) // Restart if already playing
+                }
+                player.start()
+                DebugHelper.log("🔊 Swipe right sound played (word selected)")
+            }
+        } catch (e: Exception) {
+            DebugHelper.logError("Error playing swipe right sound", e)
+        }
+    }
+
+    /**
+     * Play swipe left sound
+     * Called when user swipes left (skips word)
+     * Neutral, dismissive sound
+     */
+    fun playSwipeLeft() {
+        if (!isInitialized || !_isSoundEnabled.value) {
+            DebugHelper.log("Sound disabled or not initialized")
+            return
+        }
+
+        try {
+            swipeLeftPlayer?.let { player ->
+                if (player.isPlaying) {
+                    player.seekTo(0) // Restart if already playing
+                }
+                player.start()
+                DebugHelper.log("🔊 Swipe left sound played (word skipped)")
+            }
+        } catch (e: Exception) {
+            DebugHelper.logError("Error playing swipe left sound", e)
+        }
+    }
+
+    /**
      * Enable or disable sound effects
      * Synced with user preferences
      */
@@ -115,6 +230,12 @@ class SoundEffectManager @Inject constructor(
     fun cleanup() {
         try {
             cardFlipPlayer?.release()
+            clickPlayer?.release()
+            clickPlayer = null
+            swipeRightPlayer?.release()
+            swipeRightPlayer = null
+            swipeLeftPlayer?.release()
+            swipeLeftPlayer = null
             cardFlipPlayer = null
             isInitialized = false
             DebugHelper.log("Sound effects cleanup completed")

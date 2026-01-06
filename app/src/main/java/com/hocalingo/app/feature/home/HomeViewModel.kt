@@ -3,6 +3,7 @@ package com.hocalingo.app.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hocalingo.app.core.base.Result
+import com.hocalingo.app.core.common.SoundEffectManager
 import com.hocalingo.app.core.common.TrialOfferDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val homeRepository: HomeRepository,
-    private val trialOfferDataStore: TrialOfferDataStore
+    private val trialOfferDataStore: TrialOfferDataStore,
+    private val soundEffectManager: SoundEffectManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -133,6 +135,10 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun handleStartStudy() {
+
+        // ✅ Play click sound
+        soundEffectManager.playClickSound()
+
         viewModelScope.launch {
             val progress = _uiState.value.dailyGoalProgress
 
@@ -150,12 +156,20 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun handleNavigateToPackageSelection() {
+
+        // ✅ Play click sound
+        soundEffectManager.playClickSound()
+
         viewModelScope.launch {
             _effect.emit(HomeEffect.NavigateToPackageSelection)
         }
     }
 
     private fun handleNavigateToAIAssistant() {
+
+        // ✅ Play click sound
+        soundEffectManager.playClickSound()
+
         viewModelScope.launch {
             _effect.emit(HomeEffect.NavigateToAIAssistant)
         }

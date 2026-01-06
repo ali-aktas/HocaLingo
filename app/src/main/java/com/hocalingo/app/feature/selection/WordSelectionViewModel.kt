@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hocalingo.app.core.common.DebugHelper
+import com.hocalingo.app.core.common.SoundEffectManager
 import com.hocalingo.app.core.common.UserPreferencesManager
 import com.hocalingo.app.database.entities.ConceptEntity
 import com.hocalingo.app.database.entities.SelectionStatus
@@ -39,7 +40,8 @@ class WordSelectionViewModel @Inject constructor(
     private val repository: WordSelectionRepository,
     private val preferencesManager: UserPreferencesManager,
     private val subscriptionRepository: SubscriptionRepository,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val soundEffectManager: SoundEffectManager
 ) : ViewModel() {
 
     private val packageId: String = savedStateHandle.get<String>("packageId")
@@ -216,6 +218,12 @@ class WordSelectionViewModel @Inject constructor(
         viewModelScope.launch {
             DebugHelper.logWordSelection("Selecting word: $conceptId")
 
+            // ✅ Play swipe right sound (word selected)
+            soundEffectManager.playSwipeRight()
+
+            // ✅ PHASE 1: Set processing state
+            _uiState.update { it.copy(isProcessingSwipe = true) }
+
             // ✅ PHASE 1: Set processing state
             _uiState.update { it.copy(isProcessingSwipe = true) }
 
@@ -304,6 +312,12 @@ class WordSelectionViewModel @Inject constructor(
     private fun hideWord(conceptId: Int) {
         viewModelScope.launch {
             DebugHelper.logWordSelection("Hiding word: $conceptId")
+
+            // ✅ Play swipe left sound (word skipped)
+            soundEffectManager.playSwipeLeft()
+
+            // ✅ PHASE 1: Set processing
+            _uiState.update { it.copy(isProcessingSwipe = true) }
 
             // ✅ PHASE 1: Set processing
             _uiState.update { it.copy(isProcessingSwipe = true) }

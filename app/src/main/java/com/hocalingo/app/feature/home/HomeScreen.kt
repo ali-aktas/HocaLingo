@@ -413,7 +413,7 @@ private fun WelcomeHeaderWithStats(
                 Text(
                     text = "Bu Ay",
                     fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                     color = Color.LightGray.copy(alpha = 1f)
                 )
@@ -432,7 +432,7 @@ private fun WelcomeHeaderWithStats(
                         value = stats.studyTimeFormatted
                     )
                     CompactStatItem(
-                        label = "Disiplinlisin",
+                        label = "Disiplin",
                         value = "${stats.disciplineScore}%"
                     )
                 }

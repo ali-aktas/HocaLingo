@@ -3,6 +3,7 @@ package com.hocalingo.app.feature.study
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hocalingo.app.core.base.Result
+import com.hocalingo.app.core.common.SoundEffectManager
 import com.hocalingo.app.core.common.StudyDirection
 import com.hocalingo.app.core.common.UserPreferencesManager
 import com.hocalingo.app.feature.profile.ProfileRepository
@@ -30,7 +31,8 @@ import javax.inject.Inject
 @HiltViewModel
 class StudyMainViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
-    private val userPreferencesManager: UserPreferencesManager
+    private val userPreferencesManager: UserPreferencesManager,
+    private val soundEffectManager: SoundEffectManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StudyMainUiState())
@@ -126,12 +128,18 @@ class StudyMainViewModel @Inject constructor(
     // ========== NAVIGATION ==========
 
     private fun navigateToStudy() {
+        // ✅ Play click sound
+        soundEffectManager.playClickSound()
+
         viewModelScope.launch {
             _effect.emit(StudyMainEffect.NavigateToStudy)
         }
     }
 
     private fun navigateToAddWord() {
+        // ✅ Play click sound
+        soundEffectManager.playClickSound()
+
         viewModelScope.launch {
             _effect.emit(StudyMainEffect.NavigateToAddWord)
         }
