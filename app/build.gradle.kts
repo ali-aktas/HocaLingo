@@ -9,7 +9,7 @@ plugins {
 
     // ✅ Firebase plugins
     id("com.google.gms.google-services")
-    // id("com.google.firebase.crashlytics") // Crashlytics'i sonra aktifleştireceğiz
+    id("com.google.firebase.crashlytics") // Crashlytics'i sonra aktifleştireceğiz
 
     // ✅ COMPOSE COMPILER PLUGIN
     id("org.jetbrains.kotlin.plugin.compose")
@@ -58,8 +58,8 @@ android {
 
         buildConfigField(
             "String",
-            "ADMOB_APP_LAUNCH_REWARD_ID",
-            "\"${properties.getProperty("ADMOB_APP_LAUNCH_REWARD_ID", "ca-app-pub-3940256099942544/5224354917")}\""
+            "ADMOB_APP_LAUNCH_INTERSTITIAL_ID",
+            "\"${properties.getProperty("ADMOB_APP_LAUNCH_INTERSTITIAL_ID", "ca-app-pub-3940256099942544/1033173712")}\""
         )
 
         buildConfigField(
@@ -242,7 +242,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-config")
-    // implementation("com.google.firebase:firebase-crashlytics") // Sonra eklenecek
+    implementation("com.google.firebase:firebase-crashlytics")
 
     // ✅ Google Sign In
     implementation("com.google.android.gms:play-services-auth:21.3.0")

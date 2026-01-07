@@ -9,6 +9,8 @@ import com.hocalingo.app.core.common.UserPreferencesManager
 import com.hocalingo.app.core.notification.HocaLingoNotificationManager
 import com.hocalingo.app.core.notification.NotificationDebugHelper
 import com.hocalingo.app.core.notification.NotificationScheduler
+import com.hocalingo.app.core.crash.CrashlyticsManager
+import com.hocalingo.app.core.analytics.AnalyticsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +39,9 @@ class ProfileViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val notificationScheduler: NotificationScheduler,
     private val notificationManager: HocaLingoNotificationManager,
-    private val userPreferencesManager: UserPreferencesManager
+    private val userPreferencesManager: UserPreferencesManager,
+    private val crashlyticsManager: CrashlyticsManager,
+    private val analyticsManager: AnalyticsManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -53,6 +57,9 @@ class ProfileViewModel @Inject constructor(
 
     init {
         loadProfile()
+
+        // ✅ Analytics: Ekran görüntüleme
+        analyticsManager.logScreenView("profile_screen", "ProfileViewModel")
     }
 
     fun onEvent(event: ProfileEvent) {
@@ -138,7 +145,19 @@ class ProfileViewModel @Inject constructor(
                     )
                 }
 
+                // ✅ Analytics: Profil yüklendi
+                analyticsManager.logEvent("profile_loaded",
+                    "total_words" to totalWords,
+                    "notifications_enabled" to notificationsEnabled
+                )
+
             } catch (e: Exception) {
+                // ✅ Crashlytics: Hata kaydet
+                crashlyticsManager.logError("Profile loading failed", e)
+
+                // ✅ Analytics: Hata
+                analyticsManager.logError("profile_load_error", e.message ?: "Unknown error")
+
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -150,11 +169,15 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun refreshData() {
+        // ✅ Analytics: Refresh
+        analyticsManager.logEvent("profile_refresh")
         loadProfile()
     }
 
     // BottomSheet Management Functions
     private fun handleViewAllWords() {
+        // ✅ Analytics: Kelime listesi açıldı
+        analyticsManager.logEvent("view_all_words_clicked")
         showWordsBottomSheet()
     }
 
@@ -235,6 +258,9 @@ class ProfileViewModel @Inject constructor(
                     }
                 }
                 is Result.Error -> {
+                    // ✅ Crashlytics: Hata kaydet
+                    crashlyticsManager.logError("Words loading failed (page $page)", result.error)
+
                     _uiState.update {
                         it.copy(
                             isLoadingAllWords = false,
@@ -254,9 +280,15 @@ class ProfileViewModel @Inject constructor(
 
             when (val result = profileRepository.updateThemeMode(themeMode)) {
                 is Result.Success -> {
+                    // ✅ Analytics: Tema değiştirildi
+                    analyticsManager.logEvent("theme_changed", "theme" to themeMode.name)
+
                     _effect.emit(ProfileEffect.ShowMessage("Tema değiştirildi"))
                 }
                 is Result.Error -> {
+                    // ✅ Crashlytics: Hata kaydet
+                    crashlyticsManager.logError("Theme update failed", result.error)
+
                     // Revert UI state
                     loadProfile()
                     _effect.emit(ProfileEffect.ShowError("Tema değiştirilemedi"))
@@ -271,9 +303,15 @@ class ProfileViewModel @Inject constructor(
 
             when (val result = profileRepository.updateStudyDirection(direction)) {
                 is Result.Success -> {
+                    // ✅ Analytics: Çalışma yönü değiştirildi
+                    analyticsManager.logEvent("study_direction_changed", "direction" to direction.name)
+
                     _effect.emit(ProfileEffect.ShowMessage("Çalışma yönü değiştirildi"))
                 }
                 is Result.Error -> {
+                    // ✅ Crashlytics: Hata kaydet
+                    crashlyticsManager.logError("Study direction update failed", result.error)
+
                     // Revert UI state
                     loadProfile()
                     _effect.emit(ProfileEffect.ShowError("Çalışma yönü değiştirilemedi"))
@@ -294,6 +332,9 @@ class ProfileViewModel @Inject constructor(
 
             when (val result = profileRepository.updateNotificationsEnabled(enabled)) {
                 is Result.Success -> {
+                    // ✅ Analytics: Bildirim durumu değişti
+                    analyticsManager.logEvent("notifications_toggled", "enabled" to enabled)
+
                     // Update WorkManager schedule
                     if (enabled) {
                         notificationScheduler.scheduleDailyNotifications()
@@ -311,6 +352,9 @@ class ProfileViewModel @Inject constructor(
                     }
                 }
                 is Result.Error -> {
+                    // ✅ Crashlytics: Hata kaydet
+                    crashlyticsManager.logError("Notification toggle failed", result.error)
+
                     // Revert UI state
                     loadProfile()
                     _effect.emit(ProfileEffect.ShowError("Bildirim ayarı değiştirilemedi"))
@@ -332,6 +376,9 @@ class ProfileViewModel @Inject constructor(
 
             when (result) {
                 is Result.Success -> {
+                    // ✅ Analytics: Bildirim saati değişti
+                    analyticsManager.logEvent("notification_time_changed", "hour" to hour)
+
                     // Update WorkManager schedule with new time
                     notificationScheduler.updateNotificationSchedule()
 
@@ -339,6 +386,9 @@ class ProfileViewModel @Inject constructor(
                     _effect.emit(ProfileEffect.ShowMessage("Bildirim saati $timeFormat olarak ayarlandı"))
                 }
                 is Result.Error -> {
+                    // ✅ Crashlytics: Hata kaydet
+                    crashlyticsManager.logError("Notification time update failed", result.error)
+
                     // Revert UI state
                     loadProfile()
                     _effect.emit(ProfileEffect.ShowError("Bildirim saati değiştirilemedi"))
@@ -350,6 +400,10 @@ class ProfileViewModel @Inject constructor(
     private fun updateDailyGoal(goal: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(dailyGoal = goal) }
+
+            // ✅ Analytics: Günlük hedef değişti
+            analyticsManager.logEvent("daily_goal_changed", "goal" to goal)
+
             _effect.emit(ProfileEffect.ShowMessage("Günlük hedef güncellendi"))
         }
     }
@@ -360,6 +414,10 @@ class ProfileViewModel @Inject constructor(
     fun onPermissionDenied() {
         viewModelScope.launch {
             _uiState.update { it.copy(notificationsEnabled = false) }
+
+            // ✅ Analytics: İzin reddedildi
+            analyticsManager.logEvent("notification_permission_denied")
+
             _effect.emit(ProfileEffect.ShowError("Bildirim izni verilmedi"))
         }
     }
@@ -369,6 +427,14 @@ class ProfileViewModel @Inject constructor(
      */
     private fun openUrl(url: String) {
         viewModelScope.launch {
+            // ✅ Analytics: Link açıldı
+            when {
+                url.contains("privacy") -> analyticsManager.logEvent("privacy_policy_opened")
+                url.contains("terms") -> analyticsManager.logEvent("terms_opened")
+                url.contains("play.google") -> analyticsManager.logEvent("play_store_opened")
+                url.contains("mailto") -> analyticsManager.logEvent("support_email_opened")
+            }
+
             _effect.emit(ProfileEffect.OpenUrl(url))
         }
     }

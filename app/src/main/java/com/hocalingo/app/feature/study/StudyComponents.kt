@@ -457,6 +457,11 @@ fun StudyNativeAdOverlay(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
+                    .background(
+                        Color.Black.copy(alpha = 0.5f),
+                        CircleShape
+                    )
+                    .size(36.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,

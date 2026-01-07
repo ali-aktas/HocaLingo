@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import com.hocalingo.app.core.base.Result
+import com.hocalingo.app.core.crash.CrashlyticsManager
+import com.hocalingo.app.core.analytics.AnalyticsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +23,9 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val crashlyticsManager: CrashlyticsManager,
+    private val analyticsManager: AnalyticsManager
 ) : ViewModel() {
 
     // UI State
@@ -34,6 +38,8 @@ class AuthViewModel @Inject constructor(
 
     init {
         checkAuthStatus()
+        // ✅ Analytics: Ekran görüntüleme
+        analyticsManager.logScreenView("auth_screen", "AuthViewModel")
     }
 
     /**
@@ -80,6 +86,14 @@ class AuthViewModel @Inject constructor(
 
             when (result) {
                 is Result.Success -> {
+                    // ✅ Crashlytics: User ID kaydet
+                    crashlyticsManager.setUserId(result.data.uid)
+                    crashlyticsManager.log("User logged in with Google: ${result.data.email}")
+
+                    // ✅ Analytics: Login başarılı
+                    analyticsManager.logEvent("login_success", "method" to "google")
+                    analyticsManager.setUserId(result.data.uid)
+
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -91,6 +105,12 @@ class AuthViewModel @Inject constructor(
                     _effect.emit(AuthEffect.NavigateToOnboarding)
                 }
                 is Result.Error -> {
+                    // ✅ Crashlytics: Hata kaydet
+                    crashlyticsManager.logError("Google sign-in failed", result.error)
+
+                    // ✅ Analytics: Login hatası
+                    analyticsManager.logError("login_failed", "method: google, error: ${result.error.message}")
+
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -112,6 +132,14 @@ class AuthViewModel @Inject constructor(
 
             when (val result = authRepository.signInAnonymously()) {
                 is Result.Success -> {
+                    // ✅ Crashlytics: Anonim user ID
+                    crashlyticsManager.setUserId("anonymous_${result.data.uid}")
+                    crashlyticsManager.log("Anonymous login")
+
+                    // ✅ Analytics: Anonim login
+                    analyticsManager.logEvent("login_success", "method" to "anonymous")
+                    analyticsManager.setUserId("anonymous_${result.data.uid}")
+
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -124,6 +152,12 @@ class AuthViewModel @Inject constructor(
                     _effect.emit(AuthEffect.NavigateToOnboarding)
                 }
                 is Result.Error -> {
+                    // ✅ Crashlytics: Hata kaydet
+                    crashlyticsManager.logError("Anonymous sign-in failed", result.error)
+
+                    // ✅ Analytics: Login hatası
+                    analyticsManager.logError("login_failed", "method: anonymous, error: ${result.error.message}")
+
                     _uiState.update {
                         it.copy(
                             isLoading = false,

@@ -42,7 +42,7 @@ import javax.inject.Inject
  * Package: app/src/main/java/com/hocalingo/app/feature/study/
  *
  * ✅ FIXED: Index artırma mantığı düzeltildi
- * ✅ FIXED: Native ad her 10 kelimede doğru gösteriliyor
+ * ✅ FIXED: Native ad her 12 kelimede doğru gösteriliyor
  * ✅ FIXED: Rewarded ad sonrası kelime atlanmıyor
  * ✅ FIXED: wordsCompletedCount kaldırıldı, currentQueueIndex kullanılıyor
  */
@@ -464,20 +464,20 @@ class StudyViewModel @Inject constructor(
                             return@launch
                         }
 
-                        // 8. Check native ad (every 10 words) - ONLY FOR FREE USERS
-                        if (currentQueueIndex > 0 && currentQueueIndex % 10 == 0) {
+                        // 8. Check native ad (every 12 words) - ONLY FOR FREE USERS
+                        if (currentQueueIndex > 0 && currentQueueIndex % 12 == 0) {
                             // Premium kontrolü
                             val isPremium = subscriptionRepository.isPremium()
 
                             if (!isPremium) {
                                 // Free user - show native ad
-                                DebugHelper.log("🎯 10 words completed - showing native ad")
+                                DebugHelper.log("🎯 12 words completed - showing native ad")
                                 _uiState.update { it.copy(showNativeAd = true) }
                                 nativeAdLoader.loadStudyScreenAd()
                                 return@launch
                             } else {
                                 // Premium user - skip ad, continue with next word
-                                DebugHelper.log("👑 Premium user - skipping native ad at word 10")
+                                DebugHelper.log("👑 Premium user - skipping native ad at word 12")
                             }
                         }
 
@@ -541,7 +541,7 @@ class StudyViewModel @Inject constructor(
             }
 
             // ✅ YENİ: Native ad check
-            if (currentQueueIndex % 10 == 0 && currentQueueIndex > 0) {
+            if (currentQueueIndex % 12 == 0 && currentQueueIndex > 0) {
                 _uiState.update { it.copy(showNativeAd = true) }
                 return@launch
             }

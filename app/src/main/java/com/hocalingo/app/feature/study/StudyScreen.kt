@@ -154,7 +154,7 @@ fun StudyScreen(
             // Rewarded Ad Dialog
             if (showRewardedAdDialog) {
                 StudyRewardedAdDialog(
-                    wordsCompleted = 40,
+                    wordsCompleted = 50,
                     onContinue = {
                         showRewardedAdDialog = false
                         activity?.let { act ->
@@ -263,15 +263,17 @@ private fun StudyContent(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Action Buttons
-            StudyActionButtons(
-                isCardFlipped = uiState.isCardFlipped,
-                easyTimeText = uiState.easyTimeText,
-                mediumTimeText = uiState.mediumTimeText,
-                hardTimeText = uiState.hardTimeText,
-                onHardPressed = { onEvent(StudyEvent.HardButtonPressed) },
-                onMediumPressed = { onEvent(StudyEvent.MediumButtonPressed) },
-                onEasyPressed = { onEvent(StudyEvent.EasyButtonPressed) }
-            )
+            if (!uiState.showNativeAd || nativeAd == null) {
+                StudyActionButtons(
+                    isCardFlipped = uiState.isCardFlipped,
+                    easyTimeText = uiState.easyTimeText,
+                    mediumTimeText = uiState.mediumTimeText,
+                    hardTimeText = uiState.hardTimeText,
+                    onHardPressed = { onEvent(StudyEvent.HardButtonPressed) },
+                    onMediumPressed = { onEvent(StudyEvent.MediumButtonPressed) },
+                    onEasyPressed = { onEvent(StudyEvent.EasyButtonPressed) }
+                )
+            }
         }
 
         // Native Ad Overlay (positioned over the card)

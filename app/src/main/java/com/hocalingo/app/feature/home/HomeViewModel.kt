@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.hocalingo.app.core.base.Result
 import com.hocalingo.app.core.common.SoundEffectManager
 import com.hocalingo.app.core.common.TrialOfferDataStore
+import com.hocalingo.app.core.crash.CrashlyticsManager
+import com.hocalingo.app.core.analytics.AnalyticsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +26,9 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val homeRepository: HomeRepository,
     private val trialOfferDataStore: TrialOfferDataStore,
-    private val soundEffectManager: SoundEffectManager
+    private val soundEffectManager: SoundEffectManager,
+    private val crashlyticsManager: CrashlyticsManager,
+    private val analyticsManager: AnalyticsManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -36,6 +40,9 @@ class HomeViewModel @Inject constructor(
     init {
         loadDashboardData()
         checkPremiumPush()
+
+        // ✅ Analytics: Ekran görüntüleme
+        analyticsManager.logScreenView("home_screen", "HomeViewModel")
     }
 
     private fun checkPremiumPush() {
@@ -44,6 +51,9 @@ class HomeViewModel @Inject constructor(
             if (shouldShow) {
                 trialOfferDataStore.markFirstShown()
                 _uiState.update { it.copy(showPremiumPush = true) }
+
+                // ✅ Analytics: Premium push gösterildi
+                analyticsManager.logEvent("premium_push_shown")
             }
         }
     }
@@ -52,6 +62,9 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             trialOfferDataStore.markFirstDismissed()
             _uiState.update { it.copy(showPremiumPush = false) }
+
+            // ✅ Analytics: Premium push kapatıldı
+            analyticsManager.logEvent("premium_push_dismissed")
         }
     }
 
@@ -59,6 +72,8 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             trialOfferDataStore.resetAfterPurchase()
             _uiState.update { it.copy(showPremiumPush = false) }
+
+            // ✅ Analytics zaten SubscriptionViewModel'de loglanıyor
         }
     }
 
@@ -103,6 +118,12 @@ class HomeViewModel @Inject constructor(
                             monthlyStats = monthlyStatsResult.data,
                             error = null
                         )
+
+                        // ✅ Analytics: Dashboard yüklendi
+                        analyticsManager.logEvent("dashboard_loaded",
+                            "streak_days" to streakDaysResult.data,
+                            "daily_progress" to dailyGoalResult.data.todayCompletedCards
+                        )
                     }
 
                     else -> {
@@ -116,11 +137,20 @@ class HomeViewModel @Inject constructor(
                             error = "Veriler yüklenirken hata oluştu"
                         )
 
+                        // ✅ Crashlytics: Partial failure
+                        crashlyticsManager.log("Dashboard partial load failure")
+
                         _effect.emit(HomeEffect.ShowError("Dashboard verileri yüklenemedi"))
                     }
                 }
 
             } catch (e: Exception) {
+                // ✅ Crashlytics: Hata kaydet
+                crashlyticsManager.logError("Dashboard loading failed", e)
+
+                // ✅ Analytics: Hata
+                analyticsManager.logError("dashboard_load_error", e.message ?: "Unknown error")
+
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = e.message ?: "Bilinmeyen hata"
@@ -131,11 +161,12 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun refreshData() {
+        // ✅ Analytics: Refresh
+        analyticsManager.logEvent("home_refresh")
         loadDashboardData()
     }
 
     private fun handleStartStudy() {
-
         // ✅ Play click sound
         soundEffectManager.playClickSound()
 
@@ -143,9 +174,20 @@ class HomeViewModel @Inject constructor(
             val progress = _uiState.value.dailyGoalProgress
 
             if (progress.todayAvailableCards > 0) {
+                // ✅ Analytics: Çalışma başlatıldı
+                analyticsManager.logEvent("study_started",
+                    "available_cards" to progress.todayAvailableCards
+                )
+
                 _effect.emit(HomeEffect.NavigateToStudy)
             } else {
                 val message = if (progress.isDailyGoalComplete) {
+                    // ✅ Analytics: Günlük hedef tamamlandı
+                    analyticsManager.logDailyGoalCompleted(
+                        streakDays = _uiState.value.streakDays,
+                        wordsLearnedToday = progress.todayCompletedCards
+                    )
+
                     "🎉 Bugünkü hedefi tamamladın! Yarın yeni kartlar seni bekliyor."
                 } else {
                     "📚 Çalışacak kart yok. Yeni kartlar seçmek için paket seçimine git."
@@ -156,9 +198,11 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun handleNavigateToPackageSelection() {
-
         // ✅ Play click sound
         soundEffectManager.playClickSound()
+
+        // ✅ Analytics: Paket seçimine gitti
+        analyticsManager.logEvent("navigate_to_package_selection")
 
         viewModelScope.launch {
             _effect.emit(HomeEffect.NavigateToPackageSelection)
@@ -166,9 +210,11 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun handleNavigateToAIAssistant() {
-
         // ✅ Play click sound
         soundEffectManager.playClickSound()
+
+        // ✅ Analytics: AI Assistant'a gitti
+        analyticsManager.logEvent("navigate_to_ai_assistant")
 
         viewModelScope.launch {
             _effect.emit(HomeEffect.NavigateToAIAssistant)
@@ -202,4 +248,5 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
 }

@@ -10,6 +10,8 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.OnUserEarnedRewardListener
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.hocalingo.app.BuildConfig
 import com.hocalingo.app.core.common.DebugHelper
 import com.hocalingo.app.feature.subscription.SubscriptionRepository
@@ -45,28 +47,29 @@ class AdMobManager @Inject constructor(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     // Ad Unit IDs (Test IDs for development)
-    // Rewarded Ad Unit IDs (Production vs Debug)
-    private val appLaunchRewardedAdUnitId = if (BuildConfig.DEBUG) {
-        "ca-app-pub-3940256099942544/5224354917" // Test ID for debug
+    // App Launch Interstitial Ad Unit ID
+    private val appLaunchInterstitialAdUnitId = if (BuildConfig.DEBUG) {
+        "ca-app-pub-3940256099942544/1033173712" // Test Interstitial ID
     } else {
-        BuildConfig.ADMOB_APP_LAUNCH_REWARD_ID // Production ID
+        BuildConfig.ADMOB_APP_LAUNCH_INTERSTITIAL_ID // Production ID
     }
 
+    // Study Rewarded Ad Unit ID
     private val studyRewardedAdUnitId = if (BuildConfig.DEBUG) {
-        "ca-app-pub-3940256099942544/5224354917" // Test ID for debug
+        "ca-app-pub-3940256099942544/5224354917" // Test Rewarded ID
     } else {
         BuildConfig.ADMOB_STUDY_REWARD_ID // Production ID
     }
 
-    // Rewarded Ad States
+    // Ad States
     private val _appLaunchAdState = MutableStateFlow<AdState>(AdState.NotLoaded)
     val appLaunchAdState: StateFlow<AdState> = _appLaunchAdState.asStateFlow()
 
     private val _studyRewardedAdState = MutableStateFlow<AdState>(AdState.NotLoaded)
     val studyRewardedAdState: StateFlow<AdState> = _studyRewardedAdState.asStateFlow()
 
-    // Cached Rewarded Ads
-    private var appLaunchRewardedAd: RewardedAd? = null
+    // Cached Ads
+    private var appLaunchInterstitialAd: InterstitialAd? = null
     private var studyRewardedAd: RewardedAd? = null
 
     // Initialization flag
@@ -127,15 +130,15 @@ class AdMobManager @Inject constructor(
     }
 
     /**
-     * ✅ NEW: Premium kullanıcı için tüm rewarded ad cache'leri temizle
+     * ✅ NEW: Premium kullanıcı için tüm ad cache'leri temizle
      */
     suspend fun clearAdsForPremiumUser() {
         val isPremium = isPremiumUser()
         if (isPremium) {
-            DebugHelper.log("🗑️ Clearing all rewarded ads for premium user")
+            DebugHelper.log("🗑️ Clearing all ads for premium user")
 
             // Destroy current ads
-            appLaunchRewardedAd = null
+            appLaunchInterstitialAd = null
             studyRewardedAd = null
 
             // Reset states
@@ -147,9 +150,15 @@ class AdMobManager @Inject constructor(
             adCounterDataStore.resetStudyWordCount()
             DebugHelper.log("🧹 Ad counters reset for premium user")
 
-            DebugHelper.logSuccess("✅ All rewarded ads cleared for premium user")
+            DebugHelper.logSuccess("✅ All ads cleared for premium user")
         }
     }
+
+    /**
+     * ============================================
+     * APP LAUNCH INTERSTITIAL AD
+     * ============================================
+     */
 
     /**
      * Check if should show app launch ad
@@ -171,49 +180,39 @@ class AdMobManager @Inject constructor(
     }
 
     /**
-     * Reset study word count (ad gösterilemediğinde kullanılır)
+     * Load app launch interstitial ad
      */
-    suspend fun resetStudyWordCount() {
-        if (!shouldShowAnyAd()) return
-
-        DebugHelper.log("🔄 Resetting study word count")
-        adCounterDataStore.resetStudyWordCount()
-    }
-
-    /**
-     * Load app launch rewarded ad
-     */
-    fun loadAppLaunchRewardedAd() {
+    fun loadAppLaunchInterstitialAd() {
         scope.launch {
             if (!shouldShowAnyAd()) {
                 DebugHelper.log("👑 Premium user - Skipping app launch ad load")
                 return@launch
             }
 
-            if (appLaunchRewardedAd != null) {
+            if (appLaunchInterstitialAd != null) {
                 DebugHelper.log("✅ App launch ad already loaded")
                 return@launch
             }
 
             _appLaunchAdState.value = AdState.Loading
-            DebugHelper.log("🔄 Loading app launch rewarded ad...")
+            DebugHelper.log("🔄 Loading app launch interstitial ad...")
 
             val adRequest = AdRequest.Builder().build()
 
-            RewardedAd.load(
+            InterstitialAd.load(
                 context,
-                appLaunchRewardedAdUnitId,
+                appLaunchInterstitialAdUnitId,
                 adRequest,
-                object : RewardedAdLoadCallback() {
-                    override fun onAdLoaded(ad: RewardedAd) {
-                        DebugHelper.logSuccess("✅ App launch rewarded ad loaded")
-                        appLaunchRewardedAd = ad
+                object : InterstitialAdLoadCallback() {
+                    override fun onAdLoaded(ad: InterstitialAd) {
+                        DebugHelper.logSuccess("✅ App launch interstitial ad loaded")
+                        appLaunchInterstitialAd = ad
                         _appLaunchAdState.value = AdState.Loaded(ad.adUnitId)
                     }
 
                     override fun onAdFailedToLoad(error: LoadAdError) {
                         DebugHelper.logError("❌ App launch ad failed to load: ${error.message}")
-                        appLaunchRewardedAd = null
+                        appLaunchInterstitialAd = null
                         _appLaunchAdState.value = AdState.Error(error.message)
                     }
                 }
@@ -222,9 +221,9 @@ class AdMobManager @Inject constructor(
     }
 
     /**
-     * Show app launch rewarded ad
+     * Show app launch interstitial ad
      */
-    suspend fun showAppLaunchRewardedAd(
+    suspend fun showAppLaunchInterstitialAd(
         activity: Activity,
         onAdShown: () -> Unit = {},
         onAdDismissed: () -> Unit = {},
@@ -235,7 +234,7 @@ class AdMobManager @Inject constructor(
             return
         }
 
-        val ad = appLaunchRewardedAd
+        val ad = appLaunchInterstitialAd
         if (ad == null) {
             DebugHelper.logError("❌ App launch ad not loaded")
             onAdFailed("Ad not loaded")
@@ -243,7 +242,7 @@ class AdMobManager @Inject constructor(
         }
 
         _appLaunchAdState.value = AdState.Showing
-        DebugHelper.log("📺 Showing app launch rewarded ad...")
+        DebugHelper.log("📺 Showing app launch interstitial ad...")
 
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdShowedFullScreenContent() {
@@ -253,31 +252,29 @@ class AdMobManager @Inject constructor(
 
             override fun onAdDismissedFullScreenContent() {
                 DebugHelper.log("❌ App launch ad dismissed")
-                appLaunchRewardedAd = null
+                appLaunchInterstitialAd = null
                 _appLaunchAdState.value = AdState.Dismissed
 
                 scope.launch {
                     adCounterDataStore.resetAppLaunchCount()
+                    DebugHelper.log("✅ App launch counter reset")
                 }
 
                 onAdDismissed()
 
                 // Preload next ad
-                loadAppLaunchRewardedAd()
+                loadAppLaunchInterstitialAd()
             }
 
             override fun onAdFailedToShowFullScreenContent(error: AdError) {
                 DebugHelper.logError("❌ App launch ad failed to show: ${error.message}")
-                appLaunchRewardedAd = null
+                appLaunchInterstitialAd = null
                 _appLaunchAdState.value = AdState.Error(error.message)
                 onAdFailed(error.message)
             }
         }
 
-        ad.show(activity, OnUserEarnedRewardListener { reward ->
-            DebugHelper.logSuccess("🎁 Reward earned: ${reward.amount} ${reward.type}")
-            _appLaunchAdState.value = AdState.Completed
-        })
+        ad.show(activity)
     }
 
     /**
@@ -303,6 +300,16 @@ class AdMobManager @Inject constructor(
         if (!shouldShowAnyAd()) return
 
         adCounterDataStore.incrementStudyWordCount()
+    }
+
+    /**
+     * Reset study word count (ad gösterilemediğinde kullanılır)
+     */
+    suspend fun resetStudyWordCount() {
+        if (!shouldShowAnyAd()) return
+
+        DebugHelper.log("🔄 Resetting study word count")
+        adCounterDataStore.resetStudyWordCount()
     }
 
     /**
@@ -381,11 +388,6 @@ class AdMobManager @Inject constructor(
                 studyRewardedAd = null
                 _studyRewardedAdState.value = AdState.Dismissed
 
-                // ❌ KALDIRDIK - Artık burada reset yapmıyoruz
-                // scope.launch {
-                //     adCounterDataStore.resetStudyWordCount()
-                // }
-
                 onAdDismissed()
 
                 // Preload next ad
@@ -428,7 +430,7 @@ class AdMobManager @Inject constructor(
         }
 
         DebugHelper.log("🔄 Preloading ads...")
-        loadAppLaunchRewardedAd()
+        loadAppLaunchInterstitialAd()
         loadStudyRewardedAd()
     }
 
@@ -453,8 +455,8 @@ class AdMobManager @Inject constructor(
             $counterInfo
             
             Ad States:
-            - App Launch Ad: ${_appLaunchAdState.value}
-            - Study Ad: ${_studyRewardedAdState.value}
+            - App Launch Ad (Interstitial): ${_appLaunchAdState.value}
+            - Study Ad (Rewarded): ${_studyRewardedAdState.value}
         """.trimIndent()
     }
 
@@ -462,7 +464,7 @@ class AdMobManager @Inject constructor(
      * Clear all cached ads
      */
     fun clearAllAds() {
-        appLaunchRewardedAd = null
+        appLaunchInterstitialAd = null
         studyRewardedAd = null
         _appLaunchAdState.value = AdState.NotLoaded
         _studyRewardedAdState.value = AdState.NotLoaded

@@ -134,19 +134,18 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                // ✅ Check and show app launch rewarded ad
+                // ✅ Check and show app launch interstitial ad
                 LaunchedEffect(Unit) {
                     // Delay 2 seconds for better UX
-                    delay(2000)
+                    delay(1500)
 
                     if (adMobManager.shouldShowAppLaunchAd()) {
-                        adMobManager.showAppLaunchRewardedAd(
+                        adMobManager.showAppLaunchInterstitialAd(
                             activity = this@MainActivity,
                             onAdShown = {},
                             onAdDismissed = {},
                             onAdFailed = { error ->
-                                // Log error but don't show to user
-                                println("❌ App launch ad failed: $error")
+                                DebugHelper.logError("❌ App launch ad failed: $error")
                             }
                         )
                     }

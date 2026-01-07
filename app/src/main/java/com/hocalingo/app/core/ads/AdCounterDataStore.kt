@@ -45,8 +45,8 @@ class AdCounterDataStore @Inject constructor(
         private val LAST_STUDY_AD_TIME = longPreferencesKey("ad_last_study_ad_time")
 
         // Ad thresholds
-        const val APP_LAUNCH_THRESHOLD = 4 // Her 4 açılışta 1 reklam
-        const val STUDY_WORD_THRESHOLD = 40 // Her 40 kelimede 1 reklam
+        const val APP_LAUNCH_THRESHOLD = 3 // Her 2 açılışta 1 reklam
+        const val STUDY_WORD_THRESHOLD = 50 // Her 50 kelimede 1 reklam
         const val COOLDOWN_DURATION_MS = 40_000L // 40 saniye cooldown
     }
 
