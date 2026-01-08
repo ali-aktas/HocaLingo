@@ -331,12 +331,18 @@ class StudyViewModel @Inject constructor(
                     )
                 }
 
-                // ✅ Otomatik TTS: Her yeni kart yüklendiğinde İngilizce kelimeyi oku
+                // ✅ Otomatik TTS: Sadece EN→TR yönünde kart açılınca oku
+                // TR→EN yönünde ise kart çevrilince okuyacak (flipCard içinde)
                 viewModelScope.launch {
                     if (_uiState.value.isTtsEnabled) {
-                        delay(300) // Kart animasyonunun bitmesini bekle
-                        textToSpeechManager.speak(currentConcept.english, "en")
-                        DebugHelper.log("🔊 Auto-TTS: Speaking '${currentConcept.english}'")
+                        val direction = _uiState.value.studyDirection
+                        if (direction == StudyDirection.EN_TO_TR) {
+                            delay(300) // Kart animasyonunun bitmesini bekle
+                            textToSpeechManager.speak(currentConcept.english, "en")
+                            DebugHelper.log("🔊 Auto-TTS (EN→TR): Speaking '${currentConcept.english}'")
+                        } else {
+                            DebugHelper.log("🔇 Auto-TTS skipped (TR→EN): Will speak on flip")
+                        }
                     }
                 }
 
@@ -561,7 +567,23 @@ class StudyViewModel @Inject constructor(
         // ✅ Play sound effect
         soundEffectManager.playCardFlip()
 
+        val wasFlipped = _uiState.value.isCardFlipped
         _uiState.update { it.copy(isCardFlipped = !it.isCardFlipped) }
+
+        // ✅ TR→EN yönünde, kart ilk kez çevrildiğinde İngilizce oku
+        val direction = _uiState.value.studyDirection
+        val concept = _uiState.value.currentConcept
+
+        if (!wasFlipped && direction == StudyDirection.TR_TO_EN && concept != null) {
+            // Kart ilk kez çevrildi (ön→arka) ve TR→EN yönündeyiz
+            if (_uiState.value.isTtsEnabled) {
+                viewModelScope.launch {
+                    delay(200) // Flip animasyonunu bekle
+                    textToSpeechManager.speak(concept.english, "en")
+                    DebugHelper.log("🔊 Flip-TTS (TR→EN): Speaking '${concept.english}'")
+                }
+            }
+        }
     }
 
     private fun resetCard() {

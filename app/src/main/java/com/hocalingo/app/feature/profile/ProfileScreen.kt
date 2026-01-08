@@ -192,7 +192,7 @@ fun ProfileScreen(
             // Header
             item {
                 Text(
-                    text = "Hocalingo",
+                    text = "HocaLingo",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Black,
                     fontSize = 32.sp,
@@ -398,7 +398,7 @@ private fun PremiumUpgradeContent(isDarkTheme: Boolean) {
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
-                color = if (isDarkTheme) Color.White else Color(0xFF7C3AED)
+                color = if (isDarkTheme) Color.White else Color(0xFF7550B6)
             )
         }
 
@@ -406,15 +406,15 @@ private fun PremiumUpgradeContent(isDarkTheme: Boolean) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             PremiumFeatureItem(
-                text = "Reklamsız deneyim",
+                text = "Tamamen reklamsız kullanım",
                 isDarkTheme = isDarkTheme
             )
             PremiumFeatureItem(
-                text = "Özel yapay zeka kullanımı",
+                text = "Premium yapay zeka deneyimi",
                 isDarkTheme = isDarkTheme
             )
             PremiumFeatureItem(
-                text = "Sınırsız kelime seçimi",
+                text = "Daha fazla kelime seçme seçeneği",
                 isDarkTheme = isDarkTheme
             )
         }

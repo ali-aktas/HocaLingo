@@ -1,8 +1,10 @@
 package com.hocalingo.app.feature.auth
 
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -14,7 +16,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,7 +38,6 @@ import com.hocalingo.app.core.ui.theme.HocaLingoTheme
 import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import kotlinx.coroutines.flow.collectLatest
 
-// Poppins font family
 private val PoppinsFontFamily = FontFamily(
     Font(R.font.poppins_regular, FontWeight.Normal),
     Font(R.font.poppins_medium, FontWeight.Medium),
@@ -41,14 +46,6 @@ private val PoppinsFontFamily = FontFamily(
     Font(R.font.poppins_black, FontWeight.Black)
 )
 
-/**
- * Modern Authentication Screen
- * ✅ Splash Screen ile aynı turuncu tema
- * ✅ lingo_hoca_image.png görseli
- * ✅ Açık, canlı ve profesyonel tasarım
- * ✅ Responsive - Her ekran boyutuna uyumlu
- * ✅ Status bar transparent
- */
 @Composable
 fun AuthScreen(
     onNavigateToOnboarding: () -> Unit,
@@ -57,21 +54,17 @@ fun AuthScreen(
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // Theme awareness
     val themeViewModel: ThemeViewModel = hiltViewModel()
     val isDarkTheme = themeViewModel.shouldUseDarkTheme()
 
-    // Google Sign-In Helper
     val (googleSignInHelper, launcher) = rememberGoogleSignInHelper(
         onSignInSuccess = { idToken ->
             viewModel.onEvent(AuthEvent.GoogleSignInResult(idToken))
         },
         onSignInFailed = { exception ->
-            // Error will be shown via ViewModel
         }
     )
 
-    // Handle effects
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
@@ -86,7 +79,6 @@ fun AuthScreen(
         }
     }
 
-    // Breathing animation for logo
     val infiniteTransition = rememberInfiniteTransition(label = "breathing")
     val breathingScale by infiniteTransition.animateFloat(
         initialValue = 1f,
@@ -102,7 +94,7 @@ fun AuthScreen(
         snackbarHost = {
             HocaSnackbarHost(
                 hostState = snackbarHostState,
-                currentRoute = null // Auth screen has no bottom nav
+                currentRoute = null
             )
         },
         containerColor = Color.Transparent
@@ -110,36 +102,32 @@ fun AuthScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFFB9322)) // Turuncu arkaplan
-                .windowInsetsPadding(WindowInsets.statusBars) // ✅ Status bar padding
+                .background(Color(0xFFFB9322))
+                .windowInsetsPadding(WindowInsets.statusBars)
                 .padding(paddingValues)
         ) {
-            // ✅ Scrollable Column - Her ekrana uyumlu
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 24.dp)
-                    .padding(top = 20.dp, bottom = 32.dp), // ✅ Responsive padding
+                    .padding(top = 20.dp, bottom = 32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
 
-                // Logo & Branding - Küçültülmüş
                 BrandingSection(breathingScale = breathingScale)
 
-                Spacer(modifier = Modifier.height(40.dp)) // ✅ Azaltıldı
+                Spacer(modifier = Modifier.height(40.dp))
 
-                // Main Content Card
                 AuthContentCard(
                     isLoading = uiState.isLoading,
                     onGoogleSignIn = { googleSignInHelper.signIn(launcher) },
                     onAnonymousSignIn = { viewModel.onEvent(AuthEvent.SignInAnonymously) }
                 )
 
-                Spacer(modifier = Modifier.height(20.dp)) // ✅ Azaltıldı
+                Spacer(modifier = Modifier.height(20.dp))
 
-                // Terms & Privacy
                 TermsText()
             }
         }
@@ -150,34 +138,31 @@ fun AuthScreen(
 private fun BrandingSection(breathingScale: Float) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp) // ✅ Azaltıldı
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Logo Image - Küçültülmüş
         Image(
             painter = painterResource(id = R.drawable.lingo_hoca_image),
             contentDescription = "HocaLingo Logo",
             modifier = Modifier
-                .size(120.dp) // ✅ 160dp → 120dp
+                .size(120.dp)
                 .scale(breathingScale),
             contentScale = ContentScale.Fit
         )
 
-        // App Name - Küçültülmüş
         Text(
             text = "HocaLingo",
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Black,
-            fontSize = 32.sp, // ✅ 40sp → 32sp
+            fontSize = 32.sp,
             color = Color.White,
             letterSpacing = 1.sp
         )
 
-        // Tagline - Küçültülmüş
         Text(
             text = "Kelime Öğrenmenin En Keyifli Yolu",
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
-            fontSize = 14.sp, // ✅ 16sp → 14sp
+            fontSize = 14.sp,
             color = Color.White.copy(alpha = 0.95f),
             textAlign = TextAlign.Center
         )
@@ -203,17 +188,16 @@ private fun AuthContentCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(28.dp), // ✅ 32dp → 28dp
+                .padding(28.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp) // ✅ 20dp → 16dp
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            // Welcome Text - Küçültülmüş
             Text(
                 text = "Hoş Geldin!",
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp, // ✅ 28sp → 24sp
+                fontSize = 24.sp,
                 color = Color(0xFF1A1A2E),
                 textAlign = TextAlign.Center
             )
@@ -222,30 +206,26 @@ private fun AuthContentCard(
                 text = "Kelime öğrenme yolculuğuna başlamak için giriş yap",
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Normal,
-                fontSize = 14.sp, // ✅ 15sp → 14sp
+                fontSize = 14.sp,
                 color = Color(0xFF6C757D),
                 textAlign = TextAlign.Center,
-                lineHeight = 20.sp // ✅ 22sp → 20sp
+                lineHeight = 20.sp
             )
 
-            Spacer(modifier = Modifier.height(4.dp)) // ✅ 8dp → 4dp
+            Spacer(modifier = Modifier.height(4.dp))
 
-            // Google Sign In Button
             GoogleSignInButton(
                 onClick = onGoogleSignIn,
                 isLoading = isLoading
             )
 
-            // Divider with OR
             DividerWithText()
 
-            // Anonymous Sign In Button
             AnonymousSignInButton(
                 onClick = onAnonymousSignIn,
                 isLoading = isLoading
             )
 
-            // Guest Info - Padding azaltıldı
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = Color(0xFFFFF4E6)
@@ -254,12 +234,12 @@ private fun AuthContentCard(
             ) {
                 Text(
                     text = stringResource(R.string.auth_guest_info),
-                    modifier = Modifier.padding(12.dp), // ✅ 14dp → 12dp
+                    modifier = Modifier.padding(12.dp),
                     fontFamily = PoppinsFontFamily,
-                    fontSize = 11.sp, // ✅ 12sp → 11sp
+                    fontSize = 11.sp,
                     color = Color(0xFF8B5A00),
                     textAlign = TextAlign.Center,
-                    lineHeight = 16.sp // ✅ 18sp → 16sp
+                    lineHeight = 16.sp
                 )
             }
         }
@@ -271,59 +251,108 @@ private fun GoogleSignInButton(
     onClick: () -> Unit,
     isLoading: Boolean
 ) {
-    Button(
-        onClick = onClick,
-        enabled = !isLoading,
+    var isPressed by remember { mutableStateOf(false) }
+
+    val offsetY by animateFloatAsState(
+        targetValue = if (isPressed) 4f else 0f,
+        animationSpec = spring(stiffness = Spring.StiffnessHigh),
+        label = "button_press"
+    )
+
+    val elevation by animateFloatAsState(
+        targetValue = if (isPressed) 2f else 6f,
+        animationSpec = spring(stiffness = Spring.StiffnessHigh),
+        label = "button_elevation"
+    )
+
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp), // ✅ 58dp → 56dp
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFFB9322), // Turuncu tema
-            disabledContainerColor = Color.Gray.copy(alpha = 0.3f)
-        ),
-        shape = RoundedCornerShape(16.dp),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 4.dp,
-            pressedElevation = 8.dp
-        )
-    ) {
-        if (isLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(24.dp),
-                color = Color.White,
-                strokeWidth = 2.dp
-            )
-        } else {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                // Google Icon
-                Box(
-                    modifier = Modifier
-                        .size(30.dp) // ✅ 32dp → 30dp
-                        .clip(CircleShape)
-                        .background(Color.White),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "G",
-                        fontFamily = PoppinsFontFamily,
-                        fontSize = 16.sp, // ✅ 18sp → 16sp
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFFFB9322)
+            .height(64.dp)
+            .pointerInput(isLoading) {
+                if (!isLoading) {
+                    detectTapGestures(
+                        onPress = {
+                            isPressed = true
+                            tryAwaitRelease()
+                            isPressed = false
+                        },
+                        onTap = { onClick() }
                     )
                 }
+            }
+    ) {
+        Canvas(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp)
+                .offset(y = 6.dp)
+        ) {
+            drawRoundRect(
+                color = Color(0xFFE85A2B),
+                size = size,
+                cornerRadius = CornerRadius(16.dp.toPx())
+            )
+        }
 
-                Spacer(modifier = Modifier.width(12.dp))
-
-                Text(
-                    text = stringResource(R.string.auth_google_signin),
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 15.sp, // ✅ 16sp → 15sp
-                    color = Color.White
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp)
+                .offset(y = offsetY.dp)
+                .shadow(
+                    elevation = elevation.dp,
+                    shape = RoundedCornerShape(16.dp),
+                    clip = false
                 )
+                .clip(RoundedCornerShape(16.dp))
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFFFB9322),
+                            Color(0xFFFF6B35)
+                        )
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(28.dp),
+                    color = Color.White,
+                    strokeWidth = 3.dp
+                )
+            } else {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .background(Color.White),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "G",
+                            fontFamily = PoppinsFontFamily,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFFFB9322)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    Text(
+                        text = stringResource(R.string.auth_google_signin),
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color.White
+                    )
+                }
             }
         }
     }
@@ -334,38 +363,72 @@ private fun AnonymousSignInButton(
     onClick: () -> Unit,
     isLoading: Boolean
 ) {
-    OutlinedButton(
-        onClick = onClick,
-        enabled = !isLoading,
+    var isPressed by remember { mutableStateOf(false) }
+
+    val offsetY by animateFloatAsState(
+        targetValue = if (isPressed) 3f else 0f,
+        animationSpec = spring(stiffness = Spring.StiffnessHigh),
+        label = "button_press"
+    )
+
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp), // ✅ 58dp → 56dp
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = Color.Transparent,
-            contentColor = Color(0xFF1A1A2E)
-        ),
-        border = ButtonDefaults.outlinedButtonBorder.copy(
-            width = 2.dp
-        )
+            .height(60.dp)
+            .pointerInput(isLoading) {
+                if (!isLoading) {
+                    detectTapGestures(
+                        onPress = {
+                            isPressed = true
+                            tryAwaitRelease()
+                            isPressed = false
+                        },
+                        onTap = { onClick() }
+                    )
+                }
+            }
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+        Canvas(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+                .offset(y = 5.dp)
         ) {
-            Text(
-                text = "👤",
-                fontSize = 24.sp // ✅ 26sp → 24sp
+            drawRoundRect(
+                color = Color(0xFFE0E0E0),
+                size = size,
+                cornerRadius = CornerRadius(16.dp.toPx())
             )
+        }
 
-            Spacer(modifier = Modifier.width(12.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+                .offset(y = offsetY.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color.White),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "👤",
+                    fontSize = 26.sp
+                )
 
-            Text(
-                text = stringResource(R.string.auth_guest_signin),
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 15.sp // ✅ 16sp → 15sp
-            )
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Text(
+                    text = stringResource(R.string.auth_guest_signin),
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    color = Color(0xFF1A1A2E)
+                )
+            }
         }
     }
 }
@@ -375,7 +438,7 @@ private fun DividerWithText() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp), // ✅ 8dp → 6dp
+            .padding(vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         HorizontalDivider(
@@ -388,7 +451,7 @@ private fun DividerWithText() {
             modifier = Modifier.padding(horizontal = 16.dp),
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
-            fontSize = 12.sp, // ✅ 13sp → 12sp
+            fontSize = 12.sp,
             color = Color(0xFF9E9E9E)
         )
 
@@ -404,10 +467,10 @@ private fun TermsText() {
     Text(
         text = stringResource(R.string.auth_terms),
         fontFamily = PoppinsFontFamily,
-        fontSize = 11.sp, // ✅ 12sp → 11sp
+        fontSize = 11.sp,
         color = Color.White.copy(alpha = 0.85f),
         textAlign = TextAlign.Center,
-        lineHeight = 16.sp // ✅ 18sp → 16sp
+        lineHeight = 16.sp
     )
 }
 
@@ -425,7 +488,6 @@ private fun AuthScreenPreview() {
 @Composable
 private fun AuthScreenLoadingPreview() {
     HocaLingoTheme {
-        // Preview with loading state
         AuthScreen(
             onNavigateToOnboarding = {}
         )

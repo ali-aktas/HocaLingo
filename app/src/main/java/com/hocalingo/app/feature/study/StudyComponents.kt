@@ -1,9 +1,13 @@
 package com.hocalingo.app.feature.study
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -19,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -63,7 +68,7 @@ private val cardColors = listOf(
 )
 
 /**
- * StudyTopBar - Navigation bar with back button
+ * StudyTopBar - Navigation bar with back button and title
  */
 @Composable
 fun StudyTopBar(
@@ -73,7 +78,7 @@ fun StudyTopBar(
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onBackClick) {
@@ -83,6 +88,17 @@ fun StudyTopBar(
                 tint = MaterialTheme.colorScheme.onBackground
             )
         }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Text(
+            text = "Akıllı Kelime Çalışması",
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onBackground
+        )
     }
 }
 
@@ -373,11 +389,13 @@ fun StudyActionButtons(
 }
 
 /**
- * StudyButton - Single difficulty button
+ * StudyButton - 3D Style difficulty button
+ *
+ * Duolingo-inspired tactile button with press animation
  *
  * @param mainText Button label (Kolay/Orta/Zor)
  * @param timeText Next review time
- * @param backgroundColor Button color
+ * @param backgroundColor Button base color
  */
 @Composable
 private fun StudyButton(
@@ -389,41 +407,103 @@ private fun StudyButton(
     enabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
-    Card(
+    var isPressed by remember { mutableStateOf(false) }
+
+    // Animations
+    val pressDepth by animateDpAsState(
+        targetValue = if (isPressed) 4.dp else 0.dp,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessHigh
+        ),
+        label = "press_depth"
+    )
+
+    val topColorBrightness by animateFloatAsState(
+        targetValue = if (isPressed) 0.85f else 1f,
+        animationSpec = tween(durationMillis = 100),
+        label = "color_brightness"
+    )
+
+    // Calculate shadow color (darker version of base color)
+    val shadowColor = Color(
+        red = (backgroundColor.red * 0.7f).coerceIn(0f, 1f),
+        green = (backgroundColor.green * 0.7f).coerceIn(0f, 1f),
+        blue = (backgroundColor.blue * 0.7f).coerceIn(0f, 1f)
+    )
+
+    Box(
         modifier = modifier
-            .clickable(enabled = enabled) { onClick() }
-            .height(80.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = backgroundColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .height(86.dp)
+            .pointerInput(enabled) {
+                if (enabled) {
+                    detectTapGestures(
+                        onPress = {
+                            isPressed = true
+                            val released = tryAwaitRelease()
+                            isPressed = false
+                            if (released) {
+                                onClick()
+                            }
+                        }
+                    )
+                }
+            }
     ) {
-        Column(
+        // Bottom Layer (Shadow/Depth) - Static
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .fillMaxWidth()
+                .height(80.dp)
+                .align(Alignment.BottomCenter)
+                .clip(RoundedCornerShape(16.dp))
+                .background(shadowColor)
+        )
+
+        // Top Layer (Interactive Surface)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .offset(y = pressDepth)
+                .clip(RoundedCornerShape(16.dp))
+                .background(
+                    Color(
+                        red = (backgroundColor.red * topColorBrightness).coerceIn(0f, 1f),
+                        green = (backgroundColor.green * topColorBrightness).coerceIn(0f, 1f),
+                        blue = (backgroundColor.blue * topColorBrightness).coerceIn(0f, 1f)
+                    )
+                ),
+            contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = mainText,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-                color = contentColor,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = timeText,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Normal,
-                fontSize = 11.sp,
-                color = contentColor.copy(alpha = 0.8f),
-                textAlign = TextAlign.Center
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = mainText,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = contentColor
+                )
+
+                if (timeText.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = timeText,
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 12.sp,
+                        color = contentColor.copy(alpha = 0.85f)
+                    )
+                }
+            }
         }
     }
 }
+
+
 
 /**
  * StudyNativeAdOverlay - Native ad display overlay

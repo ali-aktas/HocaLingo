@@ -185,7 +185,7 @@ fun HomeScreen(
                     CircularStatCard(
                         value = uiState.streakDays.toString(),
                         label = "Günlük seri!",
-                        progress = if (uiState.streakDays > 0) 1f else 0f,
+                        progress = uiState.streakDays / 30f,
                         color = HocaColors.Turkuaz,
                         isDarkTheme = isDarkTheme,
                         size = 90.dp
@@ -205,7 +205,7 @@ fun HomeScreen(
                     CircularStatCard(
                         value = studyTimeDisplay,
                         label = studyTimeLabel,
-                        progress = if (uiState.monthlyStats.studyTimeMinutes > 0) 1f else 0f,
+                        progress = uiState.monthlyStats.studyTimeMinutes / 600f,
                         color = HocaColors.MasteredGold,
                         isDarkTheme = isDarkTheme,
                         size = 90.dp

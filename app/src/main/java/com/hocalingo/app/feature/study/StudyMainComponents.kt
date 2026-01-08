@@ -25,17 +25,23 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hocalingo.app.R
+import com.hocalingo.app.core.ui.theme.HocaColors
 
 /**
  * StudyMainComponents - Modern 3D UI Components
  *
  * Package: feature/study/
+ * File: StudyMainComponents.kt
  *
- * Duolingo-inspired 3D buttons with:
- * - Depth and shadow effects
- * - Gradient backgrounds
- * - Press animations
- * - Modern, vibrant colors
+ * Components:
+ * - Modern3DButton: Reusable 3D button base
+ * - StartStudyButton: DEPRECATED - Artık HeroCard'da PlayButton kullanılıyor
+ * - AddWordButton: DEPRECATED - Artık StudyWideActionButton kullanılıyor
+ * - StudyStatsCard: İstatistik kartı
+ * - CompactActionButton: Küçük action button
+ *
+ * Note: Ana 3D butonlar StudySharedComponents'a taşındı
+ * Bu dosya geriye uyumluluk için korunuyor
  */
 
 // Poppins Font Family
@@ -46,6 +52,10 @@ private val PoppinsFontFamily = FontFamily(
     Font(R.font.poppins_black, FontWeight.Black)
 )
 
+// =====================================================
+// MODERN 3D BUTTON BASE
+// =====================================================
+
 /**
  * Modern3DButton - Reusable 3D button component
  *
@@ -54,12 +64,6 @@ private val PoppinsFontFamily = FontFamily(
  * - Gradient background
  * - Press animation
  * - Icon + Text layout
- *
- * @param text Button text
- * @param icon Button icon
- * @param gradient Button gradient colors
- * @param onClick Click callback
- * @param modifier Modifier
  */
 @Composable
 fun Modern3DButton(
@@ -137,12 +141,20 @@ fun Modern3DButton(
     }
 }
 
+// =====================================================
+// LEGACY BUTTONS (Geriye Uyumluluk)
+// =====================================================
+
 /**
  * StartStudyButton - Large "Start Study" button
  *
- * Primary action button with vibrant green gradient
- * Eye-catching design to encourage studying
+ * @deprecated Artık StudyMainScreen'de HeroCard + PlayButton kullanılıyor
+ * Bu component geriye uyumluluk için korunuyor
  */
+@Deprecated(
+    message = "HeroCard içinde HocaPlayButton kullanılıyor",
+    replaceWith = ReplaceWith("HocaPlayButton")
+)
 @Composable
 fun StartStudyButton(
     onClick: () -> Unit,
@@ -153,7 +165,7 @@ fun StartStudyButton(
         icon = Icons.Filled.PlayArrow,
         gradient = Brush.horizontalGradient(
             colors = listOf(
-                Color(0xFF58CC02), // Duolingo green
+                HocaColors.SuccessTop,
                 Color(0xFF78D321)
             )
         ),
@@ -167,8 +179,12 @@ fun StartStudyButton(
 /**
  * AddWordButton - "Add New Word" button
  *
- * Secondary action button with blue gradient
+ * @deprecated Artık StudyWideActionButton kullanılıyor
  */
+@Deprecated(
+    message = "StudyWideActionButton kullanın",
+    replaceWith = ReplaceWith("StudyWideActionButton")
+)
 @Composable
 fun AddWordButton(
     onClick: () -> Unit,
@@ -179,8 +195,8 @@ fun AddWordButton(
         icon = Icons.Filled.Add,
         gradient = Brush.horizontalGradient(
             colors = listOf(
-                Color(0xFF1CB0F6), // Duolingo blue
-                Color(0xFF42C5F5)
+                HocaColors.PurpleTop,
+                HocaColors.PurpleLight
             )
         ),
         onClick = onClick,
@@ -190,15 +206,14 @@ fun AddWordButton(
     )
 }
 
+// =====================================================
+// COMPACT ACTION BUTTON
+// =====================================================
+
 /**
  * CompactActionButton - Smaller action button
  *
  * For less prominent actions
- *
- * @param text Button text
- * @param icon Button icon
- * @param color Button solid color
- * @param onClick Click callback
  */
 @Composable
 fun CompactActionButton(
@@ -273,13 +288,14 @@ fun CompactActionButton(
     }
 }
 
+// =====================================================
+// STUDY STATS CARD
+// =====================================================
+
 /**
  * StudyStatsCard - Quick stats display
  *
  * Shows study progress at a glance
- *
- * @param wordsCount Number of selected words
- * @param studyDirection Current study direction text
  */
 @Composable
 fun StudyStatsCard(
@@ -309,7 +325,7 @@ fun StudyStatsCard(
                 Icon(
                     imageVector = Icons.Filled.Book,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
+                    tint = HocaColors.Orange,
                     modifier = Modifier.size(28.dp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -330,7 +346,7 @@ fun StudyStatsCard(
             }
 
             // Divider
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier
                     .height(60.dp)
                     .width(1.dp),
@@ -344,7 +360,7 @@ fun StudyStatsCard(
                 Icon(
                     imageVector = Icons.Filled.SwapHoriz,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
+                    tint = HocaColors.Orange,
                     modifier = Modifier.size(28.dp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -364,5 +380,72 @@ fun StudyStatsCard(
                 )
             }
         }
+    }
+}
+
+// =====================================================
+// STUDY QUICK STATS (Yeni, Minimal)
+// =====================================================
+
+/**
+ * StudyQuickStats - Minimal stats row
+ *
+ * Daha kompakt istatistik gösterimi
+ */
+@Composable
+fun StudyQuickStats(
+    wordsCount: Int,
+    todayStudied: Int,
+    streakDays: Int,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        QuickStatItem(
+            value = wordsCount.toString(),
+            label = "Toplam",
+            color = HocaColors.Orange
+        )
+
+        QuickStatItem(
+            value = todayStudied.toString(),
+            label = "Bugün",
+            color = HocaColors.SuccessTop
+        )
+
+        QuickStatItem(
+            value = "$streakDays 🔥",
+            label = "Seri",
+            color = HocaColors.Orange
+        )
+    }
+}
+
+@Composable
+private fun QuickStatItem(
+    value: String,
+    label: String,
+    color: Color
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = value,
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp,
+            color = color
+        )
+
+        Text(
+            text = label,
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }

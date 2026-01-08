@@ -74,9 +74,9 @@ fun ModernSettingsCard(
                 .background(
                     brush = Brush.linearGradient(
                         colors = if (isDarkTheme) {
-                            listOf(Color(0xFF571EAC), Color(0xFF541780))
+                            listOf(Color(0xFFF57A41), Color(0xFFFF6B35))
                         } else {
-                            listOf(Color(0xFF53138B), Color(0xFF6418AF))
+                            listOf(Color(0xFFF57A4D), Color(0xFFFF8C61))
                         }
                     )
                 )
@@ -92,7 +92,7 @@ fun ModernSettingsCard(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 // Theme Mode Toggle
                 SettingToggleItem(
@@ -113,7 +113,7 @@ fun ModernSettingsCard(
                     }
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 // Notifications Switch
                 SettingSwitchItem(
@@ -126,7 +126,7 @@ fun ModernSettingsCard(
                     }
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 // Notification Time Picker (shown when notifications enabled)
                 if (uiState.notificationsEnabled) {
@@ -137,7 +137,7 @@ fun ModernSettingsCard(
                         }
                     )
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
 
                 // AI Assistant Style Dropdown
@@ -233,7 +233,7 @@ private fun SettingSwitchItem(
                 Color.White.copy(alpha = 0.1f),
                 RoundedCornerShape(12.dp)
             )
-            .padding(16.dp),
+            .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(

@@ -98,7 +98,8 @@ fun StudyScreen(
                 uiState.showEmptyQueueMessage || uiState.isQueueEmpty -> {
                     StudyCompletionScreen(
                         onNavigateToWordSelection = onNavigateToWordSelection,
-                        onNavigateToHome = onNavigateBack
+                        onNavigateToHome = onNavigateBack,
+                        onNavigateToPremium = { showPaywall = true }
                     )
                 }
 
@@ -151,8 +152,8 @@ fun StudyScreen(
                 }
             }
 
-            // Rewarded Ad Dialog
-            if (showRewardedAdDialog) {
+            // Rewarded Ad Dialog (don't show on completion screen)
+            if (showRewardedAdDialog && !uiState.showEmptyQueueMessage) {
                 StudyRewardedAdDialog(
                     wordsCompleted = 50,
                     onContinue = {
@@ -186,23 +187,31 @@ fun StudyScreen(
                     }
                 )
             }
+
             // ✅ Paywall BottomSheet
             if (showPaywall) {
                 PaywallBottomSheet(
                     onDismiss = {
                         showPaywall = false
-                        // User dismissed paywall, show ad dialog again
-                        showRewardedAdDialog = true
+                        // Only show ad dialog if it was already showing
+                        if (showRewardedAdDialog) {
+                            showRewardedAdDialog = true
+                        }
                     },
                     onPurchaseSuccess = {
                         showPaywall = false
-                        // Premium purchased, continue without ad
-                        viewModel.onEvent(StudyEvent.ContinueAfterAd)
+                        // Premium purchased
+                        if (showRewardedAdDialog) {
+                            // Continue study if ad dialog was showing
+                            viewModel.onEvent(StudyEvent.ContinueAfterAd)
+                        }
                     }
                 )
             }
+
         }
     }
+
 }
 
 /**
@@ -287,4 +296,7 @@ private fun StudyContent(
             )
         }
     }
+
+
+
 }

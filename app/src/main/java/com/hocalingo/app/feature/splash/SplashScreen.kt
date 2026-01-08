@@ -209,7 +209,7 @@ fun SplashScreen(
                             .fillMaxHeight()
                             .fillMaxWidth(loadingProgress)
                             .background(
-                                Color(0xFF9C27B0) // 🎨 Purple/Magenta
+                                Color(0xFFFB9322) // 🎨 Purple/Magenta
                             )
                     )
                 }

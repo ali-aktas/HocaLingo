@@ -194,24 +194,6 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
-                // ✅ Premium Push - 3 Gün Sonrası
-                if (showTrialOffer) {
-                    PaywallBottomSheet(
-                        onDismiss = {
-                            showTrialOffer = false
-                            scope.launch {
-                                trialOfferDataStore.markPermanentlyDismissed()
-                            }
-                        },
-                        onPurchaseSuccess = {
-                            showTrialOffer = false
-                            scope.launch {
-                                trialOfferDataStore.resetAfterPurchase()
-                            }
-                        }
-                    )
-                }
-
                 // 👇 Aşağıdaki satır hala kalmalı (farklı senaryolar için)
                 if (showPaywall) {
                     PaywallBottomSheet(
