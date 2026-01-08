@@ -65,8 +65,8 @@ data class BottomNavItem(
  * - Result: Content stays 70dp, total height adapts to system bars
  *
  * UPDATED:
- * - STUDY route → StudyMainScreen (Hub)
- * - Bottom navigation items unchanged
+ * - STUDY route → StudyMainScreen (Hub, shows bottom nav)
+ * - STUDY_SCREEN route → StudyScreen (Actual study, hides bottom nav)
  */
 @Composable
 fun HocaBottomNavigationBar(
@@ -76,47 +76,44 @@ fun HocaBottomNavigationBar(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination?.route
 
-    val bottomNavItems = remember {
-        listOf(
-            BottomNavItem(
-                route = HocaRoutes.HOME,
-                selectedIcon = Icons.Filled.Home,
-                unselectedIcon = Icons.Outlined.Home,
-                labelRes = R.string.nav_home,
-                label = "Ana Sayfa"
-            ),
-            BottomNavItem(
-                route = HocaRoutes.STUDY,  // StudyMainScreen (Hub)
-                selectedIcon = Icons.Filled.School,
-                unselectedIcon = Icons.Outlined.School,
-                labelRes = R.string.nav_study,
-                label = "Çalış",
-                isMainAction = true
-            ),
-            BottomNavItem(
-                route = HocaRoutes.ADD_WORD,
-                selectedIcon = Icons.Filled.Add,
-                unselectedIcon = Icons.Outlined.Add,
-                labelRes = R.string.nav_add_word,
-                label = "Kelime Ekle"
-            ),
-            BottomNavItem(
-                route = HocaRoutes.PROFILE,
-                selectedIcon = Icons.Filled.Person2,
-                unselectedIcon = Icons.Outlined.Person2,
-                labelRes = R.string.nav_profile,
-                label = "Profil"
-            )
+    val bottomNavItems = listOf(
+        BottomNavItem(
+            route = HocaRoutes.HOME,
+            selectedIcon = Icons.Filled.Home,
+            unselectedIcon = Icons.Outlined.Home,
+            labelRes = R.string.nav_home,
+            label = "Ana Sayfa"
+        ),
+        BottomNavItem(
+            route = HocaRoutes.STUDY,
+            selectedIcon = Icons.Filled.School,
+            unselectedIcon = Icons.Outlined.School,
+            labelRes = R.string.nav_study,
+            label = "Çalışma",
+            isMainAction = true
+        ),
+        BottomNavItem(
+            route = HocaRoutes.ADD_WORD,
+            selectedIcon = Icons.Filled.AddCircle,
+            unselectedIcon = Icons.Outlined.AddCircle,
+            labelRes = R.string.nav_add_word,
+            label = "Kelime Ekle"
+        ),
+        BottomNavItem(
+            route = HocaRoutes.PROFILE,
+            selectedIcon = Icons.Filled.Person,
+            unselectedIcon = Icons.Outlined.Person,
+            labelRes = R.string.nav_profile,
+            label = "Profil"
         )
-    }
+    )
 
     Card(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight(),
         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Box(
             modifier = Modifier
@@ -224,10 +221,16 @@ private fun BottomNavigationItem(
 /**
  * Bottom Navigation Visibility Logic
  *
- * UPDATED:
- * - Added STUDY_SCREEN to hidden routes
- * - STUDY (StudyMainScreen) shows bottom navigation
- * - STUDY_SCREEN (actual study session) hides bottom navigation
+ * ✅ UPDATED: ONBOARDING_LEVEL removed from hidden routes
+ * Now package selection screen shows bottom navigation in both flows:
+ * - Onboarding flow (ONBOARDING_LEVEL)
+ * - Main app flow (PACKAGE_SELECTION)
+ *
+ * Hidden only in:
+ * - Splash, Auth, Onboarding Intro (initial setup)
+ * - Word Selection (focused selection experience)
+ * - Study Session (focused study experience)
+ * - AI Assistant screens (immersive AI experience)
  */
 fun shouldShowBottomNavigation(
     currentRoute: String?
@@ -238,12 +241,11 @@ fun shouldShowBottomNavigation(
         currentRoute.startsWith(HocaRoutes.AUTH) -> false
         currentRoute.startsWith(HocaRoutes.ONBOARDING_INTRO) -> false
         currentRoute.startsWith(HocaRoutes.ONBOARDING_LANGUAGE) -> false
-        currentRoute.startsWith(HocaRoutes.ONBOARDING_LEVEL) -> false
         currentRoute.startsWith(HocaRoutes.WORD_SELECTION) -> false
         currentRoute.startsWith(HocaRoutes.STUDY_SCREEN) -> false  // Hide in actual study session
         currentRoute.startsWith(HocaRoutes.AI_ASSISTANT) -> false
         currentRoute.startsWith(HocaRoutes.AI_STORY_DETAIL) -> false
-        else -> true
+        else -> true  // ✅ ONBOARDING_LEVEL artık true dönecek
     }
 }
 

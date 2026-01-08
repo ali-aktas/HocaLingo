@@ -1,9 +1,12 @@
 package com.hocalingo.app.feature.add_word
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,9 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -32,14 +37,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hocalingo.app.HocaRoutes
 import com.hocalingo.app.R
 import com.hocalingo.app.core.ui.components.HocaSnackbarHost
+import com.hocalingo.app.core.ui.theme.HocaColors
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
+import com.hocalingo.app.core.ui.theme.HocaSpacing
 import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import kotlinx.coroutines.flow.collectLatest
 
@@ -52,12 +58,17 @@ private val PoppinsFontFamily = FontFamily(
 )
 
 /**
- * Add Word Screen - Redesigned & Theme-Aware
- * ✅ Modern, colorful and user-friendly design
- * ✅ Main word card prominently displayed
- * ✅ Expandable example sections to save space
- * ✅ Beautiful gradients (orange, purple, grey, lilac)
- * ✅ Theme-aware for both light and dark modes
+ * Add Word Screen - Yenilenmiş Tasarım
+ *
+ * Yenilikler:
+ * ✅ Tek birleşik kart (iki kart birleştirildi)
+ * ✅ HocaColors ve HocaSpacing kullanımı
+ * ✅ 3D Action Button
+ * ✅ Kompakt ve responsive tasarım
+ * ✅ HomeScreen ile tutarlılık
+ * ✅ Parlak mor kelime sayısı
+ *
+ * Package: feature/add_word/
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,7 +82,7 @@ fun AddWordScreen(
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
 
-    // Get theme state for smart styling
+    // Get theme state
     val themeViewModel: ThemeViewModel = hiltViewModel()
     val isDarkTheme = themeViewModel.shouldUseDarkTheme()
 
@@ -93,10 +104,8 @@ fun AddWordScreen(
                 }
                 AddWordEffect.ShowSuccessAndNavigate -> {
                     snackbarHostState.showSnackbar("✨ Kelime başarıyla eklendi!")
-                    // Auto navigate after success
                 }
                 AddWordEffect.ClearFormFields -> {
-                    // Reset expand states on form clear
                     showEnglishExample = false
                     showTurkishExample = false
                 }
@@ -113,339 +122,324 @@ fun AddWordScreen(
             )
         }
     ) { paddingValues ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
                 .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 32.dp)
+                .padding(horizontal = HocaSpacing.md)
+                .padding(bottom = HocaSpacing.lg),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(HocaSpacing.xl))
 
-            // 🎨 Header
+            // Header
             HeaderSection(
-                userWordsCount = uiState.userWordsCount,
-                isDarkTheme = isDarkTheme
+                userWordsCount = uiState.userWordsCount
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(HocaSpacing.md))
 
-            // 💡 Info Banner - YENİ EKLENEN
+            // Info Banner
             InfoBanner(isDarkTheme = isDarkTheme)
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(HocaSpacing.lg))
 
-            // 🎯 Main Word Entry Card (Primary Focus)
-            MainWordEntryCard(
+            // Unified Word Entry Card
+            UnifiedWordEntryCard(
                 englishWord = uiState.englishWord,
                 turkishWord = uiState.turkishWord,
-                englishError = uiState.englishWordError,
-                turkishError = uiState.turkishWordError,
-                onEvent = viewModel::onEvent,
-                focusManager = focusManager,
-                isDarkTheme = isDarkTheme
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 📝 Example Sections (Expandable)
-            ExampleSectionsCard(
                 englishExample = uiState.englishExample,
                 turkishExample = uiState.turkishExample,
-                englishError = uiState.englishExampleError,
-                turkishError = uiState.turkishExampleError,
+                englishError = uiState.englishWordError,
+                turkishError = uiState.turkishWordError,
+                englishExampleError = uiState.englishExampleError,
+                turkishExampleError = uiState.turkishExampleError,
                 showEnglishExample = showEnglishExample,
                 showTurkishExample = showTurkishExample,
                 onToggleEnglishExample = { showEnglishExample = !showEnglishExample },
                 onToggleTurkishExample = { showTurkishExample = !showTurkishExample },
                 onEvent = viewModel::onEvent,
-                focusManager = focusManager,
-                isDarkTheme = isDarkTheme
+                focusManager = focusManager
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(HocaSpacing.lg))
 
-            // 🎬 Action Buttons
-            ActionButtonsCard(
+            // Action Buttons (3D)
+            ActionButtons3D(
                 canSubmit = uiState.canSubmit,
                 isLoading = uiState.isLoading,
                 onSubmit = { viewModel.onEvent(AddWordEvent.SubmitWord) },
-                onClear = { viewModel.onEvent(AddWordEvent.ClearForm) },
-                isDarkTheme = isDarkTheme
+                onClear = { viewModel.onEvent(AddWordEvent.ClearForm) }
             )
 
             // Error Display
             uiState.error?.let { error ->
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(HocaSpacing.md))
                 ErrorCard(
                     error = error,
                     onDismiss = { viewModel.onEvent(AddWordEvent.DismissError) },
                     isDarkTheme = isDarkTheme
                 )
             }
+
+            Spacer(modifier = Modifier.height(HocaSpacing.md))
         }
     }
 }
 
+/**
+ * Header Section
+ */
 @Composable
 private fun HeaderSection(
-    userWordsCount: Int,
-    isDarkTheme: Boolean
+    userWordsCount: Int
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 24.dp)
+        modifier = Modifier.fillMaxWidth()
     ) {
         Text(
             text = "Kendi Kelimeni Ekle",
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Black,
             fontSize = 24.sp,
-            color = MaterialTheme.colorScheme.onBackground, // Theme-aware
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
 
+        Spacer(modifier = Modifier.height(HocaSpacing.xs))
+
+        // Parlak mor kelime sayısı
         Text(
             text = "$userWordsCount özel kelimen var",
             fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Medium,
+            fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onPrimaryContainer, // Theme-aware
+            color = HocaColors.Purple, // ✅ Parlak mor
             textAlign = TextAlign.Center
         )
     }
 }
 
+/**
+ * Info Banner - Kompakt
+ */
 @Composable
-private fun MainWordEntryCard(
-    englishWord: String,
-    turkishWord: String,
-    englishError: String?,
-    turkishError: String?,
-    onEvent: (AddWordEvent) -> Unit,
-    focusManager: FocusManager,
+private fun InfoBanner(
     isDarkTheme: Boolean
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = HocaSpacing.xs),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
+        ),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Box(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    brush = Brush.linearGradient(
-                        colors = if (isDarkTheme) {
-                            listOf(Color(0xFFFF8A65), Color(0xFFFF7043)) // Dark orange gradient
-                        } else {
-                            listOf(Color(0xFFFF6B35), Color(0xFFFF8E53)) // Light orange gradient
-                        }
-                    ),
-                    shape = RoundedCornerShape(24.dp)
+                    color = if (isDarkTheme) {
+                        MaterialTheme.colorScheme.surface
+                    } else {
+                        MaterialTheme.colorScheme.surfaceVariant
+                    },
+                    shape = RoundedCornerShape(16.dp)
                 )
-                .padding(24.dp)
+                .padding(HocaSpacing.sm),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(HocaSpacing.sm)
         ) {
-            Column {
-                // Header with icon
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(28.dp)
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = "Kelime ve anlamını yaz",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        color = Color.White
-                    )
-                }
+            // Lingo Hoca
+            Image(
+                painter = painterResource(R.drawable.onboarding_teacher_1),
+                contentDescription = "Lingo Hoca",
+                modifier = Modifier.size(80.dp),
+                contentScale = ContentScale.Fit
+            )
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // English word field
-                ModernTextField(
-                    value = englishWord,
-                    onValueChange = { onEvent(AddWordEvent.EnglishWordChanged(it)) },
-                    label = "İngilizce Kelime",
-                    placeholder = "beautiful",
-                    error = englishError,
-                    leadingIcon = Icons.Outlined.Language,
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.None,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(12.dp)) // 16dp'den 12dp'ye azaltıldı
-
-                // Turkish word field - gereksiz arrow indicator kaldırıldı
-                ModernTextField(
-                    value = turkishWord,
-                    onValueChange = { onEvent(AddWordEvent.TurkishWordChanged(it)) },
-                    label = "Türkçe Anlamı",
-                    placeholder = "güzel",
-                    error = turkishError,
-                    leadingIcon = Icons.Outlined.Translate,
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.None,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = { focusManager.clearFocus() }
-                    )
-                )
-            }
+            // Açıklama
+            Text(
+                text = "Günlük hayatta görüp öğrenmek istediğin kelimeleri buradan çalışma destene ekleyebilirsin.",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                lineHeight = 16.sp,
+                modifier = Modifier.weight(1f)
+            )
         }
     }
 }
 
+/**
+ * Unified Word Entry Card - Tek birleşik kart
+ */
 @Composable
-private fun ExampleSectionsCard(
+private fun UnifiedWordEntryCard(
+    englishWord: String,
+    turkishWord: String,
     englishExample: String,
     turkishExample: String,
     englishError: String?,
     turkishError: String?,
+    englishExampleError: String?,
+    turkishExampleError: String?,
     showEnglishExample: Boolean,
     showTurkishExample: Boolean,
     onToggleEnglishExample: () -> Unit,
     onToggleTurkishExample: () -> Unit,
     onEvent: (AddWordEvent) -> Unit,
-    focusManager: FocusManager,
-    isDarkTheme: Boolean
+    focusManager: FocusManager
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = if (isDarkTheme) {
-                            listOf(Color(0xFF7986CB), Color(0xFF5C6BC0)) // Dark purple gradient
-                        } else {
-                            listOf(Color(0xFF667eea), Color(0xFF764ba2)) // Light purple gradient
-                        }
-                    ),
-                    shape = RoundedCornerShape(20.dp)
-                )
-                .padding(20.dp)
+                .padding(HocaSpacing.lg)
         ) {
-            Column {
-                // Header
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.FormatQuote,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = "Örnek Cümleler (İsteğe Bağlı)",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color.White
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // English Example Section
-                ExpandableExampleSection(
-                    title = "🇺🇸 İngilizce Örnek Ekle",
-                    isExpanded = showEnglishExample,
-                    onToggle = onToggleEnglishExample,
-                    content = {
-                        ModernTextField(
-                            value = englishExample,
-                            onValueChange = { onEvent(AddWordEvent.EnglishExampleChanged(it)) },
-                            label = "İngilizce Örnek Cümle",
-                            placeholder = "She is very beautiful today.",
-                            error = englishError,
-                            maxLines = 3,
-                            keyboardOptions = KeyboardOptions(
-                                capitalization = KeyboardCapitalization.Sentences,
-                                imeAction = ImeAction.Next
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                            )
-                        )
-                    }
+            // Header
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = null,
+                    tint = HocaColors.Orange,
+                    modifier = Modifier.size(24.dp)
                 )
-
-                if (showEnglishExample && showTurkishExample) {
-                    Spacer(modifier = Modifier.height(12.dp))
-                }
-
-                // Turkish Example Section
-                ExpandableExampleSection(
-                    title = "🇹🇷 Türkçe Örnek Ekle",
-                    isExpanded = showTurkishExample,
-                    onToggle = onToggleTurkishExample,
-                    content = {
-                        ModernTextField(
-                            value = turkishExample,
-                            onValueChange = { onEvent(AddWordEvent.TurkishExampleChanged(it)) },
-                            label = "Türkçe Örnek Cümle",
-                            placeholder = "O bugün çok güzel görünüyor.",
-                            error = turkishError,
-                            maxLines = 3,
-                            keyboardOptions = KeyboardOptions(
-                                capitalization = KeyboardCapitalization.Sentences,
-                                imeAction = ImeAction.Done
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onDone = { focusManager.clearFocus() }
-                            )
-                        )
-                    }
+                Spacer(modifier = Modifier.width(HocaSpacing.sm))
+                Text(
+                    text = "Kelime ve Anlamı",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
+
+            Spacer(modifier = Modifier.height(HocaSpacing.md))
+
+            // English Word Field
+            CompactTextField(
+                value = englishWord,
+                onValueChange = { onEvent(AddWordEvent.EnglishWordChanged(it)) },
+                label = "İngilizce Kelime",
+                placeholder = "beautiful",
+                error = englishError,
+                leadingIcon = Icons.Outlined.Language,
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                )
+            )
+
+            // English Example Section (Expandable)
+            ExpandableSection(
+                title = "🇺🇸 İngilizce Örnek Ekle (İsteğe Bağlı)",
+                isExpanded = showEnglishExample,
+                onToggle = onToggleEnglishExample,
+                content = {
+                    CompactTextField(
+                        value = englishExample,
+                        onValueChange = { onEvent(AddWordEvent.EnglishExampleChanged(it)) },
+                        label = "İngilizce Örnek Cümle",
+                        placeholder = "She is very beautiful today.",
+                        error = englishExampleError,
+                        maxLines = 3,
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Sentences,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                        )
+                    )
+                }
+            )
+
+            Spacer(modifier = Modifier.height(HocaSpacing.md))
+
+            // Turkish Word Field
+            CompactTextField(
+                value = turkishWord,
+                onValueChange = { onEvent(AddWordEvent.TurkishWordChanged(it)) },
+                label = "Türkçe Anlamı",
+                placeholder = "güzel",
+                error = turkishError,
+                leadingIcon = Icons.Outlined.Translate,
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { focusManager.clearFocus() }
+                )
+            )
+
+            // Turkish Example Section (Expandable)
+            ExpandableSection(
+                title = "🇹🇷 Türkçe Örnek Ekle (İsteğe Bağlı)",
+                isExpanded = showTurkishExample,
+                onToggle = onToggleTurkishExample,
+                content = {
+                    CompactTextField(
+                        value = turkishExample,
+                        onValueChange = { onEvent(AddWordEvent.TurkishExampleChanged(it)) },
+                        label = "Türkçe Örnek Cümle",
+                        placeholder = "O bugün çok güzel görünüyor.",
+                        error = turkishExampleError,
+                        maxLines = 3,
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Sentences,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = { focusManager.clearFocus() }
+                        )
+                    )
+                }
+            )
         }
     }
 }
 
+/**
+ * Expandable Section
+ */
 @Composable
-private fun ExpandableExampleSection(
+private fun ExpandableSection(
     title: String,
     isExpanded: Boolean,
     onToggle: () -> Unit,
     content: @Composable () -> Unit
 ) {
     Column {
+        Spacer(modifier = Modifier.height(HocaSpacing.xs))
+
         // Toggle Button
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
                 .clickable { onToggle() }
-                .background(Color.White.copy(alpha = 0.1f))
-                .padding(12.dp),
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                .padding(HocaSpacing.sm),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -453,9 +447,16 @@ private fun ExpandableExampleSection(
                 text = title,
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                color = Color.White,
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f)
+            )
+
+            Icon(
+                imageVector = if (isExpanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(20.dp)
             )
         }
 
@@ -466,113 +467,18 @@ private fun ExpandableExampleSection(
             exit = shrinkVertically() + fadeOut()
         ) {
             Column {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(HocaSpacing.sm))
                 content()
             }
         }
     }
 }
 
+/**
+ * Compact TextField
+ */
 @Composable
-private fun ActionButtonsCard(
-    canSubmit: Boolean,
-    isLoading: Boolean,
-    onSubmit: () -> Unit,
-    onClear: () -> Unit,
-    isDarkTheme: Boolean
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = if (isDarkTheme) {
-                            listOf(Color(0xFF616161), Color(0xFF424242)) // Dark grey gradient
-                        } else {
-                            listOf(Color(0xFF9E9E9E), Color(0xFF757575)) // Light grey gradient
-                        }
-                    ),
-                    shape = RoundedCornerShape(20.dp)
-                )
-                .padding(20.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Clear Button - Daha geniş yapıldı
-                OutlinedButton(
-                    onClick = onClear,
-                    modifier = Modifier.weight(1.2f), // 1f'den 1.2f'ye çıkarıldı
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = Color.White.copy(alpha = 0.1f),
-                        contentColor = Color.White
-                    ),
-                    border = null,
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Refresh,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp)) // 8dp'den 6dp'ye azaltıldı
-                    Text(
-                        text = "Temizle",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp
-                    )
-                }
-
-                // Submit Button - Biraz küçültüldü
-                Button(
-                    onClick = onSubmit,
-                    enabled = canSubmit && !isLoading,
-                    modifier = Modifier.weight(1.5f), // 2f'den 1.5f'ye azaltıldı
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (isDarkTheme) {
-                            Color(0xFF66BB6A) // Dark theme green
-                        } else {
-                            Color(0xFF4CAF50) // Light theme green
-                        }
-                    ),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    if (isLoading) {
-                        CircularProgressIndicator(
-                            color = Color.White,
-                            strokeWidth = 2.dp,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp)) // 8dp'den 6dp'ye azaltıldı
-                        Text(
-                            text = "Destene Ekle",
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ModernTextField(
+private fun CompactTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
@@ -592,7 +498,7 @@ private fun ModernTextField(
                     text = label,
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Medium,
-                    color = Color.White.copy(alpha = 0.9f)
+                    fontSize = 13.sp
                 )
             },
             placeholder = {
@@ -600,7 +506,7 @@ private fun ModernTextField(
                     text = placeholder,
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Normal,
-                    color = Color.White.copy(alpha = 0.5f)
+                    fontSize = 13.sp
                 )
             },
             leadingIcon = leadingIcon?.let { icon ->
@@ -608,7 +514,7 @@ private fun ModernTextField(
                     Icon(
                         imageVector = icon,
                         contentDescription = null,
-                        tint = Color.White.copy(alpha = 0.7f),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -618,13 +524,10 @@ private fun ModernTextField(
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
             colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White.copy(alpha = 0.9f),
-                focusedBorderColor = Color.White,
-                unfocusedBorderColor = Color.White.copy(alpha = 0.5f),
-                errorBorderColor = Color(0xFFFFCDD2),
-                errorTextColor = Color.White,
-                cursorColor = Color.White
+                focusedBorderColor = HocaColors.Orange,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                errorBorderColor = HocaColors.HardRed,
+                cursorColor = HocaColors.Orange
             ),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp)
@@ -632,19 +535,269 @@ private fun ModernTextField(
 
         // Error text
         error?.let { errorText ->
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(HocaSpacing.xxs))
             Text(
                 text = errorText,
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Normal,
                 fontSize = 12.sp,
-                color = Color(0xFFFFCDD2),
-                modifier = Modifier.padding(start = 16.dp)
+                color = HocaColors.HardRed,
+                modifier = Modifier.padding(start = HocaSpacing.md)
             )
         }
     }
 }
 
+/**
+ * Action Buttons 3D - Yeni tasarım
+ */
+@Composable
+private fun ActionButtons3D(
+    canSubmit: Boolean,
+    isLoading: Boolean,
+    onSubmit: () -> Unit,
+    onClear: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(HocaSpacing.md)
+    ) {
+        // Clear Button (küçük, 3D)
+        Small3DButton(
+            text = "Temizle",
+            icon = Icons.Outlined.Refresh,
+            onClick = onClear,
+            modifier = Modifier.weight(1f)
+        )
+
+        // Submit Button (büyük, 3D, turuncu)
+        Large3DSubmitButton(
+            text = "Destene Ekle",
+            enabled = canSubmit && !isLoading,
+            isLoading = isLoading,
+            onClick = onSubmit,
+            modifier = Modifier.weight(2f)
+        )
+    }
+}
+
+/**
+ * Small 3D Button (Clear)
+ */
+@Composable
+private fun Small3DButton(
+    text: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var isPressed by remember { mutableStateOf(false) }
+
+    val pressDepth by animateDpAsState(
+        targetValue = if (isPressed) 3.dp else 0.dp,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessHigh
+        ),
+        label = "press_depth"
+    )
+
+    val brightness by animateFloatAsState(
+        targetValue = if (isPressed) 0.85f else 1f,
+        animationSpec = tween(durationMillis = 100),
+        label = "brightness"
+    )
+
+    Box(
+        modifier = modifier
+            .height(56.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = {
+                        isPressed = true
+                        val released = tryAwaitRelease()
+                        isPressed = false
+                        if (released) onClick()
+                    }
+                )
+            }
+    ) {
+        // Shadow
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(y = 6.dp)
+        ) {
+            drawRoundRect(
+                brush = Brush.radialGradient(
+                    colors = listOf(
+                        Color.Black.copy(alpha = 0.2f),
+                        Color.Transparent
+                    )
+                ),
+                cornerRadius = CornerRadius(16.dp.toPx())
+            )
+        }
+
+        // Button surface
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(y = pressDepth)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFBDBDBD).copy(alpha = brightness),
+                            Color(0xFF9E9E9E).copy(alpha = brightness)
+                        )
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .padding(HocaSpacing.sm),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(HocaSpacing.xs))
+                Text(
+                    text = text,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    color = Color.White
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Large 3D Submit Button - Daha büyük ve net
+ */
+@Composable
+private fun Large3DSubmitButton(
+    text: String,
+    enabled: Boolean,
+    isLoading: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var isPressed by remember { mutableStateOf(false) }
+
+    val pressDepth by animateDpAsState(
+        targetValue = if (isPressed && enabled) 4.dp else 0.dp,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessHigh
+        ),
+        label = "press_depth"
+    )
+
+    val brightness by animateFloatAsState(
+        targetValue = if (isPressed && enabled) 0.85f else 1f,
+        animationSpec = tween(durationMillis = 100),
+        label = "brightness"
+    )
+
+    Box(
+        modifier = modifier
+            .height(56.dp)
+            .pointerInput(enabled) {
+                if (enabled) {
+                    detectTapGestures(
+                        onPress = {
+                            isPressed = true
+                            val released = tryAwaitRelease()
+                            isPressed = false
+                            if (released) onClick()
+                        }
+                    )
+                }
+            }
+    ) {
+        // Shadow
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(y = 6.dp)
+        ) {
+            drawRoundRect(
+                brush = Brush.radialGradient(
+                    colors = listOf(
+                        Color.Black.copy(alpha = if (enabled) 0.25f else 0.1f),
+                        Color.Transparent
+                    )
+                ),
+                cornerRadius = CornerRadius(16.dp.toPx())
+            )
+        }
+
+        // Button surface
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(y = pressDepth)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = if (enabled) {
+                            listOf(
+                                HocaColors.Orange.copy(alpha = brightness),
+                                HocaColors.OrangeDark.copy(alpha = brightness)
+                            )
+                        } else {
+                            listOf(
+                                Color(0xFFBDBDBD),
+                                Color(0xFF9E9E9E)
+                            )
+                        }
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .padding(HocaSpacing.md),
+            contentAlignment = Alignment.Center
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    strokeWidth = 2.dp,
+                    modifier = Modifier.size(24.dp)
+                )
+            } else {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(HocaSpacing.xs))
+                    Text(
+                        text = text,
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Black,
+                        fontSize = 16.sp,
+                        color = Color.White
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Error Card
+ */
 @Composable
 private fun ErrorCard(
     error: String,
@@ -666,7 +819,7 @@ private fun ErrorCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(HocaSpacing.md),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -675,7 +828,7 @@ private fun ErrorCard(
                 tint = if (isDarkTheme) Color.White else Color(0xFFD32F2F),
                 modifier = Modifier.size(24.dp)
             )
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(HocaSpacing.sm))
             Text(
                 text = error,
                 fontFamily = PoppinsFontFamily,
@@ -690,71 +843,6 @@ private fun ErrorCard(
                     contentDescription = "Kapat",
                     tint = if (isDarkTheme) Color.White else Color(0xFFD32F2F),
                     modifier = Modifier.size(20.dp)
-                )
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun AddWordScreenPreview() {
-    HocaLingoTheme {
-        AddWordScreen(
-            onNavigateBack = {},
-            onNavigateToStudy = {}
-        )
-    }
-}
-
-@Composable
-private fun InfoBanner(
-    isDarkTheme: Boolean
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isDarkTheme) {
-                Color(0xFF443953)
-            } else {
-                Color(0xFF979797)
-            }
-        ),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            // Lingo Hoca Görseli
-            Image(
-                painter = painterResource(R.drawable.onboarding_teacher_1),
-                contentDescription = "Lingo Hoca",
-                modifier = Modifier.size(100.dp), // ✅ 80dp → 100dp
-                contentScale = ContentScale.Fit // ✅ EKLENEN
-            )
-
-            // Açıklama Metni
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = "Günlük hayatta görüp öğrenmek istediğin kelimeleri buradan çalışma destene ekleyebilirssin.",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 12.sp,
-                    color = if (isDarkTheme) {
-                        Color.White.copy(alpha = 0.8f)
-                    } else {
-                        Color(0xFFE7E5E5)
-                    },
-                    lineHeight = 18.sp
                 )
             }
         }

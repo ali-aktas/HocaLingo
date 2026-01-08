@@ -1,23 +1,22 @@
 package com.hocalingo.app.feature.onboarding
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -26,17 +25,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hocalingo.app.HocaRoutes
 import com.hocalingo.app.R
-import com.hocalingo.app.core.ui.components.HocaErrorState
-import com.hocalingo.app.core.ui.components.HocaLoadingIndicator
 import com.hocalingo.app.core.ui.components.HocaSnackbarHost
-import com.hocalingo.app.core.ui.theme.ThemeViewModel
-import com.hocalingo.app.data.PackageDownloadStatus
+import com.hocalingo.app.core.ui.theme.HocaColors
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-// Poppins font family
+// Poppins Font Family
 private val PoppinsFontFamily = FontFamily(
     Font(R.font.poppins_regular, FontWeight.Normal),
     Font(R.font.poppins_medium, FontWeight.Medium),
@@ -45,28 +42,30 @@ private val PoppinsFontFamily = FontFamily(
 )
 
 /**
- * UPDATED Package Selection with Colorful Gradient Cards
- * ✅ Each level has unique gradient colors
- * ✅ Beautiful visual hierarchy
- * ✅ Download icon instead of text
- * ✅ Clean level badge without background
+ * PACKAGE SELECTION SCREEN - Yenilenmiş Tasarım
+ *
+ * Yenilikler:
+ * ✅ 3D button'lar (Hoca3DButton benzeri)
+ * ✅ "Paketi aç" butonu kaldırıldı - Direkt tıklama ile navigasyon
+ * ✅ İndirme badge'leri kaldırıldı
+ * ✅ "B1 - Orta" formatında başlık
+ * ✅ Kelime sayısı sağ üstte
+ * ✅ Minimal bottom padding (BottomNav ile arasında boşluk yok)
+ * ✅ Her zaman bottom navigation görünür
+ *
+ * Package: feature/onboarding/
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PackageSelectionScreen(
     onNavigateToWordSelection: (String) -> Unit,
-    onNavigateBack: (() -> Unit)? = null,
+    onNavigateBack: () -> Unit,
     viewModel: PackageSelectionViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    // Get theme state
-    val themeViewModel: ThemeViewModel = hiltViewModel()
-    val isDarkTheme = themeViewModel.shouldUseDarkTheme()
-
-    // ✅ Effects - sadece yeni ViewModel'deki effect'leri dinle
+    // Handle effects
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
@@ -76,9 +75,13 @@ fun PackageSelectionScreen(
                 is PackageSelectionEffect.ShowMessage -> {
                     snackbarHostState.showSnackbar(effect.message)
                 }
-
-                is PackageSelectionEffect.ShowDownloadDialog -> TODO()
-                is PackageSelectionEffect.ShowLoadingAnimation -> TODO()
+                is PackageSelectionEffect.ShowLoadingAnimation -> {
+                    // İndirme başarılı, navigation yap
+                    onNavigateToWordSelection(effect.packageId)
+                }
+                is PackageSelectionEffect.ShowDownloadDialog -> {
+                    // Reserved for future use
+                }
             }
         }
     }
@@ -92,63 +95,39 @@ fun PackageSelectionScreen(
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(
-                    top = paddingValues.calculateTopPadding(),
-                    bottom = 0.dp
+        when {
+            uiState.isLoading && uiState.packages.isEmpty() -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = HocaColors.Orange
+                    )
+                }
+            }
+            uiState.error != null && uiState.packages.isEmpty() -> {
+                ErrorState(
+                    message = uiState.error!!,
+                    onRetry = { viewModel.onEvent(PackageSelectionEvent.RetryLoading) },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
                 )
-        ) {
-            when {
-                uiState.isLoading -> {
-                    HocaLoadingIndicator(
-                        text = "Paketler yükleniyor...",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                uiState.error != null -> {
-                    HocaErrorState(
-                        message = uiState.error!!,
-                        onRetry = { viewModel.onEvent(PackageSelectionEvent.RetryLoading) },
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                else -> {
-                    PackageSelectionContent(
-                        packages = uiState.packages,
-                        selectedPackageId = uiState.selectedPackageId,
-                        isLoading = uiState.isLoading,
-                        isDarkTheme = isDarkTheme,
-                        onPackageSelected = { packageId ->
-                            viewModel.onEvent(PackageSelectionEvent.SelectPackage(packageId))
-                        },
-                        onContinue = { packageId ->
-                            // Seçili paketin bilgilerini al
-                            val selectedPackage = uiState.packages.find { it.id == packageId }
-
-                            if (selectedPackage != null) {
-                                if (selectedPackage.isDownloaded) {
-                                    // ✅ Paket zaten yüklü, direkt WordSelection'a git
-                                    viewModel.onEvent(PackageSelectionEvent.DownloadPackage(packageId))
-                                } else {
-                                    // ❌ Paket henüz yüklenmedi
-                                    coroutineScope.launch {
-                                        snackbarHostState.showSnackbar(
-                                            "Bu paket henüz yüklenmedi. Lütfen önce paketi indirin."
-                                        )
-                                    }
-                                }
-                            } else {
-                                // Hata durumu
-                                coroutineScope.launch {
-                                    snackbarHostState.showSnackbar("Lütfen bir paket seçin.")
-                                }
-                            }
-                        }
-                    )
-                }
+            }
+            else -> {
+                PackageSelectionContent(
+                    packages = uiState.packages,
+                    selectedPackageId = uiState.selectedPackageId,
+                    paddingValues = paddingValues,
+                    onPackageClick = { packageId ->
+                        // Paketi seç ve işlemi başlat
+                        viewModel.onEvent(PackageSelectionEvent.SelectPackage(packageId))
+                        viewModel.onEvent(PackageSelectionEvent.DownloadPackage(packageId))
+                    }
+                )
             }
         }
     }
@@ -158,318 +137,277 @@ fun PackageSelectionScreen(
 private fun PackageSelectionContent(
     packages: List<PackageInfo>,
     selectedPackageId: String?,
-    isLoading: Boolean,
-    isDarkTheme: Boolean,
-    onPackageSelected: (String) -> Unit,
-    onContinue: (String) -> Unit
+    paddingValues: PaddingValues,
+    onPackageClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp),
+            .padding(paddingValues)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
+        // Hero Image
         Image(
             painter = painterResource(id = R.drawable.onboarding_teacher_1),
-            contentDescription = null,
-            modifier = Modifier
-                .size(140.dp)
+            contentDescription = "Lingo Hoca",
+            modifier = Modifier.size(140.dp)
         )
 
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(2.dp))
-
-        // Header
+        // Title
         Text(
             text = "Seviyeni seç, öğrenmeye başla!",
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 16.sp,
+            fontSize = 20.sp,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
-            lineHeight = 30.sp
+            lineHeight = 28.sp
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Package cards list
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.weight(1f)
-        ) {
-            items(packages) { packageInfo ->
-                ColorfulPackageCard(
-                    packageInfo = packageInfo,
-                    isSelected = selectedPackageId == packageInfo.id,
-                    isDarkTheme = isDarkTheme,
-                    onClick = { onPackageSelected(packageInfo.id) }
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Continue Button
-        Button(
-            onClick = {
-                selectedPackageId?.let { packageId ->
-                    onContinue(packageId)
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = if (selectedPackageId != null) {
-                    if (isDarkTheme) Color(0xFF9D4FF7) else Color(0xFF8E0CFF)
-                } else {
-                    MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
-                },
-                disabledContainerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
-            ),
-            enabled = selectedPackageId != null && !isLoading
-        ) {
-            Text(
-                text = "Paketi aç",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                color = if (selectedPackageId != null) Color.White else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+        // Package Buttons
+        packages.forEach { packageInfo ->
+            Package3DButton(
+                packageInfo = packageInfo,
+                isSelected = selectedPackageId == packageInfo.id,
+                onClick = { onPackageClick(packageInfo.id) }
             )
+            Spacer(modifier = Modifier.height(12.dp))
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        // Minimal bottom spacing
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
+/**
+ * Package 3D Button
+ *
+ * Tasarım:
+ * - 3D depth effect (Hoca3DButton benzeri)
+ * - Sol: "B1 - Orta" başlık + açıklama
+ * - Sağ üst: Kelime sayısı
+ * - Full width, 100dp height
+ * - Press animation
+ * - Selection indication (border)
+ */
 @Composable
-private fun ColorfulPackageCard(
+private fun Package3DButton(
     packageInfo: PackageInfo,
     isSelected: Boolean,
-    isDarkTheme: Boolean,
     onClick: () -> Unit
 ) {
-    val downloadProgress = packageInfo.downloadProgress ?: 0
+    var isPressed by remember { mutableStateOf(false) }
 
-    // ✅ Gradient renkler - seviyeye göre
+    // Animations
+    val pressDepth by animateDpAsState(
+        targetValue = if (isPressed) 4.dp else 0.dp,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessHigh
+        ),
+        label = "press_depth"
+    )
+
+    val topColorBrightness by animateFloatAsState(
+        targetValue = if (isPressed) 0.85f else 1f,
+        animationSpec = tween(durationMillis = 100),
+        label = "color_brightness"
+    )
+
+    // Gradient colors based on package level
     val gradientColors = when (packageInfo.level) {
-        "A1" -> if (isDarkTheme) {
-            listOf(Color(0xFF66BB6A), Color(0xFF4CAF50))
-        } else {
-            listOf(Color(0xFF4CAF50), Color(0xFF388E3C))
-        }
-        "A2" -> if (isDarkTheme) {
-            listOf(Color(0xFF42A5F5), Color(0xFF2196F3))
-        } else {
-            listOf(Color(0xFF2196F3), Color(0xFF1976D2))
-        }
-        "B1" -> if (isDarkTheme) {
-            listOf(Color(0xFFFF7043), Color(0xFFFF5722))
-        } else {
-            listOf(Color(0xFFFF5722), Color(0xFFE64A19))
-        }
-        "B2" -> if (isDarkTheme) {
-            listOf(Color(0xFFFFCA28), Color(0xFFFFC107))
-        } else {
-            listOf(Color(0xFFFFC107), Color(0xFFFFA000))
-        }
-        "C1" -> if (isDarkTheme) {
-            listOf(Color(0xFF26A69A), Color(0xFF009688))
-        } else {
-            listOf(Color(0xFF009688), Color(0xFF00796B))
-        }
-        "C2" -> if (isDarkTheme) {
-            listOf(Color(0xFFEC407A), Color(0xFFBA68C8))
-        } else {
-            listOf(Color(0xFFE91E63), Color(0xFFAB47BC))
-        }
-        else -> if (isDarkTheme) {
-            listOf(Color(0xFF78909C), Color(0xFF607D8B))
-        } else {
-            listOf(Color(0xFF90A4AE), Color(0xFF78909C))
-        }
+        "A1" -> listOf(Color(0xFF4CAF50), Color(0xFF388E3C))  // Yeşil
+        "A2" -> listOf(Color(0xFF42A5F5), Color(0xFF1976D2))  // Mavi
+        "B1" -> listOf(Color(0xFFFF9800), Color(0xFFF57C00))  // Turuncu
+        "B2" -> listOf(Color(0xFFE53935), Color(0xFFC62828))  // Kırmızı
+        "C1" -> listOf(Color(0xFF9C27B0), Color(0xFF7B1FA2))  // Mor
+        "C2" -> listOf(Color(0xFF26A69A), Color(0xFF00897B))  // Teal
+        else -> listOf(HocaColors.Orange, HocaColors.OrangeDark)
     }
+    val baseColor = gradientColors.first()
 
-    Card(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(140.dp)
-            .clickable { onClick() }
-            .shadow(
-                elevation = if (isSelected) 12.dp else 6.dp,
-                shape = RoundedCornerShape(20.dp),
-                spotColor = gradientColors.first().copy(alpha = 0.3f)
-            ),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = if (isSelected) {
-            BorderStroke(4.dp, Color(0xFFFB9322))
-        } else null
+            .height(100.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = {
+                        isPressed = true
+                        val released = tryAwaitRelease()
+                        isPressed = false
+                        if (released) {
+                            onClick()
+                        }
+                    }
+                )
+            }
     ) {
+        // Bottom shadow
+        Canvas(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp)
+                .offset(y = 8.dp)
+        ) {
+            drawRoundRect(
+                brush = Brush.radialGradient(
+                    colors = listOf(
+                        Color.Black.copy(alpha = 0.25f),
+                        Color.Transparent
+                    ),
+                    radius = size.width / 2
+                ),
+                size = this.size,
+                cornerRadius = CornerRadius(20.dp.toPx())
+            )
+        }
+
+        // Main button surface
+        Canvas(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp)
+                .offset(y = pressDepth)
+        ) {
+            val lightColor = Color(
+                red = (baseColor.red * topColorBrightness).coerceIn(0f, 1f),
+                green = (baseColor.green * topColorBrightness).coerceIn(0f, 1f),
+                blue = (baseColor.blue * topColorBrightness).coerceIn(0f, 1f)
+            )
+
+            val shadowColor = Color(
+                red = (baseColor.red * 0.75f).coerceIn(0f, 1f),
+                green = (baseColor.green * 0.75f).coerceIn(0f, 1f),
+                blue = (baseColor.blue * 0.75f).coerceIn(0f, 1f)
+            )
+
+            drawRoundRect(
+                brush = Brush.verticalGradient(
+                    colors = listOf(lightColor, shadowColor)
+                ),
+                size = this.size,
+                cornerRadius = CornerRadius(20.dp.toPx())
+            )
+        }
+
+        // Selection border
+        if (isSelected) {
+            Canvas(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .offset(y = pressDepth)
+            ) {
+                drawRoundRect(
+                    color = Color.White,
+                    size = this.size,
+                    cornerRadius = CornerRadius(20.dp.toPx()),
+                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 4.dp.toPx())
+                )
+            }
+        }
+
+        // Content
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.linearGradient(colors = gradientColors),
-                    shape = RoundedCornerShape(20.dp)
-                )
+                .fillMaxWidth()
+                .height(100.dp)
+                .offset(y = pressDepth)
+                .padding(20.dp)
         ) {
-            // ✅ GÜNCELLEME: Sağ üst köşe - Kelime sayısı VE indirme ikonu
+            // Left: Title + Description
             Column(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(12.dp),
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                modifier = Modifier.align(Alignment.CenterStart),
+                verticalArrangement = Arrangement.Center
             ) {
-                // Kelime sayısı (üstte)
-                if (packageInfo.wordCount > 0) {
-                    Text(
-                        text = "${packageInfo.wordCount} kelime",
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Thin,
-                        fontSize = 14.sp,
-                        color = Color.White
-                    )
-                }
-
-                // İndirme durumu (altta)
-                when (packageInfo.downloadStatus) {
-                    is PackageDownloadStatus.NotDownloaded -> {
-                        // Modern indirme ikonu
-                        DownloadIconBadge(
-                            backgroundColor = Color.White.copy(alpha = 0.65f),
-                            iconTint = gradientColors.first()
-                        )
-                    }
-                    is PackageDownloadStatus.FullyDownloaded -> {
-                        DownloadBadge(
-                            text = "İndirildi ✓",
-                            backgroundColor = Color(0xFF4CAF50),
-                            textColor = Color.White
-                        )
-                    }
-                    is PackageDownloadStatus.HasNewWords -> {
-                        DownloadBadge(
-                            text = "${packageInfo.newWordsCount} Yeni",
-                            backgroundColor = Color(0xFFFF9800),
-                            textColor = Color.White
-                        )
-                    }
-                }
-            }
-
-            // Content
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(20.dp),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                // ✅ Level badge
+                // Title: "B1 - Orta"
                 Text(
-                    text = packageInfo.level,
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Black,
-                    fontSize = 20.sp,
-                    color = Color.White,
-                    textAlign = TextAlign.Start
-                )
-
-                // Package name
-                Text(
-                    text = packageInfo.name,
+                    text = "${packageInfo.level} - ${packageInfo.name}",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
                     color = Color.White
                 )
+
+                Spacer(modifier = Modifier.height(4.dp))
 
                 // Description
                 Text(
                     text = packageInfo.description,
                     fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
-                    color = Color.White.copy(alpha = 0.9f)
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 13.sp,
+                    color = Color.White.copy(alpha = 0.85f),
+                    maxLines = 1
                 )
             }
 
-            // Download progress overlay
-            if (downloadProgress > 0 && downloadProgress < 100) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.7f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        CircularProgressIndicator(
-                            progress = downloadProgress / 100f,
-                            modifier = Modifier.size(48.dp),
-                            color = Color.White,
-                            strokeWidth = 4.dp
-                        )
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text(
-                            text = "$downloadProgress%",
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            color = Color.White
-                        )
-                    }
-                }
-            }
+            // Right Top: Word Count
+            Text(
+                text = "${packageInfo.wordCount} kelime",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp,
+                color = Color.White,
+                textAlign = TextAlign.End,
+                modifier = Modifier.align(Alignment.TopEnd)
+            )
         }
     }
 }
 
 /**
- * ✅ GÜNCELLEME: Download Icon Badge - Daha modern ve küçük
+ * Error State
  */
 @Composable
-private fun DownloadIconBadge(
-    backgroundColor: Color,
-    iconTint: Color
+private fun ErrorState(
+    message: String,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Icon(
-        imageVector = Icons.Default.Download,
-        contentDescription = "Download",
-        tint = iconTint,
-        modifier = Modifier.size(24.dp)
-    )
-}
-
-/**
- * Download Badge Component (text için)
- */
-@Composable
-private fun DownloadBadge(
-    text: String,
-    backgroundColor: Color,
-    textColor: Color
-) {
-    Surface(
-        color = backgroundColor,
-        shape = RoundedCornerShape(12.dp),
-        modifier = Modifier.wrapContentSize()
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = text,
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 11.sp,
-            color = textColor,
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+            text = "❌",
+            fontSize = 48.sp,
+            modifier = Modifier.padding(bottom = 16.dp)
         )
+
+        Text(
+            text = message,
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 32.dp)
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = onRetry,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = HocaColors.Orange
+            )
+        ) {
+            Text(
+                text = "Tekrar Dene",
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }

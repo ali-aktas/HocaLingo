@@ -78,12 +78,16 @@ object HocaColors {
     // UI Elements (orijinal renkler korundu)
     val CardShadow = Color(0x1A000000)
     val DividerGray = Color(0xFFE0E0E0)
+    val HintGray = Color(0xFF9E9E9E)
+
 
     // ============ DESIGN SYSTEM V2 - 3D BUTTON COLORS ============
     // Primary Orange (Ana marka rengi)
     val Orange = Color(0xFFFF6B35)
     val OrangeDark = Color(0xFFE85A2B)
     val OrangeLight = Color(0xFFFF8C61)
+    val Turkuaz = Color(0xFF22ACB8)
+    val FuturisticGreen = Color(0xFF64C27C)
 
     // Secondary Purple (AI özellikleri)
     val Purple = Color(0xFF7B61FF)

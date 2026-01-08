@@ -29,9 +29,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.hocalingo.app.HocaRoutes
 import com.hocalingo.app.R
 import com.hocalingo.app.core.ui.components.CircularStatCard
-import com.hocalingo.app.core.ui.components.HocaPlayButton
 import com.hocalingo.app.core.ui.components.HocaSnackbarHost
+import com.hocalingo.app.core.ui.components.PlayButton
 import com.hocalingo.app.core.ui.theme.HocaColors
+import com.hocalingo.app.core.ui.theme.HocaSpacing
 import com.hocalingo.app.core.ui.theme.ThemeViewModel
 import com.hocalingo.app.feature.subscription.PaywallBottomSheet
 import kotlinx.coroutines.flow.collectLatest
@@ -185,7 +186,7 @@ fun HomeScreen(
                         value = uiState.streakDays.toString(),
                         label = "Günlük seri!",
                         progress = if (uiState.streakDays > 0) 1f else 0f,
-                        color = HocaColors.Orange,
+                        color = HocaColors.Turkuaz,
                         isDarkTheme = isDarkTheme,
                         size = 90.dp
                     )
@@ -205,7 +206,7 @@ fun HomeScreen(
                         value = studyTimeDisplay,
                         label = studyTimeLabel,
                         progress = if (uiState.monthlyStats.studyTimeMinutes > 0) 1f else 0f,
-                        color = HocaColors.EasyGreen,
+                        color = HocaColors.MasteredGold,
                         isDarkTheme = isDarkTheme,
                         size = 90.dp
                     )
@@ -215,7 +216,7 @@ fun HomeScreen(
                         value = "${uiState.monthlyStats.disciplineScore}%",
                         label = "Disiplin\nPuanı",
                         progress = uiState.monthlyStats.disciplineScore / 100f,
-                        color = HocaColors.Purple,
+                        color = HocaColors.FuturisticGreen,
                         isDarkTheme = isDarkTheme,
                         size = 90.dp
                     )
@@ -281,65 +282,31 @@ private fun HeroCard(
     onPlayClick: () -> Unit,
     isDarkTheme: Boolean
 ) {
-    Card(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(
-                elevation = 8.dp,
-                shape = RoundedCornerShape(28.dp),
-                spotColor = Color.Black.copy(alpha = 0.15f)
-            ),
-        shape = RoundedCornerShape(28.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isDarkTheme)
-                Color(0xFF211A2E)
-            else
-                Color.White
-        )
+            .padding(HocaSpacing.xs),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
+
+        // Sol: Play Button (Yeni SVG tabanlı)
+        PlayButton(
+            onClick = onPlayClick,
+            size = 170.dp
+        )
+
+        // Sağ: BÜYÜK Maskot
+        Image(
+            painter = painterResource(id = R.drawable.lingo_hoca_image),
+            contentDescription = "Lingo Hoca",
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Sol: Play Button
-            HocaPlayButton(
-                onClick = onPlayClick,
-                size = 120.dp,
-                baseColor = HocaColors.MediumYellow
-            )
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            // Orta: Motivasyon yazısı
-            Text(
-                text = motivationText,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Center,
-                lineHeight = 18.sp,
-                modifier = Modifier
-                    .offset(x = 10.dp)
-                    .weight(1f)
-                    .padding(horizontal = 6.dp)
-            )
-
-            // Sağ: BÜYÜK Maskot (sabitlenmiş)
-            Image(
-                painter = painterResource(id = R.drawable.lingo_hoca_image),
-                contentDescription = "Lingo Hoca",
-                modifier = Modifier
-                    .size(130.dp)
-                    .offset(y = 15.dp, x = 15.dp),
-                contentScale = ContentScale.Fit
-            )
-        }
+                .size(170.dp),
+            contentScale = ContentScale.Fit
+        )
     }
 }
+
 
 /**
  * WIDE ACTION BUTTON - Dikdörtgen 3D Buton (Card değil!)
