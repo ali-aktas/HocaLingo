@@ -49,12 +49,15 @@ data class WordFormData(
     fun validate(): ValidationResult {
         val errors = mutableListOf<FieldError>()
 
+        val ENGLISH_WORD_REGEX = Regex("^[a-zA-Z\\s'-]+$")
+
+
         // English word validation
         when {
             english.isBlank() -> errors.add(FieldError.EnglishRequired)
             english.length < 2 -> errors.add(FieldError.EnglishTooShort)
             english.length > 50 -> errors.add(FieldError.EnglishTooLong)
-            !english.matches(Regex("^[a-zA-Z\\s'-]+$")) -> errors.add(FieldError.EnglishInvalidFormat)
+            !ENGLISH_WORD_REGEX.matches(english) -> errors.add(FieldError.EnglishInvalidFormat)
         }
 
         // Turkish word validation

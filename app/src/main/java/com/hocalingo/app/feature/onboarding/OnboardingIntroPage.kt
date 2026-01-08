@@ -6,11 +6,9 @@ import androidx.annotation.DrawableRes
  * Data model for onboarding intro pages
  *
  * Package: feature/onboarding/
+ * Simplified structure: Only title and image
  */
 data class OnboardingIntroPage(
     val title: String,
-    val description: String,
-    @DrawableRes val imageRes: Int,
-    val buttonText: String,
-    val backgroundColor: Long
+    @DrawableRes val imageRes: Int
 )

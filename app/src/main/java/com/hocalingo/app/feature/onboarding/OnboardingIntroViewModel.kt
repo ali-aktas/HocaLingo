@@ -17,7 +17,7 @@ import javax.inject.Inject
  * ViewModel for Onboarding Intro Screen
  *
  * Package: feature/onboarding/
- * Manages 3-page intro flow before package selection
+ * Manages 5-page modern intro flow
  */
 @HiltViewModel
 class OnboardingIntroViewModel @Inject constructor(
@@ -65,29 +65,30 @@ class OnboardingIntroViewModel @Inject constructor(
     companion object {
         /**
          * Get onboarding intro pages data
+         *
+         * NOTE: Texts are placeholders - update with actual content
          */
         fun getOnboardingPages(): List<OnboardingIntroPage> {
             return listOf(
                 OnboardingIntroPage(
-                    title = "Kelimeleri çerez gibi öğrenmeye hazır ol!",
-                    description = "Önce hatırlamaya çalış, sonra arka yüzünü çevir. Doğru bildiysen yeşil butona tıkla!",
-                    imageRes = R.drawable.onboarding_teacher_1,
-                    buttonText = "Devam Et",
-                    backgroundColor = 0xFFFB9322
+                    title = "Öğreneceğin kelimeleri kendin seç",
+                    imageRes = R.drawable.onboarding_2
                 ),
                 OnboardingIntroPage(
-                    title = "Öğrenmek istediğin kelimeyi sağa kaydır!",
-                    description = "Çalışmak istediğin kelimeyi seç ya da kendi kelimelerini ekle!",
-                    imageRes = R.drawable.onboarding_teacher_2,
-                    buttonText = "Devam Et",
-                    backgroundColor = 0xFFFB9322
+                    title = "Çalışma destene yeni kelimeler ekle",
+                    imageRes = R.drawable.onboarding_4
                 ),
                 OnboardingIntroPage(
-                    title = "Yapay zeka ile kalıcı ve doğal öğrenme!",
-                    description = "Hocalingo yapay zekası ile çalıştığın kelimelerden orijinal hikayeler ve motivasyon yazıları oluştur.",
-                    imageRes = R.drawable.onboarding_teacher_3,
-                    buttonText = "Öğrenmeye Başla",
-                    backgroundColor = 0xFFFB9322
+                    title = "Hatırlamaya çalış, kartı çevir, devam et",
+                    imageRes = R.drawable.onboarding_3
+                ),
+                OnboardingIntroPage(
+                    title = "Yapay zeka, senin kelimelerinle bağlamsal yazılar üretsin",
+                    imageRes = R.drawable.onboarding_5
+                ),
+                OnboardingIntroPage(
+                    title = "HocaLingo ile gerçekten öğrendiğini hisset!",
+                    imageRes = R.drawable.hocalingo_cards
                 )
             )
         }

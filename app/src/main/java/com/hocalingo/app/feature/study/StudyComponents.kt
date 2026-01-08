@@ -28,7 +28,9 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.ads.nativead.NativeAd
 import com.hocalingo.app.R
@@ -178,131 +180,165 @@ fun StudyCard(
 
     val rotation by animateFloatAsState(
         targetValue = if (isFlipped) 180f else 0f,
-        animationSpec = spring(dampingRatio = 0.8f, stiffness = 300f),
+        animationSpec = spring(
+            dampingRatio = 0.85f,
+            stiffness = 280f
+        ),
         label = "cardRotation"
     )
 
-    Card(
+    // 🔥 Dynamic elevation (tablet hissinin %30’u burada)
+    val dynamicElevation by remember {
+        derivedStateOf<Dp> {
+            val normalized = kotlin.math.abs(rotation - 90f) / 90f
+            lerp(4.dp, 18.dp, normalized)
+        }
+    }
+
+
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(0.7f)
-            .graphicsLayer {
-                rotationY = rotation
-                cameraDistance = 12f * density
-            }
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) { onCardClick() },
-        shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
+
+        // 🔻 ALT KATMAN → SAHTE KALINLIK / GÖVDE
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .matchParentSize()
+                .offset(y = 8.dp)
+                .graphicsLayer {
+                    rotationY = rotation
+                    cameraDistance = 32f * density
+                }
                 .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(cardColor, cardColor.copy(alpha = 0.8f))
-                    )
+                    color = Color.Black.copy(alpha = 0.18f),
+                    shape = RoundedCornerShape(28.dp)
                 )
-                .padding(24.dp)
+        )
+
+        // 🔺 ÜST KATMAN → ASIL KART
+        Card(
+            modifier = Modifier
+                .matchParentSize()
+                .graphicsLayer {
+                    rotationY = rotation
+                    cameraDistance = 32f * density
+                }
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { onCardClick() },
+            shape = RoundedCornerShape(28.dp),
+            elevation = CardDefaults.cardElevation(dynamicElevation)
         ) {
-            if (rotation <= 90f) {
-                // Front Side
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = frontText,
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 32.sp,
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
-
-                    if (frontExampleText.isNotBlank()) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = frontExampleText,
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 14.sp,
-                            color = Color.White.copy(alpha = 0.9f),
-                            textAlign = TextAlign.Center,
-                            lineHeight = 20.sp
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                cardColor.copy(alpha = 1f),
+                                cardColor.copy(alpha = 0.75f)
+                            )
                         )
-                    }
-                }
+                    )
+                    .padding(24.dp)
+            ) {
 
-                // TTS Button on FRONT side
-                if (showPronunciationButton && showTtsOnFrontSide) {
-                    IconButton(
-                        onClick = onPronunciationClick,
-                        modifier = Modifier.align(Alignment.TopEnd)
+                if (rotation <= 90f) {
+                    // FRONT
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.VolumeUp,
-                            contentDescription = "Seslendirme",
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                }
-            } else {
-                // Back Side (flipped)
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .graphicsLayer { rotationY = 180f },
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = backText,
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 32.sp,
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
-
-                    if (backExampleText.isNotBlank()) {
-                        Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = backExampleText,
+                            text = frontText,
                             fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 14.sp,
-                            color = Color.White.copy(alpha = 0.9f),
-                            textAlign = TextAlign.Center,
-                            lineHeight = 20.sp
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 32.sp,
+                            color = Color.White,
+                            textAlign = TextAlign.Center
                         )
-                    }
-                }
 
-                // TTS Button on BACK side (corrected rotation)
-                if (showPronunciationButton && !showTtsOnFrontSide) {
-                    IconButton(
-                        onClick = onPronunciationClick,
+                        if (frontExampleText.isNotBlank()) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = frontExampleText,
+                                fontFamily = PoppinsFontFamily,
+                                fontSize = 14.sp,
+                                color = Color.White.copy(alpha = 0.9f),
+                                textAlign = TextAlign.Center,
+                                lineHeight = 20.sp
+                            )
+                        }
+                    }
+
+                    if (showPronunciationButton && showTtsOnFrontSide) {
+                        IconButton(
+                            onClick = onPronunciationClick,
+                            modifier = Modifier.align(Alignment.TopEnd)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.VolumeUp,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                    }
+
+                } else {
+                    // BACK
+                    Column(
                         modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .graphicsLayer { scaleX = -1f }
+                            .fillMaxSize()
+                            .graphicsLayer { rotationY = 180f },
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.VolumeUp,
-                            contentDescription = "Seslendirme",
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp)
+                        Text(
+                            text = backText,
+                            fontFamily = PoppinsFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 32.sp,
+                            color = Color.White,
+                            textAlign = TextAlign.Center
                         )
+
+                        if (backExampleText.isNotBlank()) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = backExampleText,
+                                fontFamily = PoppinsFontFamily,
+                                fontSize = 14.sp,
+                                color = Color.White.copy(alpha = 0.9f),
+                                textAlign = TextAlign.Center,
+                                lineHeight = 20.sp
+                            )
+                        }
+                    }
+
+                    if (showPronunciationButton && !showTtsOnFrontSide) {
+                        IconButton(
+                            onClick = onPronunciationClick,
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .graphicsLayer { scaleX = -1f }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.VolumeUp,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
                     }
                 }
             }
         }
     }
 }
+
 
 /**
  * StudyActionButtons - Easy/Medium/Hard response buttons

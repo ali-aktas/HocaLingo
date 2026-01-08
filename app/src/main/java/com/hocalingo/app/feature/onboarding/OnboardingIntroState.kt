@@ -4,12 +4,13 @@ package com.hocalingo.app.feature.onboarding
  * State management for onboarding intro
  *
  * Package: feature/onboarding/
+ * Updated for 5-page onboarding flow
  */
 
 // UI State
 data class OnboardingIntroUiState(
     val currentPage: Int = 0,
-    val totalPages: Int = 3
+    val totalPages: Int = 5  // 5 sayfalık sistem
 )
 
 // Events - User actions

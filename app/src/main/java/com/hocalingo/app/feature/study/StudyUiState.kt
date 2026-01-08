@@ -36,6 +36,8 @@ data class StudyUiState(
     val isQueueEmpty: Boolean = false,
     val showEmptyQueueMessage: Boolean = false,
 
+    val isBackTextLoading: Boolean = false,
+
     // ========== SESSION STATS ==========
     val sessionWordsCount: Int = 0,
     val correctAnswers: Int = 0,

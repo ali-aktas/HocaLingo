@@ -1,5 +1,7 @@
-package com.hocalingo.app.feature.study
+package com.hocalingo.app.di
 
+import com.hocalingo.app.feature.study.StudyRepository
+import com.hocalingo.app.feature.study.StudyRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
