@@ -130,7 +130,8 @@ fun StudyMainScreen(
                     fontWeight = FontWeight.Black,
                     textAlign = TextAlign.Center,
                     fontSize = 28.sp,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
@@ -159,6 +160,16 @@ fun StudyMainScreen(
                 )
             }
 
+            item {
+                StudyWideActionButton(
+                    onClick = { viewModel.onEvent(StudyMainEvent.AddWord) },
+                    icon = painterResource(id = R.drawable.add_img),
+                    title = "Yeni Kelime Ekle",
+                    subtitle = "Kendi kelimelerini ekle",
+                    baseColor = HocaColors.PurpleTop
+                )
+            }
+
             // 4. SELECTED WORDS PREVIEW
             item {
                 SelectedWordsCard(
@@ -172,41 +183,27 @@ fun StudyMainScreen(
                 )
             }
 
-            // 5. ACTION BUTTONS (3D Style - HomeScreen WideActionButton gibi)
+            // 6. ACTION BUTTON - Çalışma Yönü Değiştir
             item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    // Çalışma Yönü Değiştir Button
-                    StudyWideActionButton(
-                        onClick = {
-                            val newDirection = if (uiState.studyDirection == StudyDirection.EN_TO_TR) {
-                                StudyDirection.TR_TO_EN
-                            } else {
-                                StudyDirection.EN_TO_TR
-                            }
-                            viewModel.onEvent(StudyMainEvent.UpdateStudyDirection(newDirection))
-                        },
-                        icon = painterResource(id = R.drawable.route_img),
-                        title = "Çalışma Yönünü Değiştir",
-                        subtitle = if (uiState.studyDirection == StudyDirection.EN_TO_TR)
-                            "Şu an: İngilizce → Türkçe"
-                        else
-                            "Şu an: Türkçe → İngilizce",
-                        baseColor = HocaColors.SuccessTop
-                    )
-
-                    // Yeni Kelime Ekle Button
-                    StudyWideActionButton(
-                        onClick = { viewModel.onEvent(StudyMainEvent.AddWord) },
-                        icon = painterResource(id = R.drawable.add_img),
-                        title = "Yeni Kelime Ekle",
-                        subtitle = "Kendi kelimelerini ekle",
-                        baseColor = HocaColors.PurpleTop
-                    )
-                }
+                StudyWideActionButton(
+                    onClick = {
+                        val newDirection = if (uiState.studyDirection == StudyDirection.EN_TO_TR) {
+                            StudyDirection.TR_TO_EN
+                        } else {
+                            StudyDirection.EN_TO_TR
+                        }
+                        viewModel.onEvent(StudyMainEvent.UpdateStudyDirection(newDirection))
+                    },
+                    icon = painterResource(id = R.drawable.route_img),
+                    title = "Çalışma Yönünü Değiştir",
+                    subtitle = if (uiState.studyDirection == StudyDirection.EN_TO_TR)
+                        "Şu an: İngilizce → Türkçe"
+                    else
+                        "Şu an: Türkçe → İngilizce",
+                    baseColor = HocaColors.SuccessTop
+                )
             }
+
         }
 
         // Bottom Sheet - Tüm Kelimeler

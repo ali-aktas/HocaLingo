@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -43,12 +44,15 @@ private val PoppinsFontFamily = FontFamily(
  */
 data class BottomNavItem(
     val route: String,
-    val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector,
+    val selectedIcon: ImageVector? = null,
+    val unselectedIcon: ImageVector? = null,
+    val selectedIconRes: Int? = null,
+    val unselectedIconRes: Int? = null,
     val labelRes: Int,
     val label: String,
     val isMainAction: Boolean = false
 )
+
 
 /**
  * Professional Bottom Navigation - Fixed for All Devices
@@ -79,34 +83,35 @@ fun HocaBottomNavigationBar(
     val bottomNavItems = listOf(
         BottomNavItem(
             route = HocaRoutes.HOME,
-            selectedIcon = Icons.Filled.Home,
-            unselectedIcon = Icons.Outlined.Home,
+            selectedIconRes = R.drawable.smart_home,
+            unselectedIconRes = R.drawable.smart_home,
             labelRes = R.string.nav_home,
             label = "Ana Sayfa"
         ),
         BottomNavItem(
             route = HocaRoutes.STUDY,
-            selectedIcon = Icons.Filled.School,
-            unselectedIcon = Icons.Outlined.School,
+            selectedIconRes = R.drawable.flame,
+            unselectedIconRes = R.drawable.flame,
             labelRes = R.string.nav_study,
             label = "Çalışma",
             isMainAction = true
         ),
         BottomNavItem(
-            route = HocaRoutes.ADD_WORD,
-            selectedIcon = Icons.Filled.AddCircle,
-            unselectedIcon = Icons.Outlined.AddCircle,
-            labelRes = R.string.nav_add_word,
-            label = "Kelime Ekle"
+            route = HocaRoutes.AI_ASSISTANT,
+            selectedIconRes = R.drawable.robot,
+            unselectedIconRes = R.drawable.robot,
+            labelRes = R.string.nav_ai_assistant,
+            label = "Yapay Zeka"
         ),
         BottomNavItem(
             route = HocaRoutes.PROFILE,
-            selectedIcon = Icons.Filled.Person,
-            unselectedIcon = Icons.Outlined.Person,
+            selectedIconRes = R.drawable.settings,
+            unselectedIconRes = R.drawable.settings,
             labelRes = R.string.nav_profile,
-            label = "Profil"
+            label = "Ayarlar"
         )
     )
+
 
     Card(
         modifier = modifier
@@ -121,9 +126,9 @@ fun HocaBottomNavigationBar(
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
-                            Color(0xFFFF6B00).copy(alpha = 0.95f),
-                            Color(0xFFCD7A37).copy(alpha = 0.95f),
-                            Color(0xFFFF920E).copy(alpha = 0.95f)
+                            Color(0xFF673AB7).copy(alpha = 1f),
+                            Color(0xFF431F84).copy(alpha = 1f),
+                            Color(0xFF3D197D).copy(alpha = 1f)
                         )
                     ),
                     shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
@@ -197,12 +202,30 @@ private fun BottomNavigationItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Icon(
-            imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
-            contentDescription = item.label,
-            tint = iconColor,
-            modifier = Modifier.size(if (item.isMainAction) 28.dp else 24.dp)
-        )
+        if (item.selectedIconRes != null && item.unselectedIconRes != null) {
+            Icon(
+                painter = painterResource(
+                    id = if (isSelected)
+                        item.selectedIconRes
+                    else
+                        item.unselectedIconRes
+                ),
+                contentDescription = item.label,
+                tint = iconColor,
+                modifier = Modifier.size(if (item.isMainAction) 28.dp else 24.dp)
+            )
+        } else {
+            Icon(
+                imageVector = if (isSelected)
+                    item.selectedIcon ?: Icons.Filled.Home
+                else
+                    item.unselectedIcon ?: Icons.Outlined.Home,
+                contentDescription = item.label,
+                tint = iconColor,
+                modifier = Modifier.size(if (item.isMainAction) 28.dp else 24.dp)
+            )
+        }
+
 
         Spacer(modifier = Modifier.height(4.dp))
 
@@ -243,8 +266,6 @@ fun shouldShowBottomNavigation(
         currentRoute.startsWith(HocaRoutes.ONBOARDING_LANGUAGE) -> false
         currentRoute.startsWith(HocaRoutes.WORD_SELECTION) -> false
         currentRoute.startsWith(HocaRoutes.STUDY_SCREEN) -> false  // Hide in actual study session
-        currentRoute.startsWith(HocaRoutes.AI_ASSISTANT) -> false
-        currentRoute.startsWith(HocaRoutes.AI_STORY_DETAIL) -> false
         else -> true  // ✅ ONBOARDING_LEVEL artık true dönecek
     }
 }

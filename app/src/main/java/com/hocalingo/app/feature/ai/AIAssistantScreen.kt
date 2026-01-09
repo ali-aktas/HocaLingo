@@ -3,10 +3,9 @@ package com.hocalingo.app.feature.ai
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -15,8 +14,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -43,16 +44,14 @@ private val PoppinsFontFamily = FontFamily(
 )
 
 /**
- * AIAssistantScreen - Redesigned Version
+ * AIAssistantScreen - Yenilenmiş Tasarım
  *
- * New Design Features:
- * ✅ Dark gradient background (#1A1625 → #211A2E)
- * ✅ Hero section with Lingo AI character
- * ✅ Progress bar (quota visualization)
- * ✅ Modern pill-style buttons
- * ✅ Premium section for free users
- * ✅ Premium badge for premium users
- * ✅ Lottie generation animation
+ * Yeni Özellikler:
+ * ✅ Hero image (PaywallContentOptimized gibi)
+ * ✅ 2 kare box (Kalan Hak + Geçmiş Hikayeler) - 3D
+ * ✅ Hikaye oluştur butonu - 3D yüksek hissiyat
+ * ✅ Premium section kaldırıldı
+ * ✅ Hak bitince paywall göster
  */
 @Composable
 fun AIAssistantScreen(
@@ -92,105 +91,117 @@ fun AIAssistantScreen(
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF070109),
-                        Color(0xFF1E1336)
-                    )
+                    colors = if (isDarkTheme) {
+                        listOf(Color(0xFF070109), Color(0xFF1E1336))
+                    } else {
+                        listOf(Color(0xFFF5F5F5), Color(0xFFE8E8E8))
+                    }
                 )
             )
     ) {
         Scaffold(
             containerColor = Color.Transparent,
-            snackbarHost = { SnackbarHost(snackbarHostState) },
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            "Hocalingo AI Asistanı",
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = onNavigateBack) {
-                            Icon(
-                                Icons.Default.ArrowBack,
-                                contentDescription = "Geri",
-                                tint = Color.White
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Transparent
-                    )
-                )
-            }
+            snackbarHost = { SnackbarHost(snackbarHostState) }
         ) { paddingValues ->
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(horizontal = 20.dp),
+                    .padding(paddingValues),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
-                contentPadding = PaddingValues(vertical = 20.dp)
+                contentPadding = PaddingValues(bottom = 20.dp)
             ) {
-                // Hero section with Lingo AI character
+                // 1. HERO IMAGE (Ekrana tam oturmuş)
                 item {
-                    HeroSection(
-                        isPremium = uiState.isPremium,
+                    HeroImageSection(
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
 
-                // Quota progress bar
+                // Spacer ekle - image ile box'lar arası
                 item {
-                    QuotaProgressCard(
-                        quotaUsed = uiState.quotaUsed,
-                        quotaTotal = uiState.quotaTotal,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
 
-                // Create story button
+                // 2. INFO BOXES - Yan yana (Kalan Hak + Geçmiş Hikayeler)
                 item {
-                    CreateStoryButton(
-                        onClick = { viewModel.onEvent(AIEvent.OpenCreatorDialog) },
-                        enabled = uiState.hasQuotaRemaining,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        // Sol: Kalan Hak
+                        InfoBox3D(
+                            title = "Bugünkü Hakların",
+                            value = "${uiState.quotaRemaining}",
+                            subtitle = "Kalan hikaye",
+                            icon = Icons.Default.AutoAwesome,
+                            color = Color(0xFF7C3AED),
+                            modifier = Modifier.weight(1f),
+                            isDarkTheme = isDarkTheme
+                        )
 
-                // Story history button
-                if (uiState.stories.isNotEmpty()) {
-                    item {
-                        HistoryButton(
-                            storyCount = uiState.stories.size,
-                            onClick = { viewModel.onEvent(AIEvent.ShowHistory) },
-                            modifier = Modifier.fillMaxWidth()
+                        // Sağ: Geçmiş Hikayeler
+                        InfoBox3D(
+                            title = "Geçmiş Hikayeler",
+                            value = "${uiState.stories.size}",
+                            subtitle = "Toplam hikaye",
+                            icon = Icons.Default.History,
+                            color = Color(0xFF10B981),
+                            modifier = Modifier.weight(1f),
+                            isDarkTheme = isDarkTheme,
+                            onClick = {
+                                if (uiState.stories.isNotEmpty()) {
+                                    viewModel.onEvent(AIEvent.ShowHistory)
+                                }
+                            }
                         )
                     }
                 }
 
-                // Premium section (free users) or Premium badge (premium users)
+                // 3. HİKAYE OLUŞTUR BUTTON - 3D yüksek hissiyat
                 item {
-                    if (!uiState.isPremium) {
-                        PremiumUpgradeSection(
-                            onUpgradeClick = { showPaywall = true },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    } else {
-                        PremiumUserBadge(
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                    CreateStoryButton3D(
+                        onClick = {
+                            if (uiState.hasQuotaRemaining) {
+                                viewModel.onEvent(AIEvent.OpenCreatorDialog)
+                            } else {
+                                // Hak bitti, paywall göster
+                                showPaywall = true
+                            }
+                        },
+                        enabled = true, // Her zaman aktif - hak bitince paywall göster
+                        hasQuota = uiState.hasQuotaRemaining,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp)
+                    )
+                }
+
+                // 4. AÇIKLAMA METNİ
+                item {
+                    Text(
+                        text = "Yapay zeka ile çalıştığın kelimelerden bağlamsal okuma parçaları yarat. Öğrenmeyi hızlandır!",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp,
+                        color = if (isDarkTheme) {
+                            Color.White.copy(alpha = 0.7f)
+                        } else {
+                            Color(0xFF718096)
+                        },
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 32.dp)
+                    )
                 }
             }
         }
     }
 
     // Dialogs
-    if (showPaywall && !uiState.isPremium) {
+    if (showPaywall) {
         PaywallBottomSheet(
             onDismiss = { showPaywall = false },
             onPurchaseSuccess = {
@@ -210,7 +221,7 @@ fun AIAssistantScreen(
                 viewModel.onEvent(AIEvent.GenerateStory(topic, type, difficulty, length))
             },
             onShowPremiumPaywall = { showPaywall = true },
-            isDarkTheme = isDarkTheme  // ✅ EKLE
+            isDarkTheme = isDarkTheme
         )
     }
 
@@ -236,352 +247,263 @@ fun AIAssistantScreen(
     }
 }
 
+// =====================================================
+// HERO IMAGE SECTION
+// =====================================================
+
 /**
- * Hero Section - Lingo AI Character with title
+ * Hero Image - Ekrana tam oturmuş, PaywallContentOptimized stilinde
  */
 @Composable
-private fun HeroSection(
-    isPremium: Boolean,
+private fun HeroImageSection(
     modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
-            .height(320.dp)
-            .clip(RoundedCornerShape(24.dp))
+            .fillMaxWidth()
+            .height(400.dp), // Daha yüksek
+        contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painterResource(R.drawable.lingo_ai_image),
             contentDescription = "Lingo AI Asistan",
+            alignment = Alignment.TopCenter,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Black.copy(alpha = 0.1f),
-                            Color.Black.copy(alpha = 0.6f)
-                        )
-                    )
-                )
-        )
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            Text(
-                text = "Yapay zeka ile çalıştığın kelimelerden okuma yazıları yarat!",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Thin,
-                fontSize = 14.sp,
-                color = Color.White,
-                textAlign = TextAlign.Center
-            )
-        }
     }
 }
 
+// =====================================================
+// INFO BOX 3D - Kalan Hak + Geçmiş Hikayeler
+// =====================================================
+
 /**
- * Quota Progress Card - Shows remaining stories
+ * 3D Info Box - StudyMainScreen card'ları gibi
  */
 @Composable
-private fun QuotaProgressCard(
-    quotaUsed: Int,
-    quotaTotal: Int,
-    modifier: Modifier = Modifier
+private fun InfoBox3D(
+    title: String,
+    value: String,
+    subtitle: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    color: Color,
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = false,
+    onClick: (() -> Unit)? = null
 ) {
-    val quotaRemaining = quotaTotal - quotaUsed
-    val progress = quotaUsed.toFloat() / quotaTotal.toFloat()
+    var isPressed by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFF2D1B4E))
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Text(
-            text = "Bugün $quotaRemaining/$quotaTotal hikaye hakkın kaldı",
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 15.sp,
-            color = Color.White
-        )
+    val elevation by animateDpAsState(
+        targetValue = if (isPressed) 2.dp else 8.dp,
+        animationSpec = tween(durationMillis = 100),
+        label = "elevation"
+    )
 
-        // Progress bar
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(8.dp)
-                .clip(RoundedCornerShape(4.dp))
-                .background(Color(0xFF1A1625))
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(progress)
-                    .fillMaxHeight()
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                Color(0xFF7C3AED),
-                                Color(0xFF9D5CFF)
-                            )
-                        )
-                    )
-            )
-        }
-    }
-}
+    val offsetY by animateFloatAsState(
+        targetValue = if (isPressed) 4f else 0f,
+        animationSpec = tween(durationMillis = 100),
+        label = "offsetY"
+    )
 
-/**
- * Create Story Button - Primary action
- */
-@Composable
-private fun CreateStoryButton(
-    onClick: () -> Unit,
-    enabled: Boolean,
-    modifier: Modifier = Modifier
-) {
-    Button(
-        onClick = onClick,
-        enabled = enabled,
-        modifier = modifier
-            .height(56.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF7C3AED),
-            disabledContainerColor = Color(0xFF2D1B4E)
-        ),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp,
-            disabledElevation = 0.dp
-        )
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.AutoFixHigh,
-                contentDescription = null,
-                tint = Color.White
-            )
-            Text(
-                "Hikaye Oluştur",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                color = Color.White
-            )
-        }
-    }
-}
-
-/**
- * History Button - Secondary action
- */
-@Composable
-private fun HistoryButton(
-    storyCount: Int,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    OutlinedButton(
-        onClick = onClick,
-        modifier = modifier
-            .height(56.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = Color(0xFF2D1B4E).copy(alpha = 0.5f),
-            contentColor = Color.White
-        ),
-        border = null
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.History,
-                    contentDescription = null,
-                    tint = Color.White
-                )
-                Text(
-                    "Geçmiş Hikayeler",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 16.sp,
-                    color = Color.White
-                )
-            }
-
-            // Story count badge
-            Box(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .background(Color(0xFF7C3AED))
-                    .padding(horizontal = 12.dp, vertical = 4.dp)
-            ) {
-                Text(
-                    text = storyCount.toString(),
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
-                    color = Color.White
-                )
-            }
-        }
-    }
-}
-
-/**
- * Premium Upgrade Section - For free users
- */
-@Composable
-private fun PremiumUpgradeSection(
-    onUpgradeClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF3D2463),
-                        Color(0xFF2D1B4E)
-                    )
-                )
-            )
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        // Premium badge
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.StarOutline,
-                contentDescription = null,
-                tint = Color(0xFF6500FF),
-                modifier = Modifier.size(24.dp)
-            )
-            Text(
-                "Premium'a Geç",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                color = Color.White
-            )
-        }
-
-        // Benefits list
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            PremiumBenefitItem("Daha çok hikaye oluşturma")
-            PremiumBenefitItem("Yazıları özelleştirebilme")
-            PremiumBenefitItem("Reklamsız deneyim")
-        }
-
-        // Upgrade button
-        Button(
-            onClick = onUpgradeClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF7C3AED)
-            )
-        ) {
-            Text(
-                "Şimdi Yükselt",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp,
-                color = Color.White
-            )
-        }
-    }
-}
-
-/**
- * Premium benefit item
- */
-@Composable
-private fun PremiumBenefitItem(text: String) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = Icons.Default.CheckCircle,
-            contentDescription = null,
-            tint = Color(0xFF7C3AED),
-            modifier = Modifier.size(20.dp)
-        )
-        Text(
-            text = text,
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Normal,
-            fontSize = 14.sp,
-            color = Color.White.copy(alpha = 0.9f)
-        )
-    }
-}
-
-/**
- * Premium User Badge - For premium users
- */
-@Composable
-private fun PremiumUserBadge(
-    modifier: Modifier = Modifier
-) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(
-                        Color(0xFF7C3AED),
-                        Color(0xFF9D5CFF)
-                    )
-                )
+            .height(140.dp)
+            .offset(y = offsetY.dp)
+            .shadow(
+                elevation = elevation,
+                shape = RoundedCornerShape(20.dp),
+                clip = false
             )
-            .padding(vertical = 20.dp, horizontal = 24.dp),
-        contentAlignment = Alignment.Center
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                if (isDarkTheme) {
+                    Color(0xFF2D1B4E)
+                } else {
+                    Color.White
+                }
+            )
+            .then(
+                if (onClick != null) {
+                    Modifier.pointerInput(Unit) {
+                        detectTapGestures(
+                            onPress = {
+                                isPressed = true
+                                tryAwaitRelease()
+                                isPressed = false
+                            },
+                            onTap = { onClick() }
+                        )
+                    }
+                } else {
+                    Modifier
+                }
+            )
+            .padding(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Icon
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(color.copy(alpha = 0.15f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = color,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+
+            // Content
+            Column(
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = title,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 13.sp,
+                    color = if (isDarkTheme) {
+                        Color.White.copy(alpha = 0.7f)
+                    } else {
+                        Color(0xFF718096)
+                    }
+                )
+
+                Text(
+                    text = value,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 28.sp,
+                    color = if (isDarkTheme) Color.White else Color(0xFF2D3748)
+                )
+
+                Text(
+                    text = subtitle,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp,
+                    color = if (isDarkTheme) {
+                        Color.White.copy(alpha = 0.5f)
+                    } else {
+                        Color(0xFFA0AEC0)
+                    }
+                )
+            }
+        }
+    }
+}
+
+// =====================================================
+// CREATE STORY BUTTON 3D
+// =====================================================
+
+/**
+ * 3D Hikaye Oluştur Button - WideActionButton gibi ama daha yüksek
+ */
+@Composable
+private fun CreateStoryButton3D(
+    onClick: () -> Unit,
+    enabled: Boolean,
+    hasQuota: Boolean,
+    modifier: Modifier = Modifier
+) {
+    var isPressed by remember { mutableStateOf(false) }
+
+    val elevation by animateDpAsState(
+        targetValue = if (isPressed) 4.dp else 12.dp,
+        animationSpec = tween(durationMillis = 100),
+        label = "elevation"
+    )
+
+    val offsetY by animateFloatAsState(
+        targetValue = if (isPressed) 6f else 0f,
+        animationSpec = tween(durationMillis = 100),
+        label = "offsetY"
+    )
+
+    // Renk seçimi
+    val gradientColors = if (hasQuota) {
+        listOf(
+            Color(0xFF9D5CFF), // Top - Parlak mor
+            Color(0xFF7C3AED)  // Bottom - Koyu mor
+        )
+    } else {
+        listOf(
+            Color(0xFFFF9800), // Top - Turuncu (premium)
+            Color(0xFFFF6B00)  // Bottom - Koyu turuncu
+        )
+    }
+
+    Box(
+        modifier = modifier
+            .height(72.dp)
+            .offset(y = offsetY.dp)
+            .shadow(
+                elevation = elevation,
+                shape = RoundedCornerShape(20.dp),
+                clip = false
+            )
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                brush = Brush.verticalGradient(gradientColors)
+            )
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = {
+                        isPressed = true
+                        tryAwaitRelease()
+                        isPressed = false
+                    },
+                    onTap = { onClick() }
+                )
+            }
+            .padding(horizontal = 24.dp, vertical = 16.dp)
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
             Icon(
-                imageVector = Icons.Default.Stars,
+                imageVector = if (hasQuota) {
+                    Icons.Default.AutoFixHigh
+                } else {
+                    Icons.Default.Lock
+                },
                 contentDescription = null,
-                tint = Color(0xFF6500FF),
-                modifier = Modifier.size(22.dp)
+                tint = Color.White,
+                modifier = Modifier.size(28.dp)
             )
-            Text(
-                "Premium Üyesin! 🎉",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
-                color = Color.White
-            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column {
+                Text(
+                    text = if (hasQuota) "Hikaye Oluştur" else "Premium'a Geç",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Color.White
+                )
+
+                if (!hasQuota) {
+                    Text(
+                        text = "Günlük limitin doldu",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 12.sp,
+                        color = Color.White.copy(alpha = 0.8f)
+                    )
+                }
+            }
         }
     }
 }

@@ -115,9 +115,9 @@ class StoryRepositoryImpl @Inject constructor(
 
             // ✅ Create request with dynamic token limits (NO THINKING - cost optimization)
             val maxTokens = when (length) {
-                StoryLength.SHORT -> 200    // ~100 kelime
+                StoryLength.SHORT -> 250    // ~120 kelime
                 StoryLength.MEDIUM -> 400   // ~200 kelime
-                StoryLength.LONG -> 600    // ~300 kelime
+                StoryLength.LONG -> 700    // ~400 kelime
             }
 
             val request = GeminiRequest.fromPrompt(prompt, maxTokens)
@@ -406,15 +406,24 @@ class StoryRepositoryImpl @Inject constructor(
 
     /**
      * Extract title from generated content
-     * First sentence or first 50 chars
+     * ✅ UPDATED: Limited to 3 words or ~15-18 characters
      */
     private fun extractTitle(content: String, type: StoryType): String {
         val firstLine = content.lines().firstOrNull { it.isNotBlank() } ?: content
-        val title = if (firstLine.length > 50) {
-            firstLine.take(50) + "..."
+
+        // Kelimelere ayır
+        val words = firstLine.trim().split(Regex("\\s+"))
+
+        // İlk 3 kelimeyi al
+        val titleWords = words.take(3).joinToString(" ")
+
+        // Hala çok uzunsa, 18 karaktere kısalt
+        val title = if (titleWords.length > 20) {
+            titleWords.take(18) + "..."
         } else {
-            firstLine
+            titleWords
         }
+
         return title.ifBlank { type.displayName }
     }
 
