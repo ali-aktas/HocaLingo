@@ -20,6 +20,9 @@ data class StudyUiState(
 
     val showRewardedAdDialog: Boolean = false,
 
+    val backTextOverride: String = "",
+    val isBackTextLoading: Boolean = false,
+
     // ========== CURRENT CONCEPT ==========
     val currentConcept: ConceptEntity? = null,
     val isCardFlipped: Boolean = false,
@@ -35,8 +38,6 @@ data class StudyUiState(
     val hasWordsToStudy: Boolean = false,
     val isQueueEmpty: Boolean = false,
     val showEmptyQueueMessage: Boolean = false,
-
-    val isBackTextLoading: Boolean = false,
 
     // ========== SESSION STATS ==========
     val sessionWordsCount: Int = 0,
@@ -86,13 +87,15 @@ data class StudyUiState(
             StudyDirection.TR_TO_EN -> currentConcept?.turkish ?: ""
         }
 
-    /**
-     * Back text based on study direction
-     */
-    val backText: String
-        get() = when (studyDirection) {
-            StudyDirection.EN_TO_TR -> currentConcept?.turkish ?: ""
-            StudyDirection.TR_TO_EN -> currentConcept?.english ?: ""
+
+        val backText: String
+        get() = if (isBackTextLoading) {
+            ""  // Yükleme sırasında boş göster
+        } else backTextOverride.ifEmpty {
+            when (studyDirection) {
+                StudyDirection.EN_TO_TR -> currentConcept?.turkish ?: ""
+                StudyDirection.TR_TO_EN -> currentConcept?.english ?: ""
+            }
         }
 
     /**

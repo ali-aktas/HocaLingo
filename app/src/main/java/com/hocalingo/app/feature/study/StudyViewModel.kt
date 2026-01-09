@@ -301,19 +301,27 @@ class StudyViewModel @Inject constructor(
                         easyTimeText = "", // Boş başlat
                         mediumTimeText = "", // Boş başlat
                         hardTimeText = "", // Boş başlat
+                        backTextOverride = "",
                         isBackTextLoading = true // ✅ YENİ FLAG
                     )
                 }
 
-                // ✅ STEP 2: 200ms sonra back text ve buttonları yükle
                 viewModelScope.launch {
-                    delay(200L)
+                    delay(150L)
+
+                    // ✅ BackText'i hesapla
+                    val calculatedBackText = when (direction) {
+                        StudyDirection.EN_TO_TR -> currentConcept.turkish
+                        StudyDirection.TR_TO_EN -> currentConcept.english
+                    }
+
                     _uiState.update { currentState ->
                         currentState.copy(
+                            backTextOverride = calculatedBackText,
                             easyTimeText = easyTimeText,
                             mediumTimeText = mediumTimeText,
                             hardTimeText = hardTimeText,
-                            isBackTextLoading = false // ✅ Yükleme bitti
+                            isBackTextLoading = false
                         )
                     }
                 }

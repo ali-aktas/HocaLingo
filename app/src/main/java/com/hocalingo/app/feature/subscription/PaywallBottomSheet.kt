@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.flow.collectLatest
+import androidx.compose.ui.graphics.Color
 
 /**
  * PaywallBottomSheet - Optimized & Elegant ✨
@@ -71,10 +72,10 @@ fun PaywallBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         dragHandle = null, // Custom drag handle inside content
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = Color(0xFF1D021D), // Mor arka plan
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 54.dp) // ✅ 30dp padding from screen top
+            .fillMaxHeight(0.98f) // %98 ekranı kapla
     ) {
         Box(
             modifier = Modifier
@@ -121,7 +122,7 @@ private fun CustomDragHandle() {
                 .width(40.dp)
                 .height(4.dp),
             shape = RoundedCornerShape(2.dp),
-            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+            color = Color.White.copy(alpha = 0.3f)
         ) {}
         Spacer(modifier = Modifier.height(20.dp))
     }

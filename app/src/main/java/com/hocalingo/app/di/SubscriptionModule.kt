@@ -1,5 +1,7 @@
-package com.hocalingo.app.feature.subscription
+package com.hocalingo.app.di
 
+import com.hocalingo.app.feature.subscription.RevenueCatRepository
+import com.hocalingo.app.feature.subscription.SubscriptionRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -1,5 +1,6 @@
 package com.hocalingo.app.feature.subscription
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,7 +36,7 @@ class SubscriptionViewModel @Inject constructor(
     private val _effect = MutableSharedFlow<SubscriptionEffect>()
     val effect: SharedFlow<SubscriptionEffect> = _effect.asSharedFlow()
 
-    // Activity reference - will be set from composable
+    @SuppressLint("StaticFieldLeak")
     private var activity: Activity? = null
 
     init {
