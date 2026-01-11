@@ -1,5 +1,6 @@
 package com.hocalingo.app.feature.study
 
+import androidx.compose.ui.graphics.Color
 import com.hocalingo.app.core.feedback.FeedbackCategory
 import com.hocalingo.app.core.feedback.SatisfactionLevel
 import com.hocalingo.app.database.entities.ConceptEntity
@@ -22,6 +23,8 @@ data class StudyUiState(
 
     val backTextOverride: String = "",
     val isBackTextLoading: Boolean = false,
+
+    val currentCardColor: Color = Color.Transparent,
 
     // ========== CURRENT CONCEPT ==========
     val currentConcept: ConceptEntity? = null,

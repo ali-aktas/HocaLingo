@@ -1,20 +1,21 @@
 package com.hocalingo.app.feature.subscription
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -28,16 +29,15 @@ import com.hocalingo.app.R
 import com.revenuecat.purchases.Package
 
 /**
- * PaywallContentOptimized - YENİ TASARIM ✨
+ * PaywallContentOptimized - Modern Responsive Tasarım ✨
  *
  * Package: feature/subscription/
  *
  * Tasarım:
- * - Hero section (PNG + Mor gradient)
- * - Features (3 bullet points)
- * - Pricing cards (3 adet, direkt tıklanabilir)
- * - Restore purchases link
- * - Terms & policy links
+ * - Hero section (PNG)
+ * - Features (3 emoji bullet)
+ * - 3 yan yana responsive pricing card
+ * - Compact bottom section
  */
 
 // Poppins Font Family
@@ -47,6 +47,15 @@ private val PoppinsFontFamily = FontFamily(
     Font(R.font.poppins_bold, FontWeight.Bold),
     Font(R.font.poppins_black, FontWeight.Black)
 )
+
+// Pastel Renk Paleti (Profesyonel)
+private val pastelPurple = Color(0xFF3DA099)    // Aylık - Pastel mor
+private val pastelGreen = Color(0xFFB44B2E)     // 3 Aylık - Pastel yeşil
+private val pastelOrange = Color(0xFF604397)    // Yıllık - Pastel turuncu
+private val redBadge = Color(0xFFFF6B6B)        // İndirim badge
+
+// Helper data class for package info
+private data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
 
 @Composable
 fun PaywallContentOptimized(
@@ -59,73 +68,70 @@ fun PaywallContentOptimized(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.95f) // %95 ekranı kapla
+            .fillMaxHeight(0.99f)  // ← 0.95'ten 0.99'a çıkar
             .verticalScroll(scrollState)
-            .background(Color(0xFF1D021D)), // Tüm sayfa bu mor renk
+            .background(Color(0xFF1D021D)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // ========================================
-        // HERO SECTION (PNG + Title Overlay)
+        // HERO SECTION
         // ========================================
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.45f) // Üst yarıyı kapla
+                .weight(0.4f)
         ) {
-            // PNG tam kaplar
             Image(
                 painter = painterResource(R.drawable.paywall_image),
                 contentDescription = "Premium",
                 modifier = Modifier.fillMaxSize(),
                 alignment = Alignment.TopCenter,
-                contentScale = ContentScale.Crop // Tam oturur
+                contentScale = ContentScale.Crop
             )
 
-            // Title overlay (görselin ALT kısmında, ortada)
             Text(
                 text = "Premium Kelime Öğrenme Deneyimi",
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Black,
-                fontSize = 28.sp,
+                fontSize = 26.sp,
                 color = Color.White,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 12.dp, start = 24.dp, end = 24.dp)
+                    .padding(bottom = 8.dp, start = 32.dp, end = 32.dp)
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         // ========================================
-        // FEATURES (Emoji ile)
+        // FEATURES (Compact)
         // ========================================
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            FeatureItem(emoji = "🚀", text = "Daha çok kelime seçme imkanı")
-            Spacer(modifier = Modifier.height(12.dp))
-            FeatureItem(emoji = "\uD83D\uDCDA", text = "Tamamen reklamsız kullanım")
-            Spacer(modifier = Modifier.height(12.dp))
-            FeatureItem(emoji = "🤖", text = "Özelleştirilebilir yapay zeka deneyimi")
+            FeatureItem(emoji = "🚀", text = "Günlük 50 kelime ekleme hakkı")
+            FeatureItem(emoji = "📚", text = "Reklamsız ve aralıksız deneyim")
+            FeatureItem(emoji = "🤖", text = "Özelleştirilebilir yapay zeka")
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         // ========================================
-        // PRICING CARDS (3 adet, tıklanabilir)
+        // PRICING CARDS
         // ========================================
         if (uiState.isLoading) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp),
+                    .height(120.dp),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(40.dp),
+                    modifier = Modifier.size(36.dp),
                     color = Color(0xFFFF9800),
                     strokeWidth = 3.dp
                 )
@@ -136,29 +142,28 @@ fun PaywallContentOptimized(
                 selectedPackage = uiState.selectedPackage,
                 isPurchasing = uiState.isPurchasing,
                 onPackageClick = { pkg ->
-                    // ✅ Direkt satın alma (CTA button yok)
                     onEvent(SubscriptionEvent.SelectPackage(pkg))
                     onEvent(SubscriptionEvent.PurchaseSelected)
                 }
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         // ========================================
-        // TERMS & RESTORE
+        // BOTTOM SECTION (Compact)
         // ========================================
-        BottomLinks(
+        BottomSection(
             isRestoring = uiState.isRestoring,
             onRestoreClick = { onEvent(SubscriptionEvent.RestorePurchases) }
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))  // ← 12'den 8'e düşür
     }
 }
 
 // =============================================
-// FEATURE ITEM - Emoji ile
+// FEATURE ITEM
 // =============================================
 
 @Composable
@@ -167,26 +172,23 @@ private fun FeatureItem(emoji: String, text: String) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ) {
-        // Emoji
         Text(
             text = emoji,
-            fontSize = 20.sp
+            fontSize = 18.sp
         )
-
-        Spacer(modifier = Modifier.width(12.dp))
-
+        Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = text,
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Normal,
-            fontSize = 14.sp,
+            fontSize = 13.sp,
             color = Color.White
         )
     }
 }
 
 // =============================================
-// PRICING SECTION - 3 Tıklanabilir Kart
+// PRICING SECTION (3 Yan Yana Kart)
 // =============================================
 
 @Composable
@@ -196,209 +198,201 @@ private fun PricingSection(
     isPurchasing: Boolean,
     onPackageClick: (Package) -> Unit
 ) {
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+            .height(120.dp)
+            .padding(horizontal = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        packages.forEach { pkg ->
+        packages.forEachIndexed { index, pkg ->
             PricingCard(
                 packageItem = pkg,
+                packageIndex = index,  // ← Index ekle
                 isSelected = selectedPackage?.identifier == pkg.identifier,
                 isPurchasing = isPurchasing && selectedPackage?.identifier == pkg.identifier,
-                onClick = { onPackageClick(pkg) }
+                onClick = { onPackageClick(pkg) },
+                modifier = Modifier.weight(1f)
             )
         }
     }
 }
 
+// =============================================
+// PRICING CARD (Responsive)
+// =============================================
+
 @Composable
 private fun PricingCard(
     packageItem: Package,
+    packageIndex: Int,  // ← Yeni parametre
     isSelected: Boolean,
     isPurchasing: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    // Paket tipine göre bilgiler
-    val (title, color, isPopular) = when {
-        packageItem.identifier.contains("monthly", ignoreCase = true) -> {
-            Triple("Aylık Premium", Color(0xFFFF6B6B), false)
-        }
-        packageItem.identifier.contains("quarterly", ignoreCase = true) -> {
-            Triple("3 Aylık Premium", Color(0xFF4CAF50), true) // Yeşil + Popüler
-        }
-        packageItem.identifier.contains("yearly", ignoreCase = true) -> {
-            Triple("Yıllık Premium", Color(0xFFFFB84D), false)
-        }
-        else -> {
-            Triple(packageItem.product.title, Color(0xFF999999), false)
-        }
+    // Index'e göre paket bilgileri (RevenueCat sıralaması: 0=Aylık, 1=3Aylık, 2=Yıllık)
+    val (periodText, subtitle, color, badgeText) = when (packageIndex) {
+        0 -> Quadruple("Aylık", "Premium", pastelPurple, null)
+        1 -> Quadruple("Yıllık", "Premium", pastelGreen, "%40 avantajlı")
+        2 -> Quadruple("3 Aylık", "Premium", pastelOrange, null)
+        else -> Quadruple("Premium", "", pastelPurple, null)
     }
 
     val price = packageItem.product.price.formatted
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .animateContentSize()
-            .clickable(enabled = !isPurchasing) { onClick() },
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isPurchasing) {
-                Color.LightGray
-            } else {
-                MaterialTheme.colorScheme.surface
-            }
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = if (isSelected) 8.dp else 2.dp
-        )
+    Box(
+        modifier = modifier.fillMaxHeight()
     ) {
-        Box(modifier = Modifier.fillMaxWidth()) {
-            Column(
+        // Ana Kart (Surface + clickable ile ripple)
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(20.dp))  // ← Ripple için clip
+                .clickable(
+                    enabled = !isPurchasing,
+                    onClick = onClick,
+                    interactionSource = remember { MutableInteractionSource() }
+                ),
+            shape = RoundedCornerShape(20.dp),
+            color = color,
+            tonalElevation = if (isSelected) 8.dp else 3.dp,
+            border = if (isSelected) BorderStroke(3.dp, Color.White) else null
+        ) {
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                    .fillMaxSize()
+                    .padding(12.dp),
+                contentAlignment = Alignment.Center
             ) {
-                // Popüler badge (sadece 3 aylık için)
-                if (isPopular) {
-                    Row(
-                        modifier = Modifier
-                            .background(Color(0xFF4CAF50), RoundedCornerShape(8.dp))
-                            .padding(horizontal = 12.dp, vertical = 4.dp)
+                if (isPurchasing) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(28.dp),
+                        strokeWidth = 3.dp,
+                        color = Color.White
+                    )
+                } else {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
+                        // Period (Aylık / 3 Aylık / Yıllık)
                         Text(
-                            text = "⭐ EN POPÜLER",
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp,
-                            color = Color.White
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(12.dp))
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // Sol taraf: Başlık + 7 gün ücretsiz
-                    Column {
-                        Text(
-                            text = title,
+                            text = periodText,
                             fontFamily = PoppinsFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = Color.White,
+                            textAlign = TextAlign.Center
                         )
 
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        Text(
-                            text = "🎁 7 gün ücretsiz",
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 13.sp,
-                            color = Color(0xFF4CAF50)
-                        )
-                    }
-
-                    // Sağ taraf: Fiyat veya loading
-                    if (isPurchasing) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(28.dp),
-                            strokeWidth = 3.dp,
-                            color = color
-                        )
-                    } else {
-                        Column(
-                            horizontalAlignment = Alignment.End
-                        ) {
+                        // Subtitle (Premium)
+                        if (subtitle.isNotEmpty()) {
                             Text(
-                                text = price,
+                                text = subtitle,
                                 fontFamily = PoppinsFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 22.sp,
-                                color = color
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 14.sp,
+                                color = Color.White.copy(alpha = 0.9f),
+                                textAlign = TextAlign.Center
                             )
-
-                            if (isSelected) {
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Icon(
-                                    imageVector = Icons.Default.CheckCircle,
-                                    contentDescription = "Seçili",
-                                    tint = color,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
                         }
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        // Fiyat
+                        Text(
+                            text = price,
+                            fontFamily = PoppinsFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = Color.White,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
+            }
+        }
+
+        // Badge (sadece yıllık için)
+        if (badgeText != null) {
+            Surface(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = 8.dp, y = (-8).dp),
+                shape = RoundedCornerShape(12.dp),
+                color = redBadge
+            ) {
+                Text(
+                    text = badgeText,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 11.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                )
             }
         }
     }
 }
 
 // =============================================
-// BOTTOM LINKS - Terms & Restore
+// BOTTOM SECTION (Compact)
 // =============================================
 
 @Composable
-private fun BottomLinks(
+private fun BottomSection(
     isRestoring: Boolean,
     onRestoreClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 18.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(horizontal = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // İptal policy
-        TextButton(onClick = { /* TODO: İptal politikası göster */ }) {
-            Text(
-                text = "İstediğin zaman iptal et",
-                fontFamily = PoppinsFontFamily,
-                fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-
-        Spacer(modifier = Modifier.height(2.dp))
-
-        // Restore purchases
-        TextButton(
-            onClick = onRestoreClick,
-            enabled = !isRestoring
-        ) {
-            if (isRestoring) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(16.dp),
-                    strokeWidth = 2.dp
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-            }
-            Text(
-                text = "Restore et",
-                fontFamily = PoppinsFontFamily,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Terms text (küçük)
+        // "Dilediğin zaman iptal et"
         Text(
-            text = "Abonelik otomatik yenilenir. İptal etmek istediğinizde \n Google Play Ayarlar>Aboneliklerim ile yönetebilirsiniz..",
+            text = "Dilediğin zaman iptal et",
             fontFamily = PoppinsFontFamily,
-            fontSize = 10.sp,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+            fontWeight = FontWeight.Medium,
+            fontSize = 12.sp,
+            color = Color.White.copy(alpha = 0.7f),
+            textAlign = TextAlign.Center
+        )
+
+        // Restore Button
+        if (isRestoring) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                strokeWidth = 2.dp,
+                color = Color(0xFFFF9800)
+            )
+        } else {
+            TextButton(
+                onClick = onRestoreClick,
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+            ) {
+                Text(
+                    text = "Restore et",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 13.sp,
+                    color = Color.White
+                )
+            }
+        }
+
+        // Bilgilendirme yazısı
+        Text(
+            text = "Abonelik otomatik olarak yenilenir. İptal etmezseniz süre bitiminde hesabınızdan ücret alınır.",
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 11.sp,
+            color = Color.White.copy(alpha = 0.5f),
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            lineHeight = 12.sp
         )
     }
 }

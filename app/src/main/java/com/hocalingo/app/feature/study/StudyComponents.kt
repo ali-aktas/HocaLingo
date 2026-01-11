@@ -60,15 +60,6 @@ private val PoppinsFontFamily = FontFamily(
     Font(R.font.poppins_black, FontWeight.Black)
 )
 
-// Modern card colors (20 vibrant colors, excluding white/gray/yellow)
-private val cardColors = listOf(
-    Color(0xFF6366F1), Color(0xFF8B5CF6), Color(0xFFEC4899), Color(0xFFEF4444),
-    Color(0xFFF97316), Color(0xFF10B981), Color(0xFF06B6D4), Color(0xFF3B82F6),
-    Color(0xFF8B5A2B), Color(0xFF059669), Color(0xFF7C3AED), Color(0xFFDC2626),
-    Color(0xFF0891B2), Color(0xFF065F46), Color(0xFF7C2D12), Color(0xFF1E40AF),
-    Color(0xFF7E22CE), Color(0xFF0F766E), Color(0xFFA21CAF), Color(0xFF9A3412)
-)
-
 /**
  * StudyTopBar - Navigation bar with back button and title
  */
@@ -171,12 +162,11 @@ fun StudyCard(
     onPronunciationClick: () -> Unit,
     showTtsOnFrontSide: Boolean,
     showPronunciationButton: Boolean = false,
+    cardColor: Color,
     modifier: Modifier = Modifier
 ) {
-    val cardColor = remember(frontText, backText) {
-        val hash = (frontText + backText).hashCode().absoluteValue
-        cardColors[hash % cardColors.size]
-    }
+
+
 
     val rotation by animateFloatAsState(
         targetValue = if (isFlipped) 180f else 0f,

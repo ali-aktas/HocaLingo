@@ -72,11 +72,11 @@ class OnboardingIntroViewModel @Inject constructor(
             return listOf(
                 OnboardingIntroPage(
                     title = "Öğreneceğin kelimeleri kendin seç",
-                    imageRes = R.drawable.onboarding_2
+                    imageRes = R.drawable.onboarding_1
                 ),
                 OnboardingIntroPage(
                     title = "Çalışma destene yeni kelimeler ekle",
-                    imageRes = R.drawable.onboarding_4
+                    imageRes = R.drawable.onboarding_2
                 ),
                 OnboardingIntroPage(
                     title = "Hatırlamaya çalış, kartı çevir, devam et",
@@ -84,7 +84,7 @@ class OnboardingIntroViewModel @Inject constructor(
                 ),
                 OnboardingIntroPage(
                     title = "Yapay zeka, senin kelimelerinle bağlamsal yazılar üretsin",
-                    imageRes = R.drawable.onboarding_5
+                    imageRes = R.drawable.onboarding_4
                 ),
                 OnboardingIntroPage(
                     title = "HocaLingo ile gerçekten öğrendiğini hisset!",

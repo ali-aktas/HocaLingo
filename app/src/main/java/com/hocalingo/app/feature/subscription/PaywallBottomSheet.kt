@@ -17,10 +17,9 @@ import androidx.compose.ui.graphics.Color
  *
  * Package: app/src/main/java/com/hocalingo/app/feature/subscription/
  *
- * ✅ 30dp padding from top of screen
- * ✅ More elegant, compact design
- * ✅ Smoother animations
- * ✅ Better visual hierarchy
+ * ✅ Büyük ekranlarda boşluk kalmaması için 0.99f
+ * ✅ Elegant, compact design
+ * ✅ Smooth animations
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,7 +74,7 @@ fun PaywallBottomSheet(
         containerColor = Color(0xFF1D021D), // Mor arka plan
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.98f) // %98 ekranı kapla
+            .fillMaxHeight(0.99f) // ← 0.98'den 0.99'a değişti
     ) {
         Box(
             modifier = Modifier
@@ -116,7 +115,7 @@ private fun CustomDragHandle() {
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp)) // ← 12'den 10'a küçültüldü
         Surface(
             modifier = Modifier
                 .width(40.dp)
@@ -124,6 +123,6 @@ private fun CustomDragHandle() {
             shape = RoundedCornerShape(2.dp),
             color = Color.White.copy(alpha = 0.3f)
         ) {}
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp)) // ← 20'den 16'ya küçültüldü
     }
 }

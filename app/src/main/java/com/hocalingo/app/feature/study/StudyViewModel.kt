@@ -1,5 +1,6 @@
 package com.hocalingo.app.feature.study
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.ads.nativead.NativeAd
@@ -35,6 +36,15 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 import javax.inject.Inject
+import kotlin.math.absoluteValue
+
+private val cardColors = listOf(
+    Color(0xFF6366F1), Color(0xFF8B5CF6), Color(0xFFEC4899), Color(0xFFEF4444),
+    Color(0xFFF97316), Color(0xFF10B981), Color(0xFF06B6D4), Color(0xFF3B82F6),
+    Color(0xFF8B5A2B), Color(0xFF059669), Color(0xFF7C3AED), Color(0xFFDC2626),
+    Color(0xFF0891B2), Color(0xFF065F46), Color(0xFF7C2D12), Color(0xFF1E40AF),
+    Color(0xFF7E22CE), Color(0xFF0F766E), Color(0xFFA21CAF), Color(0xFF9A3412)
+)
 
 @HiltViewModel
 class StudyViewModel @Inject constructor(
@@ -272,6 +282,8 @@ class StudyViewModel @Inject constructor(
         val currentConcept: ConceptEntity = studyQueue[currentQueueIndex]
         DebugHelper.log("Loading word ${currentQueueIndex + 1}/${studyQueue.size}: ${currentConcept.english}")
 
+        val calculatedColor = calculateCardColor(currentConcept)
+
         viewModelScope.launch {
             try {
                 val direction: StudyDirection = _uiState.value.studyDirection
@@ -293,6 +305,7 @@ class StudyViewModel @Inject constructor(
                 _uiState.update { currentState ->
                     currentState.copy(
                         currentConcept = currentConcept,
+                        currentCardColor = calculatedColor,
                         currentCardIndex = currentQueueIndex,
                         remainingCards = studyQueue.size - currentQueueIndex,
                         isCardFlipped = false,
@@ -638,6 +651,16 @@ class StudyViewModel @Inject constructor(
 
     private fun navigateBack() {
         _effect.tryEmit(StudyEffect.NavigateToHome)
+    }
+
+    /**
+     * Calculate card color based on concept content
+     * Ensures consistent color even when backText is loading
+     */
+    private fun calculateCardColor(concept: ConceptEntity): Color {
+        val hash = (concept.english + concept.turkish).hashCode().absoluteValue
+        val colorIndex = hash % cardColors.size
+        return cardColors[colorIndex]
     }
 
     fun onEvent(event: StudyEvent) {

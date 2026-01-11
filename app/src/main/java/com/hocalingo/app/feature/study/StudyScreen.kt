@@ -265,6 +265,7 @@ private fun StudyContent(
                     onPronunciationClick = { onEvent(StudyEvent.PlayPronunciation) },
                     showPronunciationButton = uiState.shouldShowTtsButton,
                     showTtsOnFrontSide = uiState.showTtsOnFrontSide,
+                    cardColor = uiState.currentCardColor,
                     modifier = Modifier.weight(1f)
                 )
             }
