@@ -92,9 +92,9 @@ fun AIAssistantScreen(
             .background(
                 brush = Brush.verticalGradient(
                     colors = if (isDarkTheme) {
-                        listOf(Color(0xFF070109), Color(0xFF1E1336))
+                        listOf(Color(0xFF270832), Color(0xFF230E2D))
                     } else {
-                        listOf(Color(0xFFF5F5F5), Color(0xFFE8E8E8))
+                        listOf(Color(0xFFFBF2FF), Color(0xFFFAF1FF))
                     }
                 )
             )
@@ -132,7 +132,7 @@ fun AIAssistantScreen(
                     ) {
                         // Sol: Kalan Hak
                         InfoBox3D(
-                            title = "Bugünkü Hakların",
+                            title = "Kalan Hakların",
                             value = "${uiState.quotaRemaining}",
                             subtitle = "Kalan hikaye",
                             icon = Icons.Default.AutoAwesome,
@@ -261,8 +261,8 @@ private fun HeroImageSection(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(400.dp), // Daha yüksek
-        contentAlignment = Alignment.Center
+            .height(300.dp), // Daha yüksek
+        contentAlignment = Alignment.TopCenter
     ) {
         Image(
             painter = painterResource(R.drawable.lingo_ai_image),

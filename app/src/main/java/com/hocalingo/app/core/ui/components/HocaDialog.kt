@@ -26,7 +26,7 @@ import com.hocalingo.app.R
 import com.hocalingo.app.core.ui.theme.HocaLingoTheme
 
 // Poppins font family
-private val PoppinsFontFamily = FontFamily(
+val PoppinsFontFamily = FontFamily(
     Font(R.font.poppins_regular, FontWeight.Normal),
     Font(R.font.poppins_medium, FontWeight.Medium),
     Font(R.font.poppins_bold, FontWeight.Bold),

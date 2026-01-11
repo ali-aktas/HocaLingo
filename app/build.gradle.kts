@@ -9,7 +9,7 @@ plugins {
 
     // ✅ Firebase plugins
     id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics") // Crashlytics'i sonra aktifleştireceğiz
+    id("com.google.firebase.crashlytics")
 
     // ✅ COMPOSE COMPILER PLUGIN
     id("org.jetbrains.kotlin.plugin.compose")
@@ -23,8 +23,8 @@ android {
         applicationId = "com.hocalingo.app"
         minSdk = 24
         targetSdk = 35
-        versionCode = 18
-        versionName = "1.1.8"
+        versionCode = 19
+        versionName = "1.1.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

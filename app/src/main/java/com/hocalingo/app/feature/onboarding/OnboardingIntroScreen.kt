@@ -91,8 +91,8 @@ fun OnboardingIntroScreen(
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFFFB9322),  // HocaLingo turuncu
-                        Color(0xFFF58220)   // Koyu turuncu
+                        Color(0xFF431F84),
+                        Color(0xFF5428A3)
                     )
                 )
             )
@@ -226,7 +226,7 @@ private fun FixedBottomSection(
                 text = if (currentPage == totalPages - 1) "Başla" else "İleri",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFFFB9322)  // HocaLingo turuncu
+                color = Color(0xFF431F84)
             )
         }
     }

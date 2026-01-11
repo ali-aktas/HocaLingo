@@ -74,7 +74,7 @@ fun ModernSettingsCard(
                 .background(
                     brush = Brush.linearGradient(
                         colors = if (isDarkTheme) {
-                            listOf(Color(0xFFF57A41), Color(0xFFFF6B35))
+                            listOf(Color(0xFFF57A41), Color(0xFFF18158))
                         } else {
                             listOf(Color(0xFFF57A4D), Color(0xFFFF8C61))
                         }
@@ -520,7 +520,7 @@ fun ModernStatsRow(
             icon = Icons.Filled.TrendingUp,
             gradient = Brush.linearGradient(
                 colors = if (isDarkTheme) {
-                    listOf(Color(0xFF119A43), Color(0xFF006A79))
+                    listOf(Color(0xFF11959A), Color(0xFF006A79))
                 } else {
                     listOf(Color(0xFF4ECDC4), Color(0xFF44A08D))
                 }
@@ -536,9 +536,9 @@ fun ModernStatsRow(
             icon = Icons.Filled.EmojiEvents,
             gradient = Brush.linearGradient(
                 colors = if (isDarkTheme) {
-                    listOf(Color(0xFFB8860B), Color(0xFFFFD700))
+                    listOf(Color(0xFF8E3C48), Color(0xFF8E2C48))
                 } else {
-                    listOf(Color(0xFFF7971E), Color(0xFFFFD200))
+                    listOf(Color(0xFF7E3C48), Color(0xFF7E4C48))
                 }
             ),
             modifier = Modifier.weight(1f)

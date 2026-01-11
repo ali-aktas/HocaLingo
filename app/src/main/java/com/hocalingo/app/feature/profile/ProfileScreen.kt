@@ -303,13 +303,13 @@ private fun ProfilePremiumCard(
                         Brush.linearGradient(
                             colors = if (isDarkTheme) {
                                 listOf(
-                                    Color(0xFF2D1B4E),
+                                    Color(0xFF2F1C52),
                                     Color(0xFF3D2463)
                                 )
                             } else {
                                 listOf(
-                                    Color(0xFFF3E8FF),
-                                    Color(0xFFE9D5FF)
+                                    Color(0xFF3C246A),
+                                    Color(0xFF5D3895)
                                 )
                             }
                         )
@@ -390,7 +390,7 @@ private fun PremiumUpgradeContent(isDarkTheme: Boolean) {
             Icon(
                 imageVector = Icons.Default.Stars,
                 contentDescription = null,
-                tint = if (isDarkTheme) Color.White else Color(0xFF7C3AED),
+                tint = if (isDarkTheme) Color.White else Color(0xFF813FF1),
                 modifier = Modifier.size(28.dp)
             )
             Text(
@@ -398,7 +398,7 @@ private fun PremiumUpgradeContent(isDarkTheme: Boolean) {
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
-                color = if (isDarkTheme) Color.White else Color(0xFF7550B6)
+                color = if (isDarkTheme) Color.White else Color(0xFFAA81F3)
             )
         }
 
@@ -428,7 +428,7 @@ private fun PremiumUpgradeContent(isDarkTheme: Boolean) {
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
-                color = if (isDarkTheme) Color.White else Color(0xFF7C3AED)
+                color = if (isDarkTheme) Color.White else Color(0xC3DCADFF)
             )
         }
     }

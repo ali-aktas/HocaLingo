@@ -125,11 +125,11 @@ fun SplashScreen(
         label = "loadingProgress"
     )
 
-    // ✅ BACKGROUND - Brand orange (same as system splash)
+    // ✅ BACKGROUND - Brand purple (same as system splash)
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFB9322)) // HocaLingo orange - matches themes.xml
+            .background(Color(0xFF431F84)) // HocaLingo orange - matches themes.xml
     ) {
         // ✅ MAIN CONTENT - Absolute center with Box for perfect alignment
         Box(
@@ -209,7 +209,7 @@ fun SplashScreen(
                             .fillMaxHeight()
                             .fillMaxWidth(loadingProgress)
                             .background(
-                                Color(0xFFFB9322) // 🎨 Purple/Magenta
+                                Color(0xFF7840DE) // 🎨 Purple/Magenta
                             )
                     )
                 }
@@ -224,7 +224,7 @@ fun SplashScreen(
             contentAlignment = Alignment.BottomCenter
         ) {
             Text(
-                text = "1.1.8",
+                text = "1.1.9",
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Normal,
                 fontSize = 12.sp,

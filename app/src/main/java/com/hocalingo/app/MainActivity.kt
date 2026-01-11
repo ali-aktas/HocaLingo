@@ -110,7 +110,7 @@ class MainActivity : ComponentActivity() {
 
             HocaLingoTheme(
                 darkTheme = shouldUseDarkTheme,
-                dynamicColor = true
+                dynamicColor = false
             ) {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()

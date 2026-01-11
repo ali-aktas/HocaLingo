@@ -117,7 +117,7 @@ fun DailyLimitWarning(
         // Son 10 kart uyarısı
         if (remaining > 5) {
             Text(
-                text = "⚠️ $remaining kelime hakkın kaldı",
+                text = "⚠️ Bugün $remaining kelime seçme hakkın kaldı",
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Medium,
                 fontSize = 13.sp,

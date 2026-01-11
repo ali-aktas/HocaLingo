@@ -83,14 +83,15 @@ fun PaywallContentOptimized(
 
             // Title overlay (görselin ALT kısmında, ortada)
             Text(
-                text = "Premium'a Geç",
+                text = "Premium Kelime Öğrenme Deneyimi",
                 fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 32.sp,
+                fontWeight = FontWeight.Black,
+                fontSize = 28.sp,
                 color = Color.White,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 12.dp)
+                    .padding(bottom = 12.dp, start = 24.dp, end = 24.dp)
             )
         }
 
@@ -352,7 +353,7 @@ private fun BottomLinks(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = 18.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // İptal policy
@@ -365,7 +366,7 @@ private fun BottomLinks(
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         // Restore purchases
         TextButton(
@@ -388,14 +389,14 @@ private fun BottomLinks(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         // Terms text (küçük)
         Text(
             text = "Abonelik otomatik yenilenir. İptal etmek istediğinizde \n Google Play Ayarlar>Aboneliklerim ile yönetebilirsiniz..",
             fontFamily = PoppinsFontFamily,
             fontSize = 10.sp,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp)
         )

@@ -3,7 +3,7 @@
 
     <!-- themes.xml'e ekle -->
     <style name="SplashTheme" parent="Theme.HocaLingo">
-        <item name="android:windowSplashScreenBackground">@color/splash_orange</item>
+        <item name="android:windowSplashScreenBackground">@color/main_purple</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/lingo_nobg</item>
     </style>
 

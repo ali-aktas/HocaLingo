@@ -151,6 +151,7 @@ class WordSelectionViewModel @Inject constructor(
                 val unseenWords = allConcepts.filter { concept ->
                     concept.id !in selectedIds && concept.id !in hiddenIds
                 }
+                    .shuffled()
 
                 DebugHelper.logWordSelection(
                     "Unseen: ${unseenWords.size}, Selected: ${selectedIds.size}, Hidden: ${hiddenIds.size}"

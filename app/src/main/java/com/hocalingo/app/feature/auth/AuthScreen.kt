@@ -102,7 +102,7 @@ fun AuthScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFFB9322))
+                .background(Color(0xFF431F84))
                 .windowInsetsPadding(WindowInsets.statusBars)
                 .padding(paddingValues)
         ) {
@@ -111,7 +111,7 @@ fun AuthScreen(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 24.dp)
-                    .padding(top = 20.dp, bottom = 32.dp),
+                    .padding(top = 20.dp, bottom = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -141,7 +141,7 @@ private fun BrandingSection(breathingScale: Float) {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.lingo_hoca_image),
+            painter = painterResource(id = R.drawable.hocalingo_cards),
             contentDescription = "HocaLingo Logo",
             modifier = Modifier
                 .size(120.dp)
@@ -228,7 +228,7 @@ private fun AuthContentCard(
 
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFFFFF4E6)
+                    containerColor = Color(0x5E959595)
                 ),
                 shape = RoundedCornerShape(12.dp)
             ) {
@@ -237,7 +237,7 @@ private fun AuthContentCard(
                     modifier = Modifier.padding(12.dp),
                     fontFamily = PoppinsFontFamily,
                     fontSize = 11.sp,
-                    color = Color(0xFF8B5A00),
+                    color = Color(0xFF5A008B),
                     textAlign = TextAlign.Center,
                     lineHeight = 16.sp
                 )
