@@ -129,7 +129,7 @@ fun SplashScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF431F84)) // HocaLingo orange - matches themes.xml
+            .background(Color(0xFF4E229B)) // HocaLingo orange - matches themes.xml
     ) {
         // ✅ MAIN CONTENT - Absolute center with Box for perfect alignment
         Box(
@@ -150,29 +150,14 @@ fun SplashScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.lingo_nobg),
+                        painter = painterResource(id = R.drawable.foreground_logo),
                         contentDescription = "HocaLingo Logo",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Fit
                     )
                 }
 
-                Spacer(modifier = Modifier.height(2.dp)) // 🔥 Reduced spacing
-
-                // ✅ APP TITLE - BOLD breathing effect
-                Text(
-                    text = "HocaLingo",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Black,
-                    fontSize = 48.sp,
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .scale(breathingScale) // 🔥 Same bold breathing
-                        .alpha(titleAlpha)
-                )
-
-                Spacer(modifier = Modifier.height(8.dp)) // 🔥 Reduced spacing
+                Spacer(modifier = Modifier.height(18.dp)) // 🔥 Reduced spacing
 
                 // ✅ TAGLINE - Static, clean
                 Text(
@@ -224,7 +209,7 @@ fun SplashScreen(
             contentAlignment = Alignment.BottomCenter
         ) {
             Text(
-                text = "1.1.9",
+                text = "1.1.10",
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Normal,
                 fontSize = 12.sp,

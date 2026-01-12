@@ -10,10 +10,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Stars
+import androidx.compose.material.icons.outlined.Stars
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -259,10 +263,9 @@ fun ProfileScreen(
     }
 }
 
+
 /**
- * ProfilePremiumCard - Premium status card
- * Shows upgrade button for free users
- * Shows badge for premium users
+ * ProfilePremiumCard - Redesigned Premium Card
  */
 @Composable
 private fun ProfilePremiumCard(
@@ -272,56 +275,36 @@ private fun ProfilePremiumCard(
     isDarkTheme: Boolean
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .then(
-                if (!isPremium) {
-                    Modifier.clickable(onClick = onClick)
-                } else {
-                    Modifier
-                }
-            ),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(20.dp))
+                .clip(RoundedCornerShape(16.dp))
                 .background(
                     brush = if (isPremium) {
                         Brush.linearGradient(
-                            colors = listOf(
-                                Color(0xFF7C3AED),
-                                Color(0xFF9D5CFF)
-                            )
+                            colors = listOf(Color(0xFF8B5CF6), Color(0xFFA78BFA))
                         )
                     } else {
                         Brush.linearGradient(
                             colors = if (isDarkTheme) {
-                                listOf(
-                                    Color(0xFF2F1C52),
-                                    Color(0xFF3D2463)
-                                )
+                                listOf(Color(0xFF2A2A3E), Color(0xFF1E1E2E))
                             } else {
-                                listOf(
-                                    Color(0xFF3C246A),
-                                    Color(0xFF5D3895)
-                                )
+                                listOf(Color(0xFFFAFAFA), Color(0xFFF5F5F5))
                             }
                         )
                     }
                 )
+                .then(if (!isPremium) Modifier.clickable(onClick = onClick) else Modifier)
                 .padding(20.dp)
         ) {
             if (isPremium) {
-                // Premium Badge
                 PremiumBadgeContent(productType = productType)
             } else {
-                // Upgrade Card
                 PremiumUpgradeContent(isDarkTheme = isDarkTheme)
             }
         }
@@ -341,120 +324,144 @@ private fun PremiumBadgeContent(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Default.Stars,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(28.dp)
-            )
-            Column {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(Color.White.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Stars,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(26.dp)
+                )
+            }
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
-                    "Premium Üyesin! 🎉",
+                    text = "Premium Üyesin! 🎉",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     color = Color.White
                 )
-
-                // Show subscription type
                 productType?.let {
                     Text(
-                        it.toReadableString(),
+                        text = it.toReadableString(),
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Medium,
-                        fontSize = 12.sp,
-                        color = Color.White.copy(alpha = 0.9f)
+                        fontSize = 13.sp,
+                        color = Color.White.copy(alpha = 0.85f)
                     )
                 }
             }
         }
-
         Icon(
-            imageVector = Icons.Default.CheckCircle,
+            imageVector = Icons.Filled.CheckCircle,
             contentDescription = null,
             tint = Color.White,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(28.dp)
         )
     }
 }
 
 @Composable
 private fun PremiumUpgradeContent(isDarkTheme: Boolean) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Default.Stars,
-                contentDescription = null,
-                tint = if (isDarkTheme) Color.White else Color(0xFF813FF1),
-                modifier = Modifier.size(28.dp)
-            )
-            Text(
-                "Premium'a Geç",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                color = if (isDarkTheme) Color.White else Color(0xFFAA81F3)
-            )
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(
+                        if (isDarkTheme) Color(0xFF8B5CF6).copy(alpha = 0.2f)
+                        else Color(0xFF8B5CF6).copy(alpha = 0.12f)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Stars,
+                    contentDescription = null,
+                    tint = if (isDarkTheme) Color(0xFFA78BFA) else Color(0xFF8B5CF6),
+                    modifier = Modifier.size(26.dp)
+                )
+            }
+            Column {
+                Text(
+                    text = "Premium'a Geç",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = if (isDarkTheme) Color.White else Color(0xFF1A1A2E)
+                )
+                Text(
+                    text = "Sınırsız özellikler",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 13.sp,
+                    color = if (isDarkTheme) Color(0xFF9CA3AF) else Color(0xFF6B7280)
+                )
+            }
         }
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            PremiumFeatureItem(
-                text = "Tamamen reklamsız kullanım",
-                isDarkTheme = isDarkTheme
-            )
-            PremiumFeatureItem(
-                text = "Premium yapay zeka deneyimi",
-                isDarkTheme = isDarkTheme
-            )
-            PremiumFeatureItem(
-                text = "Daha fazla kelime seçme seçeneği",
-                isDarkTheme = isDarkTheme
-            )
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            PremiumFeatureItem("Tamamen reklamsız", isDarkTheme)
+            PremiumFeatureItem("Premium AI özellikleri", isDarkTheme)
+            PremiumFeatureItem("Sınırsız kelime seçimi", isDarkTheme)
         }
 
-        Row(
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier.fillMaxWidth()
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            color = if (isDarkTheme) Color(0xFF8B5CF6) else Color(0xFF8B5CF6)
         ) {
-            Text(
-                "Şimdi Yükselt →",
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
-                color = if (isDarkTheme) Color.White else Color(0xC3DCADFF)
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp, horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Şimdi Yükselt",
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 15.sp,
+                    color = Color.White
+                )
+                Icon(
+                    imageVector = Icons.Filled.ArrowForward,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun PremiumFeatureItem(
-    text: String,
-    isDarkTheme: Boolean
-) {
+private fun PremiumFeatureItem(text: String, isDarkTheme: Boolean) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            imageVector = Icons.Default.CheckCircle,
+            imageVector = Icons.Filled.CheckCircle,
             contentDescription = null,
-            tint = if (isDarkTheme) Color.White.copy(alpha = 0.9f) else Color(0xFF7C3AED),
-            modifier = Modifier.size(16.dp)
+            tint = if (isDarkTheme) Color(0xFF8B5CF6) else Color(0xFF8B5CF6),
+            modifier = Modifier.size(18.dp)
         )
         Text(
             text = text,
             fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Medium,
+            fontWeight = FontWeight.Normal,
             fontSize = 14.sp,
-            color = if (isDarkTheme) Color.White.copy(alpha = 0.9f) else Color(0xFF1F2937)
+            color = if (isDarkTheme) Color(0xFFE5E7EB) else Color(0xFF374151)
         )
     }
 }

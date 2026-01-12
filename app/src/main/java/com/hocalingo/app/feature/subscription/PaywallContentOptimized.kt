@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hocalingo.app.R
@@ -36,8 +37,9 @@ import com.revenuecat.purchases.Package
  * Tasarım:
  * - Hero section (PNG)
  * - Features (3 emoji bullet)
- * - 3 yan yana responsive pricing card
+ * - 3 yan yana responsive pricing card (3 aylık EN POPÜLER - büyük)
  * - Compact bottom section
+ * - İnce parlak mor border
  */
 
 // Poppins Font Family
@@ -48,11 +50,12 @@ private val PoppinsFontFamily = FontFamily(
     Font(R.font.poppins_black, FontWeight.Black)
 )
 
-// Pastel Renk Paleti (Profesyonel)
-private val pastelPurple = Color(0xFF3DA099)    // Aylık - Pastel mor
-private val pastelGreen = Color(0xFFB44B2E)     // 3 Aylık - Pastel yeşil
-private val pastelOrange = Color(0xFF604397)    // Yıllık - Pastel turuncu
+// Renk Paleti
+private val pastelPurple = Color(0xFF3DA099)    // Aylık
+private val pastelGreen = Color(0xFFBB205E)     // Yıllık
+private val pastelOrange = Color(0xFF604397)    // 3 Aylık
 private val redBadge = Color(0xFFFF6B6B)        // İndirim badge
+private val purpleBorder = Color(0xFFBB86FC)    // Parlak mor border
 
 // Helper data class for package info
 private data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
@@ -68,9 +71,9 @@ fun PaywallContentOptimized(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.99f)  // ← 0.95'ten 0.99'a çıkar
+            .fillMaxHeight(0.99f)
             .verticalScroll(scrollState)
-            .background(Color(0xFF1D021D)),
+            .background(Color(0xFF270531)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // ========================================
@@ -93,12 +96,12 @@ fun PaywallContentOptimized(
                 text = "Premium Kelime Öğrenme Deneyimi",
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Black,
-                fontSize = 26.sp,
+                fontSize = 32.sp,
                 color = Color.White,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 8.dp, start = 32.dp, end = 32.dp)
+                    .padding(bottom = 8.dp, start = 24.dp, end = 24.dp)
             )
         }
 
@@ -127,13 +130,13 @@ fun PaywallContentOptimized(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp),
+                    .height(170.dp),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(36.dp),
-                    color = Color(0xFFFF9800),
-                    strokeWidth = 3.dp
+                    color = Color(0xFF9C28E8),
+                    strokeWidth = 2.dp
                 )
             }
         } else {
@@ -158,7 +161,7 @@ fun PaywallContentOptimized(
             onRestoreClick = { onEvent(SubscriptionEvent.RestorePurchases) }
         )
 
-        Spacer(modifier = Modifier.height(8.dp))  // ← 12'den 8'e düşür
+        Spacer(modifier = Modifier.height(8.dp))
     }
 }
 
@@ -198,21 +201,31 @@ private fun PricingSection(
     isPurchasing: Boolean,
     onPackageClick: (Package) -> Unit
 ) {
+    // Default selection: Ortadaki (index 2 - 3 Aylık)
+    val defaultSelected = selectedPackage ?: packages.getOrNull(1)
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp)
             .padding(horizontal = 12.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         packages.forEachIndexed { index, pkg ->
+            // Height: Ortadaki %20 daha uzun
+            val cardHeight = when (index) {
+                1 -> 170.dp  // Yıllık EN POPÜLER (%20 daha uzun)
+                else -> 150.dp  // Aylık ve 3 aylık
+            }
+
             PricingCard(
                 packageItem = pkg,
-                packageIndex = index,  // ← Index ekle
-                isSelected = selectedPackage?.identifier == pkg.identifier,
-                isPurchasing = isPurchasing && selectedPackage?.identifier == pkg.identifier,
+                packageIndex = index,
+                isSelected = defaultSelected?.identifier == pkg.identifier,
+                isPurchasing = isPurchasing && defaultSelected?.identifier == pkg.identifier,
                 onClick = { onPackageClick(pkg) },
-                modifier = Modifier.weight(1f)
+                cardHeight = cardHeight,  // ← Height parametresi ekle
+                modifier = Modifier.weight(1f)  // Scale kaldırıldı
             )
         }
     }
@@ -225,39 +238,42 @@ private fun PricingSection(
 @Composable
 private fun PricingCard(
     packageItem: Package,
-    packageIndex: Int,  // ← Yeni parametre
+    packageIndex: Int,
     isSelected: Boolean,
     isPurchasing: Boolean,
     onClick: () -> Unit,
+    cardHeight: Dp,  // ← Yeni parametre
     modifier: Modifier = Modifier
 ) {
-    // Index'e göre paket bilgileri (RevenueCat sıralaması: 0=Aylık, 1=3Aylık, 2=Yıllık)
+    // Index'e göre paket bilgileri
+    // RevenueCat sıralaması: 0=Aylık, 1=Yıllık, 2=3Aylık
     val (periodText, subtitle, color, badgeText) = when (packageIndex) {
         0 -> Quadruple("Aylık", "Premium", pastelPurple, null)
-        1 -> Quadruple("Yıllık", "Premium", pastelGreen, "%40 avantajlı")
-        2 -> Quadruple("3 Aylık", "Premium", pastelOrange, null)
+        1 -> Quadruple("Yıllık", "Premium", pastelGreen, "%40 Avantajlı")
+        2 -> Quadruple("3 Aylık", "Premium", pastelOrange, "En Popüler")
         else -> Quadruple("Premium", "", pastelPurple, null)
     }
 
     val price = packageItem.product.price.formatted
 
     Box(
-        modifier = modifier.fillMaxHeight()
+        modifier = modifier.height(cardHeight)  // ← Sabit height
     ) {
-        // Ana Kart (Surface + clickable ile ripple)
+        // Ana Kart
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .clip(RoundedCornerShape(20.dp))  // ← Ripple için clip
+                .clip(RoundedCornerShape(24.dp))
                 .clickable(
                     enabled = !isPurchasing,
-                    onClick = onClick,
-                    interactionSource = remember { MutableInteractionSource() }
+                    onClick = onClick
                 ),
-            shape = RoundedCornerShape(20.dp),
+            shape = RoundedCornerShape(24.dp),
             color = color,
             tonalElevation = if (isSelected) 8.dp else 3.dp,
-            border = if (isSelected) BorderStroke(3.dp, Color.White) else null
+            border = if (isSelected) {
+                BorderStroke(1.dp, purpleBorder)  // ← İnce parlak mor border
+            } else null
         ) {
             Box(
                 modifier = Modifier
@@ -314,7 +330,7 @@ private fun PricingCard(
             }
         }
 
-        // Badge (sadece yıllık için)
+        // Badge (Yıllık ve 3 Aylık için)
         if (badgeText != null) {
             Surface(
                 modifier = Modifier
@@ -357,7 +373,7 @@ private fun BottomSection(
             text = "Dilediğin zaman iptal et",
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
-            fontSize = 12.sp,
+            fontSize = 13.sp,
             color = Color.White.copy(alpha = 0.7f),
             textAlign = TextAlign.Center
         )

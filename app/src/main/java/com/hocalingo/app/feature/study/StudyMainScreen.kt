@@ -164,8 +164,8 @@ fun StudyMainScreen(
                 StudyWideActionButton(
                     onClick = { viewModel.onEvent(StudyMainEvent.AddWord) },
                     icon = painterResource(id = R.drawable.add_img),
-                    title = "Yeni Kelime Ekle",
-                    subtitle = "Kendi kelimelerini ekle",
+                    title = "Yeni Kelime-Kalıp Ekle",
+                    subtitle = "Kendi kelimelerini desteye ekle",
                     baseColor = HocaColors.PurpleTop
                 )
             }

@@ -1,37 +1,45 @@
 package com.hocalingo.app.feature.profile
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hocalingo.app.R
 
 /**
- * ProfileComponents - Reusable UI Components
+ * ProfileComponents - Redesigned Modern UI Components
  *
  * Package: feature/profile/
  *
+ * Design Principles:
+ * ✅ Material 3 compliant - Clean, no heavy gradients
+ * ✅ Compact & Readable - Optimized sizes
+ * ✅ Subtle elevation - Professional depth
+ * ✅ Icon-first design - Better visual hierarchy
+ * ✅ Theme-aware - Light/Dark support
+ *
  * Components:
- * - ModernSettingsCard: Main settings card with all options
- * - ModernStatsRow: Three gradient stat cards (Streak, Today, Mastered)
- * - CompactSelectedWordsCard: Selected words preview
- * - LegalAndSupportCard: Privacy, terms, support links
- * - Various setting items: Toggle, Switch, Dropdown, TimePicker
+ * - ModernSettingsCard: Clean settings card with pill-style selections
+ * - ModernStatsRow: Three compact stat cards
+ * - LegalAndSupportCard: Minimal legal & support links
  */
 
 // Poppins Font Family
@@ -43,16 +51,20 @@ private val PoppinsFontFamily = FontFamily(
 )
 
 /**
- * ModernSettingsCard - Main settings card
+ * ModernSettingsCard - Redesigned Settings Card
  *
- * Contains all user preferences:
- * - Study Direction (EN→TR / TR→EN)
- * - Theme Mode (Light/Dark/System)
- * - Notifications toggle
- * - Notification time picker
- * - AI Assistant Style (Future feature)
+ * NEW DESIGN:
+ * - Clean white/dark surface (no gradients)
+ * - Pill-style selection buttons
+ * - Compact spacing
+ * - Better visual hierarchy
+ * - Icon badges for features
  *
- * @param isDarkTheme Theme state for gradient colors
+ * @param uiState Current UI state
+ * @param currentAIStyle Selected AI style
+ * @param onEvent Event handler
+ * @param onAIStyleChange AI style change handler
+ * @param isDarkTheme Theme mode
  */
 @Composable
 fun ModernSettingsCard(
@@ -64,90 +76,96 @@ fun ModernSettingsCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isDarkTheme) {
+                Color(0xFF1E1E2E)
+            } else {
+                MaterialTheme.colorScheme.surface
+            }
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = if (isDarkTheme) {
-                            listOf(Color(0xFFF57A41), Color(0xFFF18158))
-                        } else {
-                            listOf(Color(0xFFF57A4D), Color(0xFFFF8C61))
-                        }
-                    )
-                )
-                .padding(20.dp)
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Column {
+            // Header with icon
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Settings,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = "Ayarlar",
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    color = Color.White,
-                    modifier = Modifier.fillMaxWidth()
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
+            }
 
-                Spacer(modifier = Modifier.height(12.dp))
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+            )
 
-                // Theme Mode Toggle
-                SettingToggleItem(
-                    title = "Tema Modu",
-                    subtitle = uiState.themeModeText,
-                    icon = Icons.Filled.Palette,
-                    isEnabled = true,
-                    onToggle = {
-                        val newTheme = when (uiState.themeMode) {
-                            com.hocalingo.app.core.common.ThemeMode.LIGHT ->
-                                com.hocalingo.app.core.common.ThemeMode.DARK
-                            com.hocalingo.app.core.common.ThemeMode.DARK ->
-                                com.hocalingo.app.core.common.ThemeMode.SYSTEM
-                            com.hocalingo.app.core.common.ThemeMode.SYSTEM ->
-                                com.hocalingo.app.core.common.ThemeMode.LIGHT
-                        }
-                        onEvent(ProfileEvent.UpdateThemeMode(newTheme))
-                    }
+            // Theme Mode - Pill Style Selection
+            SettingSection(
+                title = "Tema Modu",
+                icon = Icons.Outlined.Palette
+            ) {
+                ThemeModeSelector(
+                    currentMode = uiState.themeMode,
+                    onModeSelected = { mode ->
+                        onEvent(ProfileEvent.UpdateThemeMode(mode))
+                    },
+                    isDarkTheme = isDarkTheme
                 )
+            }
 
-                Spacer(modifier = Modifier.height(8.dp))
+            // Notifications Switch
+            SettingSwitchRow(
+                icon = Icons.Outlined.Notifications,
+                title = "Günlük Hatırlatıcı",
+                subtitle = "Her gün aynı saatte bildirim al",
+                isChecked = uiState.notificationsEnabled,
+                onCheckedChange = { enabled ->
+                    onEvent(ProfileEvent.UpdateNotifications(enabled))
+                },
+                isDarkTheme = isDarkTheme
+            )
 
-                // Notifications Switch
-                SettingSwitchItem(
-                    title = "Bildirimler",
-                    subtitle = "Günlük çalışma hatırlatması",
-                    icon = Icons.Filled.Notifications,
-                    isChecked = uiState.notificationsEnabled,
-                    onCheckedChange = { enabled ->
-                        onEvent(ProfileEvent.UpdateNotifications(enabled))
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Notification Time Picker (shown when notifications enabled)
-                if (uiState.notificationsEnabled) {
-                    NotificationTimePickerItem(
+            // Notification Time Picker (shown when enabled)
+            AnimatedVisibility(visible = uiState.notificationsEnabled) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Spacer(modifier = Modifier.height(0.dp))
+                    NotificationTimeSelector(
                         selectedHour = uiState.notificationHour,
                         onHourSelected = { hour ->
                             onEvent(ProfileEvent.UpdateNotificationTime(hour))
-                        }
+                        },
+                        isDarkTheme = isDarkTheme
                     )
-
-                    Spacer(modifier = Modifier.height(8.dp))
                 }
+            }
 
-                // AI Assistant Style Dropdown
-                SettingDropdownItem(
-                    title = "AI Asistan Stili",
-                    subtitle = currentAIStyle.displayName,
-                    icon = Icons.Filled.Psychology,
-                    options = AIAssistantStyle.entries,
-                    selectedOption = currentAIStyle,
-                    onOptionSelected = onAIStyleChange
+            // AI Assistant Style
+            SettingSection(
+                title = "AI Asistan Stili",
+                icon = Icons.Outlined.Psychology
+            ) {
+                AIStyleSelector(
+                    currentStyle = currentAIStyle,
+                    onStyleSelected = onAIStyleChange,
+                    isDarkTheme = isDarkTheme
                 )
             }
         }
@@ -155,165 +173,179 @@ fun ModernSettingsCard(
 }
 
 /**
- * SettingToggleItem - Toggle setting item
- *
- * Used for cyclic settings (e.g., Theme: Light→Dark→System)
+ * SettingSection - Section header with icon
  */
 @Composable
-private fun SettingToggleItem(
+private fun SettingSection(
     title: String,
-    subtitle: String,
     icon: ImageVector,
-    isEnabled: Boolean,
-    onToggle: () -> Unit
+    content: @Composable () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(
-                Color.White.copy(alpha = 0.1f),
-                RoundedCornerShape(12.dp)
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(20.dp)
             )
-            .clickable { if (isEnabled) onToggle() }
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = Color.White.copy(alpha = if (isEnabled) 1f else 0.5f),
-            modifier = Modifier.size(20.dp)
-        )
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Column(modifier = Modifier.weight(1f)) {
+            Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = title,
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp,
-                color = Color.White.copy(alpha = if (isEnabled) 1f else 0.5f)
-            )
-            Text(
-                text = subtitle,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp,
-                color = Color.White.copy(alpha = if (isEnabled) 0.8f else 0.4f)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-
-        Icon(
-            imageVector = Icons.Filled.ArrowForward,
-            contentDescription = "Değiştir",
-            tint = Color.White.copy(alpha = if (isEnabled) 0.7f else 0.3f),
-            modifier = Modifier.size(18.dp)
-        )
+        content()
     }
 }
 
 /**
- * SettingSwitchItem - Switch setting item
- *
- * Used for boolean settings (e.g., Notifications on/off)
+ * ThemeModeSelector - Pill-style theme selector
  */
 @Composable
-private fun SettingSwitchItem(
-    title: String,
-    subtitle: String,
-    icon: ImageVector,
-    isChecked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+private fun ThemeModeSelector(
+    currentMode: com.hocalingo.app.core.common.ThemeMode,
+    onModeSelected: (com.hocalingo.app.core.common.ThemeMode) -> Unit,
+    isDarkTheme: Boolean
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(
-                Color.White.copy(alpha = 0.1f),
-                RoundedCornerShape(12.dp)
-            )
-            .padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = Color.White,
-            modifier = Modifier.size(20.dp)
+        ThemeModeButton(
+            text = "Açık",
+            icon = Icons.Outlined.LightMode,
+            isSelected = currentMode == com.hocalingo.app.core.common.ThemeMode.LIGHT,
+            onClick = { onModeSelected(com.hocalingo.app.core.common.ThemeMode.LIGHT) },
+            isDarkTheme = isDarkTheme,
+            modifier = Modifier.weight(1f)
         )
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = title,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                color = Color.White
-            )
-            Text(
-                text = subtitle,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp,
-                color = Color.White.copy(alpha = 0.8f)
-            )
-        }
-
-        Switch(
-            checked = isChecked,
-            onCheckedChange = onCheckedChange,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                checkedTrackColor = Color.White.copy(alpha = 0.3f),
-                uncheckedThumbColor = Color.White.copy(alpha = 0.7f),
-                uncheckedTrackColor = Color.White.copy(alpha = 0.1f)
-            )
+        ThemeModeButton(
+            text = "Koyu",
+            icon = Icons.Outlined.DarkMode,
+            isSelected = currentMode == com.hocalingo.app.core.common.ThemeMode.DARK,
+            onClick = { onModeSelected(com.hocalingo.app.core.common.ThemeMode.DARK) },
+            isDarkTheme = isDarkTheme,
+            modifier = Modifier.weight(1f)
+        )
+        ThemeModeButton(
+            text = "Sistem",
+            icon = Icons.Outlined.PhoneAndroid,
+            isSelected = currentMode == com.hocalingo.app.core.common.ThemeMode.SYSTEM,
+            onClick = { onModeSelected(com.hocalingo.app.core.common.ThemeMode.SYSTEM) },
+            isDarkTheme = isDarkTheme,
+            modifier = Modifier.weight(1f)
         )
     }
 }
 
 /**
- * SettingDropdownItem - Dropdown setting item
- *
- * Used for multiple choice settings (e.g., AI Assistant Style)
+ * ThemeModeButton - Individual pill button
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SettingDropdownItem(
-    title: String,
-    subtitle: String,
+private fun ThemeModeButton(
+    text: String,
     icon: ImageVector,
-    options: List<AIAssistantStyle>,
-    selectedOption: AIAssistantStyle,
-    onOptionSelected: (AIAssistantStyle) -> Unit
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    isDarkTheme: Boolean,
+    modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    val backgroundColor = when {
+        isSelected && isDarkTheme -> MaterialTheme.colorScheme.primary
+        isSelected && !isDarkTheme -> MaterialTheme.colorScheme.primary
+        !isSelected && isDarkTheme -> Color(0xFF2A2A3E)
+        else -> MaterialTheme.colorScheme.surfaceVariant
+    }
 
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = it }
+    val contentColor = when {
+        isSelected -> MaterialTheme.colorScheme.onPrimary
+        isDarkTheme -> Color(0xFF9CA3AF)
+        else -> MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    Surface(
+        modifier = modifier
+            .height(44.dp)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(12.dp),
+        color = backgroundColor
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    Color.White.copy(alpha = 0.1f),
-                    RoundedCornerShape(12.dp)
-                )
-                .clickable { expanded = true }
-                .menuAnchor()
-                .padding(16.dp),
+                .fillMaxSize()
+                .padding(horizontal = 12.dp),
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(20.dp)
+                tint = contentColor,
+                modifier = Modifier.size(18.dp)
             )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = text,
+                fontFamily = PoppinsFontFamily,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                fontSize = 13.sp,
+                color = contentColor
+            )
+        }
+    }
+}
+
+/**
+ * SettingSwitchRow - Modern switch row
+ */
+@Composable
+private fun SettingSwitchRow(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    isChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    isDarkTheme: Boolean
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        color = if (isDarkTheme) {
+            Color(0xFF2A2A3E)
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+        }
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Icon Badge
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.width(12.dp))
 
@@ -322,67 +354,41 @@ private fun SettingDropdownItem(
                     text = title,
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
-                    color = Color.White
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = subtitle,
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp,
-                    color = Color.White.copy(alpha = 0.8f)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                 )
             }
 
-            Icon(
-                imageVector = if (expanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
-                contentDescription = if (expanded) "Kapat" else "Aç",
-                tint = Color.White.copy(alpha = 0.7f),
-                modifier = Modifier.size(20.dp)
+            Switch(
+                checked = isChecked,
+                onCheckedChange = onCheckedChange,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.primary,
+                    checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                    uncheckedThumbColor = MaterialTheme.colorScheme.outline,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant
+                )
             )
-        }
-
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.background(MaterialTheme.colorScheme.surface)
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = option.displayName,
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 14.sp,
-                            color = if (option == selectedOption) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.onSurface
-                            }
-                        )
-                    },
-                    onClick = {
-                        onOptionSelected(option)
-                        expanded = false
-                    }
-                )
-            }
         }
     }
 }
 
 /**
- * NotificationTimePickerItem - Notification time selector
- *
- * Shows when notifications are enabled
- * Allows user to select notification hour (0-23)
+ * NotificationTimeSelector - Compact time picker
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun NotificationTimePickerItem(
+private fun NotificationTimeSelector(
     selectedHour: Int,
-    onHourSelected: (Int) -> Unit
+    onHourSelected: (Int) -> Unit,
+    isDarkTheme: Boolean
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -390,50 +396,67 @@ private fun NotificationTimePickerItem(
         expanded = expanded,
         onExpandedChange = { expanded = it }
     ) {
-        Row(
+        Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(
-                    Color.White.copy(alpha = 0.1f),
-                    RoundedCornerShape(12.dp)
-                )
-                .clickable { expanded = true }
-                .menuAnchor()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .menuAnchor(),
+            shape = RoundedCornerShape(12.dp),
+            color = if (isDarkTheme) {
+                Color(0xFF2A2A3E)
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+            }
         ) {
-            Icon(
-                imageVector = Icons.Filled.Schedule,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(20.dp)
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { expanded = true }
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(
+                            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.12f)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Schedule,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
 
-            Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(12.dp))
 
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Bildirim Saati",
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
-                    color = Color.White
-                )
-                Text(
-                    text = String.format("%02d:00", selectedHour),
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 12.sp,
-                    color = Color.White.copy(alpha = 0.8f)
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Bildirim Saati",
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 15.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = String.format("%02d:00", selectedHour),
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                    )
+                }
+
+                Icon(
+                    imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(24.dp)
                 )
             }
-
-            Icon(
-                imageVector = if (expanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
-                contentDescription = if (expanded) "Kapat" else "Aç",
-                tint = Color.White.copy(alpha = 0.7f),
-                modifier = Modifier.size(20.dp)
-            )
         }
 
         ExposedDropdownMenu(
@@ -446,11 +469,13 @@ private fun NotificationTimePickerItem(
                     text = {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
                                 text = String.format("%02d:00", hour),
                                 fontFamily = PoppinsFontFamily,
+                                fontWeight = if (hour == selectedHour) FontWeight.SemiBold else FontWeight.Normal,
                                 color = if (hour == selectedHour) {
                                     MaterialTheme.colorScheme.primary
                                 } else {
@@ -462,7 +487,7 @@ private fun NotificationTimePickerItem(
                                     imageVector = Icons.Filled.Check,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(18.dp)
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
                         }
@@ -478,14 +503,97 @@ private fun NotificationTimePickerItem(
 }
 
 /**
- * ModernStatsRow - Three gradient stat cards
+ * AIStyleSelector - Pill-style AI assistant selector
+ */
+@Composable
+private fun AIStyleSelector(
+    currentStyle: AIAssistantStyle,
+    onStyleSelected: (AIAssistantStyle) -> Unit,
+    isDarkTheme: Boolean
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        AIAssistantStyle.entries.chunked(2).forEach { rowStyles ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                rowStyles.forEach { style ->
+                    AIStyleButton(
+                        style = style,
+                        isSelected = currentStyle == style,
+                        onClick = { onStyleSelected(style) },
+                        isDarkTheme = isDarkTheme,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                // Fill remaining space if odd number
+                if (rowStyles.size == 1) {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+        }
+    }
+}
+
+/**
+ * AIStyleButton - Individual AI style button
+ */
+@Composable
+private fun AIStyleButton(
+    style: AIAssistantStyle,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    isDarkTheme: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val backgroundColor = when {
+        isSelected && isDarkTheme -> MaterialTheme.colorScheme.primary
+        isSelected && !isDarkTheme -> MaterialTheme.colorScheme.primary
+        !isSelected && isDarkTheme -> Color(0xFF2A2A3E)
+        else -> MaterialTheme.colorScheme.surfaceVariant
+    }
+
+    val contentColor = when {
+        isSelected -> MaterialTheme.colorScheme.onPrimary
+        isDarkTheme -> Color(0xFF9CA3AF)
+        else -> MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    Surface(
+        modifier = modifier
+            .height(44.dp)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(12.dp),
+        color = backgroundColor
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = style.displayName,
+                fontFamily = PoppinsFontFamily,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                fontSize = 13.sp,
+                color = contentColor
+            )
+        }
+    }
+}
+
+/**
+ * ModernStatsRow - Redesigned Compact Stats
  *
- * Displays:
- * - Streak (Fire icon)
- * - Words Studied Today (TrendingUp icon)
- * - Mastered Words (Trophy icon)
+ * NEW DESIGN:
+ * - Smaller, more compact cards
+ * - Subtle colors (no heavy gradients)
+ * - Clean icon + number layout
+ * - Better spacing
  *
- * @param isDarkTheme Theme state for gradient colors
+ * @param uiState Current UI state
+ * @param isDarkTheme Theme mode
  */
 @Composable
 fun ModernStatsRow(
@@ -497,130 +605,130 @@ fun ModernStatsRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         // Streak Card
-        GradientStatCard(
+        CompactStatCard(
             title = "Streak",
             value = "${uiState.userStats.currentStreak}",
             subtitle = "gün",
             icon = Icons.Filled.LocalFireDepartment,
-            gradient = Brush.linearGradient(
-                colors = if (isDarkTheme) {
-                    listOf(Color(0xFF927E71), Color(0xFFB45433))
-                } else {
-                    listOf(Color(0xFFFF6B35), Color(0xFFFF8E53))
-                }
-            ),
-            modifier = Modifier.weight(1f)
+            iconColor = Color(0xFFFF6B35),
+            backgroundColor = if (isDarkTheme) Color(0xFF2A2A3E) else Color(0xFFFFEFE9),
+            modifier = Modifier.weight(1f),
+            isDarkTheme = isDarkTheme
         )
 
-        // Words Studied Today Card
-        GradientStatCard(
+        // Today's Words Card
+        CompactStatCard(
             title = "Bugün",
             value = "${uiState.userStats.wordsStudiedToday}",
             subtitle = "kelime",
             icon = Icons.Filled.TrendingUp,
-            gradient = Brush.linearGradient(
-                colors = if (isDarkTheme) {
-                    listOf(Color(0xFF11959A), Color(0xFF006A79))
-                } else {
-                    listOf(Color(0xFF4ECDC4), Color(0xFF44A08D))
-                }
-            ),
-            modifier = Modifier.weight(1f)
+            iconColor = Color(0xFF4ECDC4),
+            backgroundColor = if (isDarkTheme) Color(0xFF2A2A3E) else Color(0xFFE8F8F7),
+            modifier = Modifier.weight(1f),
+            isDarkTheme = isDarkTheme
         )
 
         // Mastered Words Card
-        GradientStatCard(
+        CompactStatCard(
             title = "Öğrenilen",
             value = "${uiState.userStats.masteredWordsCount}",
             subtitle = "kelime",
             icon = Icons.Filled.EmojiEvents,
-            gradient = Brush.linearGradient(
-                colors = if (isDarkTheme) {
-                    listOf(Color(0xFF8E3C48), Color(0xFF8E2C48))
-                } else {
-                    listOf(Color(0xFF7E3C48), Color(0xFF7E4C48))
-                }
-            ),
-            modifier = Modifier.weight(1f)
+            iconColor = Color(0xFFFFB800),
+            backgroundColor = if (isDarkTheme) Color(0xFF2A2A3E) else Color(0xFFFFF7E6),
+            modifier = Modifier.weight(1f),
+            isDarkTheme = isDarkTheme
         )
     }
 }
 
 /**
- * GradientStatCard - Single gradient stat card
- *
- * Displays icon, value, title, subtitle with gradient background
+ * CompactStatCard - Single compact stat card
  */
 @Composable
-private fun GradientStatCard(
+private fun CompactStatCard(
     title: String,
     value: String,
     subtitle: String,
     icon: ImageVector,
-    gradient: Brush,
-    modifier: Modifier = Modifier
+    iconColor: Color,
+    backgroundColor: Color,
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean
 ) {
     Card(
         modifier = modifier,
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = backgroundColor
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(gradient)
-                .padding(16.dp)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
+            // Icon Badge
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(iconColor.copy(alpha = 0.12f)),
+                contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = value,
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Black,
-                    fontSize = 24.sp,
-                    color = Color.White
-                )
-
-                Text(
-                    text = title,
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 11.sp,
-                    color = Color.White.copy(alpha = 0.8f)
-                )
-
-                Text(
-                    text = subtitle,
-                    fontFamily = PoppinsFontFamily,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 10.sp,
-                    color = Color.White.copy(alpha = 0.6f)
+                    tint = iconColor,
+                    modifier = Modifier.size(22.dp)
                 )
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Value
+            Text(
+                text = value,
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Black,
+                fontSize = 22.sp,
+                color = if (isDarkTheme) Color.White else Color(0xFF1A1A2E)
+            )
+
+            // Title
+            Text(
+                text = title,
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 11.sp,
+                color = if (isDarkTheme) Color(0xFF9CA3AF) else Color(0xFF6B7280)
+            )
+
+            // Subtitle
+            Text(
+                text = subtitle,
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Normal,
+                fontSize = 10.sp,
+                color = if (isDarkTheme) Color(0xFF6B7280) else Color(0xFF9CA3AF)
+            )
         }
     }
 }
 
 /**
- * LegalAndSupportCard - Legal & support links card
+ * LegalAndSupportCard - Redesigned Minimal Card
  *
- * Contains links to:
- * - Privacy Policy
- * - Terms of Service
- * - Play Store (app rating)
- * - Support Email
+ * NEW DESIGN:
+ * - Cleaner layout
+ * - Better icon placement
+ * - Subtle dividers
+ * - Compact spacing
+ *
+ * @param onEvent Event handler
+ * @param isDarkTheme Theme mode
  */
 @Composable
 fun LegalAndSupportCard(
@@ -630,12 +738,12 @@ fun LegalAndSupportCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (isDarkTheme) {
                 Color(0xFF1E1E2E)
             } else {
-                Color(0xFFFAFAFA)
+                MaterialTheme.colorScheme.surface
             }
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -644,15 +752,14 @@ fun LegalAndSupportCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             // Header
             Row(
-                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    imageVector = Icons.Default.Info,
+                    imageVector = Icons.Outlined.Info,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(24.dp)
@@ -672,16 +779,16 @@ fun LegalAndSupportCard(
             )
 
             // Privacy Policy
-            LegalSupportItem(
-                icon = Icons.Default.Lock,
+            LegalSupportRow(
+                icon = Icons.Outlined.Lock,
                 title = "Gizlilik Politikası",
                 onClick = { onEvent(ProfileEvent.OpenPrivacyPolicy) },
                 isDarkTheme = isDarkTheme
             )
 
             // Terms of Service
-            LegalSupportItem(
-                icon = Icons.Default.Description,
+            LegalSupportRow(
+                icon = Icons.Outlined.Description,
                 title = "Kullanım Sözleşmesi",
                 onClick = { onEvent(ProfileEvent.OpenTermsOfService) },
                 isDarkTheme = isDarkTheme
@@ -692,16 +799,16 @@ fun LegalAndSupportCard(
             )
 
             // Rate on Play Store
-            LegalSupportItem(
-                icon = Icons.Default.Star,
+            LegalSupportRow(
+                icon = Icons.Outlined.Star,
                 title = "Uygulamayı Değerlendir",
                 onClick = { onEvent(ProfileEvent.OpenPlayStore) },
                 isDarkTheme = isDarkTheme
             )
 
             // Contact Support
-            LegalSupportItem(
-                icon = Icons.Default.Email,
+            LegalSupportRow(
+                icon = Icons.Outlined.Email,
                 title = "Destek İletişim",
                 onClick = { onEvent(ProfileEvent.OpenSupport) },
                 isDarkTheme = isDarkTheme
@@ -711,45 +818,65 @@ fun LegalAndSupportCard(
 }
 
 /**
- * LegalSupportItem - Single legal/support link item
- *
- * Displays icon, title with chevron for navigation
+ * LegalSupportRow - Single clickable row
  */
 @Composable
-private fun LegalSupportItem(
+private fun LegalSupportRow(
     icon: ImageVector,
     title: String,
     onClick: () -> Unit,
-    isDarkTheme: Boolean,
-    modifier: Modifier = Modifier
+    isDarkTheme: Boolean
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        color = if (isDarkTheme) {
+            Color(0xFF2A2A3E)
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+        }
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = if (isDarkTheme) Color(0xFF9CA3AF) else Color(0xFF6B7280),
-            modifier = Modifier.size(20.dp)
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(
-            text = title,
-            fontFamily = PoppinsFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 15.sp,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.weight(1f)
-        )
-        Icon(
-            imageVector = Icons.Default.ChevronRight,
-            contentDescription = null,
-            tint = if (isDarkTheme) Color(0xFF6B7280) else Color(0xFF9CA3AF),
-            modifier = Modifier.size(20.dp)
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick)
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Text(
+                text = title,
+                fontFamily = PoppinsFontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 15.sp,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f)
+            )
+
+            Icon(
+                imageVector = Icons.Filled.ChevronRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                modifier = Modifier.size(20.dp)
+            )
+        }
     }
 }

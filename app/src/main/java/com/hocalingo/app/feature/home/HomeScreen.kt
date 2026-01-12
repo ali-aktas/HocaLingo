@@ -296,7 +296,7 @@ private fun HeroCard(
 
         // Sağ: BÜYÜK Maskot
         Image(
-            painter = painterResource(id = R.drawable.lingo_hoca_image),
+            painter = painterResource(id = R.drawable.hocalingo_cards),
             contentDescription = "Lingo Hoca",
             modifier = Modifier
                 .size(170.dp),

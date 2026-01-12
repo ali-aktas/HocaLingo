@@ -191,7 +191,7 @@ fun AddWordButton(
     modifier: Modifier = Modifier
 ) {
     Modern3DButton(
-        text = "Yeni Kelime Ekle",
+        text = "Dışarıdan Kelime/Kalıp Ekle",
         icon = Icons.Filled.Add,
         gradient = Brush.horizontalGradient(
             colors = listOf(

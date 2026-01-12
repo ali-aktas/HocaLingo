@@ -82,7 +82,7 @@ fun StudyTopBar(
             )
         }
 
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(32.dp))
 
         Text(
             text = "Akıllı Kelime Çalışması",
